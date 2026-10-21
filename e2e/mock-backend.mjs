@@ -1,0 +1,442 @@
+// Mock Keycloak (OIDC) and Nyuppsättning's GraphQL API for the Playwright tests. The GraphQL side keeps state in
+// memory and applies the same visibility and permission rules as the server (data-model.md, contracts/README.md),
+// so each persona sees what the real server would show. Test data is fictitious.
+import {createServer} from "node:http";
+import {randomUUID} from "node:crypto";
+import {exportJWK, generateKeyPair, SignJWT} from "jose";
+
+const PORT = Number(process.env.MOCK_PORT || 4101);
+const ISSUER = `http://localhost:${PORT}/realms/fgv`;
+const CLIENT_ID = "fgv-revival";
+const KID = "e2e-key";
+const TOKEN_TTL = 3600;
+
+const PERSONAS = {
+    superadmin: {sub: "p-superadmin", name: "Sara Admin", email: "sara.admin@example.org", roles: ["USER", "SUPER_ADMIN"]},
+    observer: {sub: "p-observer", name: "Olle Observatör", email: "olle@example.org", roles: ["USER", "OBSERVER"]},
+    directeur: {sub: "p-directeur", name: "Dana Directeur", email: "dana@example.org", roles: ["USER"]},
+    styrgrupp: {sub: "p-styrgrupp", name: "Stina Styrgrupp", email: "stina@example.org", roles: ["USER"]},
+    noaccess: {sub: "p-noaccess", name: "Nils Nekad", email: "nils@example.org", roles: []},
+};
+const bySub = Object.fromEntries(Object.values(PERSONAS).map(persona => [persona.sub, persona]));
+
+const STATUSES = ["PROPOSED", "APPROVED", "ORGANISING", "OPEN", "CLOSING", "SETTLING", "ARCHIVED", "REJECTED"];
+const DIRECTEUR_STEPS = ["APPROVED", "ORGANISING", "OPEN", "CLOSING", "SETTLING"];
+const VISIBLE = {
+    DIRECTEUR: ["APPROVED", "ORGANISING", "OPEN", "CLOSING", "SETTLING"],
+    STEERING_GROUP: ["ORGANISING", "OPEN", "CLOSING"],
+};
+const SPEXES = [
+    {id: "1", title: "Ali Baba", year: 1956},
+    {id: "2", title: "Nobel", year: 1988},
+    {id: "3", title: "Snorre", year: 1974},
+];
+
+let state;
+let currentPersona = "superadmin";
+
+function resetState() {
+    state = {
+        spexregisterUp: true,
+        nextId: 100,
+        revivals: [
+            {id: "1", spexId: "1", year: 2028, workingTitle: "Ali Baba 2028", premiereDate: null, showDates: [], venues: [], status: "APPROVED", version: 0, history: []},
+            {id: "2", spexId: "2", year: 2030, workingTitle: "Nobel 2030", premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: []},
+            {id: "3", spexId: "3", year: 2027, workingTitle: "Snorre 2027", premiereDate: "2027-03-01", showDates: ["2027-03-01"], venues: ["Kårhuset"], status: "OPEN", version: 0, history: []},
+        ],
+        members: [
+            {id: "m1", revivalId: "1", role: "DIRECTEUR", capabilities: [], email: "dana@example.org", sub: "p-directeur", version: 0},
+            {id: "m2", revivalId: "1", role: "STEERING_GROUP", capabilities: ["FINANCE"], email: "stina@example.org", sub: "p-styrgrupp", version: 0},
+        ],
+    };
+}
+
+resetState();
+
+// --- Rules, as in the server's AccessPolicy ----------------------------------------------------------------------
+
+const roleIn = (persona, revival) =>
+    state.members.find(member => member.revivalId === revival.id && member.sub === persona.sub)?.role ?? null;
+const isSuperAdmin = persona => persona.roles.includes("SUPER_ADMIN");
+const seesEverything = persona => isSuperAdmin(persona) || persona.roles.includes("OBSERVER");
+
+function canSee(persona, revival) {
+    if (seesEverything(persona)) {
+        return true;
+    }
+    const role = roleIn(persona, revival);
+    return !!role && (VISIBLE[role] ?? []).includes(revival.status);
+}
+
+const isVisibleDirecteur = (persona, revival) => roleIn(persona, revival) === "DIRECTEUR" && VISIBLE.DIRECTEUR.includes(revival.status);
+const notArchived = revival => revival.status !== "ARCHIVED";
+
+function permissions(persona, revival) {
+    const next = DIRECTEUR_STEPS[DIRECTEUR_STEPS.indexOf(revival.status) + 1];
+    const allowedStatuses = isSuperAdmin(persona)
+        ? STATUSES.filter(status => status !== revival.status)
+        : isVisibleDirecteur(persona, revival) && DIRECTEUR_STEPS.includes(revival.status) && next ? [next] : [];
+
+    return {
+        __typename: "RevivalPermissions",
+        canEditCore: isSuperAdmin(persona) && notArchived(revival),
+        canEditDetails: (isSuperAdmin(persona) || isVisibleDirecteur(persona, revival)) && notArchived(revival),
+        allowedStatuses,
+        canManageDirecteurs: isSuperAdmin(persona) && notArchived(revival),
+        canManageSteeringGroup: (isSuperAdmin(persona) || isVisibleDirecteur(persona, revival)) && notArchived(revival),
+    };
+}
+
+class GraphQLError extends Error {
+    constructor(classification, message) {
+        super(message);
+        this.classification = classification;
+    }
+}
+
+const forbidden = () => new GraphQLError("FORBIDDEN", "Du har inte behörighet att göra det.");
+
+function visibleRevival(persona, id) {
+    const revival = state.revivals.find(candidate => candidate.id === String(id));
+
+    if (!revival || !canSee(persona, revival)) {
+        throw new GraphQLError("NOT_FOUND", "Nyuppsättningen finns inte.");
+    }
+    return revival;
+}
+
+function toRevival(persona, revival) {
+    const spex = SPEXES.find(candidate => candidate.id === revival.spexId);
+    const showEmails = isSuperAdmin(persona) || isVisibleDirecteur(persona, revival);
+
+    return {
+        __typename: "Revival",
+        id: revival.id,
+        year: revival.year,
+        workingTitle: revival.workingTitle,
+        premiereDate: revival.premiereDate,
+        showDates: revival.showDates,
+        venues: revival.venues,
+        status: revival.status,
+        version: revival.version,
+        createdBy: "Sara Admin",
+        createdAt: "2026-10-20T10:00:00Z",
+        lastModifiedBy: null,
+        lastModifiedAt: null,
+        spex: {
+            __typename: "Spex",
+            id: revival.spexId,
+            title: state.spexregisterUp ? spex?.title ?? null : null,
+            available: state.spexregisterUp,
+        },
+        members: state.members.filter(member => member.revivalId === revival.id).map(member => ({
+            __typename: "RevivalMember",
+            id: member.id,
+            role: member.role,
+            capabilities: member.capabilities,
+            state: member.sub ? "ACTIVE" : "WAITING",
+            displayName: member.sub ? bySub[member.sub]?.name ?? null : null,
+            email: showEmails ? member.email : null,
+            version: member.version,
+        })),
+        statusHistory: [...revival.history].reverse().map(change => ({__typename: "RevivalStatusChange", ...change})),
+        permissions: permissions(persona, revival),
+    };
+}
+
+function requireUser(persona) {
+    if (!persona) {
+        throw new GraphQLError("UNAUTHORIZED", "Du är inte inloggad.");
+    }
+    if (!persona.roles.includes("USER")) {
+        throw forbidden();
+    }
+    return persona;
+}
+
+const resolvers = {
+    Me(persona) {
+        return {
+            me: {
+                __typename: "Me",
+                id: persona.sub,
+                displayName: persona.name,
+                email: persona.email,
+                globalRoles: persona.roles.filter(role => role !== "USER"),
+                revivalRoles: state.revivals.filter(revival => roleIn(persona, revival) && canSee(persona, revival)).map(revival => ({
+                    __typename: "RevivalRoleAssignment",
+                    role: roleIn(persona, revival),
+                    capabilities: [],
+                    revival: {__typename: "Revival", id: revival.id},
+                })),
+            },
+        };
+    },
+    Revivals(persona, {status}) {
+        return {
+            revivals: state.revivals
+                .filter(revival => canSee(persona, revival) && (!status || status.includes(revival.status)))
+                .map(revival => toRevival(persona, revival)),
+        };
+    },
+    Revival(persona, {id}) {
+        return {revival: toRevival(persona, visibleRevival(persona, id))};
+    },
+    SpexSearch(persona, {query}) {
+        if (!isSuperAdmin(persona)) {
+            throw forbidden();
+        }
+        if (!state.spexregisterUp) {
+            throw new GraphQLError("SPEXREGISTER_UNAVAILABLE", "Spexregistret är inte tillgängligt just nu.");
+        }
+        const needle = (query ?? "").toLowerCase();
+        return {spexSearch: SPEXES.filter(spex => spex.title.toLowerCase().includes(needle)).map(spex => ({__typename: "Spex", ...spex, available: true}))};
+    },
+    RevivalCreate(persona, {input}) {
+        if (!isSuperAdmin(persona)) {
+            throw forbidden();
+        }
+        if (!state.spexregisterUp) {
+            throw new GraphQLError("SPEXREGISTER_UNAVAILABLE", "Spexregistret är inte tillgängligt just nu.");
+        }
+        const revival = {
+            id: String(state.nextId++), spexId: String(input.spexId), year: Number(input.year), workingTitle: input.workingTitle.trim(),
+            premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: [],
+        };
+        state.revivals.push(revival);
+        return {revivalCreate: toRevival(persona, revival)};
+    },
+    RevivalUpdate(persona, {input}) {
+        const revival = visibleRevival(persona, input.id);
+        if (!permissions(persona, revival).canEditDetails) {
+            throw forbidden();
+        }
+        if (input.version !== revival.version) {
+            throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
+        }
+        const premiereDate = input.clearPremiereDate ? null : input.premiereDate ?? revival.premiereDate;
+        const showDates = input.showDates ?? revival.showDates;
+        if (premiereDate && Number(premiereDate.slice(0, 4)) !== revival.year) {
+            throw new GraphQLError("BAD_REQUEST", `Premiären måste ligga år ${revival.year}, nyuppsättningens år.`);
+        }
+        if (showDates.some(date => !premiereDate || date < premiereDate)) {
+            throw new GraphQLError("BAD_REQUEST", "Föreställningsdatum får inte ligga före premiären.");
+        }
+        Object.assign(revival, {premiereDate, showDates: [...showDates].sort(), venues: input.venues ?? revival.venues, version: revival.version + 1});
+        return {revivalUpdate: toRevival(persona, revival)};
+    },
+    RevivalStatusChange(persona, {input}) {
+        const revival = visibleRevival(persona, input.id);
+        if (revival.status !== input.from) {
+            throw new GraphQLError("CONFLICT", "Statusen har ändrats av någon annan.");
+        }
+        if (!permissions(persona, revival).allowedStatuses.includes(input.to)) {
+            throw forbidden();
+        }
+        revival.history.push({from: revival.status, to: input.to, changedBy: persona.name, changedAt: new Date().toISOString()});
+        revival.status = input.to;
+        revival.version += 1;
+        return {revivalStatusChange: toRevival(persona, revival)};
+    },
+    RevivalMemberAdd(persona, {input}) {
+        const revival = visibleRevival(persona, input.revivalId);
+        const allowed = input.role === "DIRECTEUR" ? permissions(persona, revival).canManageDirecteurs : permissions(persona, revival).canManageSteeringGroup;
+        if (!allowed) {
+            throw forbidden();
+        }
+        const email = input.email.trim().toLowerCase();
+        const person = Object.values(PERSONAS).find(candidate => candidate.email === email);
+        if (state.members.some(member => member.revivalId === revival.id && (member.email === email || (person && member.sub === person.sub)))) {
+            throw new GraphQLError("BAD_REQUEST", "Personen har redan en roll i nyuppsättningen.");
+        }
+        const member = {id: `m${state.nextId++}`, revivalId: revival.id, role: input.role, capabilities: input.capabilities ?? [], email, sub: person?.sub ?? null, version: 0};
+        state.members.push(member);
+        return {revivalMemberAdd: toRevival(persona, revival).members.find(candidate => candidate.id === member.id)};
+    },
+    RevivalMemberCapabilitiesSet(persona, {input}) {
+        const member = state.members.find(candidate => candidate.id === input.id);
+        const revival = visibleRevival(persona, member?.revivalId);
+        if (!permissions(persona, revival).canManageSteeringGroup) {
+            throw forbidden();
+        }
+        if (member.version !== input.version) {
+            throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
+        }
+        Object.assign(member, {capabilities: input.capabilities, version: member.version + 1});
+        return {revivalMemberCapabilitiesSet: {__typename: "RevivalMember", id: member.id, capabilities: member.capabilities, version: member.version}};
+    },
+    RevivalMemberRemove(persona, {id}) {
+        const member = state.members.find(candidate => candidate.id === id);
+        const revival = visibleRevival(persona, member?.revivalId);
+        const allowed = member.role === "DIRECTEUR" ? permissions(persona, revival).canManageDirecteurs : permissions(persona, revival).canManageSteeringGroup;
+        if (!allowed) {
+            throw forbidden();
+        }
+        state.members = state.members.filter(candidate => candidate.id !== id);
+        return {revivalMemberRemove: null};
+    },
+};
+
+function operationNameOf(query) {
+    const match = /\b(query|mutation)\s+([A-Za-z0-9_]+)/.exec(query);
+    return match ? match[2] : null;
+}
+
+function personaOf(req) {
+    const token = (req.headers.authorization ?? "").replace(/^Bearer\s+/i, "");
+    try {
+        const payload = JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString("utf8"));
+        return bySub[payload.sub] ?? null;
+    } catch {
+        return null;
+    }
+}
+
+function handleGraphql(req, body, res) {
+    let payload;
+    try {
+        payload = JSON.parse(body);
+    } catch {
+        res.writeHead(400).end('{"errors":[{"message":"bad json"}]}');
+        return;
+    }
+    const op = operationNameOf(payload.query || "");
+    const resolver = op && resolvers[op];
+    res.writeHead(200, {"content-type": "application/json"});
+    if (!resolver) {
+        res.end(JSON.stringify({data: {}}));
+        return;
+    }
+    try {
+        const persona = requireUser(personaOf(req));
+        res.end(JSON.stringify({data: resolver(persona, payload.variables || {})}));
+    } catch (error) {
+        if (error instanceof GraphQLError) {
+            res.end(JSON.stringify({data: null, errors: [{message: error.message, extensions: {classification: error.classification}}]}));
+        } else {
+            console.error(error);
+            res.end(JSON.stringify({data: null, errors: [{message: String(error), extensions: {classification: "INTERNAL_ERROR"}}]}));
+        }
+    }
+}
+
+// --- OIDC ----------------------------------------------------------------------------------------------------------
+
+const oidcConfig = {
+    issuer: ISSUER,
+    authorization_endpoint: `${ISSUER}/protocol/openid-connect/auth`,
+    token_endpoint: `${ISSUER}/protocol/openid-connect/token`,
+    userinfo_endpoint: `${ISSUER}/protocol/openid-connect/userinfo`,
+    jwks_uri: `${ISSUER}/protocol/openid-connect/certs`,
+    end_session_endpoint: `${ISSUER}/protocol/openid-connect/logout`,
+    response_types_supported: ["code"],
+    subject_types_supported: ["public"],
+    id_token_signing_alg_values_supported: ["RS256"],
+};
+
+const {privateKey, publicKey} = await generateKeyPair("RS256", {extractable: true});
+const publicJwk = {...(await exportJWK(publicKey)), kid: KID, alg: "RS256", use: "sig"};
+const pendingCodes = new Map();
+
+const userClaims = persona => ({sub: persona.sub, name: persona.name, email: persona.email, email_verified: true, preferred_username: persona.email});
+
+const signJwt = (persona, claims, audience) =>
+    new SignJWT(claims)
+        .setProtectedHeader({alg: "RS256", kid: KID, typ: "JWT"})
+        .setIssuer(ISSUER)
+        .setSubject(persona.sub)
+        .setAudience(audience)
+        .setIssuedAt()
+        .setExpirationTime(`${TOKEN_TTL}s`)
+        .sign(privateKey);
+
+function handleAuthorize(url, res) {
+    const redirectUri = url.searchParams.get("redirect_uri");
+    if (!redirectUri) {
+        res.writeHead(400).end("missing redirect_uri");
+        return;
+    }
+    const code = randomUUID();
+    pendingCodes.set(code, {nonce: url.searchParams.get("nonce"), persona: PERSONAS[currentPersona]});
+    const target = new URL(redirectUri);
+    target.searchParams.set("code", code);
+    const stateParam = url.searchParams.get("state");
+    if (stateParam) {
+        target.searchParams.set("state", stateParam);
+    }
+    res.writeHead(302, {location: target.toString()}).end();
+}
+
+async function handleToken(body, res) {
+    const params = new URLSearchParams(body);
+    let pending = {nonce: null, persona: PERSONAS[currentPersona]};
+
+    if (params.get("grant_type") === "authorization_code") {
+        const code = params.get("code");
+        if (!pendingCodes.has(code)) {
+            res.writeHead(400, {"content-type": "application/json"}).end(JSON.stringify({error: "invalid_grant"}));
+            return;
+        }
+        pending = pendingCodes.get(code);
+        pendingCodes.delete(code);
+    }
+    const {persona, nonce} = pending;
+    res.writeHead(200, {"content-type": "application/json"});
+    res.end(JSON.stringify({
+        access_token: await signJwt(persona, {...userClaims(persona), typ: "Bearer", azp: CLIENT_ID, resource_access: {[CLIENT_ID]: {roles: persona.roles}}}, "account"),
+        id_token: await signJwt(persona, {...userClaims(persona), ...(nonce ? {nonce} : {})}, CLIENT_ID),
+        refresh_token: `refresh-${randomUUID()}`,
+        token_type: "Bearer",
+        expires_in: TOKEN_TTL,
+        scope: "openid profile email",
+    }));
+}
+
+const server = createServer((req, res) => {
+    const chunks = [];
+    req.on("data", chunk => chunks.push(chunk));
+    req.on("end", async () => {
+        const url = new URL(req.url || "", `http://localhost:${PORT}`);
+        const path = url.pathname;
+        const body = Buffer.concat(chunks).toString("utf8");
+
+        if (path.endsWith("/.well-known/openid-configuration")) {
+            res.writeHead(200, {"content-type": "application/json"}).end(JSON.stringify(oidcConfig));
+        } else if (path.endsWith("/protocol/openid-connect/certs")) {
+            res.writeHead(200, {"content-type": "application/json"}).end(JSON.stringify({keys: [publicJwk]}));
+        } else if (path.endsWith("/protocol/openid-connect/auth")) {
+            handleAuthorize(url, res);
+        } else if (path.endsWith("/protocol/openid-connect/token")) {
+            await handleToken(body, res);
+        } else if (path.endsWith("/protocol/openid-connect/userinfo")) {
+            const persona = personaOf(req) ?? PERSONAS[currentPersona];
+            res.writeHead(200, {"content-type": "application/json"}).end(JSON.stringify(userClaims(persona)));
+        } else if (path.endsWith("/protocol/openid-connect/logout")) {
+            res.writeHead(302, {location: url.searchParams.get("post_logout_redirect_uri") || `http://localhost:${PORT}/`}).end();
+        } else if (req.method === "POST" && path === "/__reset") {
+            resetState();
+            currentPersona = "superadmin";
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__persona") {
+            currentPersona = JSON.parse(body).persona;
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__spexregister") {
+            state.spexregisterUp = JSON.parse(body).up;
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__status") {
+            const {id, status} = JSON.parse(body);
+            const revival = state.revivals.find(candidate => candidate.id === id);
+            revival.history.push({from: revival.status, to: status, changedBy: "Sara Admin", changedAt: new Date().toISOString()});
+            revival.status = status;
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path.includes("/api/graphql")) {
+            handleGraphql(req, body, res);
+        } else {
+            res.writeHead(404).end();
+        }
+    });
+});
+
+server.listen(PORT, () => {
+    console.log(`[mock-backend] listening on http://localhost:${PORT}`);
+});

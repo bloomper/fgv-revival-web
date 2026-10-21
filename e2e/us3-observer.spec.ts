@@ -1,0 +1,18 @@
+import {expect, openRevival, test} from "./fixtures";
+
+test("User story 3: the observer sees every revival and no edit controls", async ({page, loginAs}) => {
+    await loginAs("observer");
+    await page.goto("/admin/revivals");
+
+    for (const title of ["Ali Baba 2028", "Nobel 2030", "Snorre 2027"]) {
+        await expect(page.getByRole("row", {name: new RegExp(title)})).toBeVisible();
+    }
+    await expect(page.getByRole("button", {name: "Ny nyuppsättning"})).toHaveCount(0);
+    await expect(page.getByRole("combobox", {name: "Ändra status"})).toHaveCount(0);
+
+    await openRevival(page, "Ali Baba 2028");
+    await expect(page.getByText("Stina Styrgrupp")).toBeVisible();
+    await expect(page.getByRole("button", {name: "Redigera uppgifter"})).toHaveCount(0);
+    await expect(page.getByRole("button", {name: /Utse directeur|Lägg till i styrgruppen|Ta bort/})).toHaveCount(0);
+    await expect(page.getByText("stina@example.org")).toHaveCount(0);
+});

@@ -1,5 +1,204 @@
 {
   "App": {
-    "name": "FGV Revival"
+    "name": "Nyuppsättning"
+  },
+  "Meta": {
+    "title": "Nyuppsättning",
+    "description": "Support for steering groups reviving Chalmersspex productions"
+  },
+  "Common": {
+    "login": "Log in",
+    "logout": "Log out",
+    "loggedOut": "You are logged out",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "remove": "Remove",
+    "edit": "Edit",
+    "close": "Close",
+    "reload": "Reload",
+    "confirm": "Confirm",
+    "loading": "Loading…",
+    "saved": "Saved",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "myFgvAccount": "My FGV account",
+    "toggle": "Toggle"
+  },
+  "Header": {
+    "toggleLanguage": "Change language",
+    "toggleTheme": "Change theme"
+  },
+  "Nav": {
+    "myRevivals": "My revivals",
+    "allRevivals": "All revivals"
+  },
+  "Home": {
+    "title": "Nyuppsättning",
+    "mustBeLoggedIn": "You need to log in to use Nyuppsättning.",
+    "myRevivals": "My revivals",
+    "empty": "You hold no role in a revival that is visible right now.",
+    "yourRole": "Your role"
+  },
+  "NoAccess": {
+    "title": "You do not have access",
+    "text": "Your FGV account does not have access to Nyuppsättning. Ask a super admin for access.",
+    "logout": "Log out"
+  },
+  "LoginError": {
+    "title": "Login failed",
+    "text": "Something went wrong while logging in. Please try again.",
+    "retry": "Try again"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "text": "The page or revival does not exist, or you do not have access to it.",
+    "home": "Go to the start page"
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "text": "An unexpected error occurred.",
+    "retry": "Try again"
+  },
+  "Status": {
+    "PROPOSED": "Proposed",
+    "APPROVED": "Approved",
+    "ORGANISING": "Organising",
+    "OPEN": "Open",
+    "CLOSING": "Closing",
+    "SETTLING": "Settling",
+    "ARCHIVED": "Archived",
+    "REJECTED": "Rejected"
+  },
+  "Role": {
+    "DIRECTEUR": "Directeur",
+    "STEERING_GROUP": "Steering group",
+    "PARTICIPANT": "Participant",
+    "HELPER": "Helper"
+  },
+  "Capability": {
+    "FINANCE": "Finance",
+    "CATERING": "Catering",
+    "STAFFING": "Staffing",
+    "COMMS": "Communications"
+  },
+  "MemberState": {
+    "WAITING": "Waiting for access",
+    "ACTIVE": "Active"
+  },
+  "Revival": {
+    "spex": "Spex",
+    "year": "Year",
+    "workingTitle": "Working title",
+    "premiereDate": "Premiere",
+    "showDates": "Shows",
+    "venues": "Venues",
+    "status": "Status",
+    "directeurs": "Directeurs",
+    "steeringGroup": "Steering group",
+    "statusHistory": "Status history",
+    "noStatusHistory": "The status has not changed.",
+    "spexUnavailable": "Spexregister is temporarily unavailable",
+    "notSet": "Not set",
+    "none": "None",
+    "changeStatus": "Change status",
+    "statusChanged": "The status was changed",
+    "changedBy": "{name} changed {from} → {to}",
+    "created": "Created by {name}",
+    "details": "Details",
+    "editDetails": "Edit details",
+    "open": "Open"
+  },
+  "Admin": {
+    "title": "All revivals",
+    "create": "New revival",
+    "empty": "There are no revivals yet.",
+    "sortByPremiere": "Sort by premiere",
+    "manageDirecteurs": "Directeurs",
+    "manageDirecteursFor": "Directeurs of {title}",
+    "manageDirecteursDescription": "Appoint directeurs by email address or remove them. The steering group is managed on the revival's page.",
+    "readOnly": "You can see every revival but not change them."
+  },
+  "CreateDialog": {
+    "title": "New revival",
+    "description": "Pick the spex in Spexregister and enter year and working title.",
+    "searchSpex": "Search spex by title",
+    "noResults": "No spex found.",
+    "selected": "Selected spex",
+    "spexregisterUnavailable": "Spexregister is temporarily unavailable. Try again in a moment.",
+    "submit": "Create",
+    "created": "The revival was created"
+  },
+  "DetailsForm": {
+    "addShowDate": "Add show",
+    "addVenue": "Add venue",
+    "removeShowDate": "Remove the show",
+    "removeVenue": "Remove the venue",
+    "clearPremiere": "Clear premiere date"
+  },
+  "Members": {
+    "email": "Email address",
+    "addDirecteur": "Appoint directeur",
+    "addMember": "Add to steering group",
+    "added": "Added",
+    "removed": "Removed",
+    "confirmRemoveTitle": "Remove {name}?",
+    "confirmRemoveText": "The person loses their role in the revival. The change is kept in the history.",
+    "capabilities": "Capabilities",
+    "capabilitiesSaved": "The capabilities were saved",
+    "noDirecteurs": "No directeur is appointed.",
+    "noMembers": "The steering group has no members.",
+    "waitingPerson": "Waiting person",
+    "allCapabilities": "All capabilities"
+  },
+  "Errors": {
+    "CONFLICT": "Someone else has changed this. Reload and try again.",
+    "FORBIDDEN": "You are not allowed to do that.",
+    "NOT_FOUND": "The revival does not exist.",
+    "BAD_REQUEST": "The details are not valid.",
+    "SPEXREGISTER_UNAVAILABLE": "Spexregister is temporarily unavailable. Try again in a moment.",
+    "UNAUTHORIZED": "You are not logged in.",
+    "INTERNAL_ERROR": "Something went wrong. Please try again."
+  },
+  "Validation": {
+    "spexRequired": "Pick a spex.",
+    "yearRange": "The year must be between 1948 and 2100.",
+    "workingTitleRequired": "Enter a working title.",
+    "workingTitleTooLong": "The working title must be at most 255 characters.",
+    "premiereYear": "The premiere must be in the revival's year.",
+    "showDateBeforePremiere": "A show must not be before the premiere.",
+    "showDateWithoutPremiere": "Set the premiere date before shows.",
+    "dateInvalid": "Enter a valid date.",
+    "venueBlank": "A venue must not be empty.",
+    "venuesTooMany": "At most 20 venues.",
+    "emailInvalid": "Enter a valid email address."
+  },
+  "About": {
+    "title": "About",
+    "heading": "About Nyuppsättning",
+    "description": "Nyuppsättning is provided by FGV to support the steering groups that put on a Chalmersspex again, from proposal to archiving.",
+    "behindTheScenes": "Behind the scenes",
+    "feedback": "Feedback",
+    "feedbackDescription": "We value your opinion. Do you have suggestions for improvements or have you found a bug? Get in touch at {email}.",
+    "feedbackAction": "Send an email"
+  },
+  "Support": {
+    "title": "Support",
+    "heading": "How can we help?",
+    "description": "Have you found a technical fault, are you having trouble logging in, or are you missing access to a revival? We are happy to help you sort it out.",
+    "contact": "Contact support",
+    "contactDescription": "Describe your problem as clearly as possible. Get in touch at {email}.",
+    "contactAction": "Send a support request"
+  },
+  "CommandPalette": {
+    "title": "Command palette",
+    "description": "Jump to a page or start an action",
+    "open": "Open the command palette",
+    "hint": "Jump to…",
+    "placeholder": "Jump to page or action…",
+    "navigation": "Navigation",
+    "create": "Create",
+    "empty": "No matches"
   }
 }

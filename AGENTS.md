@@ -146,6 +146,24 @@ previously hit in `spexregister-web`:
 
 Forms use `react-hook-form` + `zodResolver`.
 
+## Consent and visitor statistics
+
+The cookie banner is c15t (`src/components/consent-manager.client.tsx`) in offline mode with only the `necessary`
+category: it informs, it asks for nothing, since the application sets only strictly necessary cookies and Umami sets
+none. E2E's `loginAs` accepts it after each login.
+
+Umami, self-hosted in `fgv-infra-deploy`, reached server-side at `UMAMI_URL` (`http://umami-server:3000` on the
+shared network). Browsers never talk to it: `src/app/stats/` serves the tracker as `/stats/script.js` and forwards
+`/stats/api/send`. The forwarder passes the browser's IP (`cf-connecting-ip`) and user agent, or every visit looks
+like one visitor from the server. `src/components/umami.tsx` renders nothing unless `UMAMI_URL` and
+`UMAMI_WEBSITE_ID` are both set, and sets `data-exclude-search`, so query strings are never sent.
+
+Custom events go through `track()` (`src/utils/umami.ts`), a no-op when the tracker isn't loaded. Umami records the
+page path with every event, so don't repeat it. Event data is enum values, counts and booleans only — never names,
+emails, revival or member ids or typed text; Umami cannot remove a single field afterwards. Events: `revival-create`,
+`revival-status` (`from`, `to`), `revival-details-save`, `member-add` (`role`, `capabilities` count),
+`member-capabilities` (`count`), `member-remove`, `command-palette`, `language-change` and `theme-change`.
+
 ## Testing
 
 - Unit: Vitest, tests in `__tests__/` beside the code.

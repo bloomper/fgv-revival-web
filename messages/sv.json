@@ -1,5 +1,204 @@
 {
   "App": {
-    "name": "FGV Revival"
+    "name": "Nyuppsättning"
+  },
+  "Meta": {
+    "title": "Nyuppsättning",
+    "description": "Stöd för styrgrupper som sätter upp Chalmersspex igen"
+  },
+  "Common": {
+    "login": "Logga in",
+    "logout": "Logga ut",
+    "loggedOut": "Du är utloggad",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "add": "Lägg till",
+    "remove": "Ta bort",
+    "edit": "Redigera",
+    "close": "Stäng",
+    "reload": "Ladda om",
+    "confirm": "Bekräfta",
+    "loading": "Laddar…",
+    "saved": "Sparat",
+    "themeLight": "Ljust",
+    "themeDark": "Mörkt",
+    "themeSystem": "System",
+    "myFgvAccount": "Mitt FGV-konto",
+    "toggle": "Växla"
+  },
+  "Header": {
+    "toggleLanguage": "Byt språk",
+    "toggleTheme": "Byt tema"
+  },
+  "Nav": {
+    "myRevivals": "Mina nyuppsättningar",
+    "allRevivals": "Alla nyuppsättningar"
+  },
+  "Home": {
+    "title": "Nyuppsättning",
+    "mustBeLoggedIn": "Du behöver vara inloggad för att använda Nyuppsättning.",
+    "myRevivals": "Mina nyuppsättningar",
+    "empty": "Du har ingen roll i någon nyuppsättning som syns just nu.",
+    "yourRole": "Din roll"
+  },
+  "NoAccess": {
+    "title": "Du har inte åtkomst",
+    "text": "Ditt FGV-konto har inte åtkomst till Nyuppsättning. Be en superadministratör om åtkomst.",
+    "logout": "Logga ut"
+  },
+  "LoginError": {
+    "title": "Inloggningen misslyckades",
+    "text": "Något gick fel vid inloggningen. Försök igen.",
+    "retry": "Försök igen"
+  },
+  "NotFound": {
+    "title": "Sidan finns inte",
+    "text": "Sidan eller nyuppsättningen finns inte, eller så har du inte tillgång till den.",
+    "home": "Till startsidan"
+  },
+  "Error": {
+    "title": "Något gick fel",
+    "text": "Ett oväntat fel inträffade.",
+    "retry": "Försök igen"
+  },
+  "Status": {
+    "PROPOSED": "Föreslagen",
+    "APPROVED": "Godkänd",
+    "ORGANISING": "Organiseras",
+    "OPEN": "Öppen",
+    "CLOSING": "Avslutas",
+    "SETTLING": "Slutredovisas",
+    "ARCHIVED": "Arkiverad",
+    "REJECTED": "Avslagen"
+  },
+  "Role": {
+    "DIRECTEUR": "Directeur",
+    "STEERING_GROUP": "Styrgrupp",
+    "PARTICIPANT": "Deltagare",
+    "HELPER": "Funktionär"
+  },
+  "Capability": {
+    "FINANCE": "Ekonomi",
+    "CATERING": "Mat",
+    "STAFFING": "Bemanning",
+    "COMMS": "Kommunikation"
+  },
+  "MemberState": {
+    "WAITING": "Väntar på åtkomst",
+    "ACTIVE": "Aktiv"
+  },
+  "Revival": {
+    "spex": "Spex",
+    "year": "År",
+    "workingTitle": "Arbetstitel",
+    "premiereDate": "Premiär",
+    "showDates": "Föreställningar",
+    "venues": "Spelplatser",
+    "status": "Status",
+    "directeurs": "Directeurer",
+    "steeringGroup": "Styrgrupp",
+    "statusHistory": "Statushistorik",
+    "noStatusHistory": "Statusen har inte ändrats.",
+    "spexUnavailable": "Spexregistret är tillfälligt otillgängligt",
+    "notSet": "Inte angivet",
+    "none": "Inga",
+    "changeStatus": "Ändra status",
+    "statusChanged": "Statusen ändrades",
+    "changedBy": "{name} ändrade {from} → {to}",
+    "created": "Skapad av {name}",
+    "details": "Uppgifter",
+    "editDetails": "Redigera uppgifter",
+    "open": "Öppna"
+  },
+  "Admin": {
+    "title": "Alla nyuppsättningar",
+    "create": "Ny nyuppsättning",
+    "empty": "Det finns inga nyuppsättningar än.",
+    "sortByPremiere": "Sortera på premiär",
+    "manageDirecteurs": "Directeurer",
+    "manageDirecteursFor": "Directeurer för {title}",
+    "manageDirecteursDescription": "Utse directeurer med e-postadress eller ta bort dem. Styrgruppen hanteras på nyuppsättningens sida.",
+    "readOnly": "Du kan se alla nyuppsättningar men inte ändra dem."
+  },
+  "CreateDialog": {
+    "title": "Ny nyuppsättning",
+    "description": "Välj spexet i Spexregistret och ange år och arbetstitel.",
+    "searchSpex": "Sök spex på titel",
+    "noResults": "Inga spex hittades.",
+    "selected": "Valt spex",
+    "spexregisterUnavailable": "Spexregistret är tillfälligt otillgängligt. Försök igen om en stund.",
+    "submit": "Skapa",
+    "created": "Nyuppsättningen skapades"
+  },
+  "DetailsForm": {
+    "addShowDate": "Lägg till föreställning",
+    "addVenue": "Lägg till spelplats",
+    "removeShowDate": "Ta bort föreställningen",
+    "removeVenue": "Ta bort spelplatsen",
+    "clearPremiere": "Ta bort premiärdatum"
+  },
+  "Members": {
+    "email": "E-postadress",
+    "addDirecteur": "Utse directeur",
+    "addMember": "Lägg till i styrgruppen",
+    "added": "Tillagd",
+    "removed": "Borttagen",
+    "confirmRemoveTitle": "Ta bort {name}?",
+    "confirmRemoveText": "Personen förlorar sin roll i nyuppsättningen. Ändringen sparas i historiken.",
+    "capabilities": "Behörigheter",
+    "capabilitiesSaved": "Behörigheterna sparades",
+    "noDirecteurs": "Ingen directeur är utsedd.",
+    "noMembers": "Styrgruppen har inga medlemmar.",
+    "waitingPerson": "Väntande person",
+    "allCapabilities": "Alla behörigheter"
+  },
+  "Errors": {
+    "CONFLICT": "Någon annan har ändrat detta. Ladda om och försök igen.",
+    "FORBIDDEN": "Du har inte behörighet att göra det.",
+    "NOT_FOUND": "Nyuppsättningen finns inte.",
+    "BAD_REQUEST": "Uppgifterna är inte giltiga.",
+    "SPEXREGISTER_UNAVAILABLE": "Spexregistret är tillfälligt otillgängligt. Försök igen om en stund.",
+    "UNAUTHORIZED": "Du är inte inloggad.",
+    "INTERNAL_ERROR": "Något gick fel. Försök igen."
+  },
+  "Validation": {
+    "spexRequired": "Välj ett spex.",
+    "yearRange": "Året måste vara mellan 1948 och 2100.",
+    "workingTitleRequired": "Ange en arbetstitel.",
+    "workingTitleTooLong": "Arbetstiteln får vara högst 255 tecken.",
+    "premiereYear": "Premiären måste ligga samma år som nyuppsättningen.",
+    "showDateBeforePremiere": "En föreställning får inte ligga före premiären.",
+    "showDateWithoutPremiere": "Ange premiärdatum innan föreställningar.",
+    "dateInvalid": "Ange ett giltigt datum.",
+    "venueBlank": "En spelplats får inte vara tom.",
+    "venuesTooMany": "Högst 20 spelplatser.",
+    "emailInvalid": "Ange en giltig e-postadress."
+  },
+  "About": {
+    "title": "Om",
+    "heading": "Om Nyuppsättning",
+    "description": "Nyuppsättning tillhandahålls av FGV som stöd för styrgrupper som sätter upp ett Chalmersspex igen, från förslag till arkivering.",
+    "behindTheScenes": "Bakom kulisserna",
+    "feedback": "Tyck till",
+    "feedbackDescription": "Vi värdesätter dina åsikter. Har du förslag på förbättringar eller har du hittat en bugg? Hör gärna av dig på {email}.",
+    "feedbackAction": "Skicka ett e-postmeddelande"
+  },
+  "Support": {
+    "title": "Support",
+    "heading": "Hur kan vi hjälpa till?",
+    "description": "Har du hittat ett tekniskt fel, har problem med att logga in eller saknar du åtkomst till en nyuppsättning? Vi hjälper dig gärna att reda ut det.",
+    "contact": "Kontakta supporten",
+    "contactDescription": "Beskriv ditt problem så tydligt som möjligt. Hör av dig till oss på {email}.",
+    "contactAction": "Skicka ett supportärende"
+  },
+  "CommandPalette": {
+    "title": "Kommandopalett",
+    "description": "Hoppa till en sida eller starta en åtgärd",
+    "open": "Öppna kommandopaletten",
+    "hint": "Hoppa till…",
+    "placeholder": "Hoppa till sida eller åtgärd…",
+    "navigation": "Navigering",
+    "create": "Skapa",
+    "empty": "Inga träffar"
   }
 }

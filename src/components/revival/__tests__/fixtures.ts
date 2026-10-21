@@ -1,0 +1,29 @@
+import type {RevivalDetailFragment} from "@/gql/graphql";
+
+export function revivalDetail(overrides: Partial<RevivalDetailFragment> = {}): RevivalDetailFragment {
+    return {
+        id: "1",
+        year: 2028,
+        workingTitle: "Ali Baba 2028",
+        premiereDate: "2028-02-10",
+        status: "ORGANISING",
+        spex: {id: "1", title: "Ali Baba", available: true},
+        members: [],
+        permissions: {
+            canEditCore: false,
+            canEditDetails: false,
+            allowedStatuses: [],
+            canManageDirecteurs: false,
+            canManageSteeringGroup: false,
+        },
+        showDates: ["2028-02-10"],
+        venues: ["Chalmers kårhus"],
+        version: 3,
+        createdBy: "Sara Admin",
+        createdAt: "2026-10-20T10:00:00Z",
+        lastModifiedBy: null,
+        lastModifiedAt: null,
+        statusHistory: [],
+        ...overrides,
+    } as RevivalDetailFragment;
+}

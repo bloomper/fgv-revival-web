@@ -1,0 +1,156 @@
+"use client";
+
+import * as React from "react";
+import {useEffect, useState, useTransition} from "react";
+import {useRouter} from "next/navigation";
+import {useTranslations} from "next-intl";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Plus} from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {createRevivalAction, searchSpexAction, type SpexOption} from "@/app/(app)/admin/revivals/actions.server";
+import {useActionFeedback} from "@/hooks/use-action-feedback";
+import {type RevivalCreateValues, revivalCreateSchema} from "@/lib/revival/schema";
+import {track} from "@/utils/umami";
+
+function SpexPicker({value, onChange}: { value: SpexOption | null; onChange: (spex: SpexOption | null) => void }) {
+    const t = useTranslations("CreateDialog");
+    const [query, setQuery] = useState("");
+    const [results, setResults] = useState<SpexOption[]>([]);
+    const [unavailable, setUnavailable] = useState(false);
+    const [searched, setSearched] = useState(false);
+
+    useEffect(() => {
+        let cancelled = false;
+        const handle = setTimeout(async () => {
+            const result = await searchSpexAction(query);
+
+            if (cancelled) {
+                return;
+            }
+            if (result.ok) {
+                setUnavailable(false);
+                setResults(result.data);
+            } else {
+                setUnavailable(result.code === "SPEXREGISTER_UNAVAILABLE");
+                setResults([]);
+            }
+            setSearched(true);
+        }, 250);
+
+        return () => {
+            cancelled = true;
+            clearTimeout(handle);
+        };
+    }, [query]);
+
+    if (value) {
+        return (
+            <div className="flex items-center justify-between rounded-md border p-2 text-sm">
+                <span>{t("selected")}: <strong>{value.title}</strong> ({value.year})</span>
+                <Button type="button" variant="ghost" size="sm" onClick={() => onChange(null)}>×</Button>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-2">
+            <Input value={query} onChange={event => setQuery(event.target.value)} placeholder={t("searchSpex")} aria-label={t("searchSpex")}/>
+            {unavailable ? (
+                <p className="text-sm text-destructive" role="alert">{t("spexregisterUnavailable")}</p>
+            ) : searched && results.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t("noResults")}</p>
+            ) : (
+                <ul className="max-h-48 overflow-y-auto rounded-md border" role="listbox" aria-label={t("searchSpex")}>
+                    {results.map(spex => (
+                        <li key={spex.id}>
+                            <button
+                                type="button"
+                                role="option"
+                                aria-selected={false}
+                                className="w-full px-3 py-2 text-left text-sm hover:bg-accent"
+                                onClick={() => onChange(spex)}
+                            >
+                                {spex.title} <span className="text-muted-foreground">({spex.year})</span>
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+}
+
+/**
+ * Records a new revival in PROPOSED: the spex from Spexregister, year and working title (FR-006).
+ */
+export function RevivalCreateDialog({defaultOpen = false}: { defaultOpen?: boolean }) {
+    const t = useTranslations();
+    const router = useRouter();
+    const feedback = useActionFeedback();
+    const [open, setOpen] = useState(defaultOpen);
+    const [spex, setSpex] = useState<SpexOption | null>(null);
+    const [pending, startTransition] = useTransition();
+    const form = useForm<RevivalCreateValues>({
+        resolver: zodResolver(revivalCreateSchema),
+        defaultValues: {spexId: "", year: new Date().getFullYear() + 1, workingTitle: ""},
+    });
+    const {errors} = form.formState;
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger render={<Button/>}>
+                <Plus/>
+                {t("Admin.create")}
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{t("CreateDialog.title")}</DialogTitle>
+                    <DialogDescription>{t("CreateDialog.description")}</DialogDescription>
+                </DialogHeader>
+                <form
+                    className="space-y-4"
+                    onSubmit={form.handleSubmit(values => startTransition(async () => {
+                        const result = await createRevivalAction(values);
+
+                        if (feedback(result, t("CreateDialog.created"))) {
+                            track("revival-create");
+                            setOpen(false);
+                            setSpex(null);
+                            form.reset();
+                            router.push(`/revivals/${result.data.id}`);
+                        }
+                    }))}
+                >
+                    <div className="space-y-2">
+                        <Label>{t("Revival.spex")}</Label>
+                        <SpexPicker value={spex} onChange={(picked) => {
+                            setSpex(picked);
+                            form.setValue("spexId", picked?.id ?? "", {shouldValidate: !!picked});
+                            if (picked?.title && !form.getValues("workingTitle")) {
+                                form.setValue("workingTitle", `${picked.title} ${form.getValues("year")}`);
+                            }
+                        }}/>
+                        {errors.spexId && <p className="text-sm text-destructive">{t(`Validation.${errors.spexId.message}`)}</p>}
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="revival-year">{t("Revival.year")}</Label>
+                        <Input id="revival-year" type="number" {...form.register("year")}/>
+                        {errors.year && <p className="text-sm text-destructive">{t(`Validation.${errors.year.message}`)}</p>}
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="revival-working-title">{t("Revival.workingTitle")}</Label>
+                        <Input id="revival-working-title" {...form.register("workingTitle")}/>
+                        {errors.workingTitle && <p className="text-sm text-destructive">{t(`Validation.${errors.workingTitle.message}`)}</p>}
+                    </div>
+                    <DialogFooter>
+                        <Button type="submit" disabled={pending}>{t("CreateDialog.submit")}</Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+}
