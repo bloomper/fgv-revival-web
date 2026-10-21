@@ -102,4 +102,21 @@ describe("CommandPalette", () => {
         expect(screen.queryByText("Nav.allRevivals")).not.toBeInTheDocument();
         expect(screen.queryByText("Admin.create")).not.toBeInTheDocument();
     });
+
+    it("offers the guide to every user and managing it to super admins only", async () => {
+        const {unmount} = render(<CommandPalette/>);
+        const user = await openPalette();
+
+        await user.click(await screen.findByText("Nav.adminGuide"));
+        expect(push).toHaveBeenCalledWith("/admin/guide");
+        unmount();
+
+        roles = ["USER"];
+        render(<CommandPalette/>);
+        const plain = await openPalette();
+
+        expect(screen.queryByText("Nav.adminGuide")).not.toBeInTheDocument();
+        await plain.click(await screen.findByText("Nav.guide"));
+        expect(push).toHaveBeenCalledWith("/guide");
+    });
 });

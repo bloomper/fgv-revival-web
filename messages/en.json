@@ -32,7 +32,9 @@
   },
   "Nav": {
     "myRevivals": "My revivals",
-    "allRevivals": "All revivals"
+    "allRevivals": "All revivals",
+    "guide": "The guide",
+    "adminGuide": "Manage the guide"
   },
   "Home": {
     "title": "Nyuppsättning",
@@ -108,7 +110,9 @@
     "created": "Created by {name}",
     "details": "Details",
     "editDetails": "Edit details",
-    "open": "Open"
+    "open": "Open",
+    "guide": "The guide",
+    "guideVersion": "The guide {label}"
   },
   "Admin": {
     "title": "All revivals",
@@ -172,7 +176,18 @@
     "dateInvalid": "Enter a valid date.",
     "venueBlank": "A venue must not be empty.",
     "venuesTooMany": "At most 20 venues.",
-    "emailInvalid": "Enter a valid email address."
+    "emailInvalid": "Enter a valid email address.",
+    "labelRequired": "Enter a version label, e.g. v6.",
+    "labelTooLong": "At most 32 characters.",
+    "noteTooLong": "At most 2,000 characters.",
+    "guideTextRequired": "The text cannot be empty.",
+    "guideTextTooLong": "At most 5,000 characters.",
+    "guideTitleRequired": "The title cannot be empty.",
+    "guideTitleTooLong": "At most 255 characters.",
+    "guideIntroductionTooLong": "At most 20,000 characters.",
+    "reasonRequired": "Say why.",
+    "reasonTooLong": "At most 2,000 characters.",
+    "suggestionContentRequired": "Suggest a new text or a new type."
   },
   "About": {
     "title": "About",
@@ -200,5 +215,200 @@
     "navigation": "Navigation",
     "create": "Create",
     "empty": "No matches"
+  },
+  "Guide": {
+    "title": "The guide",
+    "type": {
+      "TIP": "Tip",
+      "REQUIREMENT": "Requirement",
+      "QUESTION": "To find out",
+      "TEXT": "Text"
+    },
+    "notTranslated": "Not translated",
+    "notPublished": "The guide has not been published yet.",
+    "admin": {
+      "title": "Manage the guide",
+      "draft": "Draft",
+      "basedOn": "Copy of {label}",
+      "fromImport": "Imported from Word",
+      "empty": "Empty draft",
+      "untranslated": "{count, plural, =0 {everything is translated} one {# text has no English} other {# texts have no English}}",
+      "edit": "Edit the draft",
+      "noDraft": "There is no draft.",
+      "versions": "Published versions",
+      "startDraft": "Start a draft",
+      "draftStarted": "The draft has been started"
+    },
+    "import": {
+      "open": "Import from Word",
+      "title": "Import the guide from Word",
+      "description": "The document becomes a draft that you review before publishing it. This is only possible before the guide is first published.",
+      "file": "Word document (.docx, at most 10 MB)",
+      "submit": "Import",
+      "done": "The draft has been imported",
+      "tooLarge": "The file is too large. At most 10 MB.",
+      "reportOf": "Import report for {fileName}",
+      "chapter": "Chapter",
+      "total": "Total",
+      "counts": {
+        "sections": "Sections",
+        "tips": "Tips",
+        "requirements": "Requirements",
+        "questions": "Questions",
+        "texts": "Texts"
+      },
+      "warnings": "To review",
+      "noWarnings": "Nothing to review.",
+      "warning": {
+        "IMAGE": "A picture was not imported.",
+        "TABLE": "A table was not imported.",
+        "UNKNOWN_LABEL": "“{detail}” is not a known label, so the items under it became text."
+      },
+      "where": "(chapter {phase}, {section})",
+      "beforeChapterA": "(before chapter A)"
+    },
+    "publish": {
+      "open": "Publish",
+      "title": "Publish the draft",
+      "description": "A published version can never be changed. Revivals without a version are pinned to it.",
+      "label": "Version label",
+      "note": "Note (optional)",
+      "submit": "Publish",
+      "done": "The version has been published"
+    },
+    "discard": {
+      "open": "Discard the draft",
+      "title": "Discard the draft?",
+      "description": "The draft and every change in it are removed. Published versions are not affected.",
+      "reopens": "{count, plural, one {# accepted suggestion reopens.} other {# accepted suggestions reopen.}}",
+      "confirm": "Discard",
+      "done": "The draft has been discarded"
+    },
+    "draft": "draft",
+    "versions": "Versions",
+    "chapters": "Chapters",
+    "introduction": "Introduction",
+    "refused": "The guide is shown to the steering groups and directeurs of running revivals, and to FGV/JK.",
+    "search": {
+      "placeholder": "Search the guide",
+      "results": "Search results",
+      "noHits": "No matches."
+    },
+    "editor": {
+      "saved": "Saved",
+      "swedish": "Swedish",
+      "english": "English (optional)",
+      "type": "Type",
+      "write": "Write",
+      "preview": "Preview",
+      "markdownHelp": "Markdown: **bold**, *italics*, [link text](https://…) and lists with -.",
+      "editIntroduction": "Edit the introduction",
+      "noEnglish": "No English",
+      "editItem": "Edit the item",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "moveTo": "Move to…",
+      "removeItem": "Remove the item",
+      "addItem": "Add item",
+      "renameChapter": "Rename the chapter",
+      "addSection": "Add section",
+      "renameSection": "Rename the section",
+      "moveSectionTo": "Move the section to…",
+      "removeSection": "Remove the section"
+    },
+    "changes": {
+      "title": "Changes from {from} to {to}",
+      "draft": "the draft",
+      "none": "No changes.",
+      "introduction": "The introduction has changed",
+      "chapter": "Chapter {phase}",
+      "section": "Section",
+      "renamed": "Renamed",
+      "kind": {
+        "ADDED": "New",
+        "REMOVED": "Removed",
+        "CHANGED": "Changed"
+      },
+      "reworded": "New text ({language})",
+      "retyped": "New type",
+      "moved": "Moved",
+      "reordered": "Reordered"
+    },
+    "version": {
+      "change": "Change version",
+      "changeTitle": "Change the guide version",
+      "changeDescription": "The revival now follows {label}. See what changes before you switch.",
+      "target": "New version",
+      "choose": "Choose a version",
+      "confirm": "Change version",
+      "changed": "The revival follows the new version",
+      "newer": "There is a newer version of the guide, {label}.",
+      "whatChanged": "See what changed",
+      "history": "Version history",
+      "historyEntry": "{at}: {name} changed from {from} to {to}"
+    },
+    "pdf": {
+      "download": "Download PDF",
+      "sv": "In Swedish",
+      "en": "In English"
+    },
+    "suggest": {
+      "title": {
+        "CHANGE": "Suggest a change",
+        "REMOVE": "Suggest removing the item",
+        "ADD": "Suggest a new item"
+      },
+      "description": "Your suggestion goes to FGV/JK, who decide whether it goes into the next version of the guide.",
+      "change": "Suggest a change",
+      "remove": "Suggest removal",
+      "add": "Suggest a new item",
+      "reason": "Why?",
+      "reasonOptional": "Why? (optional)",
+      "submit": "Send the suggestion",
+      "done": "The suggestion has been sent"
+    },
+    "suggestions": {
+      "title": "Suggestions",
+      "revivalTitle": "Suggestions from {revival}",
+      "back": "Manage the guide",
+      "backToGuide": "Back to the guide",
+      "filter": "Filter",
+      "none": "No suggestions.",
+      "status": {
+        "OPEN": "Open",
+        "ACCEPTED": "Accepted",
+        "REJECTED": "Rejected",
+        "WITHDRAWN": "Withdrawn"
+      },
+      "kind": {
+        "CHANGE": "Change",
+        "REMOVE": "Removal",
+        "ADD": "New item"
+      },
+      "where": "chapter {phase}, {version}",
+      "now": "Now",
+      "proposed": "Suggested",
+      "reason": "Why",
+      "decision": "Decided by {name}",
+      "publishedIn": "Published in {label}",
+      "reopened": "The draft this was accepted into was discarded, so the suggestion is open again.",
+      "withdraw": "Withdraw",
+      "withdrawn": "The suggestion has been withdrawn",
+      "accept": "Accept",
+      "acceptTitle": "Accept the suggestion",
+      "accepted": "The suggestion is accepted and in the draft",
+      "note": "Note (optional)",
+      "conflict": "The item has changed in the draft since the suggestion was made. Choose what the draft gets.",
+      "inDraft": "In the draft now",
+      "goneFromDraft": "The item is no longer in the draft.",
+      "removal": "Remove the item.",
+      "keep": "Keep the item",
+      "removeAnyway": "Remove it anyway",
+      "draftGets": "The draft gets",
+      "reject": "Reject",
+      "rejectTitle": "Reject the suggestion",
+      "rejectReason": "Reason (optional, shown to the author)",
+      "rejected": "The suggestion has been rejected"
+    }
   }
 }

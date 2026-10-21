@@ -1,4 +1,7 @@
+import Link from "next/link";
 import {notFound} from "next/navigation";
+import {BookOpen} from "lucide-react";
+import {Button} from "@/components/ui/button";
 import {getTranslations} from "next-intl/server";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {StatusBadge} from "@/components/revival/status-badge";
@@ -52,6 +55,13 @@ export default async function RevivalPage({params}: { params: Promise<{ id: stri
                 </div>
 
                 <RevivalDetails key={revival.version} revival={revival}/>
+
+                <div>
+                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/guide`}/>}>
+                        <BookOpen/>
+                        {revival.guideVersion ? t("guideVersion", {label: revival.guideVersion.label ?? ""}) : t("guide")}
+                    </Button>
+                </div>
 
                 <div className="grid gap-6 lg:grid-cols-2">
                     <Card>

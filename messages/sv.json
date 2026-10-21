@@ -32,7 +32,9 @@
   },
   "Nav": {
     "myRevivals": "Mina nyuppsättningar",
-    "allRevivals": "Alla nyuppsättningar"
+    "allRevivals": "Alla nyuppsättningar",
+    "guide": "Guiden",
+    "adminGuide": "Hantera guiden"
   },
   "Home": {
     "title": "Nyuppsättning",
@@ -108,7 +110,9 @@
     "created": "Skapad av {name}",
     "details": "Uppgifter",
     "editDetails": "Redigera uppgifter",
-    "open": "Öppna"
+    "open": "Öppna",
+    "guide": "Guiden",
+    "guideVersion": "Guiden {label}"
   },
   "Admin": {
     "title": "Alla nyuppsättningar",
@@ -172,7 +176,18 @@
     "dateInvalid": "Ange ett giltigt datum.",
     "venueBlank": "En spelplats får inte vara tom.",
     "venuesTooMany": "Högst 20 spelplatser.",
-    "emailInvalid": "Ange en giltig e-postadress."
+    "emailInvalid": "Ange en giltig e-postadress.",
+    "labelRequired": "Ange en versionsbeteckning, t.ex. v6.",
+    "labelTooLong": "Högst 32 tecken.",
+    "noteTooLong": "Högst 2 000 tecken.",
+    "guideTextRequired": "Texten får inte vara tom.",
+    "guideTextTooLong": "Högst 5 000 tecken.",
+    "guideTitleRequired": "Rubriken får inte vara tom.",
+    "guideTitleTooLong": "Högst 255 tecken.",
+    "guideIntroductionTooLong": "Högst 20 000 tecken.",
+    "reasonRequired": "Ange varför.",
+    "reasonTooLong": "Högst 2 000 tecken.",
+    "suggestionContentRequired": "Föreslå en ny text eller en ny typ."
   },
   "About": {
     "title": "Om",
@@ -200,5 +215,200 @@
     "navigation": "Navigering",
     "create": "Skapa",
     "empty": "Inga träffar"
+  },
+  "Guide": {
+    "title": "Guiden",
+    "type": {
+      "TIP": "Praktiska tips",
+      "REQUIREMENT": "Krav",
+      "QUESTION": "Att ta reda på",
+      "TEXT": "Text"
+    },
+    "notTranslated": "Ej översatt",
+    "notPublished": "Guiden är inte publicerad än.",
+    "admin": {
+      "title": "Hantera guiden",
+      "draft": "Utkast",
+      "basedOn": "Kopia av {label}",
+      "fromImport": "Importerat från Word",
+      "empty": "Tomt utkast",
+      "untranslated": "{count, plural, =0 {allt är översatt} one {# text saknar engelska} other {# texter saknar engelska}}",
+      "edit": "Redigera utkastet",
+      "noDraft": "Det finns inget utkast.",
+      "versions": "Publicerade versioner",
+      "startDraft": "Starta ett utkast",
+      "draftStarted": "Utkastet är startat"
+    },
+    "import": {
+      "open": "Importera från Word",
+      "title": "Importera guiden från Word",
+      "description": "Dokumentet blir ett utkast som du granskar innan du publicerar det. Det går bara innan guiden har publicerats första gången.",
+      "file": "Word-dokument (.docx, högst 10 MB)",
+      "submit": "Importera",
+      "done": "Utkastet är importerat",
+      "tooLarge": "Filen är för stor. Högst 10 MB.",
+      "reportOf": "Importrapport för {fileName}",
+      "chapter": "Kapitel",
+      "total": "Totalt",
+      "counts": {
+        "sections": "Avsnitt",
+        "tips": "Tips",
+        "requirements": "Krav",
+        "questions": "Frågor",
+        "texts": "Texter"
+      },
+      "warnings": "Att granska",
+      "noWarnings": "Inget att granska.",
+      "warning": {
+        "IMAGE": "En bild importerades inte.",
+        "TABLE": "En tabell importerades inte.",
+        "UNKNOWN_LABEL": "”{detail}” är ingen känd rubrik, så punkterna under den blev text."
+      },
+      "where": "(kapitel {phase}, {section})",
+      "beforeChapterA": "(före kapitel A)"
+    },
+    "publish": {
+      "open": "Publicera",
+      "title": "Publicera utkastet",
+      "description": "En publicerad version kan aldrig ändras. Nyuppsättningar utan version knyts till den.",
+      "label": "Versionsbeteckning",
+      "note": "Anteckning (frivillig)",
+      "submit": "Publicera",
+      "done": "Versionen är publicerad"
+    },
+    "discard": {
+      "open": "Kasta utkastet",
+      "title": "Kasta utkastet?",
+      "description": "Utkastet och alla ändringar i det tas bort. Publicerade versioner påverkas inte.",
+      "reopens": "{count, plural, one {# godtaget förslag öppnas igen.} other {# godtagna förslag öppnas igen.}}",
+      "confirm": "Kasta",
+      "done": "Utkastet är kastat"
+    },
+    "draft": "utkast",
+    "versions": "Versioner",
+    "chapters": "Kapitel",
+    "introduction": "Inledning",
+    "refused": "Guiden visas för styrgrupper och directeurer i pågående nyuppsättningar, och för FGV/JK.",
+    "search": {
+      "placeholder": "Sök i guiden",
+      "results": "Sökträffar",
+      "noHits": "Inga träffar."
+    },
+    "editor": {
+      "saved": "Sparat",
+      "swedish": "Svenska",
+      "english": "Engelska (frivilligt)",
+      "type": "Typ",
+      "write": "Skriv",
+      "preview": "Förhandsvisa",
+      "markdownHelp": "Markdown: **fetstil**, *kursiv*, [länktext](https://…) och listor med -.",
+      "editIntroduction": "Redigera inledningen",
+      "noEnglish": "Saknar engelska",
+      "editItem": "Redigera punkten",
+      "moveUp": "Flytta upp",
+      "moveDown": "Flytta ner",
+      "moveTo": "Flytta till…",
+      "removeItem": "Ta bort punkten",
+      "addItem": "Lägg till punkt",
+      "renameChapter": "Byt namn på kapitlet",
+      "addSection": "Lägg till avsnitt",
+      "renameSection": "Byt namn på avsnittet",
+      "moveSectionTo": "Flytta avsnittet till…",
+      "removeSection": "Ta bort avsnittet"
+    },
+    "changes": {
+      "title": "Ändringar från {from} till {to}",
+      "draft": "utkastet",
+      "none": "Inga ändringar.",
+      "introduction": "Inledningen är ändrad",
+      "chapter": "Kapitel {phase}",
+      "section": "Avsnitt",
+      "renamed": "Nytt namn",
+      "kind": {
+        "ADDED": "Ny",
+        "REMOVED": "Borttagen",
+        "CHANGED": "Ändrad"
+      },
+      "reworded": "Ny text ({language})",
+      "retyped": "Ny typ",
+      "moved": "Flyttad",
+      "reordered": "Ny ordning"
+    },
+    "version": {
+      "change": "Byt version",
+      "changeTitle": "Byt guideversion",
+      "changeDescription": "Nyuppsättningen följer nu {label}. Se vad som ändras innan du byter.",
+      "target": "Ny version",
+      "choose": "Välj version",
+      "confirm": "Byt version",
+      "changed": "Nyuppsättningen följer den nya versionen",
+      "newer": "Det finns en nyare version av guiden, {label}.",
+      "whatChanged": "Se vad som ändrats",
+      "history": "Versionshistorik",
+      "historyEntry": "{at}: {name} bytte från {from} till {to}"
+    },
+    "pdf": {
+      "download": "Ladda ner PDF",
+      "sv": "På svenska",
+      "en": "På engelska"
+    },
+    "suggest": {
+      "title": {
+        "CHANGE": "Föreslå en ändring",
+        "REMOVE": "Föreslå att punkten tas bort",
+        "ADD": "Föreslå en ny punkt"
+      },
+      "description": "Ditt förslag skickas till FGV/JK, som bestämmer om det kommer med i nästa version av guiden.",
+      "change": "Föreslå en ändring",
+      "remove": "Föreslå borttagning",
+      "add": "Föreslå ny punkt",
+      "reason": "Varför?",
+      "reasonOptional": "Varför? (frivilligt)",
+      "submit": "Skicka förslaget",
+      "done": "Förslaget är skickat"
+    },
+    "suggestions": {
+      "title": "Förslag",
+      "revivalTitle": "Förslag från {revival}",
+      "back": "Hantera guiden",
+      "backToGuide": "Tillbaka till guiden",
+      "filter": "Filtrera",
+      "none": "Inga förslag.",
+      "status": {
+        "OPEN": "Öppna",
+        "ACCEPTED": "Godtagna",
+        "REJECTED": "Avslagna",
+        "WITHDRAWN": "Återkallade"
+      },
+      "kind": {
+        "CHANGE": "Ändring",
+        "REMOVE": "Borttagning",
+        "ADD": "Ny punkt"
+      },
+      "where": "kapitel {phase}, {version}",
+      "now": "Nu",
+      "proposed": "Förslag",
+      "reason": "Varför",
+      "decision": "Beslut av {name}",
+      "publishedIn": "Publicerat i {label}",
+      "reopened": "Utkastet förslaget godtogs i kastades, så förslaget är öppet igen.",
+      "withdraw": "Återkalla",
+      "withdrawn": "Förslaget är återkallat",
+      "accept": "Godta",
+      "acceptTitle": "Godta förslaget",
+      "accepted": "Förslaget är godtaget och finns i utkastet",
+      "note": "Anteckning (frivillig)",
+      "conflict": "Punkten har ändrats i utkastet sedan förslaget gjordes. Välj vad utkastet ska få.",
+      "inDraft": "I utkastet nu",
+      "goneFromDraft": "Punkten finns inte längre i utkastet.",
+      "removal": "Ta bort punkten.",
+      "keep": "Behåll punkten",
+      "removeAnyway": "Ta bort ändå",
+      "draftGets": "Utkastet får",
+      "reject": "Avslå",
+      "rejectTitle": "Avslå förslaget",
+      "rejectReason": "Motivering (frivillig, visas för den som föreslog)",
+      "rejected": "Förslaget är avslaget"
+    }
   }
 }

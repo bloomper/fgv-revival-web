@@ -25,6 +25,9 @@ export const test = base.extend<{ resetBackend: void; loginAs: (persona: Persona
             spexregister: async (up: boolean) => {
                 await request.post(`${MOCK_URL}/__spexregister`, {data: {up}});
             },
+            guide: async (seed: "none" | "published" | "two" | "draft") => {
+                await request.post(`${MOCK_URL}/__guide`, {data: {seed}});
+            },
         });
     },
 });
@@ -32,6 +35,8 @@ export const test = base.extend<{ resetBackend: void; loginAs: (persona: Persona
 type Mock = {
     setStatus: (id: string, status: string) => Promise<void>;
     spexregister: (up: boolean) => Promise<void>;
+    /** Resets the backend with no guide, or v1 (with "two" also a newer v2, with "draft" also a draft with id 10) published and every revival pinned to v1. */
+    guide: (seed: "none" | "published" | "two" | "draft") => Promise<void>;
 };
 
 export async function openRevival(page: Page, title: string) {

@@ -15,6 +15,11 @@ Playwright against a mock backend.
 What a user may do with a revival comes from the server's `Revival.permissions`; the web never computes it. Global
 roles (`USER`, `SUPER_ADMIN`, `OBSERVER` on `fgv-revival`) only decide which pages to show.
 
+The guide is read at `/guide` and per revival at `/revivals/[id]/guide`, with search, the changes between versions
+(`/guide/changes`), suggestions and a PDF download (`/api/guide-pdf`, which adds the user's token on the server). Super
+admins import, edit and publish it under `/admin/guide`. The Word import is sent through a server action, so
+`next.config.ts` allows server action bodies of 11 MB.
+
 ## Running locally
 
 The committed `.env` holds `SUPPORT_EMAIL`, `FEEDBACK_EMAIL`, `SUPPORTED_LOCALES` and `DEFAULT_LOCALE`. Create

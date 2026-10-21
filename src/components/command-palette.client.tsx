@@ -4,7 +4,7 @@ import * as React from "react";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
-import {Command as CommandIcon, Drama, House, ListChecks, type LucideIcon, Plus, Wrench} from "lucide-react";
+import {BookOpen, BookOpenCheck, Command as CommandIcon, Drama, House, ListChecks, type LucideIcon, Plus, Wrench} from "lucide-react";
 
 import {Command, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {Dialog, DialogContent, DialogDescription, DialogTitle} from "@/components/ui/dialog";
@@ -49,6 +49,12 @@ export function CommandPalette() {
 
         if (canReadAllRevivals(roles)) {
             navigationEntries.push({id: "all-revivals", label: t("Nav.allRevivals"), href: "/admin/revivals", icon: ListChecks});
+        }
+
+        navigationEntries.push({id: "guide", label: t("Nav.guide"), href: "/guide", icon: BookOpen});
+
+        if (isSuperAdmin(roles)) {
+            navigationEntries.push({id: "admin-guide", label: t("Nav.adminGuide"), href: "/admin/guide", icon: BookOpenCheck});
         }
 
         navigationEntries.push(

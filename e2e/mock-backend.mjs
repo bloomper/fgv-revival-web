@@ -4,6 +4,7 @@
 import {createServer} from "node:http";
 import {randomUUID} from "node:crypto";
 import {exportJWK, generateKeyPair, SignJWT} from "jose";
+import {createGuideState, guideResolvers, handleGuideImport, handleGuidePdf} from "./mock-guide.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 4101);
 const ISSUER = `http://localhost:${PORT}/realms/fgv`;
@@ -35,14 +36,15 @@ const SPEX = [
 let state;
 let currentPersona = "superadmin";
 
-function resetState() {
+function resetState(guideSeed = "none") {
     state = {
         spexregisterUp: true,
+        guide: createGuideState(guideSeed),
         nextId: 100,
         revivals: [
-            {id: "1", spexId: "1", year: 2028, workingTitle: "Ali Baba 2028", premiereDate: null, showDates: [], venues: [], status: "APPROVED", version: 0, history: []},
-            {id: "2", spexId: "2", year: 2030, workingTitle: "Nobel 2030", premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: []},
-            {id: "3", spexId: "3", year: 2027, workingTitle: "Snorre 2027", premiereDate: "2027-03-01", showDates: ["2027-03-01"], venues: ["Kårhuset"], status: "OPEN", version: 0, history: []},
+            {id: "1", spexId: "1", year: 2028, workingTitle: "Ali Baba 2028", premiereDate: null, showDates: [], venues: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
+            {id: "2", spexId: "2", year: 2030, workingTitle: "Nobel 2030", premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: [], guideVersionId: null},
+            {id: "3", spexId: "3", year: 2027, workingTitle: "Snorre 2027", premiereDate: "2027-03-01", showDates: ["2027-03-01"], venues: ["Kårhuset"], status: "OPEN", version: 0, history: [], guideVersionId: null},
         ],
         members: [
             {id: "m1", revivalId: "1", role: "DIRECTEUR", capabilities: [], email: "dana@example.org", sub: "p-directeur", version: 0},
@@ -52,6 +54,15 @@ function resetState() {
 }
 
 resetState();
+
+function seedGuide(seed) {
+    resetState(seed);
+    if (seed === "published" || seed === "two" || seed === "draft") {
+        state.revivals.forEach(revival => {
+            revival.guideVersionId = "1";
+        });
+    }
+}
 
 // --- Rules, as in the server's AccessPolicy ----------------------------------------------------------------------
 
@@ -139,6 +150,10 @@ function toRevival(persona, revival) {
             email: showEmails ? member.email : null,
             version: member.version,
         })),
+        guideVersion: (() => {
+            const pinned = state.guide.versions.find(version => version.id === revival.guideVersionId);
+            return pinned ? {__typename: "GuideVersionSummary", id: pinned.id, label: pinned.label, publishedAt: pinned.publishedAt} : null;
+        })(),
         statusHistory: [...revival.history].reverse().map(change => ({__typename: "RevivalStatusChange", ...change})),
         permissions: permissions(persona, revival),
     };
@@ -202,6 +217,7 @@ const resolvers = {
         const revival = {
             id: String(state.nextId++), spexId: String(input.spexId), year: Number(input.year), workingTitle: input.workingTitle.trim(),
             premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: [],
+            guideVersionId: state.guide.versions.filter(version => version.status === "PUBLISHED").sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0]?.id ?? null,
         };
         state.revivals.push(revival);
         return {revivalCreate: toRevival(persona, revival)};
@@ -276,6 +292,10 @@ const resolvers = {
         return {revivalMemberRemove: null};
     },
 };
+
+Object.assign(resolvers, guideResolvers({
+    state: () => state, GraphQLError, forbidden, isSuperAdmin, seesEverything, roleIn, canSee, visibleRevival, nameOf: sub => bySub[sub]?.name ?? null,
+}));
 
 function operationNameOf(query) {
     const match = /\b(query|mutation)\s+([A-Za-z0-9_]+)/.exec(query);
@@ -417,6 +437,19 @@ const server = createServer((req, res) => {
             resetState();
             currentPersona = "superadmin";
             res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__suggest") {
+            const input = JSON.parse(body);
+            const version = state.guide.versions.find(candidate => candidate.status === "PUBLISHED");
+            const tip = version.chapters.flatMap(chapter => chapter.sections.flatMap(section => section.items)).find(entry => entry.type === "TIP");
+            resolvers.GuideSuggestionCreate(PERSONAS.styrgrupp, {input: {...input, versionId: version.id, itemKey: input.kind === "ADD" ? null : tip.key}});
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__guide") {
+            seedGuide(JSON.parse(body).seed);
+            res.writeHead(204).end();
+        } else if (req.method === "GET" && path.endsWith("/pdf") && path.startsWith("/api/")) {
+            handleGuidePdf({state: () => state, isSuperAdmin, seesEverything, roleIn, canSee}, personaOf(req), path, url, res);
+        } else if (req.method === "POST" && path === "/api/guide/import") {
+            handleGuideImport({state: () => state, isSuperAdmin}, personaOf(req), body, res);
         } else if (req.method === "POST" && path === "/__persona") {
             currentPersona = JSON.parse(body).persona;
             res.writeHead(204).end();

@@ -36,6 +36,7 @@ export const RevivalDetail = graphql(`
         lastModifiedAt
         members { id role capabilities state displayName email version }
         statusHistory { from to changedBy changedAt }
+        guideVersion { id label }
     }
 `);
 

@@ -24,6 +24,7 @@ export function revivalDetail(overrides: Partial<RevivalDetailFragment> = {}): R
         lastModifiedBy: null,
         lastModifiedAt: null,
         statusHistory: [],
+        guideVersion: null,
         ...overrides,
     } as RevivalDetailFragment;
 }

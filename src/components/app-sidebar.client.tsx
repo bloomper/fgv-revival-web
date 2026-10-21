@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import {useMemo} from "react";
-import {Drama, House, ListChecks, type LucideIcon, Wrench} from "lucide-react";
+import {BookOpen, BookOpenCheck, Drama, House, ListChecks, type LucideIcon, Wrench} from "lucide-react";
 
 import {NavMain} from "@/components/nav-main.client";
 import {NavSecondary} from "@/components/nav-secondary.client";
@@ -20,7 +20,7 @@ import {
 import {Logo} from "@/components/logo";
 import {LogoText} from "@/components/logo-text";
 import {Role} from "@/types/auth";
-import {canReadAllRevivals} from "@/utils/auth";
+import {canReadAllRevivals, isSuperAdmin} from "@/utils/auth";
 import {usePathname} from "next/navigation";
 import {useTranslations} from "next-intl";
 import {useIsClient} from "@/hooks/use-is-client.client";
@@ -70,6 +70,23 @@ export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
                 url: "/admin/revivals",
                 icon: ListChecks,
                 isActive: pathname.startsWith("/admin/revivals"),
+            });
+        }
+
+        // The server decides who reads the guide (FR-001–FR-004); the link is shown to everyone with access
+        mainItems.push({
+            title: t("Nav.guide"),
+            url: "/guide",
+            icon: BookOpen,
+            isActive: pathname.startsWith("/guide"),
+        });
+
+        if (isSuperAdmin(roles)) {
+            mainItems.push({
+                title: t("Nav.adminGuide"),
+                url: "/admin/guide",
+                icon: BookOpenCheck,
+                isActive: pathname.startsWith("/admin/guide"),
             });
         }
 
