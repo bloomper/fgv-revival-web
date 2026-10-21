@@ -26,7 +26,7 @@ const VISIBLE = {
     DIRECTEUR: ["APPROVED", "ORGANISING", "OPEN", "CLOSING", "SETTLING"],
     STEERING_GROUP: ["ORGANISING", "OPEN", "CLOSING"],
 };
-const SPEXES = [
+const SPEX = [
     {id: "1", title: "Ali Baba", year: 1956},
     {id: "2", title: "Nobel", year: 1988},
     {id: "3", title: "Snorre", year: 1974},
@@ -106,7 +106,7 @@ function visibleRevival(persona, id) {
 }
 
 function toRevival(persona, revival) {
-    const spex = SPEXES.find(candidate => candidate.id === revival.spexId);
+    const spex = SPEX.find(candidate => candidate.id === revival.spexId);
     const showEmails = isSuperAdmin(persona) || isVisibleDirecteur(persona, revival);
 
     return {
@@ -190,7 +190,7 @@ const resolvers = {
             throw new GraphQLError("SPEXREGISTER_UNAVAILABLE", "Spexregistret är inte tillgängligt just nu.");
         }
         const needle = (query ?? "").toLowerCase();
-        return {spexSearch: SPEXES.filter(spex => spex.title.toLowerCase().includes(needle)).map(spex => ({__typename: "Spex", ...spex, available: true}))};
+        return {spexSearch: SPEX.filter(spex => spex.title.toLowerCase().includes(needle)).map(spex => ({__typename: "Spex", ...spex, available: true}))};
     },
     RevivalCreate(persona, {input}) {
         if (!isSuperAdmin(persona)) {

@@ -12,7 +12,7 @@ vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn(), push: vi
 vi.mock("sonner", () => ({toast: {success: vi.fn(), error: vi.fn()}}));
 
 describe("RevivalCreateDialog", () => {
-    it("lists spexes from Spexregister", async () => {
+    it("lists spex from Spexregister", async () => {
         vi.mocked(searchSpexAction).mockResolvedValue({ok: true, data: [{id: "1", title: "Ali Baba", year: 1956}]});
         render(<RevivalCreateDialog/>);
 

@@ -14,9 +14,9 @@ export type SpexOption = { id: string; title: string | null; year: number | null
 
 export async function searchSpexAction(query: string): Promise<ActionResult<SpexOption[]>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
-        const spexes = await searchSpex(query);
+        const found = await searchSpex(query);
 
-        return spexes.map(spex => ({id: spex.id, title: spex.title ?? null, year: spex.year ?? null}));
+        return found.map(spex => ({id: spex.id, title: spex.title ?? null, year: spex.year ?? null}));
     }));
 }
 
