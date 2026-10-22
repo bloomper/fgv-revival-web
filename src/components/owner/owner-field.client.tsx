@@ -14,13 +14,15 @@ const NAME_MAX_LENGTH = 100;
 
 /**
  * Picks an owner: an active directeur or steering group member, or someone outside the steering group by name, or
- * nobody (M3 FR-009). Produces the server's `OwnerInput`.
+ * nobody (M3 FR-009). Produces the server's `OwnerInput`. A current owner who has left the steering group stays a choice,
+ * so the row keeps them until someone picks another owner.
  */
-export function OwnerField({members, value, onChange, disabled}: {
+export function OwnerField({members, value, onChange, disabled, current}: {
     members: OwnerMember[];
     value: OwnerFieldValue;
     onChange: (value: OwnerFieldValue) => void;
     disabled?: boolean;
+    current?: OwnerMember | null;
 }) {
     const t = useTranslations("Owner");
     const id = useId();
@@ -49,6 +51,9 @@ export function OwnerField({members, value, onChange, disabled}: {
                 }}
             >
                 <option value={NONE}>{t("none")}</option>
+                {current && !members.some(member => member.id === current.id) && (
+                    <option value={current.id}>{current.displayName ?? current.id} ({t("formerMember")})</option>
+                )}
                 {members.map(member => <option key={member.id} value={member.id}>{member.displayName ?? member.id}</option>)}
                 <option value={OTHER}>{t("someoneElse")}</option>
             </select>

@@ -538,7 +538,9 @@
         "OWNER_TRUNCATED": "Namnet på den ansvarige är kapat"
       },
       "cancel": "Avbryt",
-      "noFile": "Välj en Excel-fil (.xlsx) som inte är tom."
+      "noFile": "Välj en Excel-fil (.xlsx) som inte är tom.",
+      "logNotEmpty": "Excel-importen är bara till för att starta loggen. Loggen har redan rader, så det går inte att importera längre.",
+      "alreadyImported": "Loggen importerades redan från {fileName} ({count} rader). En Excel-logg kan bara importeras en gång, till en tom logg."
     }
   },
   "Meeting": {
@@ -602,7 +604,7 @@
     "waitingLeftOut": "{count, plural, one {# medlem väntar på åtkomst och fick inget} other {# medlemmar väntar på åtkomst och fick inget}}",
     "emailFailed": "De här fick inte protokollet:",
     "emails": "Utskick",
-    "emailEntry": "{at} av {name} till {count} personer",
+    "emailEntry": "{at} av {name} till {count, plural, one {# person} other {# personer}}",
     "logRows": "Mötets rader i loggen"
   },
   "Checklist": {

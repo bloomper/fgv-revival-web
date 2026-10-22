@@ -58,10 +58,10 @@ export function meetingResolvers(ctx) {
         };
     };
     // Addresses in failOnce fail on the next send only, so a retry reaches them.
-    const send = (persona, meeting, language, subs, waitingLeftOut) => {
+    const send = (persona, meeting, language, subs, waitingLeftOut, retryOf = null) => {
         const recipients = subs.map(sub => ({sub, status: meetings().failOnce.includes(sub) ? "FAILED" : "SENT"}));
         const email = {id: String(meetings().emails.length + 1), meetingId: meeting.id, language, sentBy: persona.sub,
-            sentAt: new Date().toISOString(), waitingLeftOut, recipients};
+            sentAt: new Date().toISOString(), waitingLeftOut, recipients, retryOf};
 
         meetings().failOnce = [];
         meetings().emails.push(email);
@@ -174,10 +174,10 @@ export function meetingResolvers(ctx) {
             writable(persona, meeting);
             const failed = earlier.recipients.filter(recipient => recipient.status === "FAILED").map(recipient => recipient.sub);
 
-            if (failed.length === 0) {
-                throw new GraphQLError("BAD_REQUEST", "Alla mottagare har fått protokollet.");
+            if (failed.length === 0 || meetings().emails.some(email => email.retryOf === earlier.id)) {
+                throw new GraphQLError("BAD_REQUEST", "Det finns ingen kvar att skicka protokollet till igen.");
             }
-            return {minutesEmailRetry: send(persona, meeting, earlier.language, failed, 0)};
+            return {minutesEmailRetry: send(persona, meeting, earlier.language, failed, 0, earlier.id)};
         },
     };
 }

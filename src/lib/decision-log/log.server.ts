@@ -12,7 +12,7 @@ const RevivalLogQuery = graphql(`
             workingTitle
             year
             status
-            permissions { canWriteLog canImportLog }
+            permissions { canWriteLog canImportLog canWaiveRequirement }
             ownerCandidates { id displayName }
         }
         logEntries(revivalId: $id, filter: $filter) { ...LogEntryFields }
@@ -26,7 +26,7 @@ const RevivalLogImportQuery = graphql(`
         revival(id: $id) {
             id
             workingTitle
-            permissions { canImportLog }
+            permissions { canImportLog canWaiveRequirement }
         }
         logImport(revivalId: $id) { fileName layout rowCount importedAt importedBy { displayName } }
     }

@@ -53,7 +53,7 @@ export default async function RevivalLogPage({params, searchParams}: {
                         </Link>
                         <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
                     </div>
-                    {revival.permissions.canImportLog && (
+                    {(revival.permissions.canImportLog || revival.permissions.canWaiveRequirement) && (
                         <Button variant="outline" render={<Link href={`/revivals/${revival.id}/log/import`}/>}>
                             <FileUp/>
                             {t("import.title")}

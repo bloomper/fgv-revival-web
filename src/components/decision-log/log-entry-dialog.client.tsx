@@ -89,7 +89,7 @@ export function LogEntryDialog({revivalId, entry, members, tags, meetingId, open
                         {error(errors.text?.message)}
                     </div>
                     <Controller control={form.control} name="owner" render={({field}) => (
-                        <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}/>
+                        <OwnerField members={members} value={field.value ?? null} onChange={field.onChange} current={entry?.owner?.person}/>
                     )}/>
                     {error(errors.owner?.name?.message ?? errors.owner?.message)}
                     <div className="grid grid-cols-2 gap-4">

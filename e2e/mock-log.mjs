@@ -118,6 +118,7 @@ export function logResolvers(ctx) {
                         __typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival),
                         canImportLog: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED"
                             && entries.length === 0 && !log().imported?.[revival.id],
+                        canWaiveRequirement: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED",
                     },
                     ownerCandidates: candidates(revival),
                 },
@@ -137,9 +138,11 @@ export function logResolvers(ctx) {
                         __typename: "RevivalPermissions",
                         canImportLog: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED"
                             && !log().entries.some(entry => entry.revivalId === revival.id) && !log().imported?.[revival.id],
+                        canWaiveRequirement: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED",
                     },
                 },
-                logImport: null,
+                logImport: log().imported?.[revival.id] ? {__typename: "LogImport", fileName: "logg.xlsx", layout: "ALI_BABA", rowCount: 12,
+                    importedAt: new Date().toISOString(), importedBy: {__typename: "PersonRef", id: persona.sub, displayName: persona.name}} : null,
             };
         },
         LogEntryCreate(persona, {input}) {

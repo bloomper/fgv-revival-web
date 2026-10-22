@@ -74,6 +74,8 @@ test.describe("Decision log, user story 3: the steering group runs a meeting fro
         await sends.getByRole("button", {name: "Skicka igen till dessa"}).click();
         await expect(page.getByText("Skickat till 1 person").first()).toBeVisible();
         await expect(sends.getByRole("listitem")).toHaveCount(2);
+        await expect(sends.getByText(/av Stina Styrgrupp till 1 person$/)).toHaveCount(2);
+        await expect(sends.getByRole("button", {name: "Skicka igen till dessa"})).toHaveCount(0);
 
         await page.getByRole("link", {name: "Mötets rader i loggen"}).click();
         const rows = page.getByRole("table");

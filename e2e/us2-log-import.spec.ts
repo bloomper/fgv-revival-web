@@ -29,7 +29,9 @@ test.describe("Decision log, user story 2: the directeur imports the revival's e
         await expect(table.getByText("Rad 12 i loggen")).toBeVisible();
         await expect(table.getByRole("row", {name: /Rad 1 i loggen/})).toContainText("Dana Directeur");
         await expect(table.getByRole("row", {name: /Rad 9 i loggen/})).toContainText("Robin");
-        await expect(page.getByRole("link", {name: "Importera från Excel"})).toHaveCount(0);
+        await page.getByRole("link", {name: "Importera från Excel"}).click();
+        await expect(page.getByText("Loggen importerades redan från logg.xlsx (12 rader).")).toBeVisible();
+        await expect(page.getByRole("button", {name: "Förhandsgranska"})).toHaveCount(0);
     });
 
     test("a steering group member is never offered the import", async ({page, loginAs}) => {

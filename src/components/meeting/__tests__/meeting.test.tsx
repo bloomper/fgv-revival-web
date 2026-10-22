@@ -16,6 +16,15 @@ const row = (number: number, type: "DECISION" | "TODO" | "QUESTION", text: strin
 });
 
 describe("MinutesView", () => {
+    it("shows how each row closed in the meeting ended", () => {
+        render(<MinutesView minutes={{
+            decisions: [], todos: [], questions: [], agendaPoints: [], attendees: [],
+            closed: [{...row(4, "TODO", "Boka RunAn"), status: "CANCELLED"}],
+        }}/>);
+
+        expect(screen.getByText("(status.CANCELLED)")).toBeInTheDocument();
+    });
+
     it("shows each section with owners as text and leaves empty ones out", () => {
         render(<MinutesView minutes={{
             decisions: [row(7, "DECISION", "Vi spelar i RunAn", {name: null, person: {id: "11", displayName: "Kim Svensson", active: true}})],

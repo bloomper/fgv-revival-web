@@ -2,11 +2,12 @@
 
 import * as React from "react";
 import {useTransition} from "react";
-import {useTranslations} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
 import {retryMinutesAction} from "@/app/(app)/revivals/[id]/meetings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
+import {formatInstant} from "@/utils/format";
 
 type Email = {
     id: string;
@@ -17,8 +18,8 @@ type Email = {
 };
 
 /**
- * Earlier sends of the minutes, with who did not get each and, on the latest send with failures, a way to send again
- * to those only (M3 FR-021).
+ * Earlier sends of the minutes, with who did not get each. Only the latest send can be sent again, to those it did not
+ * reach, so a retry that reached everyone settles the earlier failures (M3 FR-021).
  */
 export function MinutesEmailHistory({revivalId, meetingId, emails, canSend}: {
     revivalId: string;
@@ -27,10 +28,11 @@ export function MinutesEmailHistory({revivalId, meetingId, emails, canSend}: {
     canSend: boolean;
 }) {
     const t = useTranslations("Meeting");
+    const locale = useLocale();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
-    const retryable = [...emails].sort((a, b) => b.sentAt.localeCompare(a.sentAt))
-        .find(email => email.recipients.some(recipient => recipient.status === "FAILED"));
+    const latest = [...emails].sort((a, b) => b.sentAt.localeCompare(a.sentAt)).at(0);
+    const retryable = latest?.recipients.some(recipient => recipient.status === "FAILED") ? latest : undefined;
 
     return (
         <section className="space-y-1 text-sm" aria-label={t("emails")}>
@@ -42,7 +44,7 @@ export function MinutesEmailHistory({revivalId, meetingId, emails, canSend}: {
                     return (
                         <li key={email.id} className="space-y-1">
                             <p>{t("emailEntry", {
-                                at: email.sentAt.slice(0, 16).replace("T", " "), name: email.sentBy.displayName ?? "",
+                                at: formatInstant(email.sentAt, locale) ?? email.sentAt, name: email.sentBy.displayName ?? "",
                                 count: email.recipients.length - failed.length,
                             })}</p>
                             {email.waitingLeftOut > 0 && <p>{t("waitingLeftOut", {count: email.waitingLeftOut})}</p>}

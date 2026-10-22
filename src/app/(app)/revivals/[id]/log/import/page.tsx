@@ -20,7 +20,8 @@ async function load(id: string) {
 }
 
 /**
- * Imports the revival's existing Excel log, once, by its directeur (M3 US2). Anyone else gets not found.
+ * Imports the revival's existing Excel log, once, by its directeur (M3 US2). A directeur whose log already has rows is
+ * told why the import is closed; anyone else gets not found.
  */
 export default async function LogImportPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
@@ -28,11 +29,14 @@ export default async function LogImportPage({params}: { params: Promise<{ id: st
     return withPolicyPage(Policies.app.requireAccess, async () => {
         const loaded = await load(id);
 
-        if (!loaded?.revival.permissions.canImportLog) {
+        const directeur = loaded?.revival.permissions.canWaiveRequirement ?? false;
+
+        if (!loaded || (!loaded.revival.permissions.canImportLog && !directeur)) {
             notFound();
         }
 
         const t = await getTranslations("Log.import");
+        const {canImportLog} = loaded.revival.permissions;
 
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
@@ -42,9 +46,13 @@ export default async function LogImportPage({params}: { params: Promise<{ id: st
                         {loaded.revival.workingTitle}
                     </Link>
                     <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
-                    <p className="max-w-2xl text-sm text-muted-foreground">{t("description")}</p>
+                    {canImportLog && <p className="max-w-2xl text-sm text-muted-foreground">{t("description")}</p>}
                 </div>
-                <LogImportWizard revivalId={id}/>
+                {canImportLog ? <LogImportWizard revivalId={id}/> : (
+                    <p className="max-w-2xl text-sm">
+                        {loaded.logImport ? t("alreadyImported", {fileName: loaded.logImport.fileName, count: loaded.logImport.rowCount}) : t("logNotEmpty")}
+                    </p>
+                )}
             </div>
         );
     });

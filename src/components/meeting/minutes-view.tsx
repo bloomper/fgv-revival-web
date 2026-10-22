@@ -33,6 +33,7 @@ function Section({title, rows, render}: { title: string; rows: MinutesRowFieldsF
  */
 export function MinutesView({minutes}: { minutes: MinutesValue }) {
     const t = useTranslations("Meeting");
+    const tl = useTranslations("Log");
     const present = minutes.attendees.map(attendee => attendee.displayName).filter(Boolean).join(", ");
 
     return (
@@ -51,7 +52,9 @@ export function MinutesView({minutes}: { minutes: MinutesValue }) {
                 {row.deadline && <span className="text-muted-foreground">{t("deadline")}: {row.deadline}</span>}
             </>}/>
             <Section title={t("questions")} rows={minutes.questions} render={row => <PlainText text={row.text}/>}/>
-            <Section title={t("closedRows")} rows={minutes.closed} render={row => <PlainText text={row.text}/>}/>
+            <Section title={t("closedRows")} rows={minutes.closed} render={row => <>
+                <PlainText text={row.text}/><span className="text-muted-foreground">({tl(`status.${row.status}`)})</span>
+            </>}/>
             {minutes.decisions.length + minutes.todos.length + minutes.questions.length + minutes.closed.length === 0 && (
                 <p className="text-sm text-muted-foreground">{t("emptyMinutes")}</p>
             )}

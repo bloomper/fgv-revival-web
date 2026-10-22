@@ -538,7 +538,9 @@
         "OWNER_TRUNCATED": "The owner's name is cut"
       },
       "cancel": "Cancel",
-      "noFile": "Choose an Excel file (.xlsx) that is not empty."
+      "noFile": "Choose an Excel file (.xlsx) that is not empty.",
+      "logNotEmpty": "The Excel import is only for starting the log. This log already has rows, so it can no longer be imported into.",
+      "alreadyImported": "The log was already imported from {fileName} ({count} rows). An Excel log can only be imported once, into an empty log."
     }
   },
   "Meeting": {
@@ -602,7 +604,7 @@
     "waitingLeftOut": "{count, plural, one {# member waiting for access got nothing} other {# members waiting for access got nothing}}",
     "emailFailed": "These did not get the minutes:",
     "emails": "Sends",
-    "emailEntry": "{at} by {name} to {count} people",
+    "emailEntry": "{at} by {name} to {count, plural, one {# person} other {# people}}",
     "logRows": "The meeting's rows in the log"
   },
   "Checklist": {

@@ -67,7 +67,7 @@ export function ChecklistItemDialog({revivalId, checklistId, item, members, open
                         </div>
                     )}
                     <Controller control={form.control} name="owner" render={({field}) => (
-                        <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}/>
+                        <OwnerField members={members} value={field.value ?? null} onChange={field.onChange} current={item?.owner?.person}/>
                     )}/>
                     <div className="space-y-2">
                         <Label htmlFor={`${id}-deadline`}>{t("Checklist.deadline")}</Label>
