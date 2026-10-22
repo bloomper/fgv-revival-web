@@ -122,12 +122,17 @@ changing routing or data fetching; this area differs sharply from older Next.
 - Server-side GraphQL goes through `runQuery` / `runMutation` / `runMutationField` / `mutateForData`
   in `src/lib/graphql.server.ts`; the urql client (`src/lib/urql.server.ts`) injects the access token.
 - Each area has a small lib with explicit GraphQL documents: `src/lib/revival/revival.server.ts`,
-  `src/lib/member/member.server.ts`, `src/lib/spex/spex.server.ts`, `src/lib/guide/guide.server.ts`.
-- The server's plain HTTP endpoints (guide import and PDF) go through `apiFetch` in `src/lib/api.server.ts`, which
+  `src/lib/member/member.server.ts`, `src/lib/spex/spex.server.ts`, `src/lib/guide/guide.server.ts`,
+  `src/lib/decision-log/log.server.ts`, `src/lib/meeting/meeting.server.ts`, `src/lib/checklist/checklist.server.ts` and
+  `src/lib/checklist/template.server.ts`.
+- The server's plain HTTP endpoints (guide import and PDF, log import) go through `apiFetch` in `src/lib/api.server.ts`, which
   adds the token on the server. The browser reaches the PDF only through the route handler `/api/guide-pdf`.
 - Guide Markdown is rendered only through `src/components/guide/guide-markdown.tsx`: no `rehype-raw`, and only the
   elements FR-010 allows, so raw HTML stays text and images are never loaded. Guide text has a Swedish and an optional
   English version; pick with `pickText` from `src/components/guide/localized.ts`.
+- Free text the steering group writes (log rows, comments, meeting notes, checklist items, owner names) is rendered
+  only through `src/components/plain-text.tsx`: plain text with line breaks and linkified http(s) URLs, never Markdown
+  or HTML.
 - Mutations invalidate by cache tag (`config.cacheTag` + `revalidateTag`). Server actions live in
   `src/app/(app)/<entity>/actions.server.ts` and validate input with the entity's Zod schema
   (`src/lib/<entity>/schema.ts`) before calling the lib.

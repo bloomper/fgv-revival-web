@@ -33,6 +33,7 @@ describe("AppSidebar", () => {
 
         expect(screen.getByRole("link", {name: "Nav.guide"})).toHaveAttribute("href", "/guide");
         expect(screen.getByRole("link", {name: "Nav.adminGuide"})).toHaveAttribute("href", "/admin/guide");
+        expect(screen.getByRole("link", {name: "Nav.adminChecklistTemplates"})).toHaveAttribute("href", "/admin/checklist-templates");
     });
 
     it("does not offer managing the guide to others", () => {
@@ -40,5 +41,6 @@ describe("AppSidebar", () => {
 
         expect(screen.getByRole("link", {name: "Nav.guide"})).toBeInTheDocument();
         expect(screen.queryByRole("link", {name: "Nav.adminGuide"})).not.toBeInTheDocument();
+        expect(screen.queryByRole("link", {name: "Nav.adminChecklistTemplates"})).not.toBeInTheDocument();
     });
 });

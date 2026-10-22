@@ -14,6 +14,33 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n    query RevivalChecklists($id: ID!, $filter: ChecklistItemFilter, $filtered: Boolean!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        checklists(revivalId: $id) { id kind phase name date cancelled openCount overdueCount totalCount }\n        checklistItems(revivalId: $id, filter: $filter) @include(if: $filtered) { ...ChecklistItemFields }\n    }\n": typeof types.RevivalChecklistsDocument,
+    "\n    query Checklist($id: ID!, $revivalId: ID!) {\n        revival(id: $revivalId) {\n            id\n            workingTitle\n            permissions { canWriteLog canWaiveRequirement }\n            ownerCandidates { id displayName }\n        }\n        checklist(id: $id) {\n            id\n            revivalId\n            kind\n            phase\n            chapterTitle { sv en }\n            name\n            date\n            cancelled\n            version\n            template { id name { sv en } }\n            templatesAvailable { id kind phase name { sv en } }\n            tips { ...GuideItemFields }\n            items { ...ChecklistItemFields }\n        }\n    }\n": typeof types.ChecklistDocument,
+    "\n    mutation EventChecklistCreate($input: EventChecklistCreateInput!) {\n        eventChecklistCreate(input: $input) { id }\n    }\n": typeof types.EventChecklistCreateDocument,
+    "\n    mutation EventChecklistUpdate($input: EventChecklistUpdateInput!) {\n        eventChecklistUpdate(input: $input) { id }\n    }\n": typeof types.EventChecklistUpdateDocument,
+    "\n    mutation EventChecklistCancel($id: ID!, $version: Int!) {\n        eventChecklistCancel(id: $id, version: $version) { id }\n    }\n": typeof types.EventChecklistCancelDocument,
+    "\n    mutation ChecklistAddFromTemplate($input: ChecklistAddFromTemplateInput!) {\n        checklistAddFromTemplate(input: $input) { id }\n    }\n": typeof types.ChecklistAddFromTemplateDocument,
+    "\n    mutation ChecklistItemCreate($input: ChecklistItemCreateInput!) {\n        checklistItemCreate(input: $input) { id }\n    }\n": typeof types.ChecklistItemCreateDocument,
+    "\n    mutation ChecklistItemUpdate($input: ChecklistItemUpdateInput!) {\n        checklistItemUpdate(input: $input) { id }\n    }\n": typeof types.ChecklistItemUpdateDocument,
+    "\n    mutation ChecklistItemSetState($input: ChecklistItemSetStateInput!) {\n        checklistItemSetState(input: $input) { id state }\n    }\n": typeof types.ChecklistItemSetStateDocument,
+    "\n    fragment ChecklistItemFields on ChecklistItem {\n        id\n        required\n        text { sv en }\n        state\n        stateChangedBy { displayName }\n        stateChangedAt\n        reason\n        owner { ...OwnerFields }\n        deadline\n        deadlineManual\n        overdue\n        comment\n        guideItem { id key type text { sv en } version }\n        defaultCapability\n        logEntries { id number type status }\n        checklist { id kind phase name }\n        version\n    }\n": typeof types.ChecklistItemFieldsFragmentDoc,
+    "\n    query ChecklistTemplates($includeRetired: Boolean) {\n        checklistTemplates(includeRetired: $includeRetired) { id kind phase name { sv en } retired version items { id } }\n    }\n": typeof types.ChecklistTemplatesDocument,
+    "\n    query ChecklistTemplate($id: ID!) {\n        checklistTemplate(id: $id) {\n            id\n            kind\n            phase\n            name { sv en }\n            retired\n            version\n            items {\n                id\n                position\n                text { sv en }\n                guideItemKey\n                guideItem { ...GuideItemFields }\n                defaultCapability\n                deadline { kind amount weekday }\n                version\n            }\n        }\n    }\n": typeof types.ChecklistTemplateDocument,
+    "\n    query EventChecklistTemplates {\n        checklistTemplates { id kind name { sv en } }\n    }\n": typeof types.EventChecklistTemplatesDocument,
+    "\n    mutation ChecklistTemplateCreate($input: ChecklistTemplateCreateInput!) {\n        checklistTemplateCreate(input: $input) { id }\n    }\n": typeof types.ChecklistTemplateCreateDocument,
+    "\n    mutation ChecklistTemplateUpdate($input: ChecklistTemplateUpdateInput!) {\n        checklistTemplateUpdate(input: $input) { id }\n    }\n": typeof types.ChecklistTemplateUpdateDocument,
+    "\n    mutation ChecklistTemplateRetire($id: ID!, $version: Int!) {\n        checklistTemplateRetire(id: $id, version: $version) { id }\n    }\n": typeof types.ChecklistTemplateRetireDocument,
+    "\n    mutation ChecklistTemplateItemCreate($input: ChecklistTemplateItemCreateInput!) {\n        checklistTemplateItemCreate(input: $input) { id }\n    }\n": typeof types.ChecklistTemplateItemCreateDocument,
+    "\n    mutation ChecklistTemplateItemUpdate($input: ChecklistTemplateItemUpdateInput!) {\n        checklistTemplateItemUpdate(input: $input) { id }\n    }\n": typeof types.ChecklistTemplateItemUpdateDocument,
+    "\n    mutation ChecklistTemplateItemMove($id: ID!, $version: Int!, $position: Int!) {\n        checklistTemplateItemMove(id: $id, version: $version, position: $position) { id }\n    }\n": typeof types.ChecklistTemplateItemMoveDocument,
+    "\n    mutation ChecklistTemplateItemRetire($id: ID!, $version: Int!) {\n        checklistTemplateItemRetire(id: $id, version: $version) { id }\n    }\n": typeof types.ChecklistTemplateItemRetireDocument,
+    "\n    fragment OwnerFields on Owner {\n        name\n        person { id displayName active }\n    }\n": typeof types.OwnerFieldsFragmentDoc,
+    "\n    fragment LogEntryFields on LogEntry {\n        id\n        number\n        date\n        type\n        text\n        status\n        owner { ...OwnerFields }\n        deadline\n        overdue\n        comment\n        tags\n        meeting { id date title status }\n        guideItemKey\n        guideItem { id key type text { sv en } version }\n        checklistItem { id checklistId state text { sv en } }\n        answers { id number type status }\n        answeredBy { id number type status }\n        origin\n        createdBy\n        createdAt\n        version\n    }\n": typeof types.LogEntryFieldsFragmentDoc,
+    "\n    query RevivalLog($id: ID!, $filter: LogEntryFilter) {\n        revival(id: $id) {\n            id\n            workingTitle\n            year\n            status\n            permissions { canWriteLog canImportLog }\n            ownerCandidates { id displayName }\n        }\n        logEntries(revivalId: $id, filter: $filter) { ...LogEntryFields }\n        logTags(revivalId: $id)\n    }\n": typeof types.RevivalLogDocument,
+    "\n    query RevivalLogImport($id: ID!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canImportLog }\n        }\n        logImport(revivalId: $id) { fileName layout rowCount importedAt importedBy { displayName } }\n    }\n": typeof types.RevivalLogImportDocument,
+    "\n    mutation LogEntryCreate($input: LogEntryCreateInput!) {\n        logEntryCreate(input: $input) { ...LogEntryFields }\n    }\n": typeof types.LogEntryCreateDocument,
+    "\n    mutation LogEntryUpdate($input: LogEntryUpdateInput!) {\n        logEntryUpdate(input: $input) { ...LogEntryFields }\n    }\n": typeof types.LogEntryUpdateDocument,
+    "\n    mutation LogEntryAnswer($input: LogEntryAnswerInput!) {\n        logEntryAnswer(input: $input) {\n            question { ...LogEntryFields }\n            decision { ...LogEntryFields }\n        }\n    }\n": typeof types.LogEntryAnswerDocument,
     "\n    fragment GuideItemFields on GuideItem {\n        id\n        key\n        type\n        text { sv en }\n        version\n    }\n": typeof types.GuideItemFieldsFragmentDoc,
     "\n    fragment GuideVersionFields on GuideVersion {\n        id\n        status\n        label\n        note\n        publishedAt\n        publishedBy\n        version\n        basedOn { id label publishedAt }\n        introduction { sv en }\n        chapters {\n            id\n            phase\n            title { sv en }\n            version\n            items { ...GuideItemFields }\n            sections {\n                id\n                key\n                title { sv en }\n                version\n                items { ...GuideItemFields }\n            }\n        }\n    }\n": typeof types.GuideVersionFieldsFragmentDoc,
     "\n    query GuideVersions {\n        guideVersions { id label publishedAt }\n    }\n": typeof types.GuideVersionsDocument,
@@ -43,6 +70,16 @@ type Documents = {
     "\n    mutation GuideSuggestionAccept($input: GuideSuggestionAcceptInput!) {\n        guideSuggestionAccept(input: $input) { id status }\n    }\n": typeof types.GuideSuggestionAcceptDocument,
     "\n    mutation GuideSuggestionReject($input: GuideSuggestionRejectInput!) {\n        guideSuggestionReject(input: $input) { id status }\n    }\n": typeof types.GuideSuggestionRejectDocument,
     "\n    mutation GuideSuggestionWithdraw($id: ID!, $version: Int!) {\n        guideSuggestionWithdraw(id: $id, version: $version) { id status }\n    }\n": typeof types.GuideSuggestionWithdrawDocument,
+    "\n    query RevivalMeetings($id: ID!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        meetings(revivalId: $id) { id date title status }\n    }\n": typeof types.RevivalMeetingsDocument,
+    "\n    query Meeting($id: ID!, $revivalId: ID!) {\n        revival(id: $revivalId) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        logTags(revivalId: $revivalId)\n        meeting(id: $id) {\n            id\n            revivalId\n            date\n            title\n            status\n            attendees { id displayName }\n            othersPresent\n            agendaPoints\n            recorder { id displayName }\n            startedAt\n            closedAt\n            canEmailMinutes\n            version\n            openEntries { ...LogEntryFields }\n            entries { ...LogEntryFields }\n            blockingEntries { id number type status }\n            minutes {\n                decisions { ...MinutesRowFields }\n                todos { ...MinutesRowFields }\n                questions { ...MinutesRowFields }\n                closed { ...MinutesRowFields }\n                agendaPoints\n                attendees { id displayName }\n                othersPresent\n                recorder { id displayName }\n            }\n            emails {\n                id\n                language\n                sentAt\n                sentBy { displayName }\n                waitingLeftOut\n                recipients { person { id displayName } status }\n            }\n        }\n    }\n": typeof types.MeetingDocument,
+    "\n    fragment MinutesRowFields on MinutesRow {\n        entryId\n        number\n        type\n        text\n        owner { ...OwnerFields }\n        deadline\n        status\n    }\n": typeof types.MinutesRowFieldsFragmentDoc,
+    "\n    mutation MeetingCreate($input: MeetingCreateInput!) {\n        meetingCreate(input: $input) { id }\n    }\n": typeof types.MeetingCreateDocument,
+    "\n    mutation MeetingUpdate($input: MeetingUpdateInput!) {\n        meetingUpdate(input: $input) { id }\n    }\n": typeof types.MeetingUpdateDocument,
+    "\n    mutation MeetingStart($id: ID!, $version: Int!) {\n        meetingStart(id: $id, version: $version) { id status }\n    }\n": typeof types.MeetingStartDocument,
+    "\n    mutation MeetingClose($id: ID!, $version: Int!) {\n        meetingClose(id: $id, version: $version) { id status }\n    }\n": typeof types.MeetingCloseDocument,
+    "\n    mutation MeetingCancel($id: ID!, $version: Int!) {\n        meetingCancel(id: $id, version: $version) { id status }\n    }\n": typeof types.MeetingCancelDocument,
+    "\n    mutation MinutesEmailSend($input: MinutesEmailSendInput!) {\n        minutesEmailSend(input: $input) { id waitingLeftOut recipients { person { id displayName } status } }\n    }\n": typeof types.MinutesEmailSendDocument,
+    "\n    mutation MinutesEmailRetry($emailId: ID!) {\n        minutesEmailRetry(emailId: $emailId) { id waitingLeftOut recipients { person { id displayName } status } }\n    }\n": typeof types.MinutesEmailRetryDocument,
     "\n    mutation RevivalMemberAdd($input: RevivalMemberAddInput!) {\n        revivalMemberAdd(input: $input) { id role capabilities state displayName email version }\n    }\n": typeof types.RevivalMemberAddDocument,
     "\n    mutation RevivalMemberCapabilitiesSet($input: RevivalMemberCapabilitiesInput!) {\n        revivalMemberCapabilitiesSet(input: $input) { id capabilities version }\n    }\n": typeof types.RevivalMemberCapabilitiesSetDocument,
     "\n    mutation RevivalMemberRemove($id: ID!) {\n        revivalMemberRemove(id: $id)\n    }\n": typeof types.RevivalMemberRemoveDocument,
@@ -51,12 +88,40 @@ type Documents = {
     "\n    query Me {\n        me {\n            id\n            displayName\n            email\n            globalRoles\n            revivalRoles { role capabilities revival { id } }\n        }\n    }\n": typeof types.MeDocument,
     "\n    query Revivals($status: [RevivalStatus!]) {\n        revivals(status: $status) { ...RevivalSummary }\n    }\n": typeof types.RevivalsDocument,
     "\n    query Revival($id: ID!) {\n        revival(id: $id) { ...RevivalDetail }\n    }\n": typeof types.RevivalDocument,
+    "\n    query RevivalWorkSummary($id: ID!) {\n        revival(id: $id) {\n            id\n            workSummary { openEntries overdueEntries overdueChecklistItems openRequiredItems meetingInProgress { id title date } }\n        }\n    }\n": typeof types.RevivalWorkSummaryDocument,
     "\n    mutation RevivalCreate($input: RevivalCreateInput!) {\n        revivalCreate(input: $input) { ...RevivalSummary }\n    }\n": typeof types.RevivalCreateDocument,
     "\n    mutation RevivalUpdate($input: RevivalUpdateInput!) {\n        revivalUpdate(input: $input) { ...RevivalDetail }\n    }\n": typeof types.RevivalUpdateDocument,
     "\n    mutation RevivalStatusChange($input: RevivalStatusChangeInput!) {\n        revivalStatusChange(input: $input) { ...RevivalSummary }\n    }\n": typeof types.RevivalStatusChangeDocument,
     "\n    query SpexSearch($query: String!, $first: Int) {\n        spexSearch(query: $query, first: $first) { id title year available }\n    }\n": typeof types.SpexSearchDocument,
 };
 const documents: Documents = {
+    "\n    query RevivalChecklists($id: ID!, $filter: ChecklistItemFilter, $filtered: Boolean!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        checklists(revivalId: $id) { id kind phase name date cancelled openCount overdueCount totalCount }\n        checklistItems(revivalId: $id, filter: $filter) @include(if: $filtered) { ...ChecklistItemFields }\n    }\n": types.RevivalChecklistsDocument,
+    "\n    query Checklist($id: ID!, $revivalId: ID!) {\n        revival(id: $revivalId) {\n            id\n            workingTitle\n            permissions { canWriteLog canWaiveRequirement }\n            ownerCandidates { id displayName }\n        }\n        checklist(id: $id) {\n            id\n            revivalId\n            kind\n            phase\n            chapterTitle { sv en }\n            name\n            date\n            cancelled\n            version\n            template { id name { sv en } }\n            templatesAvailable { id kind phase name { sv en } }\n            tips { ...GuideItemFields }\n            items { ...ChecklistItemFields }\n        }\n    }\n": types.ChecklistDocument,
+    "\n    mutation EventChecklistCreate($input: EventChecklistCreateInput!) {\n        eventChecklistCreate(input: $input) { id }\n    }\n": types.EventChecklistCreateDocument,
+    "\n    mutation EventChecklistUpdate($input: EventChecklistUpdateInput!) {\n        eventChecklistUpdate(input: $input) { id }\n    }\n": types.EventChecklistUpdateDocument,
+    "\n    mutation EventChecklistCancel($id: ID!, $version: Int!) {\n        eventChecklistCancel(id: $id, version: $version) { id }\n    }\n": types.EventChecklistCancelDocument,
+    "\n    mutation ChecklistAddFromTemplate($input: ChecklistAddFromTemplateInput!) {\n        checklistAddFromTemplate(input: $input) { id }\n    }\n": types.ChecklistAddFromTemplateDocument,
+    "\n    mutation ChecklistItemCreate($input: ChecklistItemCreateInput!) {\n        checklistItemCreate(input: $input) { id }\n    }\n": types.ChecklistItemCreateDocument,
+    "\n    mutation ChecklistItemUpdate($input: ChecklistItemUpdateInput!) {\n        checklistItemUpdate(input: $input) { id }\n    }\n": types.ChecklistItemUpdateDocument,
+    "\n    mutation ChecklistItemSetState($input: ChecklistItemSetStateInput!) {\n        checklistItemSetState(input: $input) { id state }\n    }\n": types.ChecklistItemSetStateDocument,
+    "\n    fragment ChecklistItemFields on ChecklistItem {\n        id\n        required\n        text { sv en }\n        state\n        stateChangedBy { displayName }\n        stateChangedAt\n        reason\n        owner { ...OwnerFields }\n        deadline\n        deadlineManual\n        overdue\n        comment\n        guideItem { id key type text { sv en } version }\n        defaultCapability\n        logEntries { id number type status }\n        checklist { id kind phase name }\n        version\n    }\n": types.ChecklistItemFieldsFragmentDoc,
+    "\n    query ChecklistTemplates($includeRetired: Boolean) {\n        checklistTemplates(includeRetired: $includeRetired) { id kind phase name { sv en } retired version items { id } }\n    }\n": types.ChecklistTemplatesDocument,
+    "\n    query ChecklistTemplate($id: ID!) {\n        checklistTemplate(id: $id) {\n            id\n            kind\n            phase\n            name { sv en }\n            retired\n            version\n            items {\n                id\n                position\n                text { sv en }\n                guideItemKey\n                guideItem { ...GuideItemFields }\n                defaultCapability\n                deadline { kind amount weekday }\n                version\n            }\n        }\n    }\n": types.ChecklistTemplateDocument,
+    "\n    query EventChecklistTemplates {\n        checklistTemplates { id kind name { sv en } }\n    }\n": types.EventChecklistTemplatesDocument,
+    "\n    mutation ChecklistTemplateCreate($input: ChecklistTemplateCreateInput!) {\n        checklistTemplateCreate(input: $input) { id }\n    }\n": types.ChecklistTemplateCreateDocument,
+    "\n    mutation ChecklistTemplateUpdate($input: ChecklistTemplateUpdateInput!) {\n        checklistTemplateUpdate(input: $input) { id }\n    }\n": types.ChecklistTemplateUpdateDocument,
+    "\n    mutation ChecklistTemplateRetire($id: ID!, $version: Int!) {\n        checklistTemplateRetire(id: $id, version: $version) { id }\n    }\n": types.ChecklistTemplateRetireDocument,
+    "\n    mutation ChecklistTemplateItemCreate($input: ChecklistTemplateItemCreateInput!) {\n        checklistTemplateItemCreate(input: $input) { id }\n    }\n": types.ChecklistTemplateItemCreateDocument,
+    "\n    mutation ChecklistTemplateItemUpdate($input: ChecklistTemplateItemUpdateInput!) {\n        checklistTemplateItemUpdate(input: $input) { id }\n    }\n": types.ChecklistTemplateItemUpdateDocument,
+    "\n    mutation ChecklistTemplateItemMove($id: ID!, $version: Int!, $position: Int!) {\n        checklistTemplateItemMove(id: $id, version: $version, position: $position) { id }\n    }\n": types.ChecklistTemplateItemMoveDocument,
+    "\n    mutation ChecklistTemplateItemRetire($id: ID!, $version: Int!) {\n        checklistTemplateItemRetire(id: $id, version: $version) { id }\n    }\n": types.ChecklistTemplateItemRetireDocument,
+    "\n    fragment OwnerFields on Owner {\n        name\n        person { id displayName active }\n    }\n": types.OwnerFieldsFragmentDoc,
+    "\n    fragment LogEntryFields on LogEntry {\n        id\n        number\n        date\n        type\n        text\n        status\n        owner { ...OwnerFields }\n        deadline\n        overdue\n        comment\n        tags\n        meeting { id date title status }\n        guideItemKey\n        guideItem { id key type text { sv en } version }\n        checklistItem { id checklistId state text { sv en } }\n        answers { id number type status }\n        answeredBy { id number type status }\n        origin\n        createdBy\n        createdAt\n        version\n    }\n": types.LogEntryFieldsFragmentDoc,
+    "\n    query RevivalLog($id: ID!, $filter: LogEntryFilter) {\n        revival(id: $id) {\n            id\n            workingTitle\n            year\n            status\n            permissions { canWriteLog canImportLog }\n            ownerCandidates { id displayName }\n        }\n        logEntries(revivalId: $id, filter: $filter) { ...LogEntryFields }\n        logTags(revivalId: $id)\n    }\n": types.RevivalLogDocument,
+    "\n    query RevivalLogImport($id: ID!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canImportLog }\n        }\n        logImport(revivalId: $id) { fileName layout rowCount importedAt importedBy { displayName } }\n    }\n": types.RevivalLogImportDocument,
+    "\n    mutation LogEntryCreate($input: LogEntryCreateInput!) {\n        logEntryCreate(input: $input) { ...LogEntryFields }\n    }\n": types.LogEntryCreateDocument,
+    "\n    mutation LogEntryUpdate($input: LogEntryUpdateInput!) {\n        logEntryUpdate(input: $input) { ...LogEntryFields }\n    }\n": types.LogEntryUpdateDocument,
+    "\n    mutation LogEntryAnswer($input: LogEntryAnswerInput!) {\n        logEntryAnswer(input: $input) {\n            question { ...LogEntryFields }\n            decision { ...LogEntryFields }\n        }\n    }\n": types.LogEntryAnswerDocument,
     "\n    fragment GuideItemFields on GuideItem {\n        id\n        key\n        type\n        text { sv en }\n        version\n    }\n": types.GuideItemFieldsFragmentDoc,
     "\n    fragment GuideVersionFields on GuideVersion {\n        id\n        status\n        label\n        note\n        publishedAt\n        publishedBy\n        version\n        basedOn { id label publishedAt }\n        introduction { sv en }\n        chapters {\n            id\n            phase\n            title { sv en }\n            version\n            items { ...GuideItemFields }\n            sections {\n                id\n                key\n                title { sv en }\n                version\n                items { ...GuideItemFields }\n            }\n        }\n    }\n": types.GuideVersionFieldsFragmentDoc,
     "\n    query GuideVersions {\n        guideVersions { id label publishedAt }\n    }\n": types.GuideVersionsDocument,
@@ -86,6 +151,16 @@ const documents: Documents = {
     "\n    mutation GuideSuggestionAccept($input: GuideSuggestionAcceptInput!) {\n        guideSuggestionAccept(input: $input) { id status }\n    }\n": types.GuideSuggestionAcceptDocument,
     "\n    mutation GuideSuggestionReject($input: GuideSuggestionRejectInput!) {\n        guideSuggestionReject(input: $input) { id status }\n    }\n": types.GuideSuggestionRejectDocument,
     "\n    mutation GuideSuggestionWithdraw($id: ID!, $version: Int!) {\n        guideSuggestionWithdraw(id: $id, version: $version) { id status }\n    }\n": types.GuideSuggestionWithdrawDocument,
+    "\n    query RevivalMeetings($id: ID!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        meetings(revivalId: $id) { id date title status }\n    }\n": types.RevivalMeetingsDocument,
+    "\n    query Meeting($id: ID!, $revivalId: ID!) {\n        revival(id: $revivalId) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        logTags(revivalId: $revivalId)\n        meeting(id: $id) {\n            id\n            revivalId\n            date\n            title\n            status\n            attendees { id displayName }\n            othersPresent\n            agendaPoints\n            recorder { id displayName }\n            startedAt\n            closedAt\n            canEmailMinutes\n            version\n            openEntries { ...LogEntryFields }\n            entries { ...LogEntryFields }\n            blockingEntries { id number type status }\n            minutes {\n                decisions { ...MinutesRowFields }\n                todos { ...MinutesRowFields }\n                questions { ...MinutesRowFields }\n                closed { ...MinutesRowFields }\n                agendaPoints\n                attendees { id displayName }\n                othersPresent\n                recorder { id displayName }\n            }\n            emails {\n                id\n                language\n                sentAt\n                sentBy { displayName }\n                waitingLeftOut\n                recipients { person { id displayName } status }\n            }\n        }\n    }\n": types.MeetingDocument,
+    "\n    fragment MinutesRowFields on MinutesRow {\n        entryId\n        number\n        type\n        text\n        owner { ...OwnerFields }\n        deadline\n        status\n    }\n": types.MinutesRowFieldsFragmentDoc,
+    "\n    mutation MeetingCreate($input: MeetingCreateInput!) {\n        meetingCreate(input: $input) { id }\n    }\n": types.MeetingCreateDocument,
+    "\n    mutation MeetingUpdate($input: MeetingUpdateInput!) {\n        meetingUpdate(input: $input) { id }\n    }\n": types.MeetingUpdateDocument,
+    "\n    mutation MeetingStart($id: ID!, $version: Int!) {\n        meetingStart(id: $id, version: $version) { id status }\n    }\n": types.MeetingStartDocument,
+    "\n    mutation MeetingClose($id: ID!, $version: Int!) {\n        meetingClose(id: $id, version: $version) { id status }\n    }\n": types.MeetingCloseDocument,
+    "\n    mutation MeetingCancel($id: ID!, $version: Int!) {\n        meetingCancel(id: $id, version: $version) { id status }\n    }\n": types.MeetingCancelDocument,
+    "\n    mutation MinutesEmailSend($input: MinutesEmailSendInput!) {\n        minutesEmailSend(input: $input) { id waitingLeftOut recipients { person { id displayName } status } }\n    }\n": types.MinutesEmailSendDocument,
+    "\n    mutation MinutesEmailRetry($emailId: ID!) {\n        minutesEmailRetry(emailId: $emailId) { id waitingLeftOut recipients { person { id displayName } status } }\n    }\n": types.MinutesEmailRetryDocument,
     "\n    mutation RevivalMemberAdd($input: RevivalMemberAddInput!) {\n        revivalMemberAdd(input: $input) { id role capabilities state displayName email version }\n    }\n": types.RevivalMemberAddDocument,
     "\n    mutation RevivalMemberCapabilitiesSet($input: RevivalMemberCapabilitiesInput!) {\n        revivalMemberCapabilitiesSet(input: $input) { id capabilities version }\n    }\n": types.RevivalMemberCapabilitiesSetDocument,
     "\n    mutation RevivalMemberRemove($id: ID!) {\n        revivalMemberRemove(id: $id)\n    }\n": types.RevivalMemberRemoveDocument,
@@ -94,6 +169,7 @@ const documents: Documents = {
     "\n    query Me {\n        me {\n            id\n            displayName\n            email\n            globalRoles\n            revivalRoles { role capabilities revival { id } }\n        }\n    }\n": types.MeDocument,
     "\n    query Revivals($status: [RevivalStatus!]) {\n        revivals(status: $status) { ...RevivalSummary }\n    }\n": types.RevivalsDocument,
     "\n    query Revival($id: ID!) {\n        revival(id: $id) { ...RevivalDetail }\n    }\n": types.RevivalDocument,
+    "\n    query RevivalWorkSummary($id: ID!) {\n        revival(id: $id) {\n            id\n            workSummary { openEntries overdueEntries overdueChecklistItems openRequiredItems meetingInProgress { id title date } }\n        }\n    }\n": types.RevivalWorkSummaryDocument,
     "\n    mutation RevivalCreate($input: RevivalCreateInput!) {\n        revivalCreate(input: $input) { ...RevivalSummary }\n    }\n": types.RevivalCreateDocument,
     "\n    mutation RevivalUpdate($input: RevivalUpdateInput!) {\n        revivalUpdate(input: $input) { ...RevivalDetail }\n    }\n": types.RevivalUpdateDocument,
     "\n    mutation RevivalStatusChange($input: RevivalStatusChangeInput!) {\n        revivalStatusChange(input: $input) { ...RevivalSummary }\n    }\n": types.RevivalStatusChangeDocument,
@@ -114,6 +190,114 @@ const documents: Documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query RevivalChecklists($id: ID!, $filter: ChecklistItemFilter, $filtered: Boolean!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        checklists(revivalId: $id) { id kind phase name date cancelled openCount overdueCount totalCount }\n        checklistItems(revivalId: $id, filter: $filter) @include(if: $filtered) { ...ChecklistItemFields }\n    }\n"): (typeof documents)["\n    query RevivalChecklists($id: ID!, $filter: ChecklistItemFilter, $filtered: Boolean!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        checklists(revivalId: $id) { id kind phase name date cancelled openCount overdueCount totalCount }\n        checklistItems(revivalId: $id, filter: $filter) @include(if: $filtered) { ...ChecklistItemFields }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query Checklist($id: ID!, $revivalId: ID!) {\n        revival(id: $revivalId) {\n            id\n            workingTitle\n            permissions { canWriteLog canWaiveRequirement }\n            ownerCandidates { id displayName }\n        }\n        checklist(id: $id) {\n            id\n            revivalId\n            kind\n            phase\n            chapterTitle { sv en }\n            name\n            date\n            cancelled\n            version\n            template { id name { sv en } }\n            templatesAvailable { id kind phase name { sv en } }\n            tips { ...GuideItemFields }\n            items { ...ChecklistItemFields }\n        }\n    }\n"): (typeof documents)["\n    query Checklist($id: ID!, $revivalId: ID!) {\n        revival(id: $revivalId) {\n            id\n            workingTitle\n            permissions { canWriteLog canWaiveRequirement }\n            ownerCandidates { id displayName }\n        }\n        checklist(id: $id) {\n            id\n            revivalId\n            kind\n            phase\n            chapterTitle { sv en }\n            name\n            date\n            cancelled\n            version\n            template { id name { sv en } }\n            templatesAvailable { id kind phase name { sv en } }\n            tips { ...GuideItemFields }\n            items { ...ChecklistItemFields }\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation EventChecklistCreate($input: EventChecklistCreateInput!) {\n        eventChecklistCreate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation EventChecklistCreate($input: EventChecklistCreateInput!) {\n        eventChecklistCreate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation EventChecklistUpdate($input: EventChecklistUpdateInput!) {\n        eventChecklistUpdate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation EventChecklistUpdate($input: EventChecklistUpdateInput!) {\n        eventChecklistUpdate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation EventChecklistCancel($id: ID!, $version: Int!) {\n        eventChecklistCancel(id: $id, version: $version) { id }\n    }\n"): (typeof documents)["\n    mutation EventChecklistCancel($id: ID!, $version: Int!) {\n        eventChecklistCancel(id: $id, version: $version) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistAddFromTemplate($input: ChecklistAddFromTemplateInput!) {\n        checklistAddFromTemplate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistAddFromTemplate($input: ChecklistAddFromTemplateInput!) {\n        checklistAddFromTemplate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistItemCreate($input: ChecklistItemCreateInput!) {\n        checklistItemCreate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistItemCreate($input: ChecklistItemCreateInput!) {\n        checklistItemCreate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistItemUpdate($input: ChecklistItemUpdateInput!) {\n        checklistItemUpdate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistItemUpdate($input: ChecklistItemUpdateInput!) {\n        checklistItemUpdate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistItemSetState($input: ChecklistItemSetStateInput!) {\n        checklistItemSetState(input: $input) { id state }\n    }\n"): (typeof documents)["\n    mutation ChecklistItemSetState($input: ChecklistItemSetStateInput!) {\n        checklistItemSetState(input: $input) { id state }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    fragment ChecklistItemFields on ChecklistItem {\n        id\n        required\n        text { sv en }\n        state\n        stateChangedBy { displayName }\n        stateChangedAt\n        reason\n        owner { ...OwnerFields }\n        deadline\n        deadlineManual\n        overdue\n        comment\n        guideItem { id key type text { sv en } version }\n        defaultCapability\n        logEntries { id number type status }\n        checklist { id kind phase name }\n        version\n    }\n"): (typeof documents)["\n    fragment ChecklistItemFields on ChecklistItem {\n        id\n        required\n        text { sv en }\n        state\n        stateChangedBy { displayName }\n        stateChangedAt\n        reason\n        owner { ...OwnerFields }\n        deadline\n        deadlineManual\n        overdue\n        comment\n        guideItem { id key type text { sv en } version }\n        defaultCapability\n        logEntries { id number type status }\n        checklist { id kind phase name }\n        version\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query ChecklistTemplates($includeRetired: Boolean) {\n        checklistTemplates(includeRetired: $includeRetired) { id kind phase name { sv en } retired version items { id } }\n    }\n"): (typeof documents)["\n    query ChecklistTemplates($includeRetired: Boolean) {\n        checklistTemplates(includeRetired: $includeRetired) { id kind phase name { sv en } retired version items { id } }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query ChecklistTemplate($id: ID!) {\n        checklistTemplate(id: $id) {\n            id\n            kind\n            phase\n            name { sv en }\n            retired\n            version\n            items {\n                id\n                position\n                text { sv en }\n                guideItemKey\n                guideItem { ...GuideItemFields }\n                defaultCapability\n                deadline { kind amount weekday }\n                version\n            }\n        }\n    }\n"): (typeof documents)["\n    query ChecklistTemplate($id: ID!) {\n        checklistTemplate(id: $id) {\n            id\n            kind\n            phase\n            name { sv en }\n            retired\n            version\n            items {\n                id\n                position\n                text { sv en }\n                guideItemKey\n                guideItem { ...GuideItemFields }\n                defaultCapability\n                deadline { kind amount weekday }\n                version\n            }\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query EventChecklistTemplates {\n        checklistTemplates { id kind name { sv en } }\n    }\n"): (typeof documents)["\n    query EventChecklistTemplates {\n        checklistTemplates { id kind name { sv en } }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistTemplateCreate($input: ChecklistTemplateCreateInput!) {\n        checklistTemplateCreate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistTemplateCreate($input: ChecklistTemplateCreateInput!) {\n        checklistTemplateCreate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistTemplateUpdate($input: ChecklistTemplateUpdateInput!) {\n        checklistTemplateUpdate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistTemplateUpdate($input: ChecklistTemplateUpdateInput!) {\n        checklistTemplateUpdate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistTemplateRetire($id: ID!, $version: Int!) {\n        checklistTemplateRetire(id: $id, version: $version) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistTemplateRetire($id: ID!, $version: Int!) {\n        checklistTemplateRetire(id: $id, version: $version) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistTemplateItemCreate($input: ChecklistTemplateItemCreateInput!) {\n        checklistTemplateItemCreate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistTemplateItemCreate($input: ChecklistTemplateItemCreateInput!) {\n        checklistTemplateItemCreate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistTemplateItemUpdate($input: ChecklistTemplateItemUpdateInput!) {\n        checklistTemplateItemUpdate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistTemplateItemUpdate($input: ChecklistTemplateItemUpdateInput!) {\n        checklistTemplateItemUpdate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistTemplateItemMove($id: ID!, $version: Int!, $position: Int!) {\n        checklistTemplateItemMove(id: $id, version: $version, position: $position) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistTemplateItemMove($id: ID!, $version: Int!, $position: Int!) {\n        checklistTemplateItemMove(id: $id, version: $version, position: $position) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation ChecklistTemplateItemRetire($id: ID!, $version: Int!) {\n        checklistTemplateItemRetire(id: $id, version: $version) { id }\n    }\n"): (typeof documents)["\n    mutation ChecklistTemplateItemRetire($id: ID!, $version: Int!) {\n        checklistTemplateItemRetire(id: $id, version: $version) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    fragment OwnerFields on Owner {\n        name\n        person { id displayName active }\n    }\n"): (typeof documents)["\n    fragment OwnerFields on Owner {\n        name\n        person { id displayName active }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    fragment LogEntryFields on LogEntry {\n        id\n        number\n        date\n        type\n        text\n        status\n        owner { ...OwnerFields }\n        deadline\n        overdue\n        comment\n        tags\n        meeting { id date title status }\n        guideItemKey\n        guideItem { id key type text { sv en } version }\n        checklistItem { id checklistId state text { sv en } }\n        answers { id number type status }\n        answeredBy { id number type status }\n        origin\n        createdBy\n        createdAt\n        version\n    }\n"): (typeof documents)["\n    fragment LogEntryFields on LogEntry {\n        id\n        number\n        date\n        type\n        text\n        status\n        owner { ...OwnerFields }\n        deadline\n        overdue\n        comment\n        tags\n        meeting { id date title status }\n        guideItemKey\n        guideItem { id key type text { sv en } version }\n        checklistItem { id checklistId state text { sv en } }\n        answers { id number type status }\n        answeredBy { id number type status }\n        origin\n        createdBy\n        createdAt\n        version\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query RevivalLog($id: ID!, $filter: LogEntryFilter) {\n        revival(id: $id) {\n            id\n            workingTitle\n            year\n            status\n            permissions { canWriteLog canImportLog }\n            ownerCandidates { id displayName }\n        }\n        logEntries(revivalId: $id, filter: $filter) { ...LogEntryFields }\n        logTags(revivalId: $id)\n    }\n"): (typeof documents)["\n    query RevivalLog($id: ID!, $filter: LogEntryFilter) {\n        revival(id: $id) {\n            id\n            workingTitle\n            year\n            status\n            permissions { canWriteLog canImportLog }\n            ownerCandidates { id displayName }\n        }\n        logEntries(revivalId: $id, filter: $filter) { ...LogEntryFields }\n        logTags(revivalId: $id)\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query RevivalLogImport($id: ID!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canImportLog }\n        }\n        logImport(revivalId: $id) { fileName layout rowCount importedAt importedBy { displayName } }\n    }\n"): (typeof documents)["\n    query RevivalLogImport($id: ID!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canImportLog }\n        }\n        logImport(revivalId: $id) { fileName layout rowCount importedAt importedBy { displayName } }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation LogEntryCreate($input: LogEntryCreateInput!) {\n        logEntryCreate(input: $input) { ...LogEntryFields }\n    }\n"): (typeof documents)["\n    mutation LogEntryCreate($input: LogEntryCreateInput!) {\n        logEntryCreate(input: $input) { ...LogEntryFields }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation LogEntryUpdate($input: LogEntryUpdateInput!) {\n        logEntryUpdate(input: $input) { ...LogEntryFields }\n    }\n"): (typeof documents)["\n    mutation LogEntryUpdate($input: LogEntryUpdateInput!) {\n        logEntryUpdate(input: $input) { ...LogEntryFields }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation LogEntryAnswer($input: LogEntryAnswerInput!) {\n        logEntryAnswer(input: $input) {\n            question { ...LogEntryFields }\n            decision { ...LogEntryFields }\n        }\n    }\n"): (typeof documents)["\n    mutation LogEntryAnswer($input: LogEntryAnswerInput!) {\n        logEntryAnswer(input: $input) {\n            question { ...LogEntryFields }\n            decision { ...LogEntryFields }\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -233,6 +417,46 @@ export function graphql(source: "\n    mutation GuideSuggestionWithdraw($id: ID!
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n    query RevivalMeetings($id: ID!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        meetings(revivalId: $id) { id date title status }\n    }\n"): (typeof documents)["\n    query RevivalMeetings($id: ID!) {\n        revival(id: $id) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        meetings(revivalId: $id) { id date title status }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query Meeting($id: ID!, $revivalId: ID!) {\n        revival(id: $revivalId) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        logTags(revivalId: $revivalId)\n        meeting(id: $id) {\n            id\n            revivalId\n            date\n            title\n            status\n            attendees { id displayName }\n            othersPresent\n            agendaPoints\n            recorder { id displayName }\n            startedAt\n            closedAt\n            canEmailMinutes\n            version\n            openEntries { ...LogEntryFields }\n            entries { ...LogEntryFields }\n            blockingEntries { id number type status }\n            minutes {\n                decisions { ...MinutesRowFields }\n                todos { ...MinutesRowFields }\n                questions { ...MinutesRowFields }\n                closed { ...MinutesRowFields }\n                agendaPoints\n                attendees { id displayName }\n                othersPresent\n                recorder { id displayName }\n            }\n            emails {\n                id\n                language\n                sentAt\n                sentBy { displayName }\n                waitingLeftOut\n                recipients { person { id displayName } status }\n            }\n        }\n    }\n"): (typeof documents)["\n    query Meeting($id: ID!, $revivalId: ID!) {\n        revival(id: $revivalId) {\n            id\n            workingTitle\n            permissions { canWriteLog }\n            ownerCandidates { id displayName }\n        }\n        logTags(revivalId: $revivalId)\n        meeting(id: $id) {\n            id\n            revivalId\n            date\n            title\n            status\n            attendees { id displayName }\n            othersPresent\n            agendaPoints\n            recorder { id displayName }\n            startedAt\n            closedAt\n            canEmailMinutes\n            version\n            openEntries { ...LogEntryFields }\n            entries { ...LogEntryFields }\n            blockingEntries { id number type status }\n            minutes {\n                decisions { ...MinutesRowFields }\n                todos { ...MinutesRowFields }\n                questions { ...MinutesRowFields }\n                closed { ...MinutesRowFields }\n                agendaPoints\n                attendees { id displayName }\n                othersPresent\n                recorder { id displayName }\n            }\n            emails {\n                id\n                language\n                sentAt\n                sentBy { displayName }\n                waitingLeftOut\n                recipients { person { id displayName } status }\n            }\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    fragment MinutesRowFields on MinutesRow {\n        entryId\n        number\n        type\n        text\n        owner { ...OwnerFields }\n        deadline\n        status\n    }\n"): (typeof documents)["\n    fragment MinutesRowFields on MinutesRow {\n        entryId\n        number\n        type\n        text\n        owner { ...OwnerFields }\n        deadline\n        status\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation MeetingCreate($input: MeetingCreateInput!) {\n        meetingCreate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation MeetingCreate($input: MeetingCreateInput!) {\n        meetingCreate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation MeetingUpdate($input: MeetingUpdateInput!) {\n        meetingUpdate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation MeetingUpdate($input: MeetingUpdateInput!) {\n        meetingUpdate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation MeetingStart($id: ID!, $version: Int!) {\n        meetingStart(id: $id, version: $version) { id status }\n    }\n"): (typeof documents)["\n    mutation MeetingStart($id: ID!, $version: Int!) {\n        meetingStart(id: $id, version: $version) { id status }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation MeetingClose($id: ID!, $version: Int!) {\n        meetingClose(id: $id, version: $version) { id status }\n    }\n"): (typeof documents)["\n    mutation MeetingClose($id: ID!, $version: Int!) {\n        meetingClose(id: $id, version: $version) { id status }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation MeetingCancel($id: ID!, $version: Int!) {\n        meetingCancel(id: $id, version: $version) { id status }\n    }\n"): (typeof documents)["\n    mutation MeetingCancel($id: ID!, $version: Int!) {\n        meetingCancel(id: $id, version: $version) { id status }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation MinutesEmailSend($input: MinutesEmailSendInput!) {\n        minutesEmailSend(input: $input) { id waitingLeftOut recipients { person { id displayName } status } }\n    }\n"): (typeof documents)["\n    mutation MinutesEmailSend($input: MinutesEmailSendInput!) {\n        minutesEmailSend(input: $input) { id waitingLeftOut recipients { person { id displayName } status } }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation MinutesEmailRetry($emailId: ID!) {\n        minutesEmailRetry(emailId: $emailId) { id waitingLeftOut recipients { person { id displayName } status } }\n    }\n"): (typeof documents)["\n    mutation MinutesEmailRetry($emailId: ID!) {\n        minutesEmailRetry(emailId: $emailId) { id waitingLeftOut recipients { person { id displayName } status } }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n    mutation RevivalMemberAdd($input: RevivalMemberAddInput!) {\n        revivalMemberAdd(input: $input) { id role capabilities state displayName email version }\n    }\n"): (typeof documents)["\n    mutation RevivalMemberAdd($input: RevivalMemberAddInput!) {\n        revivalMemberAdd(input: $input) { id role capabilities state displayName email version }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -262,6 +486,10 @@ export function graphql(source: "\n    query Revivals($status: [RevivalStatus!])
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    query Revival($id: ID!) {\n        revival(id: $id) { ...RevivalDetail }\n    }\n"): (typeof documents)["\n    query Revival($id: ID!) {\n        revival(id: $id) { ...RevivalDetail }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query RevivalWorkSummary($id: ID!) {\n        revival(id: $id) {\n            id\n            workSummary { openEntries overdueEntries overdueChecklistItems openRequiredItems meetingInProgress { id title date } }\n        }\n    }\n"): (typeof documents)["\n    query RevivalWorkSummary($id: ID!) {\n        revival(id: $id) {\n            id\n            workSummary { openEntries overdueEntries overdueChecklistItems openRequiredItems meetingInProgress { id title date } }\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -20,6 +20,12 @@ The guide is read at `/guide` and per revival at `/revivals/[id]/guide`, with se
 admins import, edit and publish it under `/admin/guide`. The Word import is sent through a server action, so
 `next.config.ts` allows server action bodies of 11 MB.
 
+Each revival has a decision log at `/revivals/[id]/log` (with the Excel import at `/log/import`, through
+`apiFetch`), meetings at `/revivals/[id]/meetings`, where a meeting in progress records what was done to each row and
+closed minutes can be emailed, and checklists at `/revivals/[id]/checklists`: the phases A–J with the guide's
+requirements and tips, and dated event checklists. Super admins keep checklist templates under
+`/admin/checklist-templates`. Nothing on these pages is ever deleted.
+
 ## Running locally
 
 The committed `.env` holds `SUPPORT_EMAIL`, `FEEDBACK_EMAIL`, `SUPPORTED_LOCALES` and `DEFAULT_LOCALE`. Create

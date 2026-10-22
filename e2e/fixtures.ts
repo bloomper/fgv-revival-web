@@ -28,15 +28,27 @@ export const test = base.extend<{ resetBackend: void; loginAs: (persona: Persona
             guide: async (seed: "none" | "published" | "two" | "draft") => {
                 await request.post(`${MOCK_URL}/__guide`, {data: {seed}});
             },
+            logRow: async (row: LogRow) => {
+                await request.post(`${MOCK_URL}/__log`, {data: row});
+            },
+            templates: async () => {
+                await request.post(`${MOCK_URL}/__templates`);
+            },
         });
     },
 });
+
+type LogRow = { revivalId: string; type: "DECISION" | "TODO" | "QUESTION"; text: string; status?: string; deadline?: string };
 
 type Mock = {
     setStatus: (id: string, status: string) => Promise<void>;
     spexregister: (up: boolean) => Promise<void>;
     /** Resets the backend with no guide, or v1 (with "two" also a newer v2, with "draft" also a draft with id 10) published and every revival pinned to v1. */
     guide: (seed: "none" | "published" | "two" | "draft") => Promise<void>;
+    /** Adds a decision log row as the steering group member. */
+    logRow: (row: LogRow) => Promise<void>;
+    /** After revival 1's phase checklists exist, adds the event template "Rephelg" with four items and a phase B template with one. */
+    templates: () => Promise<void>;
 };
 
 export async function openRevival(page: Page, title: string) {

@@ -107,6 +107,7 @@ describe("CommandPalette", () => {
         const {unmount} = render(<CommandPalette/>);
         const user = await openPalette();
 
+        expect(await screen.findByText("Nav.adminChecklistTemplates")).toBeInTheDocument();
         await user.click(await screen.findByText("Nav.adminGuide"));
         expect(push).toHaveBeenCalledWith("/admin/guide");
         unmount();
@@ -116,6 +117,7 @@ describe("CommandPalette", () => {
         const plain = await openPalette();
 
         expect(screen.queryByText("Nav.adminGuide")).not.toBeInTheDocument();
+        expect(screen.queryByText("Nav.adminChecklistTemplates")).not.toBeInTheDocument();
         await plain.click(await screen.findByText("Nav.guide"));
         expect(push).toHaveBeenCalledWith("/guide");
     });

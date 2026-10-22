@@ -1,6 +1,8 @@
 import Link from "next/link";
 import {notFound} from "next/navigation";
-import {BookOpen} from "lucide-react";
+import {BookOpen, CalendarCheck, ClipboardCheck, ListChecks} from "lucide-react";
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
+import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {getTranslations} from "next-intl/server";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
@@ -11,7 +13,7 @@ import {RevivalDetails} from "@/components/revival/revival-details.client";
 import {DirecteurList} from "@/components/member/directeur-list.client";
 import {SteeringGroupList} from "@/components/member/steering-group-list.client";
 import {GraphQLRequestError} from "@/lib/graphql.server";
-import {getRevival} from "@/lib/revival/revival.server";
+import {getRevival, getRevivalWorkSummary} from "@/lib/revival/revival.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
@@ -26,6 +28,27 @@ async function loadRevival(id: string) {
     }
 }
 
+function WorkCount({open, overdue, label}: { open: number; overdue: number; label: string }) {
+    return (
+        <span className="flex items-center gap-1" title={label}>
+            <span className="sr-only">{label}</span>
+            <Badge variant="secondary" aria-hidden>{open}</Badge>
+            {overdue > 0 && <Badge variant="destructive" aria-hidden>{overdue}</Badge>}
+        </span>
+    );
+}
+
+async function loadWorkSummary(id: string) {
+    try {
+        return await getRevivalWorkSummary(id);
+    } catch (error) {
+        if (error instanceof GraphQLRequestError) {
+            return null;
+        }
+        throw error;
+    }
+}
+
 /**
  * One revival: details, status, directeurs and steering group. A revival the user cannot see is shown as not found
  * (FR-017).
@@ -34,7 +57,7 @@ export default async function RevivalPage({params}: { params: Promise<{ id: stri
     const {id} = await params;
 
     return withPolicyPage(Policies.app.requireAccess, async () => {
-        const revival = await loadRevival(id);
+        const [revival, work] = await Promise.all([loadRevival(id), loadWorkSummary(id)]);
 
         if (!revival) {
             notFound();
@@ -54,9 +77,36 @@ export default async function RevivalPage({params}: { params: Promise<{ id: stri
                     <RevivalStatusSelect revivalId={revival.id} status={revival.status} allowedStatuses={revival.permissions.allowedStatuses}/>
                 </div>
 
+                {work?.meetingInProgress && (
+                    <Alert>
+                        <CalendarCheck/>
+                        <AlertTitle>{t("meetingInProgress")}</AlertTitle>
+                        <AlertDescription>
+                            <Link href={`/revivals/${revival.id}/meetings/${work.meetingInProgress.id}`} className="underline">
+                                {work.meetingInProgress.title ?? work.meetingInProgress.date}
+                            </Link>
+                        </AlertDescription>
+                    </Alert>
+                )}
+
                 <RevivalDetails key={revival.version} revival={revival}/>
 
-                <div>
+                <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/log`}/>}>
+                        <ListChecks/>
+                        {t("log")}
+                        {work && <WorkCount open={work.openEntries} overdue={work.overdueEntries} label={t("openOverdue", {open: work.openEntries, overdue: work.overdueEntries})}/>}
+                    </Button>
+                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/meetings`}/>}>
+                        <CalendarCheck/>
+                        {t("meetings")}
+                    </Button>
+                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/checklists`}/>}>
+                        <ClipboardCheck/>
+                        {t("checklists")}
+                        {work && <WorkCount open={work.openRequiredItems} overdue={work.overdueChecklistItems}
+                                            label={t("requirementsOverdue", {open: work.openRequiredItems, overdue: work.overdueChecklistItems})}/>}
+                    </Button>
                     <Button variant="outline" render={<Link href={`/revivals/${revival.id}/guide`}/>}>
                         <BookOpen/>
                         {revival.guideVersion ? t("guideVersion", {label: revival.guideVersion.label ?? ""}) : t("guide")}

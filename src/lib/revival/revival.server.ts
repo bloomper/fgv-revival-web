@@ -64,6 +64,15 @@ const RevivalQuery = graphql(`
     }
 `);
 
+const RevivalWorkSummaryQuery = graphql(`
+    query RevivalWorkSummary($id: ID!) {
+        revival(id: $id) {
+            id
+            workSummary { openEntries overdueEntries overdueChecklistItems openRequiredItems meetingInProgress { id title date } }
+        }
+    }
+`);
+
 const RevivalCreateMutation = graphql(`
     mutation RevivalCreate($input: RevivalCreateInput!) {
         revivalCreate(input: $input) { ...RevivalSummary }
@@ -84,6 +93,10 @@ const RevivalStatusChangeMutation = graphql(`
 
 export async function getMe() {
     return (await runQuery(MeQuery, {}))?.me;
+}
+
+export async function getRevivalWorkSummary(id: string) {
+    return (await runQuery(RevivalWorkSummaryQuery, {id}))?.revival?.workSummary ?? null;
 }
 
 export async function getRevivals(status?: RevivalStatus[]): Promise<RevivalSummaryFragment[]> {

@@ -1,0 +1,131 @@
+"use client";
+
+import * as React from "react";
+import {useId, useState, useTransition} from "react";
+import Link from "next/link";
+import {useRouter} from "next/navigation";
+import {useLocale, useTranslations} from "next-intl";
+import {Plus} from "lucide-react";
+import type {ChecklistTemplatesQuery} from "@/gql/graphql";
+import {Badge} from "@/components/ui/badge";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {pickText} from "@/components/guide/localized";
+import {createTemplateAction} from "@/app/(app)/admin/checklist-templates/actions.server";
+import {useActionFeedback} from "@/hooks/use-action-feedback";
+import {MAX_TEMPLATE_NAME} from "@/lib/checklist/schema";
+
+type Template = ChecklistTemplatesQuery["checklistTemplates"][number];
+
+const PHASES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as const;
+
+/**
+ * The phase templates A–J, with the missing ones to create, then event templates by name (FR-030).
+ */
+export function TemplateList({templates}: { templates: Template[] }) {
+    const t = useTranslations();
+    const id = useId();
+    const locale = useLocale();
+    const router = useRouter();
+    const feedback = useActionFeedback();
+    const [pending, startTransition] = useTransition();
+    const [creating, setCreating] = useState(false);
+    const [name, setName] = useState({sv: "", en: ""});
+    const href = (template: Template) => `/admin/checklist-templates/${template.id}`;
+    const open = (id: string | undefined) => id && router.push(`/admin/checklist-templates/${id}`);
+    const events = templates.filter(template => template.kind === "EVENT");
+
+    return (
+        <div className="space-y-6">
+            <section className="space-y-2" aria-label={t("ChecklistTemplate.phases")}>
+                <h3 className="font-medium">{t("ChecklistTemplate.phases")}</h3>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                    {PHASES.map(phase => {
+                        const own = templates.filter(template => template.kind === "PHASE" && template.phase === phase);
+                        const active = own.find(template => !template.retired);
+
+                        return (
+                            <Card key={phase}>
+                                <CardHeader><CardTitle>{t("Checklist.phase", {phase})}</CardTitle></CardHeader>
+                                <CardContent className="space-y-2 text-sm">
+                                    {active ? (
+                                        <Link href={href(active)} className="hover:underline">{t("ChecklistTemplate.itemCount", {count: active.items.length})}</Link>
+                                    ) : (
+                                        <Button size="sm" variant="outline" disabled={pending} onClick={() => startTransition(async () => {
+                                            const result = await createTemplateAction({kind: "PHASE", phase});
+
+                                            if (feedback(result)) {
+                                                open(result.data.id);
+                                            }
+                                        })}>{t("ChecklistTemplate.createPhase", {phase})}</Button>
+                                    )}
+                                    {own.filter(template => template.retired).map(template => (
+                                        <Link key={template.id} href={href(template)} className="block text-muted-foreground hover:underline">
+                                            {t("ChecklistTemplate.retired")}
+                                        </Link>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
+            </section>
+            <section className="space-y-2" aria-label={t("ChecklistTemplate.events")}>
+                <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-medium">{t("ChecklistTemplate.events")}</h3>
+                    <Button size="sm" onClick={() => setCreating(true)}><Plus/>{t("ChecklistTemplate.createEvent")}</Button>
+                </div>
+                {events.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">{t("ChecklistTemplate.noEvents")}</p>
+                ) : (
+                    <ul className="divide-y rounded-lg border">
+                        {events.map(template => (
+                            <li key={template.id}>
+                                <Link href={href(template)} className="flex items-center justify-between gap-2 p-3 hover:bg-accent">
+                                    <span>{template.name ? pickText(template.name, locale).text : ""}</span>
+                                    <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        {template.retired && <Badge variant="outline">{t("ChecklistTemplate.retired")}</Badge>}
+                                        {t("ChecklistTemplate.itemCount", {count: template.items.length})}
+                                    </span>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </section>
+            <Dialog open={creating} onOpenChange={setCreating}>
+                <DialogContent>
+                    <DialogHeader><DialogTitle>{t("ChecklistTemplate.createEvent")}</DialogTitle></DialogHeader>
+                    <form className="space-y-4" onSubmit={event => {
+                        event.preventDefault();
+                        startTransition(async () => {
+                            const result = await createTemplateAction({kind: "EVENT", name});
+
+                            if (feedback(result)) {
+                                setCreating(false);
+                                open(result.data.id);
+                            }
+                        });
+                    }}>
+                        <div className="space-y-2">
+                            <Label htmlFor={`${id}-name-sv`}>{t("ChecklistTemplate.nameSv")}</Label>
+                            <Input id={`${id}-name-sv`} required maxLength={MAX_TEMPLATE_NAME} value={name.sv}
+                                   onChange={event => setName({...name, sv: event.target.value})}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor={`${id}-name-en`}>{t("ChecklistTemplate.nameEn")}</Label>
+                            <Input id={`${id}-name-en`} maxLength={MAX_TEMPLATE_NAME} value={name.en} onChange={event => setName({...name, en: event.target.value})}/>
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setCreating(false)}>{t("Common.cancel")}</Button>
+                            <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
+}

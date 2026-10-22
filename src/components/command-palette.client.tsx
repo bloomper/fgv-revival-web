@@ -4,7 +4,7 @@ import * as React from "react";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
-import {BookOpen, BookOpenCheck, Command as CommandIcon, Drama, House, ListChecks, type LucideIcon, Plus, Wrench} from "lucide-react";
+import {BookOpen, BookOpenCheck, ClipboardList, Command as CommandIcon, Drama, House, ListChecks, type LucideIcon, Plus, Wrench} from "lucide-react";
 
 import {Command, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {Dialog, DialogContent, DialogDescription, DialogTitle} from "@/components/ui/dialog";
@@ -55,6 +55,7 @@ export function CommandPalette() {
 
         if (isSuperAdmin(roles)) {
             navigationEntries.push({id: "admin-guide", label: t("Nav.adminGuide"), href: "/admin/guide", icon: BookOpenCheck});
+            navigationEntries.push({id: "admin-checklist-templates", label: t("Nav.adminChecklistTemplates"), href: "/admin/checklist-templates", icon: ClipboardList});
         }
 
         navigationEntries.push(

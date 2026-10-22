@@ -1,0 +1,90 @@
+import {expect, test} from "./fixtures";
+
+test.describe("Decision log, user story 5: checklist templates and event checklists", () => {
+    test("a super admin builds an event template with relative deadlines", async ({page, loginAs}) => {
+        await loginAs("superadmin");
+        await page.goto("/admin/checklist-templates");
+        await expect(page.getByRole("heading", {level: 2, name: "Checklistmallar"})).toBeVisible();
+
+        await page.getByRole("button", {name: "Ny händelsemall"}).click();
+        await page.getByRole("dialog").getByLabel("Namn (svenska)").fill("Rephelg");
+        await page.getByRole("dialog").getByRole("button", {name: "Spara"}).click();
+        await expect(page.getByRole("heading", {level: 2, name: "Rephelg"})).toBeVisible();
+
+        await page.getByRole("button", {name: "Ny punkt"}).click();
+        const dialog = page.getByRole("dialog");
+
+        await dialog.getByLabel("Text (svenska)").fill("Utskick");
+        await dialog.getByLabel("Typ av deadline").selectOption({label: "Veckodag veckan innan"});
+        await expect(dialog.getByText(/Till exempel för lördag .*: måndag/)).toBeVisible();
+        await dialog.getByRole("button", {name: "Spara"}).click();
+        await expect(dialog).toBeHidden();
+
+        await page.getByRole("button", {name: "Ny punkt"}).click();
+        await dialog.getByLabel("Text (svenska)").fill("Lokaler bokade");
+        await dialog.getByLabel("Typ av deadline").selectOption({label: "Dagar"});
+        await dialog.getByLabel("Antal").fill("14");
+        await dialog.getByRole("button", {name: "Spara"}).click();
+        await expect(dialog).toBeHidden();
+
+        const items = page.getByRole("list", {name: "Punkter"});
+
+        await expect(items.getByText("måndag veckan innan")).toBeVisible();
+        await expect(items.getByText("14 dagar före")).toBeVisible();
+        await page.getByRole("button", {name: "Flytta upp Lokaler bokade"}).click();
+        await expect(items.getByRole("listitem").first()).toContainText("Lokaler bokade");
+    });
+
+    test("the steering group makes a rehearsal weekend checklist, moves its date and adds from the phase template", async ({page, mock, loginAs}) => {
+        await mock.guide("published");
+        await mock.setStatus("1", "ORGANISING");
+        await mock.templates();
+        await loginAs("styrgrupp");
+
+        await page.goto("/revivals/1/checklists");
+        await page.getByRole("button", {name: "Ny händelse-checklista"}).click();
+        const dialog = page.getByRole("dialog");
+
+        await dialog.getByLabel("Namn").fill("Rephelg 2");
+        await dialog.getByLabel("Datum").fill("2027-11-20");
+        await dialog.getByLabel("Mall").selectOption({label: "Rephelg"});
+        await dialog.getByRole("button", {name: "Spara"}).click();
+
+        await expect(page.getByRole("heading", {level: 2, name: /Rephelg 2/})).toBeVisible();
+        const row = (text: string) => page.getByRole("listitem").filter({hasText: text});
+
+        await expect(row("Utskick")).toContainText("Klart senast: 2027-11-08");
+        await expect(row("Lokaler bokade")).toContainText("Klart senast: 2027-11-06");
+        await expect(row("Allergier insamlade")).toContainText("Klart senast: 2027-11-15");
+        await expect(row("Allergier insamlade")).toContainText("Stina Styrgrupp");
+        await expect(row("Fika")).not.toContainText("Klart senast");
+
+        await row("Fika").getByRole("button", {name: "Ändra punkt"}).click();
+        await dialog.getByLabel("Klart senast").fill("2027-11-01");
+        await dialog.getByRole("button", {name: "Spara"}).click();
+        await expect(dialog).toBeHidden();
+
+        await page.getByRole("button", {name: "Ändra namn och datum"}).click();
+        await dialog.getByLabel("Datum").fill("2027-11-27");
+        await dialog.getByRole("button", {name: "Spara"}).click();
+        await expect(dialog).toBeHidden();
+        await expect(row("Utskick")).toContainText("Klart senast: 2027-11-15");
+        await expect(row("Lokaler bokade")).toContainText("Klart senast: 2027-11-13");
+        await expect(row("Fika")).toContainText("Klart senast: 2027-11-01");
+
+        await page.goto("/revivals/1/checklists");
+        await page.getByRole("link", {name: /Fas B/}).click();
+        await page.getByRole("button", {name: "Lägg till punkter från mall"}).click();
+        await expect(row("Boka kalaslokal")).toHaveCount(1);
+        await page.getByRole("button", {name: "Lägg till punkter från mall"}).click();
+        await expect(page.getByText("Punkterna från mallen är tillagda").first()).toBeVisible();
+        await expect(row("Boka kalaslokal")).toHaveCount(1);
+    });
+
+    test("the steering group cannot reach the template admin", async ({page, loginAs}) => {
+        await loginAs("styrgrupp");
+        await page.goto("/admin/checklist-templates");
+
+        await expect(page).toHaveURL(/no-access/);
+    });
+});

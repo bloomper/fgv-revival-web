@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import {useMemo} from "react";
-import {BookOpen, BookOpenCheck, Drama, House, ListChecks, type LucideIcon, Wrench} from "lucide-react";
+import {BookOpen, BookOpenCheck, ClipboardList, Drama, House, ListChecks, type LucideIcon, Wrench} from "lucide-react";
 
 import {NavMain} from "@/components/nav-main.client";
 import {NavSecondary} from "@/components/nav-secondary.client";
@@ -87,6 +87,12 @@ export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
                 url: "/admin/guide",
                 icon: BookOpenCheck,
                 isActive: pathname.startsWith("/admin/guide"),
+            });
+            mainItems.push({
+                title: t("Nav.adminChecklistTemplates"),
+                url: "/admin/checklist-templates",
+                icon: ClipboardList,
+                isActive: pathname.startsWith("/admin/checklist-templates"),
             });
         }
 

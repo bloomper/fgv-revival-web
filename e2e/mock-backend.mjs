@@ -5,6 +5,9 @@ import {createServer} from "node:http";
 import {randomUUID} from "node:crypto";
 import {exportJWK, generateKeyPair, SignJWT} from "jose";
 import {createGuideState, guideResolvers, handleGuideImport, handleGuidePdf} from "./mock-guide.mjs";
+import {createLogState, handleLogImport, logResolvers} from "./mock-log.mjs";
+import {createMeetingState, meetingResolvers} from "./mock-meeting.mjs";
+import {checklistResolvers, createChecklistState} from "./mock-checklist.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 4101);
 const ISSUER = `http://localhost:${PORT}/realms/fgv`;
@@ -40,6 +43,9 @@ function resetState(guideSeed = "none") {
     state = {
         spexregisterUp: true,
         guide: createGuideState(guideSeed),
+        log: createLogState(),
+        meeting: createMeetingState(),
+        checklist: createChecklistState(),
         nextId: 100,
         revivals: [
             {id: "1", spexId: "1", year: 2028, workingTitle: "Ali Baba 2028", premiereDate: null, showDates: [], venues: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
@@ -62,6 +68,27 @@ function seedGuide(seed) {
             revival.guideVersionId = "1";
         });
     }
+}
+
+/**
+ * After revival 1's phase checklists exist: an event template "Rephelg" with the quickstart's four items, and a phase B
+ * template with one item, so adding from it is not done at creation.
+ */
+function seedTemplates() {
+    const as = PERSONAS.superadmin;
+
+    resolvers.RevivalChecklists(PERSONAS.styrgrupp, {id: "1", filter: null, filtered: false});
+    resolvers.ChecklistTemplateCreate(as, {input: {kind: "EVENT", name: {sv: "Rephelg", en: null}}});
+    resolvers.ChecklistTemplateCreate(as, {input: {kind: "PHASE", phase: "B"}});
+    const [event, phase] = state.checklist.templates;
+
+    [
+        {text: {sv: "Utskick"}, deadline: {kind: "WEEKDAY_WEEK_BEFORE", weekday: "MONDAY"}},
+        {text: {sv: "Lokaler bokade"}, deadline: {kind: "DAYS", amount: -14}},
+        {text: {sv: "Allergier insamlade"}, deadline: {kind: "WORKING_DAYS", amount: -5}, defaultCapability: "FINANCE"},
+        {text: {sv: "Fika"}},
+    ].forEach(item => resolvers.ChecklistTemplateItemCreate(as, {input: {templateId: event.id, ...item}}));
+    resolvers.ChecklistTemplateItemCreate(as, {input: {templateId: phase.id, text: {sv: "Boka kalaslokal"}}});
 }
 
 // --- Rules, as in the server's AccessPolicy ----------------------------------------------------------------------
@@ -95,6 +122,8 @@ function permissions(persona, revival) {
         allowedStatuses,
         canManageDirecteurs: isSuperAdmin(persona) && notArchived(revival),
         canManageSteeringGroup: (isSuperAdmin(persona) || isVisibleDirecteur(persona, revival)) && notArchived(revival),
+        canWriteLog: ["DIRECTEUR", "STEERING_GROUP"].includes(roleIn(persona, revival)) && canSee(persona, revival) && notArchived(revival),
+        canWaiveRequirement: isVisibleDirecteur(persona, revival) && notArchived(revival),
     };
 }
 
@@ -197,6 +226,26 @@ const resolvers = {
     Revival(persona, {id}) {
         return {revival: toRevival(persona, visibleRevival(persona, id))};
     },
+    RevivalWorkSummary(persona, {id}) {
+        const revival = visibleRevival(persona, id);
+        const today = new Date().toISOString().slice(0, 10);
+        const open = state.log.entries.filter(entry => entry.revivalId === revival.id && ["OPEN", "WAITING"].includes(entry.status));
+        const checklists = new Set(state.checklist.checklists.filter(checklist => checklist.revivalId === revival.id && !checklist.cancelled).map(checklist => checklist.id));
+        const items = state.checklist.items.filter(item => checklists.has(item.checklistId) && item.state === "OPEN");
+        const meeting = state.meeting.meetings.find(candidate => candidate.revivalId === revival.id && candidate.status === "IN_PROGRESS");
+
+        return {
+            revival: {
+                __typename: "Revival", id: revival.id,
+                workSummary: {
+                    __typename: "RevivalWorkSummary", openEntries: open.length, overdueEntries: open.filter(entry => entry.deadline && entry.deadline < today).length,
+                    overdueChecklistItems: items.filter(item => item.deadline && item.deadline < today).length,
+                    openRequiredItems: items.filter(item => item.required).length,
+                    meetingInProgress: meeting ? {__typename: "MeetingSummary", id: meeting.id, title: meeting.title, date: meeting.date} : null,
+                },
+            },
+        };
+    },
     SpexSearch(persona, {query}) {
         if (!isSuperAdmin(persona)) {
             throw forbidden();
@@ -292,6 +341,18 @@ const resolvers = {
         return {revivalMemberRemove: null};
     },
 };
+
+const logExports = {};
+
+Object.assign(resolvers, logResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, personas: bySub, exports: logExports,
+}));
+Object.assign(resolvers, meetingResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, personas: bySub, log: logExports,
+}));
+Object.assign(resolvers, checklistResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, personas: bySub, log: logExports, isSuperAdmin,
+}));
 
 Object.assign(resolvers, guideResolvers({
     state: () => state, GraphQLError, forbidden, isSuperAdmin, seesEverything, roleIn, canSee, visibleRevival, nameOf: sub => bySub[sub]?.name ?? null,
@@ -443,11 +504,19 @@ const server = createServer((req, res) => {
             const tip = version.chapters.flatMap(chapter => chapter.sections.flatMap(section => section.items)).find(entry => entry.type === "TIP");
             resolvers.GuideSuggestionCreate(PERSONAS.styrgrupp, {input: {...input, versionId: version.id, itemKey: input.kind === "ADD" ? null : tip.key}});
             res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__log") {
+            resolvers.LogEntryCreate(PERSONAS.styrgrupp, {input: JSON.parse(body)});
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__templates") {
+            seedTemplates();
+            res.writeHead(204).end();
         } else if (req.method === "POST" && path === "/__guide") {
             seedGuide(JSON.parse(body).seed);
             res.writeHead(204).end();
         } else if (req.method === "GET" && path.endsWith("/pdf") && path.startsWith("/api/")) {
             handleGuidePdf({state: () => state, isSuperAdmin, seesEverything, roleIn, canSee}, personaOf(req), path, url, res);
+        } else if (req.method === "POST" && /^\/api\/revivals\/[^/]+\/log\/import/.test(path)) {
+            handleLogImport({state: () => state, roleIn, canSee, personas: bySub}, personaOf(req), path, body, res);
         } else if (req.method === "POST" && path === "/api/guide/import") {
             handleGuideImport({state: () => state, isSuperAdmin}, personaOf(req), body, res);
         } else if (req.method === "POST" && path === "/__persona") {
