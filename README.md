@@ -37,18 +37,24 @@ The committed `.env` holds `SUPPORT_EMAIL`, `FEEDBACK_EMAIL`, `SUPPORTED_LOCALES
 | `KEYCLOAK_CLIENT_ID`     | `fgv-revival`                                        | Keycloak client                              |
 | `KEYCLOAK_CLIENT_SECRET` | secret of `fgv-revival`                              | Keycloak client secret                       |
 | `KEYCLOAK_ISSUER`        | `https://auth.fgv.local.nu:8443/auth/realms/fgv`     | The FGV realm                                |
-| `API_GRAPHQL_ENDPOINT`   | `http://localhost:8081/api/graphql`                  | Nyuppsättning Server                         |
+| `API_GRAPHQL_ENDPOINT`   | `https://api.revival.fgv.local.nu:8443/api/graphql`  | Nyuppsättning Server                         |
 | `BETTER_AUTH_URL`        | `http://localhost:3001`                              | This application's own address               |
 | `UMAMI_URL`              | `https://analytics.fgv.local.nu:8443`                | Optional: Umami, for visitor statistics      |
 | `UMAMI_WEBSITE_ID`       | printed by `fgv-infra-deploy/local/bin/configure-umami.sh` | Optional: the Umami website            |
 
-Then run `npm ci` and `npm run dev`. The dev server is on port 3001, next to Spexregister Web on 3000. It trusts the
-local Caddy root certificate in `.docker/caddy/root.crt`; copy it from `fgv-infra-deploy/local/.docker/caddy/`.
+Then run `npm ci` and `npm run dev`. The dev server is on port 3001, next to Spexregister Web on 3000. `npm run dev`
+and `docker compose` trust the root certificate of fgv-infra-deploy's local Caddy
+(`local/.docker/caddy/data/caddy/pki/authorities/local/root.crt`), read from `../fgv-infra-deploy`, or from
+`INFRA_DEPLOY` if it is checked out elsewhere.
 
-To run the production build in a container instead, on the same port 3001, run `docker compose up -d --build`. It
-reads the same `.env.local`, trusts Caddy's root certificate from a sibling `fgv-infra-deploy` checkout and calls the
-server's `revival-api` container (`docker compose --profile api up -d` in `fgv-revival-server`). To use a server
-started with `bootRun` instead, set `REVIVAL_API_GRAPHQL_ENDPOINT=http://host.docker.internal:8081/api/graphql`.
+## Docker
+
+`docker compose up --build` runs the production build behind its own Caddy, on `https://revival.fgv.local.nu:9443`
+if your hosts file is configured. Port 9443 keeps it clear of Spexregister Web's Caddy on 443. It reads the same
+`.env.local` and talks to the server's API at `api.revival.fgv.local.nu:8443` and to Keycloak at
+`auth.fgv.local.nu:8443`, both behind fgv-infra-deploy's local Caddy, which forwards to the `revival-api` container
+or to a server started with `bootRun`. To log in, `FGV_REVIVAL_URL` in fgv-infra-deploy's `local/.env` must be
+`https://revival.fgv.local.nu:9443`, since the realm only accepts redirects to that address.
 
 Visitor statistics go to Umami only when both Umami variables are set. The tracker is served as `/stats/script.js`
 and events go through `/stats/api/send`, without query strings and never with personal data (`src/utils/umami.ts`).

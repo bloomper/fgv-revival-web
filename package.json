@@ -6,7 +6,7 @@
     "node": ">=26"
   },
   "scripts": {
-    "dev": "NODE_EXTRA_CA_CERTS=\"$(pwd)/.docker/caddy/root.crt\" next dev --port 3001",
+    "dev": "NODE_EXTRA_CA_CERTS=\"${INFRA_DEPLOY:-$(pwd)/../fgv-infra-deploy}/local/.docker/caddy/data/caddy/pki/authorities/local/root.crt\" next dev --port 3001",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
