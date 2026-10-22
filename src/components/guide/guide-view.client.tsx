@@ -58,7 +58,7 @@ export function GuideView({version, itemActions, placeActions}: {
                 {version.chapters.map(chapter => (
                     <section key={chapter.id} id={`chapter-${chapter.phase}`} aria-labelledby={`chapter-${chapter.phase}-title`} className="scroll-mt-24 space-y-4">
                         <div className="flex flex-wrap items-center gap-2">
-                            <h3 id={`chapter-${chapter.phase}-title`} className="text-xl font-semibold">{chapter.phase}. {title(chapter.title)}</h3>
+                            <h3 id={`chapter-${chapter.phase}-title`} className="text-base font-semibold">{chapter.phase}. {title(chapter.title)}</h3>
                             {notTranslated(chapter.title)}
                             {placeActions?.({phase: chapter.phase, sectionKey: null})}
                         </div>

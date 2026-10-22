@@ -8,7 +8,8 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import type {LogEntryFieldsFragment} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
@@ -43,14 +44,14 @@ export function LogAnswerDialog({revivalId, question, members, meetingId, open, 
     const {errors} = form.formState;
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                    <DialogTitle>{t("Log.answerTitle", {number: question.number})}</DialogTitle>
-                    <DialogDescription render={<div/>}><PlainText text={question.text}/></DialogDescription>
-                </DialogHeader>
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
+                <SheetHeader className="p-6 pb-4 shrink-0">
+                    <SheetTitle>{t("Log.answerTitle", {number: question.number})}</SheetTitle>
+                    <SheetDescription render={<div/>}><PlainText text={question.text}/></SheetDescription>
+                </SheetHeader>
                 <form
-                    className="space-y-4"
+                    className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         const result = await answerLogEntryAction({
                             ...values, questionId: question.id, questionVersion: question.version, revivalId, meetingId,
@@ -62,28 +63,32 @@ export function LogAnswerDialog({revivalId, question, members, meetingId, open, 
                         }
                     }))}
                 >
-                    <div className="space-y-2">
-                        <Label htmlFor="answer-text">{t("Log.decision")}</Label>
-                        <Textarea id="answer-text" rows={3} maxLength={MAX_LOG_TEXT} {...form.register("text")}/>
-                        {errors.text?.message && <p className="text-sm text-destructive">{t(`Validation.${errors.text.message}`)}</p>}
-                    </div>
-                    <Controller control={form.control} name="owner" render={({field}) => (
-                        <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}/>
-                    )}/>
-                    <div className="space-y-2">
-                        <Label htmlFor="answer-deadline">{t("Log.deadline")}</Label>
-                        <Input id="answer-deadline" type="date" {...form.register("deadline", {setValueAs: value => value || null})}/>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="answer-comment">{t("Log.comment")}</Label>
-                        <Textarea id="answer-comment" rows={2} maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
-                    </div>
-                    <DialogFooter>
+                    <ScrollArea className="min-h-0 flex-1 border-t">
+                        <div className="space-y-4 px-6 py-6 pb-12">
+                            <div className="space-y-2">
+                                <Label htmlFor="answer-text">{t("Log.decision")}</Label>
+                                <Textarea id="answer-text" rows={3} maxLength={MAX_LOG_TEXT} {...form.register("text")}/>
+                                {errors.text?.message && <p className="text-sm text-destructive">{t(`Validation.${errors.text.message}`)}</p>}
+                            </div>
+                            <Controller control={form.control} name="owner" render={({field}) => (
+                                <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}/>
+                            )}/>
+                            <div className="space-y-2">
+                                <Label htmlFor="answer-deadline">{t("Log.deadline")}</Label>
+                                <Input id="answer-deadline" type="date" {...form.register("deadline", {setValueAs: value => value || null})}/>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="answer-comment">{t("Log.comment")}</Label>
+                                <Textarea id="answer-comment" rows={2} maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
+                            </div>
+                        </div>
+                    </ScrollArea>
+                    <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Log.answer")}</Button>
-                    </DialogFooter>
+                    </SheetFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     );
 }

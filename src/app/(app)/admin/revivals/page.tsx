@@ -7,8 +7,8 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * All revivals: super admins create revivals and change status here; observers see the same list read-only (FR-021,
- * FR-021a).
+ * All revivals: super admins create revivals here and open one to manage it; observers see the same list read-only
+ * (FR-021, FR-021a).
  */
 export default async function AdminRevivalsPage({searchParams}: { searchParams: Promise<{ create?: string }> }) {
     const {create} = await searchParams;
@@ -20,12 +20,12 @@ export default async function AdminRevivalsPage({searchParams}: { searchParams: 
 
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
-                    {superAdmin && <RevivalCreateDialog key={create ?? ""} defaultOpen={create !== undefined}/>}
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
+                    {!superAdmin && <p className="text-sm text-muted-foreground">{t("readOnly")}</p>}
                 </div>
-                {!superAdmin && <p className="text-sm text-muted-foreground">{t("readOnly")}</p>}
-                <RevivalAdminTable revivals={revivals}/>
+                <RevivalAdminTable revivals={revivals}
+                                   actions={superAdmin && <RevivalCreateDialog key={create ?? ""} defaultOpen={create !== undefined}/>}/>
             </div>
         );
     });

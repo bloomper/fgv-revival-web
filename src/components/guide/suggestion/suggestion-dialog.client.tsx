@@ -4,7 +4,8 @@ import {type ReactElement, type ReactNode, useState, useTransition} from "react"
 import {useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
@@ -47,18 +48,15 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
     const {errors} = form.formState;
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={trigger}>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-2xl">
-                <DialogHeader>
-                    <DialogTitle>{t(`Guide.suggest.title.${kind}`)}</DialogTitle>
-                    <DialogDescription>{t("Guide.suggest.description")}</DialogDescription>
-                </DialogHeader>
-                {item && (
-                    <div className="rounded-md border bg-muted/40 p-3 text-sm"><GuideMarkdown>{item.text.sv}</GuideMarkdown></div>
-                )}
+        <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger render={trigger}>{children}</SheetTrigger>
+            <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
+                <SheetHeader className="p-6 pb-4 shrink-0">
+                    <SheetTitle>{t(`Guide.suggest.title.${kind}`)}</SheetTitle>
+                    <SheetDescription>{t("Guide.suggest.description")}</SheetDescription>
+                </SheetHeader>
                 <form
-                    className="space-y-4"
+                    className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         const changedType = kind === "CHANGE" && values.proposedType === item?.type ? null : values.proposedType;
                         const result = await suggestAction({
@@ -77,36 +75,43 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
                         }
                     }))}
                 >
-                    {kind !== "REMOVE" && (
-                        <>
+                    <ScrollArea className="min-h-0 flex-1 border-t">
+                        <div className="space-y-4 px-6 py-6 pb-12">
+                            {item && (
+                                <div className="rounded-md border bg-muted/40 p-3 text-sm"><GuideMarkdown>{item.text.sv}</GuideMarkdown></div>
+                            )}
+                            {kind !== "REMOVE" && (
+                                <>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="suggest-type">{t("Guide.editor.type")}</Label>
+                                        <select id="suggest-type" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
+                                                {...form.register("proposedType")}>
+                                            {GUIDE_ITEM_TYPES.map(type => <option key={type} value={type}>{t(`Guide.type.${type}`)}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="suggest-sv">{t("Guide.editor.swedish")}</Label>
+                                        <Textarea id="suggest-sv" rows={5} maxLength={MAX_ITEM_TEXT} {...form.register("proposedTextSv")}/>
+                                        {errors.proposedTextSv && <p className="text-sm text-destructive">{t(`Validation.${errors.proposedTextSv.message}`)}</p>}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="suggest-en">{t("Guide.editor.english")}</Label>
+                                        <Textarea id="suggest-en" rows={4} maxLength={MAX_ITEM_TEXT} {...form.register("proposedTextEn")}/>
+                                    </div>
+                                </>
+                            )}
                             <div className="space-y-2">
-                                <Label htmlFor="suggest-type">{t("Guide.editor.type")}</Label>
-                                <select id="suggest-type" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
-                                        {...form.register("proposedType")}>
-                                    {GUIDE_ITEM_TYPES.map(type => <option key={type} value={type}>{t(`Guide.type.${type}`)}</option>)}
-                                </select>
+                                <Label htmlFor="suggest-reason">{t(kind === "ADD" ? "Guide.suggest.reasonOptional" : "Guide.suggest.reason")}</Label>
+                                <Textarea id="suggest-reason" rows={3} maxLength={MAX_REASON} {...form.register("reason")}/>
+                                {errors.reason && <p className="text-sm text-destructive">{t(`Validation.${errors.reason.message}`)}</p>}
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="suggest-sv">{t("Guide.editor.swedish")}</Label>
-                                <Textarea id="suggest-sv" rows={5} maxLength={MAX_ITEM_TEXT} {...form.register("proposedTextSv")}/>
-                                {errors.proposedTextSv && <p className="text-sm text-destructive">{t(`Validation.${errors.proposedTextSv.message}`)}</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="suggest-en">{t("Guide.editor.english")}</Label>
-                                <Textarea id="suggest-en" rows={4} maxLength={MAX_ITEM_TEXT} {...form.register("proposedTextEn")}/>
-                            </div>
-                        </>
-                    )}
-                    <div className="space-y-2">
-                        <Label htmlFor="suggest-reason">{t(kind === "ADD" ? "Guide.suggest.reasonOptional" : "Guide.suggest.reason")}</Label>
-                        <Textarea id="suggest-reason" rows={3} maxLength={MAX_REASON} {...form.register("reason")}/>
-                        {errors.reason && <p className="text-sm text-destructive">{t(`Validation.${errors.reason.message}`)}</p>}
-                    </div>
-                    <DialogFooter>
+                        </div>
+                    </ScrollArea>
+                    <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
                         <Button type="submit" disabled={pending}>{t("Guide.suggest.submit")}</Button>
-                    </DialogFooter>
+                    </SheetFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     );
 }

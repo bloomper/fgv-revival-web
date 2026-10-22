@@ -69,7 +69,7 @@ export default async function RevivalPage({params}: { params: Promise<{ id: stri
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="space-y-1">
-                        <h2 className="text-2xl font-bold tracking-tight">{revival.workingTitle}</h2>
+                        <h2 className="text-lg font-bold tracking-tight">{revival.workingTitle}</h2>
                         <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                             <SpexTitle spex={revival.spex}/> · {revival.year} · <StatusBadge status={revival.status}/>
                         </div>
@@ -92,22 +92,22 @@ export default async function RevivalPage({params}: { params: Promise<{ id: stri
                 <RevivalDetails key={revival.version} revival={revival}/>
 
                 <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/log`}/>}>
+                    <Button nativeButton={false} variant="outline" render={<Link href={`/revivals/${revival.id}/log`}/>}>
                         <ListChecks/>
                         {t("log")}
                         {work && <WorkCount open={work.openEntries} overdue={work.overdueEntries} label={t("openOverdue", {open: work.openEntries, overdue: work.overdueEntries})}/>}
                     </Button>
-                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/meetings`}/>}>
+                    <Button nativeButton={false} variant="outline" render={<Link href={`/revivals/${revival.id}/meetings`}/>}>
                         <CalendarCheck/>
                         {t("meetings")}
                     </Button>
-                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/checklists`}/>}>
+                    <Button nativeButton={false} variant="outline" render={<Link href={`/revivals/${revival.id}/checklists`}/>}>
                         <ClipboardCheck/>
                         {t("checklists")}
                         {work && <WorkCount open={work.openRequiredItems} overdue={work.overdueChecklistItems}
                                             label={t("requirementsOverdue", {open: work.openRequiredItems, overdue: work.overdueChecklistItems})}/>}
                     </Button>
-                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/guide`}/>}>
+                    <Button nativeButton={false} variant="outline" render={<Link href={`/revivals/${revival.id}/guide`}/>}>
                         <BookOpen/>
                         {revival.guideVersion ? t("guideVersion", {label: revival.guideVersion.label ?? ""}) : t("guide")}
                     </Button>

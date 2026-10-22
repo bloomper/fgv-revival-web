@@ -19,8 +19,8 @@ export default async function ChecklistTemplatesPage({searchParams}: { searchPar
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
-                    <Button variant="outline" size="sm" aria-pressed={retired}
+                    <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
+                    <Button nativeButton={false} variant="outline" size="sm" aria-pressed={retired}
                             render={<Link href={retired ? "/admin/checklist-templates" : "/admin/checklist-templates?retired=1"}/>}>
                         {retired ? t("hideRetired") : t("showRetired")}
                     </Button>

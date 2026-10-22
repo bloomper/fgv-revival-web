@@ -12,7 +12,7 @@ export function ChecklistFilters({revivalId, filter}: { revivalId: string; filte
     return (
         <div className="flex flex-wrap gap-2" role="group" aria-label={t("label")}>
             {CHECKLIST_FILTERS.map(key => (
-                <Button key={key} size="sm" variant={filter?.[key] ? "default" : "outline"} aria-pressed={!!filter?.[key]}
+                <Button nativeButton={false} key={key} size="sm" variant={filter?.[key] ? "default" : "outline"} aria-pressed={!!filter?.[key]}
                         render={<Link href={`/revivals/${revivalId}/checklists${checklistFilterQuery(filter, key)}`}/>}>
                     {t(key)}
                 </Button>

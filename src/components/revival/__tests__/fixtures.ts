@@ -7,7 +7,7 @@ export function revivalDetail(overrides: Partial<RevivalDetailFragment> = {}): R
         workingTitle: "Ali Baba 2028",
         premiereDate: "2028-02-10",
         status: "ORGANISING",
-        spex: {id: "1", title: "Ali Baba", available: true},
+        spex: {id: "1", title: "Ali Baba", year: 1987, available: true},
         members: [],
         permissions: {
             canEditCore: false,

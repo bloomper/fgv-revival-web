@@ -24,7 +24,22 @@
     "themeDark": "Dark",
     "themeSystem": "System",
     "myFgvAccount": "My FGV account",
-    "toggle": "Toggle"
+    "toggle": "Toggle",
+    "search": "Search",
+    "selected": "{count, plural, =1 {# selected} other {# selected}}",
+    "reset": "Reset",
+    "resetFilters": "Reset filters",
+    "noDataHeading": "No data found",
+    "noDataDescription": "Couldn't find any data at the moment. Please check back later.",
+    "noFilterMatchHeading": "No data found",
+    "noFilterMatchDescription": "Try adjusting your filters or search query to find what you're looking for.",
+    "rowsPerPage": "Rows per page",
+    "pageOf": "Page {page} of {pages}",
+    "firstPage": "First page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page",
+    "clearSearch": "Clear search"
   },
   "Header": {
     "toggleLanguage": "Change language",
@@ -91,6 +106,7 @@
     "ACTIVE": "Active"
   },
   "Revival": {
+    "filterPlaceholder": "Filter by title or year…",
     "spex": "Spex",
     "year": "Year",
     "workingTitle": "Working title",
@@ -104,6 +120,7 @@
     "noStatusHistory": "The status has not changed.",
     "spexUnavailable": "Spexregister is temporarily unavailable",
     "notSet": "Not set",
+    "memberCount": "{count, plural, one {# member} other {# members}}",
     "none": "None",
     "changeStatus": "Change status",
     "statusChanged": "The status was changed",
@@ -124,11 +141,6 @@
   "Admin": {
     "title": "All revivals",
     "create": "New revival",
-    "empty": "There are no revivals yet.",
-    "sortByPremiere": "Sort by premiere",
-    "manageDirecteurs": "Directeurs",
-    "manageDirecteursFor": "Directeurs of {title}",
-    "manageDirecteursDescription": "Appoint directeurs by email address or remove them. The steering group is managed on the revival's page.",
     "readOnly": "You can see every revival but not change them."
   },
   "CreateDialog": {

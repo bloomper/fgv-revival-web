@@ -167,6 +167,7 @@ function toRevival(persona, revival) {
             __typename: "Spex",
             id: revival.spexId,
             title: state.spexregisterUp ? spex?.title ?? null : null,
+            year: state.spexregisterUp ? spex?.year ?? null : null,
             available: state.spexregisterUp,
         },
         members: state.members.filter(member => member.revivalId === revival.id).map(member => ({

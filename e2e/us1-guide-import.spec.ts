@@ -32,6 +32,13 @@ test.describe("Guide, user story 1: the super admin imports guide v5 and publish
         await expect(page.getByRole("button", {name: "Importera från Word"})).toHaveCount(0);
     });
 
+    test("starts the first draft without a Word document", async ({page}) => {
+        await page.goto("/admin/guide");
+        await page.getByRole("button", {name: "Starta ett utkast"}).click();
+
+        await expect(page).toHaveURL(/\/admin\/guide\/draft/);
+    });
+
     test("discards an imported draft after confirming", async ({page}) => {
         await page.goto("/admin/guide");
         await page.getByRole("button", {name: "Importera från Word"}).click();

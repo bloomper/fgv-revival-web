@@ -54,7 +54,7 @@ export function ChecklistOverview({revivalId, checklists, showCancelled}: { revi
             <section className="space-y-2" aria-label={t("events")}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <h3 className="font-medium">{t("events")}</h3>
-                    <Button variant="outline" size="sm" aria-pressed={showCancelled}
+                    <Button nativeButton={false} variant="outline" size="sm" aria-pressed={showCancelled}
                             render={<Link href={`/revivals/${revivalId}/checklists${showCancelled ? "" : "?cancelled=1"}`}/>}>
                         {showCancelled ? t("hideCancelled") : t("showCancelled")}
                     </Button>

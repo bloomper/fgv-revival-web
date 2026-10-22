@@ -7,7 +7,8 @@ import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import type {LogEntryFieldsFragment} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
@@ -51,14 +52,14 @@ export function LogEntryDialog({revivalId, entry, members, tags, meetingId, open
     const error = (message?: string) => message && <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                    <DialogTitle>{entry ? t("Log.editTitle", {number: entry.number}) : t("Log.addTitle")}</DialogTitle>
-                    <DialogDescription>{t("Log.dialogDescription")}</DialogDescription>
-                </DialogHeader>
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
+                <SheetHeader className="p-6 pb-4 shrink-0">
+                    <SheetTitle>{entry ? t("Log.editTitle", {number: entry.number}) : t("Log.addTitle")}</SheetTitle>
+                    <SheetDescription>{t("Log.dialogDescription")}</SheetDescription>
+                </SheetHeader>
                 <form
-                    className="space-y-4"
+                    className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         const result = entry
                             ? await updateLogEntryAction({id: entry.id, version: entry.version, revivalId, meetingId, values})
@@ -69,76 +70,80 @@ export function LogEntryDialog({revivalId, entry, members, tags, meetingId, open
                         }
                     }))}
                 >
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="log-type">{t("Log.typeLabel")}</Label>
-                            <select id="log-type" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm" {...form.register("type")}>
-                                {LOG_ENTRY_TYPES.map(type => <option key={type} value={type}>{t(`Log.type.${type}`)}</option>)}
-                            </select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="log-status">{t("Log.statusLabel")}</Label>
-                            <select id="log-status" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm" {...form.register("status")}>
-                                {LOG_ENTRY_STATUSES.map(status => <option key={status} value={status}>{t(`Log.status.${status}`)}</option>)}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="log-text">{t("Log.text")}</Label>
-                        <Textarea id="log-text" rows={4} maxLength={MAX_LOG_TEXT} {...form.register("text")}/>
-                        {error(errors.text?.message)}
-                    </div>
-                    <Controller control={form.control} name="owner" render={({field}) => (
-                        <OwnerField members={members} value={field.value ?? null} onChange={field.onChange} current={entry?.owner?.person}/>
-                    )}/>
-                    {error(errors.owner?.name?.message ?? errors.owner?.message)}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="log-deadline">{t("Log.deadline")}</Label>
-                            <Input id="log-deadline" type="date" {...form.register("deadline", {setValueAs: value => value || null})}/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="log-date">{t("Log.date")}</Label>
-                            <Input id="log-date" type="date" {...form.register("date", {setValueAs: value => value || undefined})}/>
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="log-comment">{t("Log.comment")}</Label>
-                        <Textarea id="log-comment" rows={2} maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
-                        {error(errors.comment?.message)}
-                    </div>
-                    <Controller control={form.control} name="tags" render={({field}) => (
-                        <div className="space-y-2">
-                            <Label htmlFor="log-tag">{t("Log.tags")}</Label>
-                            <div className="flex flex-wrap gap-1">
-                                {field.value.map(tag => (
-                                    <Button key={tag} type="button" size="sm" variant="secondary" aria-label={t("Log.removeTag", {tag})}
-                                            onClick={() => field.onChange(field.value.filter(other => other !== tag))}>
-                                        {tag} ×
-                                    </Button>
-                                ))}
+                    <ScrollArea className="min-h-0 flex-1 border-t">
+                        <div className="space-y-4 px-6 py-6 pb-12">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="log-type">{t("Log.typeLabel")}</Label>
+                                    <select id="log-type" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm" {...form.register("type")}>
+                                        {LOG_ENTRY_TYPES.map(type => <option key={type} value={type}>{t(`Log.type.${type}`)}</option>)}
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="log-status">{t("Log.statusLabel")}</Label>
+                                    <select id="log-status" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm" {...form.register("status")}>
+                                        {LOG_ENTRY_STATUSES.map(status => <option key={status} value={status}>{t(`Log.status.${status}`)}</option>)}
+                                    </select>
+                                </div>
                             </div>
-                            <Input id="log-tag" list="log-tag-options" value={tagText} placeholder={t("Log.addTag")}
-                                   onChange={event => setTagText(event.target.value)}
-                                   onKeyDown={(event) => {
-                                       if (event.key === "Enter" && tagText.trim()) {
-                                           event.preventDefault();
-                                           field.onChange([...new Set([...field.value, tagText.trim()])]);
-                                           setTagText("");
-                                       }
-                                   }}/>
-                            <datalist id="log-tag-options">
-                                {tags.map(tag => <option key={tag} value={tag}/>)}
-                            </datalist>
-                            {error(errors.tags?.message ?? errors.tags?.[0]?.message)}
+                            <div className="space-y-2">
+                                <Label htmlFor="log-text">{t("Log.text")}</Label>
+                                <Textarea id="log-text" rows={4} maxLength={MAX_LOG_TEXT} {...form.register("text")}/>
+                                {error(errors.text?.message)}
+                            </div>
+                            <Controller control={form.control} name="owner" render={({field}) => (
+                                <OwnerField members={members} value={field.value ?? null} onChange={field.onChange} current={entry?.owner?.person}/>
+                            )}/>
+                            {error(errors.owner?.name?.message ?? errors.owner?.message)}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="log-deadline">{t("Log.deadline")}</Label>
+                                    <Input id="log-deadline" type="date" {...form.register("deadline", {setValueAs: value => value || null})}/>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="log-date">{t("Log.date")}</Label>
+                                    <Input id="log-date" type="date" {...form.register("date", {setValueAs: value => value || undefined})}/>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="log-comment">{t("Log.comment")}</Label>
+                                <Textarea id="log-comment" rows={2} maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
+                                {error(errors.comment?.message)}
+                            </div>
+                            <Controller control={form.control} name="tags" render={({field}) => (
+                                <div className="space-y-2">
+                                    <Label htmlFor="log-tag">{t("Log.tags")}</Label>
+                                    <div className="flex flex-wrap gap-1">
+                                        {field.value.map(tag => (
+                                            <Button key={tag} type="button" size="sm" variant="secondary" aria-label={t("Log.removeTag", {tag})}
+                                                    onClick={() => field.onChange(field.value.filter(other => other !== tag))}>
+                                                {tag} ×
+                                            </Button>
+                                        ))}
+                                    </div>
+                                    <Input id="log-tag" list="log-tag-options" value={tagText} placeholder={t("Log.addTag")}
+                                           onChange={event => setTagText(event.target.value)}
+                                           onKeyDown={(event) => {
+                                               if (event.key === "Enter" && tagText.trim()) {
+                                                   event.preventDefault();
+                                                   field.onChange([...new Set([...field.value, tagText.trim()])]);
+                                                   setTagText("");
+                                               }
+                                           }}/>
+                                    <datalist id="log-tag-options">
+                                        {tags.map(tag => <option key={tag} value={tag}/>)}
+                                    </datalist>
+                                    {error(errors.tags?.message ?? errors.tags?.[0]?.message)}
+                                </div>
+                            )}/>
                         </div>
-                    )}/>
-                    <DialogFooter>
+                    </ScrollArea>
+                    <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
-                    </DialogFooter>
+                    </SheetFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     );
 }

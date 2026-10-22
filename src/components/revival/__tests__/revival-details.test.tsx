@@ -23,7 +23,7 @@ describe("RevivalDetails", () => {
     });
 
     it("shows that Spexregister is unavailable", () => {
-        render(<RevivalDetails revival={revivalDetail({spex: {id: "1", title: null, available: false}})}/>);
+        render(<RevivalDetails revival={revivalDetail({spex: {id: "1", title: null, year: null, available: false}})}/>);
 
         expect(screen.getByText("spexUnavailable")).toBeInTheDocument();
     });

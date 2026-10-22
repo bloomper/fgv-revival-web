@@ -44,7 +44,7 @@ export default async function MeetingsPage({params}: { params: Promise<{ id: str
                             <ArrowLeft className="size-4"/>
                             {revival.workingTitle}
                         </Link>
-                        <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
+                        <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
                     </div>
                     {revival.permissions.canWriteLog && <NewMeetingButton revivalId={revival.id} members={revival.ownerCandidates}/>}
                 </div>

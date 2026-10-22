@@ -8,7 +8,8 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {CalendarPlus, Pencil} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {pickText} from "@/components/guide/localized";
@@ -41,16 +42,16 @@ export function EventChecklistDialog({revivalId, templates, checklist}: {
     const error = form.formState.errors.name?.message;
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Sheet open={open} onOpenChange={setOpen}>
             {checklist
                 ? <Button variant="outline" onClick={() => setOpen(true)}><Pencil/>{t("Checklist.editEvent")}</Button>
                 : <Button onClick={() => setOpen(true)}><CalendarPlus/>{t("Checklist.newEvent")}</Button>}
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{checklist ? t("Checklist.editEvent") : t("Checklist.newEvent")}</DialogTitle>
-                    <DialogDescription>{t("Checklist.eventDescription")}</DialogDescription>
-                </DialogHeader>
-                <form className="space-y-4" onSubmit={form.handleSubmit(values => startTransition(async () => {
+            <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
+                <SheetHeader className="p-6 pb-4 shrink-0">
+                    <SheetTitle>{checklist ? t("Checklist.editEvent") : t("Checklist.newEvent")}</SheetTitle>
+                    <SheetDescription>{t("Checklist.eventDescription")}</SheetDescription>
+                </SheetHeader>
+                <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(values => startTransition(async () => {
                     const result = await saveEventChecklistAction({revivalId, checklist: checklist ? {id: checklist.id, version: checklist.version} : null, values});
 
                     if (feedback(result, t("Common.saved"))) {
@@ -60,33 +61,37 @@ export function EventChecklistDialog({revivalId, templates, checklist}: {
                         }
                     }
                 }))}>
-                    <div className="space-y-2">
-                        <Label htmlFor={`${id}-name`}>{t("Checklist.eventName")}</Label>
-                        <Input id={`${id}-name`} maxLength={MAX_TEMPLATE_NAME} {...form.register("name")}/>
-                        {error && <p className="text-sm text-destructive">{t(`Validation.${error}`)}</p>}
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor={`${id}-date`}>{t("Checklist.eventDate")}</Label>
-                        <Input id={`${id}-date`} type="date" {...form.register("date", {setValueAs: value => value || null})}/>
-                    </div>
-                    {!checklist && (
-                        <div className="space-y-2">
-                            <Label htmlFor={`${id}-template`}>{t("Checklist.template")}</Label>
-                            <select id={`${id}-template`} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
-                                    {...form.register("templateId", {setValueAs: value => value || null})}>
-                                <option value="">{t("Checklist.noTemplate")}</option>
-                                {templates.map(template => (
-                                    <option key={template.id} value={template.id}>{template.name ? pickText(template.name, locale).text : template.id}</option>
-                                ))}
-                            </select>
+                    <ScrollArea className="min-h-0 flex-1 border-t">
+                        <div className="space-y-4 px-6 py-6 pb-12">
+                            <div className="space-y-2">
+                                <Label htmlFor={`${id}-name`}>{t("Checklist.eventName")}</Label>
+                                <Input id={`${id}-name`} maxLength={MAX_TEMPLATE_NAME} {...form.register("name")}/>
+                                {error && <p className="text-sm text-destructive">{t(`Validation.${error}`)}</p>}
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor={`${id}-date`}>{t("Checklist.eventDate")}</Label>
+                                <Input id={`${id}-date`} type="date" {...form.register("date", {setValueAs: value => value || null})}/>
+                            </div>
+                            {!checklist && (
+                                <div className="space-y-2">
+                                    <Label htmlFor={`${id}-template`}>{t("Checklist.template")}</Label>
+                                    <select id={`${id}-template`} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
+                                            {...form.register("templateId", {setValueAs: value => value || null})}>
+                                        <option value="">{t("Checklist.noTemplate")}</option>
+                                        {templates.map(template => (
+                                            <option key={template.id} value={template.id}>{template.name ? pickText(template.name, locale).text : template.id}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
                         </div>
-                    )}
-                    <DialogFooter>
+                    </ScrollArea>
+                    <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
                         <Button type="button" variant="outline" onClick={() => setOpen(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
-                    </DialogFooter>
+                    </SheetFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     );
 }

@@ -24,7 +24,22 @@
     "themeDark": "Mörkt",
     "themeSystem": "System",
     "myFgvAccount": "Mitt FGV-konto",
-    "toggle": "Växla"
+    "toggle": "Växla",
+    "search": "Sök",
+    "selected": "{count, plural, =1 {# vald} other {# valda}}",
+    "reset": "Återställ",
+    "resetFilters": "Återställ filter",
+    "noDataHeading": "Ingen data hittades",
+    "noDataDescription": "Kunde inte hitta någon data för tillfället. Vänligen kolla senare.",
+    "noFilterMatchHeading": "Ingen data hittades",
+    "noFilterMatchDescription": "Prova att ändra din filtrering eller sökord för att hitta det du letar efter.",
+    "rowsPerPage": "Rader per sida",
+    "pageOf": "Sida {page} av {pages}",
+    "firstPage": "Första sidan",
+    "previousPage": "Föregående sida",
+    "nextPage": "Nästa sida",
+    "lastPage": "Sista sidan",
+    "clearSearch": "Rensa sökningen"
   },
   "Header": {
     "toggleLanguage": "Byt språk",
@@ -91,6 +106,7 @@
     "ACTIVE": "Aktiv"
   },
   "Revival": {
+    "filterPlaceholder": "Filtrera på titel eller år…",
     "spex": "Spex",
     "year": "År",
     "workingTitle": "Arbetstitel",
@@ -104,6 +120,7 @@
     "noStatusHistory": "Statusen har inte ändrats.",
     "spexUnavailable": "Spexregistret är tillfälligt otillgängligt",
     "notSet": "Inte angivet",
+    "memberCount": "{count, plural, one {# medlem} other {# medlemmar}}",
     "none": "Inga",
     "changeStatus": "Ändra status",
     "statusChanged": "Statusen ändrades",
@@ -124,11 +141,6 @@
   "Admin": {
     "title": "Alla nyuppsättningar",
     "create": "Ny nyuppsättning",
-    "empty": "Det finns inga nyuppsättningar än.",
-    "sortByPremiere": "Sortera på premiär",
-    "manageDirecteurs": "Directeurer",
-    "manageDirecteursFor": "Directeurer för {title}",
-    "manageDirecteursDescription": "Utse directeurer med e-postadress eller ta bort dem. Styrgruppen hanteras på nyuppsättningens sida.",
     "readOnly": "Du kan se alla nyuppsättningar men inte ändra dem."
   },
   "CreateDialog": {

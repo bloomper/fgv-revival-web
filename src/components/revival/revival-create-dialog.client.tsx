@@ -8,7 +8,8 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Plus} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {createRevivalAction, searchSpexAction, type SpexOption} from "@/app/(app)/admin/revivals/actions.server";
@@ -101,18 +102,18 @@ export function RevivalCreateDialog({defaultOpen = false}: { defaultOpen?: boole
     const {errors} = form.formState;
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button/>}>
+        <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger render={<Button size="sm" className="h-8 w-full lg:w-auto"/>}>
                 <Plus/>
                 {t("Admin.create")}
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{t("CreateDialog.title")}</DialogTitle>
-                    <DialogDescription>{t("CreateDialog.description")}</DialogDescription>
-                </DialogHeader>
+            </SheetTrigger>
+            <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
+                <SheetHeader className="p-6 pb-4 shrink-0">
+                    <SheetTitle>{t("CreateDialog.title")}</SheetTitle>
+                    <SheetDescription>{t("CreateDialog.description")}</SheetDescription>
+                </SheetHeader>
                 <form
-                    className="space-y-4"
+                    className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         const result = await createRevivalAction(values);
 
@@ -125,32 +126,36 @@ export function RevivalCreateDialog({defaultOpen = false}: { defaultOpen?: boole
                         }
                     }))}
                 >
-                    <div className="space-y-2">
-                        <Label>{t("Revival.spex")}</Label>
-                        <SpexPicker value={spex} onChange={(picked) => {
-                            setSpex(picked);
-                            form.setValue("spexId", picked?.id ?? "", {shouldValidate: !!picked});
-                            if (picked?.title && !form.getValues("workingTitle")) {
-                                form.setValue("workingTitle", `${picked.title} ${form.getValues("year")}`);
-                            }
-                        }}/>
-                        {errors.spexId && <p className="text-sm text-destructive">{t(`Validation.${errors.spexId.message}`)}</p>}
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="revival-year">{t("Revival.year")}</Label>
-                        <Input id="revival-year" type="number" {...form.register("year")}/>
-                        {errors.year && <p className="text-sm text-destructive">{t(`Validation.${errors.year.message}`)}</p>}
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="revival-working-title">{t("Revival.workingTitle")}</Label>
-                        <Input id="revival-working-title" {...form.register("workingTitle")}/>
-                        {errors.workingTitle && <p className="text-sm text-destructive">{t(`Validation.${errors.workingTitle.message}`)}</p>}
-                    </div>
-                    <DialogFooter>
+                    <ScrollArea className="min-h-0 flex-1 border-t">
+                        <div className="space-y-4 px-6 py-6 pb-12">
+                            <div className="space-y-2">
+                                <Label>{t("Revival.spex")}</Label>
+                                <SpexPicker value={spex} onChange={(picked) => {
+                                    setSpex(picked);
+                                    form.setValue("spexId", picked?.id ?? "", {shouldValidate: !!picked});
+                                    if (picked?.title && !form.getValues("workingTitle")) {
+                                        form.setValue("workingTitle", `${picked.title} ${form.getValues("year")}`);
+                                    }
+                                }}/>
+                                {errors.spexId && <p className="text-sm text-destructive">{t(`Validation.${errors.spexId.message}`)}</p>}
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="revival-year">{t("Revival.year")}</Label>
+                                <Input id="revival-year" type="number" {...form.register("year")}/>
+                                {errors.year && <p className="text-sm text-destructive">{t(`Validation.${errors.year.message}`)}</p>}
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="revival-working-title">{t("Revival.workingTitle")}</Label>
+                                <Input id="revival-working-title" {...form.register("workingTitle")}/>
+                                {errors.workingTitle && <p className="text-sm text-destructive">{t(`Validation.${errors.workingTitle.message}`)}</p>}
+                            </div>
+                        </div>
+                    </ScrollArea>
+                    <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
                         <Button type="submit" disabled={pending}>{t("CreateDialog.submit")}</Button>
-                    </DialogFooter>
+                    </SheetFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     );
 }

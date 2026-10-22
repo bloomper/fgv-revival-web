@@ -51,10 +51,10 @@ export default async function RevivalLogPage({params, searchParams}: {
                             <ArrowLeft className="size-4"/>
                             {revival.workingTitle}
                         </Link>
-                        <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
+                        <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
                     </div>
                     {(revival.permissions.canImportLog || revival.permissions.canWaiveRequirement) && (
-                        <Button variant="outline" render={<Link href={`/revivals/${revival.id}/log/import`}/>}>
+                        <Button nativeButton={false} variant="outline" render={<Link href={`/revivals/${revival.id}/log/import`}/>}>
                             <FileUp/>
                             {t("import.title")}
                         </Button>

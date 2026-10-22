@@ -7,7 +7,8 @@ import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import type {ChecklistTemplateQuery} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
 import {GuideItemPicker} from "@/components/checklist/template/guide-item-picker.client";
@@ -48,53 +49,57 @@ export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}:
     const error = (key: string | undefined) => key && <p className="text-sm text-destructive">{t(`Validation.${key}`)}</p>;
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                    <DialogTitle>{item ? t("ChecklistTemplate.editItem") : t("ChecklistTemplate.addItem")}</DialogTitle>
-                    <DialogDescription>{t("ChecklistTemplate.itemDescription")}</DialogDescription>
-                </DialogHeader>
-                <form className="space-y-4" onSubmit={form.handleSubmit(values => startTransition(async () => {
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
+                <SheetHeader className="p-6 pb-4 shrink-0">
+                    <SheetTitle>{item ? t("ChecklistTemplate.editItem") : t("ChecklistTemplate.addItem")}</SheetTitle>
+                    <SheetDescription>{t("ChecklistTemplate.itemDescription")}</SheetDescription>
+                </SheetHeader>
+                <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(values => startTransition(async () => {
                     const result = await saveTemplateItemAction({templateId, item: item ? {id: item.id, version: item.version} : null, values});
 
                     if (feedback(result, t("Common.saved"))) {
                         onOpenChange(false);
                     }
                 }))}>
-                    <div className="space-y-2">
-                        <Label htmlFor={`${id}-item-sv`}>{t("ChecklistTemplate.textSv")}</Label>
-                        <Textarea id={`${id}-item-sv`} rows={2} maxLength={MAX_ITEM_TEXT} {...form.register("text.sv")}/>
-                        {error(form.formState.errors.text?.sv?.message)}
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor={`${id}-item-en`}>{t("ChecklistTemplate.textEn")}</Label>
-                        <Textarea id={`${id}-item-en`} rows={2} maxLength={MAX_ITEM_TEXT} {...form.register("text.en")}/>
-                    </div>
-                    <Controller control={form.control} name="guideItemKey" render={({field}) => (
-                        <GuideItemPicker value={field.value} label={guideLabel} onChange={(key, label) => {
-                            field.onChange(key);
-                            setGuideLabel(label);
-                        }}/>
-                    )}/>
-                    <div className="space-y-2">
-                        <Label htmlFor={`${id}-item-capability`}>{t("ChecklistTemplate.defaultCapability")}</Label>
-                        <select id={`${id}-item-capability`} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
-                                {...form.register("defaultCapability", {setValueAs: value => value || null})}>
-                            <option value="">{t("ChecklistTemplate.noCapability")}</option>
-                            {CAPABILITIES.map(capability => <option key={capability} value={capability}>{t(`Capability.${capability}`)}</option>)}
-                        </select>
-                    </div>
-                    {kind === "EVENT" && (
-                        <Controller control={form.control} name="deadline" render={({field}) => (
-                            <RelativeDeadlineField value={field.value} onChange={field.onChange}/>
-                        )}/>
-                    )}
-                    <DialogFooter>
+                    <ScrollArea className="min-h-0 flex-1 border-t">
+                        <div className="space-y-4 px-6 py-6 pb-12">
+                            <div className="space-y-2">
+                                <Label htmlFor={`${id}-item-sv`}>{t("ChecklistTemplate.textSv")}</Label>
+                                <Textarea id={`${id}-item-sv`} rows={2} maxLength={MAX_ITEM_TEXT} {...form.register("text.sv")}/>
+                                {error(form.formState.errors.text?.sv?.message)}
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor={`${id}-item-en`}>{t("ChecklistTemplate.textEn")}</Label>
+                                <Textarea id={`${id}-item-en`} rows={2} maxLength={MAX_ITEM_TEXT} {...form.register("text.en")}/>
+                            </div>
+                            <Controller control={form.control} name="guideItemKey" render={({field}) => (
+                                <GuideItemPicker value={field.value} label={guideLabel} onChange={(key, label) => {
+                                    field.onChange(key);
+                                    setGuideLabel(label);
+                                }}/>
+                            )}/>
+                            <div className="space-y-2">
+                                <Label htmlFor={`${id}-item-capability`}>{t("ChecklistTemplate.defaultCapability")}</Label>
+                                <select id={`${id}-item-capability`} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
+                                        {...form.register("defaultCapability", {setValueAs: value => value || null})}>
+                                    <option value="">{t("ChecklistTemplate.noCapability")}</option>
+                                    {CAPABILITIES.map(capability => <option key={capability} value={capability}>{t(`Capability.${capability}`)}</option>)}
+                                </select>
+                            </div>
+                            {kind === "EVENT" && (
+                                <Controller control={form.control} name="deadline" render={({field}) => (
+                                    <RelativeDeadlineField value={field.value} onChange={field.onChange}/>
+                                )}/>
+                            )}
+                        </div>
+                    </ScrollArea>
+                    <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
-                    </DialogFooter>
+                    </SheetFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     );
 }

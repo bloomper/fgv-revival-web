@@ -40,7 +40,7 @@ export default async function GuidePage({searchParams}: { searchParams: Promise<
         if (refused) {
             return (
                 <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                    <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
+                    <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
                     <Card><CardContent className="pt-6 text-sm">{t("refused")}</CardContent></Card>
                 </div>
             );
@@ -49,7 +49,7 @@ export default async function GuidePage({searchParams}: { searchParams: Promise<
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h2 className="text-2xl font-bold tracking-tight">
+                    <h2 className="text-lg font-bold tracking-tight">
                         {t("title")}{shown?.label ? ` ${shown.label}` : shown?.status === "DRAFT" ? ` (${t("draft")})` : ""}
                     </h2>
                     {versions.length > 1 && (

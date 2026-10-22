@@ -48,13 +48,13 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
                         <ArrowLeft className="size-4"/>
                         {revival.workingTitle}
                     </Link>
-                    <h2 className="text-2xl font-bold tracking-tight">
+                    <h2 className="text-lg font-bold tracking-tight">
                         {t("title")}{revival.guideVersion?.label ? ` ${revival.guideVersion.label}` : ""}
                     </h2>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {version && <GuidePdfButton revivalId={revival.id}/>}
-                    <Button variant="outline" render={<Link href={`/revivals/${revival.id}/guide/suggestions`}/>}>
+                    <Button nativeButton={false} variant="outline" render={<Link href={`/revivals/${revival.id}/guide/suggestions`}/>}>
                         <MessagesSquare/>
                         {t("suggestions.title")}
                     </Button>

@@ -51,7 +51,7 @@ export default async function ChecklistPage({params}: { params: Promise<{ id: st
                         <ArrowLeft className="size-4"/>
                         {t("title")}
                     </Link>
-                    <h2 className="flex flex-wrap items-center gap-2 text-2xl font-bold tracking-tight">
+                    <h2 className="flex flex-wrap items-center gap-2 text-lg font-bold tracking-tight">
                         {title}
                         {checklist.date && <span className="text-base font-normal text-muted-foreground">{checklist.date}</span>}
                         {checklist.cancelled && <Badge variant="outline">{t("cancelled")}</Badge>}

@@ -53,7 +53,7 @@ export default async function ChecklistTemplatePage({params}: { params: Promise<
                             {t("ChecklistTemplate.title")}
                         </Link>
                     )}
-                    <h2 className="flex flex-wrap items-center gap-2 text-2xl font-bold tracking-tight">
+                    <h2 className="flex flex-wrap items-center gap-2 text-lg font-bold tracking-tight">
                         {title}
                         {template.retired && <Badge variant="outline">{t("ChecklistTemplate.retired")}</Badge>}
                     </h2>

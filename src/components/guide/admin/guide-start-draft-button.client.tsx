@@ -10,7 +10,7 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {track} from "@/utils/umami";
 
 /**
- * Starts a draft as a copy of the latest version (FR-012), then opens the editor.
+ * Starts a draft as a copy of the latest version, or empty before the first one (FR-012), then opens the editor.
  */
 export function GuideStartDraftButton() {
     const t = useTranslations("Guide.admin");

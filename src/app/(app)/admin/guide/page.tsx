@@ -26,11 +26,11 @@ export default async function AdminGuidePage() {
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h2 className="text-2xl font-bold tracking-tight">{t("admin.title")}</h2>
+                    <h2 className="text-lg font-bold tracking-tight">{t("admin.title")}</h2>
                     {canImport && <GuideImportDialog/>}
-                    {!draft && versions.length > 0 && <GuideStartDraftButton/>}
+                    {!draft && <GuideStartDraftButton/>}
                     {versions.length > 0 && (
-                        <Button variant="outline" render={<Link href="/admin/guide/suggestions"/>}>
+                        <Button nativeButton={false} variant="outline" render={<Link href="/admin/guide/suggestions"/>}>
                             <MessagesSquare/>
                             {t("suggestions.title")}
                         </Button>
@@ -51,7 +51,7 @@ export default async function AdminGuidePage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex flex-wrap gap-2">
-                                <Button variant="outline" render={<Link href="/admin/guide/draft"/>}>
+                                <Button nativeButton={false} variant="outline" render={<Link href="/admin/guide/draft"/>}>
                                     <PencilLine/>
                                     {t("admin.edit")}
                                 </Button>

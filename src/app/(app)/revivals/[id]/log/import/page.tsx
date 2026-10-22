@@ -45,7 +45,7 @@ export default async function LogImportPage({params}: { params: Promise<{ id: st
                         <ArrowLeft className="size-4"/>
                         {loaded.revival.workingTitle}
                     </Link>
-                    <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
+                    <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
                     {canImportLog && <p className="max-w-2xl text-sm text-muted-foreground">{t("description")}</p>}
                 </div>
                 {canImportLog ? <LogImportWizard revivalId={id}/> : (

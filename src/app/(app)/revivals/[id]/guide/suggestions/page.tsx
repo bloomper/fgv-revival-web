@@ -35,7 +35,7 @@ export default async function RevivalGuideSuggestionsPage({params}: { params: Pr
                     <ArrowLeft className="size-4"/>
                     {t("backToGuide")}
                 </Link>
-                <h2 className="text-2xl font-bold tracking-tight">{t("revivalTitle", {revival: loaded.revival.workingTitle})}</h2>
+                <h2 className="text-lg font-bold tracking-tight">{t("revivalTitle", {revival: loaded.revival.workingTitle})}</h2>
                 <SuggestionList suggestions={suggestions}/>
             </div>
         );

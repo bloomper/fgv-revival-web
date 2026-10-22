@@ -26,24 +26,57 @@ test.describe("User story 1: the super admin records and approves a revival", ()
         await expect(page.getByText("Väntar på åtkomst")).toBeVisible();
     });
 
-    test("rejects a revival and moves another one backwards from the list", async ({page}) => {
+    test("rejects a revival and moves another one backwards on their pages", async ({page}) => {
         await page.goto("/admin/revivals");
+        await openRevival(page, "Nobel 2030");
+        await page.getByRole("combobox", {name: "Ändra status"}).selectOption("REJECTED");
+        await expect(page.locator('[data-slot="badge"]:visible', {hasText: "Avslagen"})).toBeVisible();
 
-        const nobel = page.getByRole("row", {name: /Nobel 2030/});
-        await nobel.getByRole("combobox", {name: "Ändra status"}).selectOption("REJECTED");
-        await expect(nobel.getByText("Avslagen")).toBeVisible();
-
-        const aliBaba = page.getByRole("row", {name: /Ali Baba 2028/});
-        await aliBaba.getByRole("combobox", {name: "Ändra status"}).selectOption("PROPOSED");
-        await expect(aliBaba.getByText("Föreslagen")).toBeVisible();
+        await page.goto("/admin/revivals");
+        await openRevival(page, "Ali Baba 2028");
+        await page.getByRole("combobox", {name: "Ändra status"}).selectOption("PROPOSED");
+        await expect(page.locator('[data-slot="badge"]:visible', {hasText: "Föreslagen"})).toBeVisible();
     });
 
-    test("lists revivals sortable by premiere date with their directeurs", async ({page}) => {
+    test("lists revivals sortable by any column with their directeurs, and no controls in the rows", async ({page}) => {
         await page.goto("/admin/revivals");
 
         await expect(page.getByRole("row", {name: /Ali Baba 2028.*Dana Directeur/})).toBeVisible();
-        await page.getByRole("button", {name: "Sortera på premiär"}).click();
         await expect(page.getByRole("row").nth(1)).toContainText("Snorre 2027");
+
+        const title = page.getByRole("button", {name: "Arbetstitel"});
+        const premiere = page.getByRole("button", {name: "Premiär"});
+
+        await title.click();
+        await expect(page.getByRole("row").nth(1)).toContainText("Ali Baba 2028");
+        await expect(title.locator("svg")).toHaveClass(/lucide-arrow-up(?!-)/);
+        await expect(premiere.locator("svg")).toHaveClass(/lucide-arrow-up-down/);
+
+        await title.click();
+        await expect(page.getByRole("row").nth(1)).toContainText("Snorre 2027");
+        await expect(title.locator("svg")).toHaveClass(/lucide-arrow-down/);
+
+        await page.getByRole("button", {name: "År"}).click();
+        await expect(page.getByRole("row").nth(1)).toContainText("Snorre 2027");
+        await expect(page.getByRole("row").nth(3)).toContainText("Nobel 2030");
+        await expect(page.getByRole("button", {name: "År"}).locator("svg")).toHaveClass(/lucide-arrow-up(?!-)/);
+        await expect(title.locator("svg")).toHaveClass(/lucide-arrow-up-down/);
+        await expect(page.getByRole("combobox", {name: "Ändra status"})).toHaveCount(0);
+    });
+
+    test("filters the list on text and status", async ({page}) => {
+        await page.goto("/admin/revivals");
+
+        await page.getByRole("textbox", {name: "Sök"}).fill("nobel");
+        await expect(page.getByRole("row")).toHaveCount(2);
+        await expect(page.getByRole("row").nth(1)).toContainText("Nobel 2030");
+
+        await page.getByRole("button", {name: "Återställ", exact: true}).click();
+        await page.getByRole("button", {name: /^Status \d+ valda/}).click();
+        await page.getByRole("button", {name: "Föreslagen"}).click();
+        await page.keyboard.press("Escape");
+        await expect(page.getByRole("row", {name: /Nobel 2030/})).toHaveCount(0);
+        await expect(page.getByRole("row", {name: /Ali Baba 2028/})).toBeVisible();
     });
 
     test("is told the spex list is unavailable while Spexregister is down", async ({page, mock}) => {
@@ -53,21 +86,6 @@ test.describe("User story 1: the super admin records and approves a revival", ()
         await expect(page.getByRole("row", {name: /Ali Baba 2028/}).getByText("Spexregistret är tillfälligt otillgängligt")).toBeVisible();
         await page.getByRole("button", {name: "Ny nyuppsättning"}).click();
         await expect(page.getByRole("dialog").getByRole("alert")).toHaveText("Spexregistret är tillfälligt otillgängligt. Försök igen om en stund.");
-    });
-
-    test("appoints and removes a directeur from the list", async ({page}) => {
-        await page.goto("/admin/revivals");
-        await page.getByRole("row", {name: /Nobel 2030/}).getByRole("button", {name: "Directeurer för Nobel 2030"}).click();
-
-        const dialog = page.getByRole("dialog");
-        await dialog.getByRole("textbox", {name: /Utse directeur/}).fill("lista.directeur@example.org");
-        await dialog.getByRole("button", {name: "Utse directeur"}).click();
-        await expect(dialog.getByText("lista.directeur@example.org")).toBeVisible();
-        await expect(dialog.getByText("Väntar på åtkomst")).toBeVisible();
-
-        await dialog.getByRole("button", {name: "Ta bort lista.directeur@example.org"}).click();
-        await page.getByRole("alertdialog").getByRole("button", {name: "Ta bort"}).click();
-        await expect(dialog.getByText("Ingen directeur är utsedd.")).toBeVisible();
     });
 
     test("opens a revival from the list to manage its steering group", async ({page}) => {

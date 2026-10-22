@@ -28,7 +28,7 @@ export default async function AdminGuideSuggestionsPage({searchParams}: { search
                     <ArrowLeft className="size-4"/>
                     {t("back")}
                 </Link>
-                <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
+                <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
                 <nav aria-label={t("filter")} className="flex flex-wrap gap-3 text-sm">
                     {SUGGESTION_STATUSES.map(candidate => (
                         <Link key={candidate} href={`/admin/guide/suggestions?status=${candidate}`} aria-current={candidate === filter ? "page" : undefined}

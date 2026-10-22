@@ -57,7 +57,7 @@ type Mock = {
 };
 
 export async function openRevival(page: Page, title: string) {
-    await page.getByRole("link", {name: title}).first().click();
+    await page.getByRole("link", {name: title}).or(page.getByRole("row", {name: title})).first().click();
     await page.getByRole("heading", {level: 2, name: title}).waitFor();
 }
 

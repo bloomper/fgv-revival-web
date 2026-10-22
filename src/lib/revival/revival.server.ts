@@ -18,7 +18,7 @@ export const RevivalSummary = graphql(`
         workingTitle
         premiereDate
         status
-        spex { id title available }
+        spex { id title year available }
         members { id role state displayName email }
         permissions { canEditCore canEditDetails allowedStatuses canManageDirecteurs canManageSteeringGroup }
     }

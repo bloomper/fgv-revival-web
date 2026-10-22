@@ -10,7 +10,8 @@ import type {ChecklistTemplatesQuery} from "@/gql/graphql";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {pickText} from "@/components/guide/localized";
@@ -96,10 +97,10 @@ export function TemplateList({templates}: { templates: Template[] }) {
                     </ul>
                 )}
             </section>
-            <Dialog open={creating} onOpenChange={setCreating}>
-                <DialogContent>
-                    <DialogHeader><DialogTitle>{t("ChecklistTemplate.createEvent")}</DialogTitle></DialogHeader>
-                    <form className="space-y-4" onSubmit={event => {
+            <Sheet open={creating} onOpenChange={setCreating}>
+                <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
+                    <SheetHeader className="p-6 pb-4 shrink-0"><SheetTitle>{t("ChecklistTemplate.createEvent")}</SheetTitle></SheetHeader>
+                    <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={event => {
                         event.preventDefault();
                         startTransition(async () => {
                             const result = await createTemplateAction({kind: "EVENT", name});
@@ -110,22 +111,26 @@ export function TemplateList({templates}: { templates: Template[] }) {
                             }
                         });
                     }}>
-                        <div className="space-y-2">
-                            <Label htmlFor={`${id}-name-sv`}>{t("ChecklistTemplate.nameSv")}</Label>
-                            <Input id={`${id}-name-sv`} required maxLength={MAX_TEMPLATE_NAME} value={name.sv}
-                                   onChange={event => setName({...name, sv: event.target.value})}/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor={`${id}-name-en`}>{t("ChecklistTemplate.nameEn")}</Label>
-                            <Input id={`${id}-name-en`} maxLength={MAX_TEMPLATE_NAME} value={name.en} onChange={event => setName({...name, en: event.target.value})}/>
-                        </div>
-                        <DialogFooter>
+                        <ScrollArea className="min-h-0 flex-1 border-t">
+                            <div className="space-y-4 px-6 py-6 pb-12">
+                                <div className="space-y-2">
+                                    <Label htmlFor={`${id}-name-sv`}>{t("ChecklistTemplate.nameSv")}</Label>
+                                    <Input id={`${id}-name-sv`} required maxLength={MAX_TEMPLATE_NAME} value={name.sv}
+                                           onChange={event => setName({...name, sv: event.target.value})}/>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor={`${id}-name-en`}>{t("ChecklistTemplate.nameEn")}</Label>
+                                    <Input id={`${id}-name-en`} maxLength={MAX_TEMPLATE_NAME} value={name.en} onChange={event => setName({...name, en: event.target.value})}/>
+                                </div>
+                            </div>
+                        </ScrollArea>
+                        <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
                             <Button type="button" variant="outline" onClick={() => setCreating(false)}>{t("Common.cancel")}</Button>
                             <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
-                        </DialogFooter>
+                        </SheetFooter>
                     </form>
-                </DialogContent>
-            </Dialog>
+                </SheetContent>
+            </Sheet>
         </div>
     );
 }

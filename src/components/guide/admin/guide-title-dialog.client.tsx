@@ -4,7 +4,8 @@ import {type ReactElement, type ReactNode, useState, useTransition} from "react"
 import {useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
@@ -33,35 +34,39 @@ export function GuideTitleDialog({trigger, children, heading, initial, onSave}: 
     const {errors} = form.formState;
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={trigger}>{children}</DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{heading}</DialogTitle>
-                </DialogHeader>
+        <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger render={trigger}>{children}</SheetTrigger>
+            <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
+                <SheetHeader className="p-6 pb-4 shrink-0">
+                    <SheetTitle>{heading}</SheetTitle>
+                </SheetHeader>
                 <form
-                    className="space-y-4"
+                    className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         if (feedback(await onSave({sv: values.sv, en: values.en || null}), t("Guide.editor.saved"))) {
                             setOpen(false);
                         }
                     }))}
                 >
-                    <div className="space-y-2">
-                        <Label htmlFor="guide-title-sv">{t("Guide.editor.swedish")}</Label>
-                        <Input id="guide-title-sv" {...form.register("sv")}/>
-                        {errors.sv && <p className="text-sm text-destructive">{t(`Validation.${errors.sv.message}`)}</p>}
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="guide-title-en">{t("Guide.editor.english")}</Label>
-                        <Input id="guide-title-en" {...form.register("en")}/>
-                        {errors.en && <p className="text-sm text-destructive">{t(`Validation.${errors.en.message}`)}</p>}
-                    </div>
-                    <DialogFooter>
+                    <ScrollArea className="min-h-0 flex-1 border-t">
+                        <div className="space-y-4 px-6 py-6 pb-12">
+                            <div className="space-y-2">
+                                <Label htmlFor="guide-title-sv">{t("Guide.editor.swedish")}</Label>
+                                <Input id="guide-title-sv" {...form.register("sv")}/>
+                                {errors.sv && <p className="text-sm text-destructive">{t(`Validation.${errors.sv.message}`)}</p>}
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="guide-title-en">{t("Guide.editor.english")}</Label>
+                                <Input id="guide-title-en" {...form.register("en")}/>
+                                {errors.en && <p className="text-sm text-destructive">{t(`Validation.${errors.en.message}`)}</p>}
+                            </div>
+                        </div>
+                    </ScrollArea>
+                    <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
-                    </DialogFooter>
+                    </SheetFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     );
 }

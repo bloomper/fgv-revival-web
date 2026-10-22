@@ -23,6 +23,11 @@ const contributorData = [
         nickName: "Colgate",
         image: "https://gravatar.com/avatar/5e07c325b41e9551493953c3b6eb37b71d93141c3bad22556487cd9a3989510b?s=200",
     },
+    {
+        name: "Dan Engström",
+        nickName: "Danne",
+        image: "https://lh3.googleusercontent.com/a-/ALV-UjW_Gj67POmMZgrnchgb52aIIyUsGhHGGlyFnezU80gnA5knun8=s480-p-k-rw-no",
+    },
 ];
 
 export function AboutPage({feedbackEmail}: { feedbackEmail: string }) {

@@ -177,7 +177,7 @@ export function GuideDraftEditor({draft}: { draft: GuideVersionFieldsFragment })
             {draft.chapters.map(chapter => (
                 <section key={chapter.id} id={`chapter-${chapter.phase}`} className="space-y-4" aria-label={`${chapter.phase}. ${title(chapter.title)}`}>
                     <div className="flex flex-wrap items-center gap-2 border-b pb-2">
-                        <h3 className="text-xl font-semibold">{chapter.phase}. {title(chapter.title)}</h3>
+                        <h3 className="text-base font-semibold">{chapter.phase}. {title(chapter.title)}</h3>
                         <NoEnglish text={chapter.title}/>
                         <span className="text-xs text-muted-foreground">{t("Guide.admin.untranslated", {count: untranslated(chapter)})}</span>
                         <div className="ml-auto flex flex-wrap gap-1">
