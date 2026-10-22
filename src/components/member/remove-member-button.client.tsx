@@ -27,7 +27,7 @@ export function RemoveMemberButton({memberId, name}: { memberId: string; name: s
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" aria-label={`${t("Common.remove")} ${name}`}/>}>
+            <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" className="text-destructive hover:bg-destructive/10 hover:text-destructive" aria-label={`${t("Common.remove")} ${name}`}/>}>
                 <Trash2/>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -38,6 +38,7 @@ export function RemoveMemberButton({memberId, name}: { memberId: string; name: s
                 <AlertDialogFooter>
                     <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
                     <AlertDialogAction
+                        variant="destructive"
                         disabled={pending}
                         onClick={() => startTransition(async () => {
                             if (feedback(await removeMemberAction(memberId), t("Members.removed"))) {

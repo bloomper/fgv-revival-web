@@ -11,6 +11,8 @@ import {
     type PaginationState,
     type RowData,
     rowPaginationFeature,
+    rowSelectionFeature,
+    type RowSelectionState,
     rowSortingFeature,
     type SortingState,
     sortFns,
@@ -19,6 +21,7 @@ import {
 } from "@tanstack/react-table";
 import {ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight} from "lucide-react";
 import {useTranslations} from "next-intl";
+import {Checkbox} from "@/components/ui/checkbox";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {Button} from "@/components/ui/button";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
@@ -26,6 +29,7 @@ import {DataEmpty} from "@/components/data-empty";
 import {cn} from "@/utils/utils";
 
 export const dataTableFeatures = tableFeatures({
+    rowSelectionFeature,
     rowSortingFeature,
     rowPaginationFeature,
     sortedRowModel: createSortedRowModel(),
@@ -55,6 +59,26 @@ export function SortableHeader<TData extends RowData>({column, sorted, title}: {
 }
 
 /**
+ * A column of checkboxes for selecting rows, as in Spexregister; clicking it does not open the row.
+ */
+export function selectColumn<TData extends RowData>(labels: { all: string; row: (row: TData) => string }): DataTableColumnDef<TData> {
+    return {
+        id: "select",
+        header: ({table}) => (
+            <Checkbox checked={table.getIsAllPageRowsSelected()}
+                      indeterminate={!table.getIsAllPageRowsSelected() && table.getIsSomePageRowsSelected()}
+                      onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+                      aria-label={labels.all}/>
+        ),
+        cell: ({row}) => (
+            <Checkbox checked={row.getIsSelected()} onCheckedChange={value => row.toggleSelected(!!value)} aria-label={labels.row(row.original)}/>
+        ),
+        enableSorting: false,
+        meta: {className: "w-10"},
+    };
+}
+
+/**
  * The look of Spexregister's tables for data that is all on the client: sorting and paging happen here, and the
  * caller filters the rows it passes. The toolbar goes in {@code children}.
  */
@@ -65,6 +89,7 @@ export function DataTable<TData extends { id: string }>({
                                                             initialPageSize = 15,
                                                             filtered = false,
                                                             onRowClick,
+                                                            onSelectionChange,
                                                             children,
                                                         }: {
     columns: DataTableColumnDef<TData>[];
@@ -73,6 +98,7 @@ export function DataTable<TData extends { id: string }>({
     initialPageSize?: number;
     filtered?: boolean;
     onRowClick?: (row: TData) => void;
+    onSelectionChange?: (rows: TData[]) => void;
     children?: React.ReactNode;
 }) {
     // TanStack Table changes its objects in place, which the React Compiler would cache across renders
@@ -80,12 +106,20 @@ export function DataTable<TData extends { id: string }>({
     const t = useTranslations("Common");
     const [sorting, setSorting] = useState<SortingState>(initialSorting);
     const [pagination, setPagination] = useState<PaginationState>({pageIndex: 0, pageSize: initialPageSize});
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     const table = useTable({
         features: dataTableFeatures,
         data,
         columns,
-        state: {sorting, pagination},
+        state: {sorting, pagination, rowSelection},
         onSortingChange: setSorting,
+        enableRowSelection: true,
+        onRowSelectionChange: updater => {
+            const next = typeof updater === "function" ? updater(rowSelection) : updater;
+
+            setRowSelection(next);
+            onSelectionChange?.(data.filter(row => next[row.id]));
+        },
         onPaginationChange: setPagination,
         autoResetPageIndex: true,
         getRowId: row => row.id,
@@ -111,9 +145,11 @@ export function DataTable<TData extends { id: string }>({
                     </TableHeader>
                     <TableBody>
                         {rows.length ? rows.map(row => (
-                            <TableRow key={row.id} className={cn(onRowClick && "cursor-pointer")} onClick={() => onRowClick?.(row.original)}>
+                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className={cn(onRowClick && "cursor-pointer")}
+                                      onClick={() => onRowClick?.(row.original)}>
                                 {row.getAllCells().map(cell => (
-                                    <TableCell key={cell.id} className={cn("h-12", cell.column.columnDef.meta?.className)}>
+                                    <TableCell key={cell.id} className={cn("h-12", cell.column.columnDef.meta?.className)}
+                                               onClick={event => (cell.column.id === "select" || cell.column.id === "actions") && event.stopPropagation()}>
                                         <table.FlexRender cell={cell}/>
                                     </TableCell>
                                 ))}

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
-import {ArrowLeft} from "lucide-react";
 import {NewMeetingButton} from "@/components/meeting/new-meeting-button.client";
 import {MeetingStatusBadge} from "@/components/meeting/meeting-mode.client";
 import {GraphQLRequestError} from "@/lib/graphql.server";
@@ -37,14 +36,10 @@ export default async function MeetingsPage({params}: { params: Promise<{ id: str
         const {revival, meetings} = loaded;
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+            <div className="flex flex-1 flex-col gap-4">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                     <div className="space-y-1">
-                        <Link href={`/revivals/${revival.id}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
-                            <ArrowLeft className="size-4"/>
-                            {revival.workingTitle}
-                        </Link>
-                        <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
+                        <h3 className="sr-only">{t("title")}</h3>
                     </div>
                     {revival.permissions.canWriteLog && <NewMeetingButton revivalId={revival.id} members={revival.ownerCandidates}/>}
                 </div>

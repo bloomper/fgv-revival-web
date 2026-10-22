@@ -22,7 +22,7 @@ test.describe("Decision log, user story 3: the steering group runs a meeting fro
         await dialog.getByLabel("Övriga punkter").press("Enter");
         await dialog.getByRole("button", {name: "Spara"}).click();
 
-        await expect(page.getByRole("heading", {level: 2, name: "Direktionsmöte 4"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Direktionsmöte 4"})).toBeVisible();
         await expect(page.getByRole("table").getByText("Boka RunAn")).toBeVisible();
         await expect(page.getByText("Budget")).toBeVisible();
 
@@ -33,7 +33,7 @@ test.describe("Decision log, user story 3: the steering group runs a meeting fro
         await expect(page.getByText("Ett möte pågår")).toBeVisible();
         await expect(page.getByRole("link", {name: /Beslutslogg.*1 öppna rader, 0 försenade/})).toBeVisible();
         await page.getByRole("link", {name: "Direktionsmöte 4"}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "Direktionsmöte 4"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Direktionsmöte 4"})).toBeVisible();
 
         await page.getByRole("button", {name: "Avsluta mötet"}).click();
         await expect(page.getByRole("list", {name: "Rader utan ansvarig"})).toContainText("Rad 1");

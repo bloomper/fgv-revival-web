@@ -60,7 +60,7 @@ changing routing or data fetching; this area differs sharply from older Next.
   `export const instant = false`, which also opts the whole `(app)` tree out of static-shell
   validation (the highest `instant` in a tree wins for that check).
 - **A new route that fetches data at the top of the page needs a `loading.tsx` beside it**, or it
-  can't prerender a shell. Reuse `DataTableSkeleton`; see `src/app/(app)/admin/revivals/loading.tsx`.
+  can't prerender a shell. Reuse `DataTableSkeleton`; see `src/app/(app)/revivals/manage/loading.tsx`.
 - The root layout's metadata must stay a **static** `export const metadata`. `/_not-found` inherits
   it, so a `generateMetadata()` that reads cookies (e.g. `getTranslations()`) blocks metadata on
   every route. The locale-correct title is applied client-side in `src/app/provider.client.tsx`.

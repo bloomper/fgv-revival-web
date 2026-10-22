@@ -2,7 +2,7 @@ import {expect, openRevival, test} from "./fixtures";
 
 test("User story 3: the observer sees every revival and no edit controls", async ({page, loginAs}) => {
     await loginAs("observer");
-    await page.goto("/admin/revivals");
+    await page.goto("/revivals/manage");
 
     for (const title of ["Ali Baba 2028", "Nobel 2030", "Snorre 2027"]) {
         await expect(page.getByRole("row", {name: new RegExp(title)})).toBeVisible();

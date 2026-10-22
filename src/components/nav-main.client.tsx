@@ -81,7 +81,7 @@ function NavMainItem({item, pathname}: { item: NavItem; pathname: string }) {
                     </CollapsibleTrigger>
                 </div>
             ) : (
-                <SidebarMenuButton tooltip={item.title} isActive={pathname === item.url}
+                <SidebarMenuButton tooltip={item.title} isActive={item.isActive ?? pathname === item.url}
                                    render={<LinkComponent {...linkProps}/>}>
                     {item.icon && <item.icon/>}
                     <span>{item.title}</span>

@@ -15,12 +15,13 @@ export const RevivalSummary = graphql(`
     fragment RevivalSummary on Revival {
         id
         year
-        workingTitle
+        title
         premiereDate
         status
+        version
         spex { id title year available }
         members { id role state displayName email }
-        permissions { canEditCore canEditDetails allowedStatuses canManageDirecteurs canManageSteeringGroup }
+        permissions { canEditCore canEditDetails allowedStatuses canManageDirecteurs canManageSteeringGroup canDelete }
     }
 `);
 
@@ -29,7 +30,6 @@ export const RevivalDetail = graphql(`
         ...RevivalSummary
         showDates
         venues
-        version
         createdBy
         createdAt
         lastModifiedBy
@@ -91,6 +91,12 @@ const RevivalStatusChangeMutation = graphql(`
     }
 `);
 
+const RevivalDeleteMutation = graphql(`
+    mutation RevivalDelete($id: ID!, $version: Int!) {
+        revivalDelete(id: $id, version: $version)
+    }
+`);
+
 export async function getMe() {
     return (await runQuery(MeQuery, {}))?.me;
 }
@@ -117,4 +123,8 @@ export async function updateRevival(input: RevivalUpdateInput): Promise<RevivalD
 
 export async function changeStatus(input: RevivalStatusChangeInput): Promise<RevivalSummaryFragment | undefined> {
     return (await runMutation(RevivalStatusChangeMutation, {input}))?.revivalStatusChange;
+}
+
+export async function deleteRevival(id: string, version: number): Promise<void> {
+    await runMutation(RevivalDeleteMutation, {id, version});
 }

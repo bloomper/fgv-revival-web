@@ -62,7 +62,7 @@ test.describe("Guide, user story 3: the directeur moves the revival to a newer v
         await expect(page.getByRole("dialog").getByText("Ny text (sv)")).toBeVisible();
         await page.getByRole("dialog").getByRole("button", {name: "Byt version"}).click();
 
-        await expect(page.getByRole("heading", {level: 2, name: "Guiden v2"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Guiden v2"})).toBeVisible();
         await expect(page.getByText("Det finns en nyare version av guiden")).toHaveCount(0);
         await expect(page.getByRole("button", {name: "Byt version"})).toHaveCount(0);
         await expect(page.getByText(/Dana Directeur bytte från v1 till v2/)).toBeVisible();

@@ -48,9 +48,9 @@ function resetState(guideSeed = "none") {
         checklist: createChecklistState(),
         nextId: 100,
         revivals: [
-            {id: "1", spexId: "1", year: 2028, workingTitle: "Ali Baba 2028", premiereDate: null, showDates: [], venues: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
-            {id: "2", spexId: "2", year: 2030, workingTitle: "Nobel 2030", premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: [], guideVersionId: null},
-            {id: "3", spexId: "3", year: 2027, workingTitle: "Snorre 2027", premiereDate: "2027-03-01", showDates: ["2027-03-01"], venues: ["Kårhuset"], status: "OPEN", version: 0, history: [], guideVersionId: null},
+            {id: "1", spexId: "1", year: 2028, title: "Ali Baba 2028", premiereDate: null, showDates: [], venues: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
+            {id: "2", spexId: "2", year: 2030, title: "Nobel 2030", premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: [], guideVersionId: null},
+            {id: "3", spexId: "3", year: 2027, title: "Snorre 2027", premiereDate: "2027-03-01", showDates: ["2027-03-01"], venues: ["Kårhuset"], status: "OPEN", version: 0, history: [], guideVersionId: null},
         ],
         members: [
             {id: "m1", revivalId: "1", role: "DIRECTEUR", capabilities: [], email: "dana@example.org", sub: "p-directeur", version: 0},
@@ -109,6 +109,10 @@ function canSee(persona, revival) {
 const isVisibleDirecteur = (persona, revival) => roleIn(persona, revival) === "DIRECTEUR" && VISIBLE.DIRECTEUR.includes(revival.status);
 const notArchived = revival => revival.status !== "ARCHIVED";
 
+function titleOf(spexId, year) {
+    return `${SPEX.find(spex => spex.id === String(spexId))?.title ?? "Nyuppsättning"} ${year}`;
+}
+
 function permissions(persona, revival) {
     const next = DIRECTEUR_STEPS[DIRECTEUR_STEPS.indexOf(revival.status) + 1];
     const allowedStatuses = isSuperAdmin(persona)
@@ -118,6 +122,7 @@ function permissions(persona, revival) {
     return {
         __typename: "RevivalPermissions",
         canEditCore: isSuperAdmin(persona) && notArchived(revival),
+        canDelete: isSuperAdmin(persona),
         canEditDetails: (isSuperAdmin(persona) || isVisibleDirecteur(persona, revival)) && notArchived(revival),
         allowedStatuses,
         canManageDirecteurs: isSuperAdmin(persona) && notArchived(revival),
@@ -153,7 +158,7 @@ function toRevival(persona, revival) {
         __typename: "Revival",
         id: revival.id,
         year: revival.year,
-        workingTitle: revival.workingTitle,
+        title: revival.title,
         premiereDate: revival.premiereDate,
         showDates: revival.showDates,
         venues: revival.venues,
@@ -264,8 +269,11 @@ const resolvers = {
         if (!state.spexregisterUp) {
             throw new GraphQLError("SPEXREGISTER_UNAVAILABLE", "Spexregistret är inte tillgängligt just nu.");
         }
+        if (state.revivals.some(revival => revival.spexId === String(input.spexId) && revival.year === Number(input.year))) {
+            throw new GraphQLError("BAD_REQUEST", `Det finns redan en nyuppsättning av spexet ${input.year}.`);
+        }
         const revival = {
-            id: String(state.nextId++), spexId: String(input.spexId), year: Number(input.year), workingTitle: input.workingTitle.trim(),
+            id: String(state.nextId++), spexId: String(input.spexId), year: Number(input.year), title: titleOf(input.spexId, input.year),
             premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: [],
             guideVersionId: state.guide.versions.filter(version => version.status === "PUBLISHED").sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0]?.id ?? null,
         };
@@ -274,11 +282,18 @@ const resolvers = {
     },
     RevivalUpdate(persona, {input}) {
         const revival = visibleRevival(persona, input.id);
-        if (!permissions(persona, revival).canEditDetails) {
+        const core = input.spexId != null || input.year != null;
+        if (!permissions(persona, revival)[core ? "canEditCore" : "canEditDetails"]) {
             throw forbidden();
         }
         if (input.version !== revival.version) {
             throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
+        }
+        if (core) {
+            const spexId = String(input.spexId ?? revival.spexId);
+            const year = Number(input.year ?? revival.year);
+            Object.assign(revival, {spexId, year, title: titleOf(spexId, year), version: revival.version + 1});
+            return {revivalUpdate: toRevival(persona, revival)};
         }
         const premiereDate = input.clearPremiereDate ? null : input.premiereDate ?? revival.premiereDate;
         const showDates = input.showDates ?? revival.showDates;
@@ -290,6 +305,18 @@ const resolvers = {
         }
         Object.assign(revival, {premiereDate, showDates: [...showDates].sort(), venues: input.venues ?? revival.venues, version: revival.version + 1});
         return {revivalUpdate: toRevival(persona, revival)};
+    },
+    RevivalDelete(persona, {id, version}) {
+        const revival = visibleRevival(persona, id);
+        if (!isSuperAdmin(persona)) {
+            throw forbidden();
+        }
+        if (version !== revival.version) {
+            throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
+        }
+        state.revivals = state.revivals.filter(candidate => candidate.id !== id);
+        state.members = state.members.filter(member => member.revivalId !== id);
+        return {revivalDelete: id};
     },
     RevivalStatusChange(persona, {input}) {
         const revival = visibleRevival(persona, input.id);

@@ -9,7 +9,7 @@ const RevivalLogQuery = graphql(`
     query RevivalLog($id: ID!, $filter: LogEntryFilter) {
         revival(id: $id) {
             id
-            workingTitle
+            title
             year
             status
             permissions { canWriteLog canImportLog canWaiveRequirement }
@@ -25,7 +25,7 @@ const RevivalLogImportQuery = graphql(`
     query RevivalLogImport($id: ID!) {
         revival(id: $id) {
             id
-            workingTitle
+            title
             permissions { canImportLog canWaiveRequirement }
         }
         logImport(revivalId: $id) { fileName layout rowCount importedAt importedBy { displayName } }

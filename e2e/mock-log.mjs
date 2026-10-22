@@ -113,7 +113,7 @@ export function logResolvers(ctx) {
 
             return {
                 revival: {
-                    __typename: "Revival", id: revival.id, workingTitle: revival.workingTitle, year: revival.year, status: revival.status,
+                    __typename: "Revival", id: revival.id, title: revival.title, year: revival.year, status: revival.status,
                     permissions: {
                         __typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival),
                         canImportLog: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED"
@@ -133,7 +133,7 @@ export function logResolvers(ctx) {
 
             return {
                 revival: {
-                    __typename: "Revival", id: revival.id, workingTitle: revival.workingTitle,
+                    __typename: "Revival", id: revival.id, title: revival.title,
                     permissions: {
                         __typename: "RevivalPermissions",
                         canImportLog: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED"

@@ -57,7 +57,7 @@ function ConfirmRemove({label, onConfirm}: { label: string; onConfirm: () => Pro
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" aria-label={label} title={label}/>}>
+            <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" className="text-destructive hover:bg-destructive/10 hover:text-destructive" aria-label={label} title={label}/>}>
                 <Trash2/>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -66,9 +66,9 @@ function ConfirmRemove({label, onConfirm}: { label: string; onConfirm: () => Pro
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
-                    <AlertDialogAction disabled={pending} onClick={() => startTransition(async () => {
+                    <AlertDialogAction variant="destructive" disabled={pending} onClick={() => startTransition(async () => {
                         feedback(await onConfirm(), t("Guide.editor.saved"));
-                    })}>{t("Common.remove")}</AlertDialogAction>
+                    })}>{t("Common.delete")}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

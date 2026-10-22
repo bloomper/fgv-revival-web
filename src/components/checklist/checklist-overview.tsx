@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {useTranslations} from "next-intl";
 import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import {buttonVariants} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 
 type Summary = {
@@ -54,10 +54,9 @@ export function ChecklistOverview({revivalId, checklists, showCancelled}: { revi
             <section className="space-y-2" aria-label={t("events")}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <h3 className="font-medium">{t("events")}</h3>
-                    <Button nativeButton={false} variant="outline" size="sm" aria-pressed={showCancelled}
-                            render={<Link href={`/revivals/${revivalId}/checklists${showCancelled ? "" : "?cancelled=1"}`}/>}>
+                    <Link href={`/revivals/${revivalId}/checklists${showCancelled ? "" : "?cancelled=1"}`} aria-pressed={showCancelled} className={buttonVariants({variant: "outline", size: "sm"})}>
                         {showCancelled ? t("hideCancelled") : t("showCancelled")}
-                    </Button>
+                    </Link>
                 </div>
                 {events.length === 0 ? <p className="text-sm text-muted-foreground">{t("noEvents")}</p> : (
                     <ul className="divide-y rounded-lg border">

@@ -14,6 +14,7 @@
     "cancel": "Avbryt",
     "add": "Lägg till",
     "remove": "Ta bort",
+    "delete": "Radera",
     "edit": "Redigera",
     "close": "Stäng",
     "reload": "Ladda om",
@@ -46,15 +47,22 @@
     "toggleTheme": "Byt tema"
   },
   "Nav": {
-    "myRevivals": "Mina nyuppsättningar",
+    "home": "Hem",
+    "revivals": "Nyuppsättningar",
     "allRevivals": "Alla nyuppsättningar",
     "guide": "Guiden",
+    "manage": "Hantera",
+    "admin": "Administration",
     "adminGuide": "Hantera guiden",
     "adminChecklistTemplates": "Checklistmallar"
   },
   "Home": {
     "title": "Nyuppsättning",
     "mustBeLoggedIn": "Du behöver vara inloggad för att använda Nyuppsättning.",
+    "welcome": "Välkommen till Nyuppsättning",
+    "intro": "Nyuppsättning stöder styrgrupperna för nyuppsättningar av Chalmersspex.",
+    "revivalsText": "Nyuppsättningarna du är med i, med beslutslogg, möten och checklistor.",
+    "guideText": "Hur en nyuppsättning går till, från godkännande till avslut.",
     "myRevivals": "Mina nyuppsättningar",
     "empty": "Du har ingen roll i någon nyuppsättning som syns just nu.",
     "yourRole": "Din roll"
@@ -109,7 +117,6 @@
     "filterPlaceholder": "Filtrera på titel eller år…",
     "spex": "Spex",
     "year": "År",
-    "workingTitle": "Arbetstitel",
     "premiereDate": "Premiär",
     "showDates": "Föreställningar",
     "venues": "Spelplatser",
@@ -130,6 +137,8 @@
     "editDetails": "Redigera uppgifter",
     "open": "Öppna",
     "guide": "Guiden",
+    "overview": "Översikt",
+    "sections": "Nyuppsättningens delar",
     "guideVersion": "Guiden {label}",
     "log": "Beslutslogg",
     "meetings": "Möten",
@@ -141,17 +150,33 @@
   "Admin": {
     "title": "Alla nyuppsättningar",
     "create": "Ny nyuppsättning",
-    "readOnly": "Du kan se alla nyuppsättningar men inte ändra dem."
+    "readOnly": "Du kan se alla nyuppsättningar men inte ändra dem.",
+    "actions": "Åtgärder",
+    "openMenu": "Åtgärder för {title}",
+    "edit": "Redigera",
+    "delete": "Radera",
+    "deleteSelected": "Radera ({count})",
+    "deleteTitle": "{count, plural, one {Radera nyuppsättningen?} other {Radera # nyuppsättningar?}}",
+    "deleteDescription": "{titles} raderas med allt som hör till: medlemmar, beslutslogg, möten, checklistor och förslag. Det går inte att ångra.",
+    "deleted": "{count, plural, one {Nyuppsättningen raderades} other {# nyuppsättningar raderades}}",
+    "selectAll": "Markera alla",
+    "selectRow": "Markera {title}"
   },
   "CreateDialog": {
     "title": "Ny nyuppsättning",
-    "description": "Välj spexet i Spexregistret och ange år och arbetstitel.",
+    "description": "Välj spexet i Spexregistret och året för nyuppsättningen.",
     "searchSpex": "Sök spex på titel",
     "noResults": "Inga spex hittades.",
     "selected": "Valt spex",
     "spexregisterUnavailable": "Spexregistret är tillfälligt otillgängligt. Försök igen om en stund.",
     "submit": "Skapa",
-    "created": "Nyuppsättningen skapades"
+    "created": "Nyuppsättningen skapades",
+    "selectYear": "Välj år",
+    "selectSpexFirst": "Välj spex först",
+    "editTitle": "Ändra nyuppsättningen",
+    "editDescription": "Byt spex eller år. Året får inte vara före originalets.",
+    "save": "Spara",
+    "saved": "Nyuppsättningen sparades"
   },
   "DetailsForm": {
     "addShowDate": "Lägg till föreställning",
@@ -188,8 +213,6 @@
   "Validation": {
     "spexRequired": "Välj ett spex.",
     "yearRange": "Året måste vara mellan 1948 och 2100.",
-    "workingTitleRequired": "Ange en arbetstitel.",
-    "workingTitleTooLong": "Arbetstiteln får vara högst 255 tecken.",
     "premiereYear": "Premiären måste ligga samma år som nyuppsättningen.",
     "showDateBeforePremiere": "En föreställning får inte ligga före premiären.",
     "showDateWithoutPremiere": "Ange premiärdatum innan föreställningar.",
@@ -345,13 +368,13 @@
       "moveUp": "Flytta upp",
       "moveDown": "Flytta ner",
       "moveTo": "Flytta till…",
-      "removeItem": "Ta bort punkten",
+      "removeItem": "Radera punkten",
       "addItem": "Lägg till punkt",
       "renameChapter": "Byt namn på kapitlet",
       "addSection": "Lägg till avsnitt",
       "renameSection": "Byt namn på avsnittet",
       "moveSectionTo": "Flytta avsnittet till…",
-      "removeSection": "Ta bort avsnittet"
+      "removeSection": "Radera avsnittet"
     },
     "changes": {
       "title": "Ändringar från {from} till {to}",
@@ -510,6 +533,7 @@
     "empty": "Loggen är tom.",
     "noMatches": "Inga rader matchar filtret.",
     "import": {
+      "back": "Beslutslogg",
       "title": "Importera från Excel",
       "description": "Importera nyuppsättningens befintliga beslutslogg en gång, innan någon rad har lagts in här. Filen sparas inte.",
       "file": "Excel-fil (.xlsx, högst 10 MB)",

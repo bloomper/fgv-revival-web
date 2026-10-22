@@ -11,7 +11,7 @@ test.describe("Decision log, user story 2: the directeur imports the revival's e
         await loginAs("directeur");
         await page.goto("/revivals/1/log");
         await page.getByRole("link", {name: "Importera från Excel"}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "Importera från Excel"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Importera från Excel"})).toBeVisible();
 
         await page.getByLabel("Excel-fil (.xlsx, högst 10 MB)").setInputFiles(WORKBOOK);
         await page.getByRole("button", {name: "Förhandsgranska"}).click();
@@ -37,7 +37,7 @@ test.describe("Decision log, user story 2: the directeur imports the revival's e
     test("a steering group member is never offered the import", async ({page, loginAs}) => {
         await loginAs("styrgrupp");
         await page.goto("/revivals/1/log");
-        await expect(page.getByRole("heading", {level: 2, name: "Beslutslogg"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Beslutslogg"})).toBeVisible();
         await expect(page.getByRole("link", {name: "Importera från Excel"})).toHaveCount(0);
 
         await page.goto("/revivals/1/log/import");

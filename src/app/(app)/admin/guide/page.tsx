@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {getFormatter, getTranslations} from "next-intl/server";
 import {MessagesSquare, PencilLine} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {buttonVariants} from "@/components/ui/button";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {GuideImportDialog} from "@/components/guide/admin/guide-import-dialog.client";
 import {GuideImportReport} from "@/components/guide/admin/guide-import-report";
@@ -30,10 +30,10 @@ export default async function AdminGuidePage() {
                     {canImport && <GuideImportDialog/>}
                     {!draft && <GuideStartDraftButton/>}
                     {versions.length > 0 && (
-                        <Button nativeButton={false} variant="outline" render={<Link href="/admin/guide/suggestions"/>}>
+                        <Link href="/admin/guide/suggestions" className={buttonVariants({variant: "outline"})}>
                             <MessagesSquare/>
                             {t("suggestions.title")}
-                        </Button>
+                        </Link>
                     )}
                 </div>
 
@@ -51,10 +51,10 @@ export default async function AdminGuidePage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex flex-wrap gap-2">
-                                <Button nativeButton={false} variant="outline" render={<Link href="/admin/guide/draft"/>}>
+                                <Link href="/admin/guide/draft" className={buttonVariants({variant: "outline"})}>
                                     <PencilLine/>
                                     {t("admin.edit")}
-                                </Button>
+                                </Link>
                                 <GuidePublishDialog draftId={draft.draft.id} version={draft.draft.version}/>
                                 <GuideDiscardDialog draftId={draft.draft.id} version={draft.draft.version}
                                                     acceptedSuggestionCount={draft.acceptedSuggestionCount}/>

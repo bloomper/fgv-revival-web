@@ -39,13 +39,13 @@ export default async function LogImportPage({params}: { params: Promise<{ id: st
         const {canImportLog} = loaded.revival.permissions;
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+            <div className="flex flex-1 flex-col gap-4">
                 <div className="space-y-1">
                     <Link href={`/revivals/${id}/log`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                         <ArrowLeft className="size-4"/>
-                        {loaded.revival.workingTitle}
+                        {t("back")}
                     </Link>
-                    <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
+                    <h3 className="text-lg font-bold tracking-tight">{t("title")}</h3>
                     {canImportLog && <p className="max-w-2xl text-sm text-muted-foreground">{t("description")}</p>}
                 </div>
                 {canImportLog ? <LogImportWizard revivalId={id}/> : (

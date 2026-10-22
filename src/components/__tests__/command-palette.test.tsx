@@ -29,11 +29,11 @@ beforeEach(() => {
 describe("CommandPalette", () => {
     it("renders a trigger button and opens the dialog on click", async () => {
         render(<CommandPalette/>);
-        expect(screen.queryByText("Nav.myRevivals")).not.toBeInTheDocument();
+        expect(screen.queryByText("Nav.revivals")).not.toBeInTheDocument();
 
         await openPalette();
 
-        expect(await screen.findByText("Nav.myRevivals")).toBeInTheDocument();
+        expect(await screen.findByText("Nav.revivals")).toBeInTheDocument();
         expect(screen.getByText("Support.title")).toBeInTheDocument();
         expect(screen.getByText("About.title")).toBeInTheDocument();
     });
@@ -43,7 +43,7 @@ describe("CommandPalette", () => {
 
         await userEvent.keyboard("{Control>}k{/Control}");
 
-        expect(await screen.findByText("Nav.myRevivals")).toBeInTheDocument();
+        expect(await screen.findByText("Nav.revivals")).toBeInTheDocument();
     });
 
     it("navigates to the selected entry and closes", async () => {
@@ -53,7 +53,7 @@ describe("CommandPalette", () => {
         await user.click(await screen.findByText("Support.title"));
 
         expect(push).toHaveBeenCalledWith("/support");
-        await waitFor(() => expect(screen.queryByText("Nav.myRevivals")).not.toBeInTheDocument());
+        await waitFor(() => expect(screen.queryByText("Nav.revivals")).not.toBeInTheDocument());
     });
 
     it("filters entries against the typed query", async () => {
@@ -63,7 +63,7 @@ describe("CommandPalette", () => {
         await user.type(screen.getByPlaceholderText("CommandPalette.placeholder"), "About.");
 
         expect(screen.getByText("About.title")).toBeInTheDocument();
-        expect(screen.queryByText("Nav.myRevivals")).not.toBeInTheDocument();
+        expect(screen.queryByText("Nav.revivals")).not.toBeInTheDocument();
     });
 
     it("shows an empty state when nothing matches", async () => {
@@ -81,7 +81,7 @@ describe("CommandPalette", () => {
 
         await user.click(await screen.findByText("Admin.create"));
 
-        expect(push).toHaveBeenCalledWith("/admin/revivals?create=1");
+        expect(push).toHaveBeenCalledWith("/revivals/manage?create=1");
     });
 
     it("shows all revivals but no create action to an observer", async () => {
@@ -98,7 +98,7 @@ describe("CommandPalette", () => {
         render(<CommandPalette/>);
         await openPalette();
 
-        expect(await screen.findByText("Nav.myRevivals")).toBeInTheDocument();
+        expect(await screen.findByText("Nav.revivals")).toBeInTheDocument();
         expect(screen.queryByText("Nav.allRevivals")).not.toBeInTheDocument();
         expect(screen.queryByText("Admin.create")).not.toBeInTheDocument();
     });

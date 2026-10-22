@@ -69,7 +69,7 @@ export function meetingResolvers(ctx) {
             recipients: recipients.map(recipient => ({__typename: "MinutesEmailRecipient", person: person(recipient.sub), status: recipient.status}))};
     };
     const revivalHeader = (persona, revival) => ({
-        __typename: "Revival", id: revival.id, workingTitle: revival.workingTitle,
+        __typename: "Revival", id: revival.id, title: revival.title,
         permissions: {__typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival)}, ownerCandidates: log.candidates(revival),
     });
 

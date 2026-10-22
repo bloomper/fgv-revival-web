@@ -6,16 +6,16 @@ test.describe("User story 2: the directeur runs their revival", () => {
     });
 
     test("sees only their revival", async ({page}) => {
-        await page.goto("/");
+        await page.goto("/revivals");
 
         await expect(page.getByRole("link", {name: /Ali Baba 2028/})).toBeVisible();
         await expect(page.getByText("Nobel 2030")).toHaveCount(0);
         await expect(page.getByText("Snorre 2027")).toHaveCount(0);
-        await expect(page.getByRole("link", {name: "Alla nyuppsättningar"})).toHaveCount(0);
+        await expect(page.getByRole("link", {name: "Hantera", exact: true})).toHaveCount(0);
     });
 
     test("edits the details, with an early show date refused", async ({page}) => {
-        await page.goto("/");
+        await page.goto("/revivals");
         await openRevival(page, "Ali Baba 2028");
         await page.getByRole("button", {name: "Redigera uppgifter"}).click();
 
@@ -35,7 +35,7 @@ test.describe("User story 2: the directeur runs their revival", () => {
     });
 
     test("advances step by step and loses sight of the revival once archived", async ({page, mock}) => {
-        await page.goto("/");
+        await page.goto("/revivals");
         await openRevival(page, "Ali Baba 2028");
 
         for (const [value, label] of [["ORGANISING", "Organiseras"], ["OPEN", "Öppen"], ["CLOSING", "Avslutas"], ["SETTLING", "Slutredovisas"]]) {
@@ -50,7 +50,7 @@ test.describe("User story 2: the directeur runs their revival", () => {
         await mock.setStatus("1", "ARCHIVED");
         await page.reload();
         await expect(page.getByRole("heading", {name: "Sidan finns inte"})).toBeVisible();
-        await page.goto("/");
+        await page.goto("/revivals");
         await expect(page.getByText("Du har ingen roll i någon nyuppsättning som syns just nu.")).toBeVisible();
     });
 });

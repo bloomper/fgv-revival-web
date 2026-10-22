@@ -38,7 +38,7 @@ test.describe("Decision log, user story 1: the steering group keeps the decision
     test("adds rows, filters them, answers a question and cancels a row", async ({page}) => {
         await page.goto("/revivals/1");
         await page.getByRole("link", {name: "Beslutslogg"}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "Beslutslogg"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Beslutslogg"})).toBeVisible();
         await expect(page.getByText("Loggen är tom.")).toBeVisible();
 
         await addRow(page, {type: "Att göra", text: "Boka RunAn", owner: "Stina Styrgrupp", deadline: yesterday(), tag: "lokal"});

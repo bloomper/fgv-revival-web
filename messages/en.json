@@ -14,6 +14,7 @@
     "cancel": "Cancel",
     "add": "Add",
     "remove": "Remove",
+    "delete": "Delete",
     "edit": "Edit",
     "close": "Close",
     "reload": "Reload",
@@ -46,15 +47,22 @@
     "toggleTheme": "Change theme"
   },
   "Nav": {
-    "myRevivals": "My revivals",
+    "home": "Home",
+    "revivals": "Revivals",
     "allRevivals": "All revivals",
     "guide": "The guide",
+    "manage": "Manage",
+    "admin": "Administration",
     "adminGuide": "Manage the guide",
     "adminChecklistTemplates": "Checklist templates"
   },
   "Home": {
     "title": "Nyuppsättning",
     "mustBeLoggedIn": "You need to log in to use Nyuppsättning.",
+    "welcome": "Welcome to Nyuppsättning",
+    "intro": "Nyuppsättning supports the steering groups of Chalmersspex revivals.",
+    "revivalsText": "The revivals you take part in, with decision log, meetings and checklists.",
+    "guideText": "How a revival is run, from approval to closing.",
     "myRevivals": "My revivals",
     "empty": "You hold no role in a revival that is visible right now.",
     "yourRole": "Your role"
@@ -109,7 +117,6 @@
     "filterPlaceholder": "Filter by title or year…",
     "spex": "Spex",
     "year": "Year",
-    "workingTitle": "Working title",
     "premiereDate": "Premiere",
     "showDates": "Shows",
     "venues": "Venues",
@@ -130,6 +137,8 @@
     "editDetails": "Edit details",
     "open": "Open",
     "guide": "The guide",
+    "overview": "Overview",
+    "sections": "Revival sections",
     "guideVersion": "The guide {label}",
     "log": "Decision log",
     "meetings": "Meetings",
@@ -141,17 +150,33 @@
   "Admin": {
     "title": "All revivals",
     "create": "New revival",
-    "readOnly": "You can see every revival but not change them."
+    "readOnly": "You can see every revival but not change them.",
+    "actions": "Actions",
+    "openMenu": "Actions for {title}",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteSelected": "Delete ({count})",
+    "deleteTitle": "{count, plural, one {Delete the revival?} other {Delete # revivals?}}",
+    "deleteDescription": "{titles} will be deleted with everything that belongs to it: members, decision log, meetings, checklists and suggestions. This cannot be undone.",
+    "deleted": "{count, plural, one {The revival was deleted} other {# revivals were deleted}}",
+    "selectAll": "Select all",
+    "selectRow": "Select {title}"
   },
   "CreateDialog": {
     "title": "New revival",
-    "description": "Pick the spex in Spexregister and enter year and working title.",
+    "description": "Choose the spex in Spexregister and the year of the revival.",
     "searchSpex": "Search spex by title",
     "noResults": "No spex found.",
     "selected": "Selected spex",
     "spexregisterUnavailable": "Spexregister is temporarily unavailable. Try again in a moment.",
     "submit": "Create",
-    "created": "The revival was created"
+    "created": "The revival was created",
+    "selectYear": "Choose year",
+    "selectSpexFirst": "Choose a spex first",
+    "editTitle": "Edit the revival",
+    "editDescription": "Change the spex or the year. The year must not be before the original's.",
+    "save": "Save",
+    "saved": "The revival was saved"
   },
   "DetailsForm": {
     "addShowDate": "Add show",
@@ -188,8 +213,6 @@
   "Validation": {
     "spexRequired": "Pick a spex.",
     "yearRange": "The year must be between 1948 and 2100.",
-    "workingTitleRequired": "Enter a working title.",
-    "workingTitleTooLong": "The working title must be at most 255 characters.",
     "premiereYear": "The premiere must be in the revival's year.",
     "showDateBeforePremiere": "A show must not be before the premiere.",
     "showDateWithoutPremiere": "Set the premiere date before shows.",
@@ -345,13 +368,13 @@
       "moveUp": "Move up",
       "moveDown": "Move down",
       "moveTo": "Move to…",
-      "removeItem": "Remove the item",
+      "removeItem": "Delete the item",
       "addItem": "Add item",
       "renameChapter": "Rename the chapter",
       "addSection": "Add section",
       "renameSection": "Rename the section",
       "moveSectionTo": "Move the section to…",
-      "removeSection": "Remove the section"
+      "removeSection": "Delete the section"
     },
     "changes": {
       "title": "Changes from {from} to {to}",
@@ -510,6 +533,7 @@
     "empty": "The log is empty.",
     "noMatches": "No rows match the filter.",
     "import": {
+      "back": "Decision log",
       "title": "Import from Excel",
       "description": "Import the revival's existing decision log once, before any row has been added here. The file is not stored.",
       "file": "Excel file (.xlsx, at most 10 MB)",

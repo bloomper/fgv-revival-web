@@ -11,9 +11,9 @@ test.describe("Decision log, user story 4: the steering group works through the 
         await page.goto("/revivals/1");
         await page.getByRole("link", {name: "Checklistor"}).click();
 
-        await expect(page.getByRole("heading", {level: 2, name: "Checklistor"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Checklistor"})).toBeVisible();
         await page.getByRole("link", {name: /Fas A/}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "Fas A: Först: godkännande och tajmning"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Fas A: Först: godkännande och tajmning"})).toBeVisible();
 
         const requirement = page.getByRole("checkbox", {name: "Nyuppsättningen ska godkännas av JK och FGV."});
 
@@ -28,7 +28,7 @@ test.describe("Decision log, user story 4: the steering group works through the 
         await expect(page.getByRole("dialog")).toBeHidden();
         await expect(page.getByRole("checkbox", {name: "Fråga JK om datum"})).toBeVisible();
 
-        await page.getByRole("link", {name: "Checklistor"}).click();
+        await page.getByRole("navigation", {name: "Nyuppsättningens delar"}).getByRole("link", {name: /^Checklistor/}).click();
         await page.getByRole("link", {name: "Mina", exact: true}).click();
         const matches = page.getByRole("list", {name: "Matchande punkter"});
 

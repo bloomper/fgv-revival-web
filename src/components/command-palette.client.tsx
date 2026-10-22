@@ -4,7 +4,7 @@ import * as React from "react";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
-import {BookOpen, BookOpenCheck, ClipboardList, Command as CommandIcon, Drama, House, ListChecks, type LucideIcon, Plus, Wrench} from "lucide-react";
+import {BookOpen, BookOpenCheck, ClipboardList, Command as CommandIcon, Drama, House, ListChecks, type LucideIcon, Plus, Theater, Wrench} from "lucide-react";
 
 import {Command, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {Dialog, DialogContent, DialogDescription, DialogTitle} from "@/components/ui/dialog";
@@ -44,11 +44,12 @@ export function CommandPalette() {
 
     const {navigation, actions} = useMemo(() => {
         const navigationEntries: PaletteEntry[] = [
-            {id: "home", label: t("Nav.myRevivals"), href: "/", icon: House},
+            {id: "home", label: t("Nav.home"), href: "/", icon: House},
+            {id: "revivals", label: t("Nav.revivals"), href: "/revivals", icon: Theater},
         ];
 
         if (canReadAllRevivals(roles)) {
-            navigationEntries.push({id: "all-revivals", label: t("Nav.allRevivals"), href: "/admin/revivals", icon: ListChecks});
+            navigationEntries.push({id: "all-revivals", label: t("Nav.allRevivals"), href: "/revivals/manage", icon: ListChecks});
         }
 
         navigationEntries.push({id: "guide", label: t("Nav.guide"), href: "/guide", icon: BookOpen});
@@ -66,7 +67,7 @@ export function CommandPalette() {
         const actionEntries: PaletteEntry[] = [];
 
         if (isSuperAdmin(roles)) {
-            actionEntries.push({id: "create-revival", label: t("Admin.create"), href: "/admin/revivals?create=1", icon: Plus});
+            actionEntries.push({id: "create-revival", label: t("Admin.create"), href: "/revivals/manage?create=1", icon: Plus});
         }
 
         return {navigation: navigationEntries, actions: actionEntries};

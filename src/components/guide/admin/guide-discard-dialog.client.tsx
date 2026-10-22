@@ -33,7 +33,7 @@ export function GuideDiscardDialog({draftId, version, acceptedSuggestionCount}: 
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={<Button variant="outline"/>}>
+            <AlertDialogTrigger render={<Button variant="outline" className="text-destructive hover:text-destructive"/>}>
                 <Trash2/>
                 {t("Guide.discard.open")}
             </AlertDialogTrigger>
@@ -48,6 +48,7 @@ export function GuideDiscardDialog({draftId, version, acceptedSuggestionCount}: 
                 <AlertDialogFooter>
                     <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
                     <AlertDialogAction
+                        variant="destructive"
                         disabled={pending}
                         onClick={() => startTransition(async () => {
                             if (feedback(await discardGuideAction({id: draftId, version}), t("Guide.discard.done"))) {

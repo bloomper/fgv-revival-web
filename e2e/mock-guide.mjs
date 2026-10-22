@@ -141,7 +141,7 @@ export function guideResolvers(ctx) {
         return {
             __typename: "GuideSuggestion", ...suggestion, mine: suggestion.authorSub === persona.sub,
             author: ctx.nameOf(suggestion.authorSub), sectionKey: suggestion.sectionKey, decidedAt: null,
-            revival: {__typename: "GuideSuggestionRevival", id: revival.id, workingTitle: revival.workingTitle, year: revival.year},
+            revival: {__typename: "GuideSuggestionRevival", id: revival.id, title: revival.title, year: revival.year},
             madeOn: summary(version), publishedIn: into?.status === "PUBLISHED" ? summary(into) : null,
         };
     };
@@ -189,7 +189,7 @@ export function guideResolvers(ctx) {
 
             return {
                 revival: {
-                    __typename: "Revival", id: revival.id, workingTitle: revival.workingTitle, year: revival.year, status: revival.status,
+                    __typename: "Revival", id: revival.id, title: revival.title, year: revival.year, status: revival.status,
                     guideVersion: summary(pinned),
                     newerGuideVersion: latest && pinned && latest.publishedAt > pinned.publishedAt ? summary(latest) : null,
                     guideVersionHistory: [...(revival.guideHistory ?? [])].reverse(),
@@ -529,7 +529,7 @@ export function handleGuidePdf(ctx, persona, path, url, res) {
         if (!version) {
             return notFound();
         }
-        name = revival.workingTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        name = revival.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     } else {
         return notFound();
     }

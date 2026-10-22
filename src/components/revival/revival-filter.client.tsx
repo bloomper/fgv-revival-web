@@ -11,13 +11,13 @@ import {DataFilter} from "@/components/data-filter";
 export const REVIVAL_STATUSES: RevivalStatus[] = ["PROPOSED", "APPROVED", "REJECTED", "ORGANISING", "OPEN", "CLOSING", "SETTLING", "ARCHIVED"];
 
 /**
- * Every word must appear in the working title, the spex title, the year or the original year.
+ * Every word must appear in the title, the spex title, the year or the original year.
  */
 export function filterRevivals(revivals: RevivalSummaryFragment[], query: string, statuses: Set<RevivalStatus>): RevivalSummaryFragment[] {
     const words = query.toLowerCase().split(/\s+/).filter(Boolean);
 
     return revivals.filter(revival => {
-        const text = [revival.workingTitle, revival.spex.title, revival.year, revival.spex.year].filter(Boolean).join(" ").toLowerCase();
+        const text = [revival.title, revival.spex.title, revival.year, revival.spex.year].filter(Boolean).join(" ").toLowerCase();
 
         return statuses.has(revival.status) && words.every(word => text.includes(word));
     });

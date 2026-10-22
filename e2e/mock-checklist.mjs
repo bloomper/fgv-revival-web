@@ -189,7 +189,7 @@ export function checklistResolvers(ctx) {
         return trimmed;
     };
     const revivalHeader = (persona, revival) => ({
-        __typename: "Revival", id: revival.id, workingTitle: revival.workingTitle,
+        __typename: "Revival", id: revival.id, title: revival.title,
         permissions: {__typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival), canWaiveRequirement: canWaive(persona, revival)},
         ownerCandidates: log.candidates(revival),
     });

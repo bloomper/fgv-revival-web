@@ -49,7 +49,7 @@ export function MeetingMode({revivalId, meeting, openEntries, members, tags, can
                             <Button disabled={pending} onClick={() => startTransition(async () => {
                                 feedback(await startMeetingAction({id: meeting.id, version: meeting.version, revivalId}), t("Meeting.started"));
                             })}><Play/>{t("Meeting.start")}</Button>
-                            <Button variant="outline" disabled={pending} onClick={() => startTransition(async () => {
+                            <Button variant="outline" className="text-destructive hover:text-destructive" disabled={pending} onClick={() => startTransition(async () => {
                                 feedback(await cancelMeetingAction({id: meeting.id, version: meeting.version, revivalId}), t("Meeting.cancelled"));
                             })}>{t("Meeting.cancel")}</Button>
                         </>

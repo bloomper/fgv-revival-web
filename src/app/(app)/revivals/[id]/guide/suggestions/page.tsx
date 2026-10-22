@@ -30,12 +30,12 @@ export default async function RevivalGuideSuggestionsPage({params}: { params: Pr
         const suggestions = await getGuideSuggestions(null, id);
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+            <div className="flex flex-1 flex-col gap-4">
                 <Link href={`/revivals/${id}/guide`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                     <ArrowLeft className="size-4"/>
                     {t("backToGuide")}
                 </Link>
-                <h2 className="text-lg font-bold tracking-tight">{t("revivalTitle", {revival: loaded.revival.workingTitle})}</h2>
+                <h3 className="text-lg font-bold tracking-tight">{t("revivalTitle", {revival: loaded.revival.title})}</h3>
                 <SuggestionList suggestions={suggestions}/>
             </div>
         );

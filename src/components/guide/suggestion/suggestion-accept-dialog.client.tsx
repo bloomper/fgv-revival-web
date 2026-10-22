@@ -70,7 +70,7 @@ export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: Gu
                         {suggestion.kind === "REMOVE" ? (
                             <DialogFooter>
                                 <Button variant="outline" disabled={pending} onClick={() => accept({keep: true})}>{t("Guide.suggestions.keep")}</Button>
-                                <Button disabled={pending} onClick={() => accept({keep: false})}>{t("Guide.suggestions.removeAnyway")}</Button>
+                                <Button variant="destructive" disabled={pending} onClick={() => accept({keep: false})}>{t("Guide.suggestions.removeAnyway")}</Button>
                             </DialogFooter>
                         ) : (
                             <>

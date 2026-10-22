@@ -11,7 +11,7 @@ test.describe("Guide, user story 2: a steering group member reads the guide for 
         await page.goto("/revivals/1");
         await page.getByRole("link", {name: "Guiden v1"}).click();
 
-        await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Guiden v1"})).toBeVisible();
         await expect(page.getByRole("heading", {name: "A. Först: godkännande och tajmning"})).toBeVisible();
         await expect(page.getByRole("heading", {name: "J. Stänga nyuppsättningen"})).toBeVisible();
         await expect(page.getByText("Krav").first()).toBeVisible();

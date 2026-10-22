@@ -10,7 +10,7 @@ const suggestion = (overrides: Partial<GuideSuggestionFieldsFragment> = {}): Gui
     id: "1", kind: "CHANGE", status: "OPEN", version: 0, mine: true, author: "Stina Styrgrupp", phase: "B", sectionKey: null, itemKey: "k",
     reason: "Inaktuellt", decidedBy: null, decidedAt: null, decisionReason: null, reopenedAt: null, createdAt: "2026-11-02T10:00:00Z",
     proposedType: null, proposedText: {sv: "Nytt tips.", en: null},
-    revival: {id: "1", workingTitle: "Ali Baba 2028", year: 2028}, madeOn: {id: "1", label: "v1"}, publishedIn: null,
+    revival: {id: "1", title: "Ali Baba 2028", year: 2028}, madeOn: {id: "1", label: "v1"}, publishedIn: null,
     item: {phase: "B", sectionKey: null, sectionTitle: null, type: "TIP", text: {sv: "Gammalt tips.", en: null}},
     ...overrides,
 });

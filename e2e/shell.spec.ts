@@ -3,23 +3,36 @@ import {expect, test} from "./fixtures";
 test.describe("The application shell", () => {
     test("shows the FGV logo and the navigation for a super admin", async ({page, loginAs}) => {
         await loginAs("superadmin");
-        await page.goto("/");
+        await page.goto("/revivals");
 
         const sidebar = page.locator('[data-slot="sidebar"]:visible');
         await expect(sidebar.locator('a[href="https://www.fgv.nu"]')).toBeVisible();
-        await expect(sidebar.getByRole("link", {name: "Mina nyuppsättningar"})).toBeVisible();
-        await expect(sidebar.getByRole("link", {name: "Alla nyuppsättningar"})).toBeVisible();
+        await expect(sidebar.getByRole("link", {name: "Hem"})).toHaveAttribute("href", "/");
+        await expect(sidebar.getByRole("link", {name: "Nyuppsättningar"})).toHaveAttribute("href", "/revivals");
+        await expect(sidebar.getByRole("link", {name: "Hantera", exact: true})).toHaveAttribute("href", "/revivals/manage");
+        await expect(sidebar.getByRole("link", {name: "Administration"})).toBeVisible();
         await expect(sidebar.getByRole("link", {name: "Support"})).toBeVisible();
         await expect(sidebar.getByRole("link", {name: "Om"})).toBeVisible();
     });
 
-    test("hides all revivals from a user without a global role", async ({page, loginAs}) => {
+    test("hides managing revivals and administration from a user without a global role", async ({page, loginAs}) => {
+        await loginAs("directeur");
+        await page.goto("/revivals");
+
+        const sidebar = page.locator('[data-slot="sidebar"]:visible');
+        await expect(sidebar.getByRole("link", {name: "Nyuppsättningar"})).toBeVisible();
+        await expect(sidebar.getByRole("link", {name: "Hantera", exact: true})).toHaveCount(0);
+        await expect(sidebar.getByRole("link", {name: "Administration"})).toHaveCount(0);
+    });
+
+    test("welcomes the user on the home page and points onwards", async ({page, loginAs}) => {
         await loginAs("directeur");
         await page.goto("/");
 
-        const sidebar = page.locator('[data-slot="sidebar"]:visible');
-        await expect(sidebar.getByRole("link", {name: "Mina nyuppsättningar"})).toBeVisible();
-        await expect(sidebar.getByRole("link", {name: "Alla nyuppsättningar"})).toHaveCount(0);
+        await expect(page.getByRole("heading", {level: 2, name: "Välkommen till Nyuppsättning"})).toBeVisible();
+        await page.getByRole("main").getByRole("link", {name: /Nyuppsättningar/}).click();
+        await expect(page).toHaveURL(/\/revivals$/);
+        await expect(page.getByRole("link", {name: /Ali Baba 2028/})).toBeVisible();
     });
 
     test("offers the FGV account and logging out in the user menu", async ({page, loginAs}) => {
@@ -63,7 +76,7 @@ test.describe("The application shell", () => {
 
     test("switches language and collapses the sidebar from the header", async ({page, loginAs}) => {
         await loginAs("directeur");
-        await page.goto("/");
+        await page.goto("/revivals");
 
         await page.getByRole("button", {name: "Byt språk"}).click();
         await page.getByRole("menuitem", {name: "English"}).click();

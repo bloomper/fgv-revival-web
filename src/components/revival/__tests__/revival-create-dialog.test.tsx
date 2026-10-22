@@ -2,9 +2,9 @@ import {describe, expect, it, vi} from "vitest";
 import {render, screen} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {RevivalCreateDialog} from "@/components/revival/revival-create-dialog.client";
-import {searchSpexAction} from "@/app/(app)/admin/revivals/actions.server";
+import {searchSpexAction} from "@/app/(app)/revivals/manage/actions.server";
 
-vi.mock("@/app/(app)/admin/revivals/actions.server", () => ({
+vi.mock("@/app/(app)/revivals/manage/actions.server", () => ({
     searchSpexAction: vi.fn(),
     createRevivalAction: vi.fn(),
 }));
@@ -16,7 +16,7 @@ describe("RevivalCreateDialog", () => {
         vi.mocked(searchSpexAction).mockResolvedValue({ok: true, data: [{id: "1", title: "Ali Baba", year: 1956}]});
         render(<RevivalCreateDialog/>);
 
-        await userEvent.click(screen.getByRole("button", {name: /Admin.create/}));
+        await userEvent.click(screen.getByRole("button", {name: /create/}));
 
         expect(await screen.findByRole("option", {name: /Ali Baba/})).toBeInTheDocument();
     });
@@ -25,7 +25,7 @@ describe("RevivalCreateDialog", () => {
         vi.mocked(searchSpexAction).mockResolvedValue({ok: false, code: "SPEXREGISTER_UNAVAILABLE", message: "x"});
         render(<RevivalCreateDialog/>);
 
-        await userEvent.click(screen.getByRole("button", {name: /Admin.create/}));
+        await userEvent.click(screen.getByRole("button", {name: /create/}));
 
         expect(await screen.findByRole("alert")).toHaveTextContent("spexregisterUnavailable");
     });

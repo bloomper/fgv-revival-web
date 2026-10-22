@@ -41,12 +41,12 @@ export function SuggestionList({suggestions, actions, showRevival = false}: {
                         <span className="font-medium">{t(`kind.${suggestion.kind}`)}</span>
                         <span className="text-muted-foreground">
                             {t("where", {phase: suggestion.phase, version: suggestion.madeOn.label ?? ""})}
-                            {showRevival && ` · ${suggestion.revival.workingTitle}`}
+                            {showRevival && ` · ${suggestion.revival.title}`}
                             {" · "}{suggestion.author}
                         </span>
                         <div className="ml-auto flex gap-1">
                             {suggestion.mine && suggestion.status === "OPEN" && (
-                                <Button variant="outline" size="sm" disabled={pending} onClick={() => startTransition(async () => {
+                                <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" disabled={pending} onClick={() => startTransition(async () => {
                                     feedback(await withdrawSuggestionAction({id: suggestion.id, version: suggestion.version, revivalId: suggestion.revival.id}), t("withdrawn"));
                                 })}>
                                     {t("withdraw")}

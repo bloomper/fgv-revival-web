@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
-import {ArrowLeft, MessagesSquare} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {MessagesSquare} from "lucide-react";
+import {buttonVariants} from "@/components/ui/button";
 import {Card, CardContent} from "@/components/ui/card";
 import {GuidePdfButton} from "@/components/guide/guide-pdf-button.client";
 import {GuideSearch} from "@/components/guide/guide-search.client";
@@ -42,22 +42,16 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
         const {revival, version} = loaded;
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <div className="space-y-1">
-                    <Link href={`/revivals/${revival.id}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
-                        <ArrowLeft className="size-4"/>
-                        {revival.workingTitle}
-                    </Link>
-                    <h2 className="text-lg font-bold tracking-tight">
-                        {t("title")}{revival.guideVersion?.label ? ` ${revival.guideVersion.label}` : ""}
-                    </h2>
-                </div>
+            <div className="flex flex-1 flex-col gap-4">
+                <h3 className="sr-only">
+                    {t("title")}{revival.guideVersion?.label ? ` ${revival.guideVersion.label}` : ""}
+                </h3>
                 <div className="flex flex-wrap gap-2">
                     {version && <GuidePdfButton revivalId={revival.id}/>}
-                    <Button nativeButton={false} variant="outline" render={<Link href={`/revivals/${revival.id}/guide/suggestions`}/>}>
+                    <Link href={`/revivals/${revival.id}/guide/suggestions`} className={buttonVariants({variant: "outline"})}>
                         <MessagesSquare/>
                         {t("suggestions.title")}
-                    </Button>
+                    </Link>
                     <GuideVersionChangeDialog revivalId={revival.id} current={revival.guideVersion ?? null}
                                               allowed={revival.permissions.guideVersionsAllowed}/>
                 </div>

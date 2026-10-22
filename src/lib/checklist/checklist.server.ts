@@ -16,7 +16,7 @@ const RevivalChecklistsQuery = graphql(`
     query RevivalChecklists($id: ID!, $filter: ChecklistItemFilter, $filtered: Boolean!, $includeCancelled: Boolean!) {
         revival(id: $id) {
             id
-            workingTitle
+            title
             permissions { canWriteLog }
             ownerCandidates { id displayName }
         }
@@ -29,7 +29,7 @@ const ChecklistQuery = graphql(`
     query Checklist($id: ID!, $revivalId: ID!) {
         revival(id: $revivalId) {
             id
-            workingTitle
+            title
             permissions { canWriteLog canWaiveRequirement }
             ownerCandidates { id displayName }
         }

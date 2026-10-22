@@ -45,7 +45,7 @@ export function ChecklistActions({revivalId, checklist, templates}: {
                 </DropdownMenu>
             )}
             {checklist.kind === "EVENT" && (
-                <Button variant="outline" disabled={pending} onClick={() => startTransition(async () => {
+                <Button variant="outline" className="text-destructive hover:text-destructive" disabled={pending} onClick={() => startTransition(async () => {
                     feedback(await cancelEventChecklistAction({revivalId, id: checklist.id, version: checklist.version}), t("cancelledDone"));
                 })}><Ban/>{t("cancelEvent")}</Button>
             )}

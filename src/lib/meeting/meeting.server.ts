@@ -8,7 +8,7 @@ const RevivalMeetingsQuery = graphql(`
     query RevivalMeetings($id: ID!) {
         revival(id: $id) {
             id
-            workingTitle
+            title
             permissions { canWriteLog }
             ownerCandidates { id displayName }
         }
@@ -20,7 +20,7 @@ const MeetingQuery = graphql(`
     query Meeting($id: ID!, $revivalId: ID!) {
         revival(id: $revivalId) {
             id
-            workingTitle
+            title
             permissions { canWriteLog }
             ownerCandidates { id displayName }
         }

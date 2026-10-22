@@ -50,7 +50,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await dialog.getByLabel("Mall").selectOption({label: "Rephelg"});
         await dialog.getByRole("button", {name: "Spara"}).click();
 
-        await expect(page.getByRole("heading", {level: 2, name: /Rephelg 2/})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: /Rephelg 2/})).toBeVisible();
         const row = (text: string) => page.getByRole("listitem").filter({hasText: text});
 
         await expect(row("Utskick")).toContainText("Klart senast: 2027-11-08");

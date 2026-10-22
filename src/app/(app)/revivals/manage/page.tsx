@@ -10,7 +10,7 @@ import {withPolicyPage} from "@/utils/route.server";
  * All revivals: super admins create revivals here and open one to manage it; observers see the same list read-only
  * (FR-021, FR-021a).
  */
-export default async function AdminRevivalsPage({searchParams}: { searchParams: Promise<{ create?: string }> }) {
+export default async function ManageRevivalsPage({searchParams}: { searchParams: Promise<{ create?: string }> }) {
     const {create} = await searchParams;
 
     return withPolicyPage(Policies.revivals.requireReadAll, async ({roles}) => {

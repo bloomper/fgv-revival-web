@@ -3,8 +3,8 @@ import {filterRevivals, REVIVAL_STATUSES} from "@/components/revival/revival-fil
 import {revivalDetail} from "@/components/revival/__tests__/fixtures";
 import type {RevivalStatus} from "@/gql/graphql";
 
-const aliBaba = revivalDetail({id: "1", workingTitle: "Ali Baba 2028", year: 2028, status: "ORGANISING"});
-const sesam = revivalDetail({id: "2", workingTitle: "Sesam 2031", year: 2031, status: "PROPOSED",
+const aliBaba = revivalDetail({id: "1", title: "Ali Baba 2028", year: 2028, status: "ORGANISING"});
+const sesam = revivalDetail({id: "2", title: "Sesam 2031", year: 2031, status: "PROPOSED",
     spex: {id: "2", title: "Ali Baba", year: 1956, available: true}});
 const all = new Set<RevivalStatus>(REVIVAL_STATUSES);
 

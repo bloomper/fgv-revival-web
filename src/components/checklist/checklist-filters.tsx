@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {useTranslations} from "next-intl";
-import {Button} from "@/components/ui/button";
+import {buttonVariants} from "@/components/ui/button";
 import {CHECKLIST_FILTERS, checklistFilterQuery, type ChecklistFilterValues} from "@/lib/checklist/schema";
 
 /**
@@ -12,10 +12,9 @@ export function ChecklistFilters({revivalId, filter}: { revivalId: string; filte
     return (
         <div className="flex flex-wrap gap-2" role="group" aria-label={t("label")}>
             {CHECKLIST_FILTERS.map(key => (
-                <Button nativeButton={false} key={key} size="sm" variant={filter?.[key] ? "default" : "outline"} aria-pressed={!!filter?.[key]}
-                        render={<Link href={`/revivals/${revivalId}/checklists${checklistFilterQuery(filter, key)}`}/>}>
+                <Link href={`/revivals/${revivalId}/checklists${checklistFilterQuery(filter, key)}`} key={key} aria-pressed={!!filter?.[key]} className={buttonVariants({variant: filter?.[key] ? "default" : "outline", size: "sm"})}>
                     {t(key)}
-                </Button>
+                </Link>
             ))}
         </div>
     );

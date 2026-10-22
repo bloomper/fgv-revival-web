@@ -14,10 +14,26 @@ const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid").refine(va
 export const revivalCreateSchema = z.object({
     spexId: z.string().min(1, "spexRequired"),
     year: z.coerce.number<number>().int("yearRange").min(MIN_YEAR, "yearRange").max(MAX_YEAR, "yearRange"),
-    workingTitle: z.string().trim().min(1, "workingTitleRequired").max(255, "workingTitleTooLong"),
 });
 
 export type RevivalCreateValues = z.infer<typeof revivalCreateSchema>;
+
+export const revivalCoreSchema = revivalCreateSchema.extend({
+    id: z.string().min(1),
+    version: z.number().int(),
+});
+
+/**
+ * The years a revival of the spex may have, newest first as in Spexregister: not before the original, and for a new
+ * revival not before this year either. The server checks the same.
+ */
+export function revivalYears(originalYear: number | null | undefined, options: { fromThisYear: boolean; include?: number }): number[] {
+    const thisYear = new Date().getFullYear();
+    const first = Math.max(originalYear ?? MIN_YEAR, options.fromThisYear ? thisYear : MIN_YEAR);
+    const last = Math.max(thisYear + 5, options.include ?? 0);
+
+    return Array.from({length: Math.max(0, last - first + 1)}, (_, index) => last - index);
+}
 
 /**
  * The directeur's details, checked against the revival's year (FR-011). The server checks the same rules.

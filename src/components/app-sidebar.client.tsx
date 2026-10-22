@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import {useMemo} from "react";
-import {BookOpen, BookOpenCheck, ClipboardList, Drama, House, ListChecks, type LucideIcon, Wrench} from "lucide-react";
+import {BookOpen, Drama, House, type LucideIcon, Settings, Theater, Wrench} from "lucide-react";
 
 import {NavMain} from "@/components/nav-main.client";
 import {NavSecondary} from "@/components/nav-secondary.client";
@@ -57,42 +57,39 @@ export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
     const navigation = useMemo((): { main: NavItem[]; secondary: NavSecondaryItem[] } => {
         const mainItems: NavItem[] = [
             {
-                title: t("Nav.myRevivals"),
+                title: t("Nav.home"),
                 url: "/",
                 icon: House,
-                isActive: pathname === "/" || pathname.startsWith("/revivals"),
+                isActive: pathname === "/",
+            },
+            {
+                title: t("Nav.revivals"),
+                url: "/revivals",
+                icon: Theater,
+                isActive: pathname.startsWith("/revivals"),
+                items: canReadAllRevivals(roles) ? [
+                    {title: t("Nav.manage"), url: "/revivals/manage"},
+                ] : undefined,
+            },
+            // The server decides who reads the guide (FR-001–FR-004); the link is shown to everyone with access
+            {
+                title: t("Nav.guide"),
+                url: "/guide",
+                icon: BookOpen,
+                isActive: pathname.startsWith("/guide"),
             },
         ];
 
-        if (canReadAllRevivals(roles)) {
-            mainItems.push({
-                title: t("Nav.allRevivals"),
-                url: "/admin/revivals",
-                icon: ListChecks,
-                isActive: pathname.startsWith("/admin/revivals"),
-            });
-        }
-
-        // The server decides who reads the guide (FR-001–FR-004); the link is shown to everyone with access
-        mainItems.push({
-            title: t("Nav.guide"),
-            url: "/guide",
-            icon: BookOpen,
-            isActive: pathname.startsWith("/guide"),
-        });
-
         if (isSuperAdmin(roles)) {
             mainItems.push({
-                title: t("Nav.adminGuide"),
+                title: t("Nav.admin"),
                 url: "/admin/guide",
-                icon: BookOpenCheck,
-                isActive: pathname.startsWith("/admin/guide"),
-            });
-            mainItems.push({
-                title: t("Nav.adminChecklistTemplates"),
-                url: "/admin/checklist-templates",
-                icon: ClipboardList,
-                isActive: pathname.startsWith("/admin/checklist-templates"),
+                icon: Settings,
+                isActive: pathname.startsWith("/admin/guide") || pathname.startsWith("/admin/checklist-templates"),
+                items: [
+                    {title: t("Nav.adminGuide"), url: "/admin/guide"},
+                    {title: t("Nav.adminChecklistTemplates"), url: "/admin/checklist-templates"},
+                ],
             });
         }
 

@@ -42,7 +42,7 @@ const RevivalGuideQuery = graphql(`
     query RevivalGuide($id: ID!) {
         revival(id: $id) {
             id
-            workingTitle
+            title
             year
             status
             guideVersion { id label publishedAt }
@@ -323,7 +323,7 @@ export const GuideSuggestionFields = graphql(`
         createdAt
         proposedType
         proposedText { sv en }
-        revival { id workingTitle year }
+        revival { id title year }
         madeOn { id label }
         publishedIn { id label }
         item { phase sectionKey sectionTitle { sv en } type text { sv en } }
