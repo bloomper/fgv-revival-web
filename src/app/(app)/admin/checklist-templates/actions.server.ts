@@ -26,8 +26,8 @@ function revalidate() {
 export async function createTemplateAction(input: z.input<typeof templateCreateSchema>): Promise<ActionResult<{ id: string }>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
         const parsed = templateCreateSchema.parse(input);
-        const created = await createChecklistTemplate(parsed.kind === "PHASE"
-            ? {kind: "PHASE", phase: parsed.phase}
+        const created = await createChecklistTemplate(parsed.kind === "CHAPTER"
+            ? {kind: "CHAPTER", chapterKey: parsed.chapterKey}
             : {kind: "EVENT", name: {sv: parsed.name.sv, en: parsed.name.en || null}});
 
         revalidate();

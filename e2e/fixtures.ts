@@ -51,7 +51,7 @@ type Mock = {
     guide: (seed: "none" | "published" | "two" | "draft") => Promise<void>;
     /** Adds a decision log row as the steering group member. */
     logRow: (row: LogRow) => Promise<void>;
-    /** After revival 1's phase checklists exist, adds the event template "Rephelg" with four items and a phase B template with one. */
+    /** After revival 1's chapter checklists exist, adds the event template "Rephelg" with four items and a chapter B template with one. */
     templates: () => Promise<void>;
     /** Makes the next minutes email fail for these persona ids, and adds waiting steering group members to revival 1. */
     mail: (setup: { failOnce?: string[]; waiting?: number }) => Promise<void>;

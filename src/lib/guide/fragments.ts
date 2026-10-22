@@ -23,7 +23,7 @@ export const GuideVersionFields = graphql(`
         introduction { sv en }
         chapters {
             id
-            phase
+            key
             title { sv en }
             version
             items { ...GuideItemFields }

@@ -3,21 +3,18 @@ import {z} from "zod";
 // Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
 // (FR-009a, FR-014, data-model.md).
 
-export const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
-export const MAX_LABEL = 32;
 export const MAX_NOTE = 2000;
 export const MAX_ITEM_TEXT = 5000;
 export const MAX_TITLE = 255;
 export const MAX_INTRODUCTION = 20000;
 export const MAX_REASON = 2000;
 
-export const PHASES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as const;
 export const GUIDE_ITEM_TYPES = ["TIP", "REQUIREMENT", "QUESTION", "TEXT"] as const;
 
+// The server labels a published version itself (v1, v2, …); the note says what changed.
 export const guidePublishSchema = z.object({
     id: z.string().min(1),
     version: z.number().int(),
-    label: z.string().trim().min(1, "labelRequired").max(MAX_LABEL, "labelTooLong"),
     note: z.string().trim().max(MAX_NOTE, "noteTooLong").optional(),
 });
 
@@ -52,7 +49,9 @@ const id = z.string().min(1);
 const version = z.number().int();
 
 export const guideIntroductionUpdateSchema = z.object({versionId: id, version, introduction: guideIntroductionSchema});
+export const guideChapterCreateSchema = z.object({versionId: id, position: z.number().int().min(0).nullable().optional(), title: guideTitleSchema});
 export const guideChapterUpdateSchema = z.object({id, version, title: guideTitleSchema});
+export const guideChapterMoveSchema = z.object({id, version, position: z.number().int().min(0)});
 export const guideSectionCreateSchema = z.object({chapterId: id, position: z.number().int().nullable().optional(), title: guideTitleSchema});
 export const guideSectionUpdateSchema = z.object({id, version, title: guideTitleSchema});
 export const guideSectionMoveSchema = z.object({id, version, chapterId: id, position: z.number().int().min(0)});
@@ -93,7 +92,7 @@ export const guideSuggestionCreateSchema = z.object({
     revivalId: id,
     versionId: id,
     itemKey: id.nullable().optional(),
-    phase: z.enum(PHASES).nullable().optional(),
+    chapterKey: id.nullable().optional(),
     sectionKey: id.nullable().optional(),
     values: guideSuggestionSchema,
 });

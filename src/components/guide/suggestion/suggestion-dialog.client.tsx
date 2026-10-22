@@ -13,10 +13,10 @@ import type {GuideItemType} from "@/gql/graphql";
 import {suggestAction} from "@/app/(app)/revivals/[id]/guide/actions.server";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {GUIDE_ITEM_TYPES, guideSuggestionSchema, type GuideSuggestionValues, MAX_ITEM_TEXT, MAX_REASON, type PHASES} from "@/lib/guide/schema";
+import {GUIDE_ITEM_TYPES, guideSuggestionSchema, type GuideSuggestionValues, MAX_ITEM_TEXT, MAX_REASON} from "@/lib/guide/schema";
 import {track} from "@/utils/umami";
 
-type Place = { phase: (typeof PHASES)[number]; sectionKey: string | null };
+type Place = { chapterKey: string; sectionKey: string | null };
 
 /**
  * Suggests new text or type for an item, removing it, or a new item in a chapter or section (FR-031). The super admin
@@ -46,9 +46,16 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
         },
     });
     const {errors} = form.formState;
+    // The sheet stays mounted and `values` rarely changes, so start each opening afresh.
+    const change = (next: boolean) => {
+        if (next) {
+            form.reset();
+        }
+        setOpen(next);
+    };
 
     return (
-        <Sheet open={open} onOpenChange={setOpen}>
+        <Sheet open={open} onOpenChange={change}>
             <SheetTrigger render={trigger}>{children}</SheetTrigger>
             <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
                 <SheetHeader className="p-6 pb-4 shrink-0">
@@ -60,7 +67,7 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         const changedType = kind === "CHANGE" && values.proposedType === item?.type ? null : values.proposedType;
                         const result = await suggestAction({
-                            revivalId, versionId, itemKey: item?.key ?? null, phase: place?.phase ?? null, sectionKey: place?.sectionKey ?? null,
+                            revivalId, versionId, itemKey: item?.key ?? null, chapterKey: place?.chapterKey ?? null, sectionKey: place?.sectionKey ?? null,
                             values: {
                                 ...values,
                                 proposedType: changedType,

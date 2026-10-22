@@ -25,6 +25,9 @@ interface NavItem {
     items?: NavItem[];
 }
 
+/** A sub-entry stays highlighted on the pages beneath it, e.g. the guide administration entry on `/admin/guide/draft/…`. */
+const isWithin = (pathname: string, url: string) => pathname === url || pathname.startsWith(`${url}/`);
+
 export function NavMain({items}: { items: NavItem[] }) {
     const pathname = usePathname();
 
@@ -46,7 +49,7 @@ function NavMainItem({item, pathname}: { item: NavItem; pathname: string }) {
     const LinkComponent = isInternal ? Link : "a";
     const linkProps = {href: item.url};
 
-    const isActive = Boolean(item.isActive || item.items?.some(sub => pathname === sub.url || sub.items?.some(inner => pathname === inner.url)));
+    const isActive = Boolean(item.isActive || item.items?.some(sub => isWithin(pathname, sub.url) || sub.items?.some(inner => isWithin(pathname, inner.url))));
 
     const [open, setOpen] = useState(isActive);
     const [wasActive, setWasActive] = useState(isActive);
@@ -104,7 +107,7 @@ function NavMainItem({item, pathname}: { item: NavItem; pathname: string }) {
 function NavSubItem({item, pathname}: { item: NavItem; pathname: string }) {
     const t = useTranslations();
     const hasInnerItems = !!item.items?.length;
-    const isSubActive = Boolean(pathname === item.url || item.items?.some(inner => pathname === inner.url));
+    const isSubActive = Boolean(isWithin(pathname, item.url) || item.items?.some(inner => isWithin(pathname, inner.url)));
 
     const [subOpen, setSubOpen] = useState(isSubActive);
     const [wasSubActive, setWasSubActive] = useState(isSubActive);
@@ -119,7 +122,7 @@ function NavSubItem({item, pathname}: { item: NavItem; pathname: string }) {
     if (!hasInnerItems) {
         return (
             <SidebarMenuSubItem>
-                <SidebarMenuSubButton isActive={pathname === item.url} render={<Link href={item.url}/>}>
+                <SidebarMenuSubButton isActive={isWithin(pathname, item.url)} render={<Link href={item.url}/>}>
                     {item.icon && <item.icon className="size-4"/>}
                     <span>{item.title}</span>
                 </SidebarMenuSubButton>
@@ -152,7 +155,7 @@ function NavSubItem({item, pathname}: { item: NavItem; pathname: string }) {
                     <SidebarMenuSub className="mr-0! pr-0!">
                         {item.items?.map((innerItem) => (
                             <SidebarMenuSubItem key={innerItem.title}>
-                                <SidebarMenuSubButton isActive={pathname === innerItem.url}
+                                <SidebarMenuSubButton isActive={isWithin(pathname, innerItem.url)}
                                                       render={<Link href={innerItem.url}/>}>
                                     <span>{innerItem.title}</span>
                                 </SidebarMenuSubButton>

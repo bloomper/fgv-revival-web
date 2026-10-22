@@ -20,13 +20,13 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {MAX_TEMPLATE_NAME} from "@/lib/checklist/schema";
 
 type Template = ChecklistTemplatesQuery["checklistTemplates"][number];
-
-const PHASES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as const;
+type Chapter = { key: string; title: { sv: string; en?: string | null } };
 
 /**
- * The phase templates A–J, with the missing ones to create, then event templates by name (FR-030).
+ * A template per chapter of the latest published guide version, with the missing ones to create, templates for
+ * chapters the guide no longer has, then event templates by name (FR-030).
  */
-export function TemplateList({templates}: { templates: Template[] }) {
+export function TemplateList({templates, chapters}: { templates: Template[]; chapters: Chapter[] }) {
     const t = useTranslations();
     const id = useId();
     const locale = useLocale();
@@ -38,30 +38,33 @@ export function TemplateList({templates}: { templates: Template[] }) {
     const href = (template: Template) => `/admin/checklist-templates/${template.id}`;
     const open = (id: string | undefined) => id && router.push(`/admin/checklist-templates/${id}`);
     const events = templates.filter(template => template.kind === "EVENT");
+    const keys = new Set(chapters.map(chapter => chapter.key));
+    const orphaned = templates.filter(template => template.kind === "CHAPTER" && !keys.has(template.chapterKey ?? ""));
 
     return (
         <div className="space-y-6">
-            <section className="space-y-2" aria-label={t("ChecklistTemplate.phases")}>
-                <h3 className="font-medium">{t("ChecklistTemplate.phases")}</h3>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                    {PHASES.map(phase => {
-                        const own = templates.filter(template => template.kind === "PHASE" && template.phase === phase);
+            <section className="space-y-2" aria-label={t("ChecklistTemplate.chapters")}>
+                <h3 className="font-medium">{t("ChecklistTemplate.chapters")}</h3>
+                {chapters.length === 0 && <p className="text-sm text-muted-foreground">{t("ChecklistTemplate.noChapters")}</p>}
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {chapters.map((chapter, index) => {
+                        const own = templates.filter(template => template.kind === "CHAPTER" && template.chapterKey === chapter.key);
                         const active = own.find(template => !template.retired);
 
                         return (
-                            <Card key={phase}>
-                                <CardHeader><CardTitle>{t("Checklist.phase", {phase})}</CardTitle></CardHeader>
+                            <Card key={chapter.key}>
+                                <CardHeader><CardTitle>{index + 1}. {pickText(chapter.title, locale).text}</CardTitle></CardHeader>
                                 <CardContent className="space-y-2 text-sm">
                                     {active ? (
                                         <Link href={href(active)} className="hover:underline">{t("ChecklistTemplate.itemCount", {count: active.items.length})}</Link>
                                     ) : (
                                         <Button size="sm" variant="outline" disabled={pending} onClick={() => startTransition(async () => {
-                                            const result = await createTemplateAction({kind: "PHASE", phase});
+                                            const result = await createTemplateAction({kind: "CHAPTER", chapterKey: chapter.key});
 
                                             if (feedback(result)) {
                                                 open(result.data.id);
                                             }
-                                        })}>{t("ChecklistTemplate.createPhase", {phase})}</Button>
+                                        })}>{t("ChecklistTemplate.createChapter")}</Button>
                                     )}
                                     {own.filter(template => template.retired).map(template => (
                                         <Link key={template.id} href={href(template)} className="block text-muted-foreground hover:underline">
@@ -74,6 +77,25 @@ export function TemplateList({templates}: { templates: Template[] }) {
                     })}
                 </div>
             </section>
+            {orphaned.length > 0 && (
+                <section className="space-y-2" aria-label={t("ChecklistTemplate.orphaned")}>
+                    <h3 className="font-medium">{t("ChecklistTemplate.orphaned")}</h3>
+                    <p className="text-sm text-muted-foreground">{t("ChecklistTemplate.orphanedDescription")}</p>
+                    <ul className="divide-y rounded-lg border">
+                        {orphaned.map(template => (
+                            <li key={template.id}>
+                                <Link href={href(template)} className="flex items-center justify-between gap-2 p-3 hover:bg-accent">
+                                    <span>{t("ChecklistTemplate.chapterGone")}</span>
+                                    <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        {template.retired && <Badge variant="outline">{t("ChecklistTemplate.retired")}</Badge>}
+                                        {t("ChecklistTemplate.itemCount", {count: template.items.length})}
+                                    </span>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
             <section className="space-y-2" aria-label={t("ChecklistTemplate.events")}>
                 <div className="flex items-center justify-between gap-2">
                     <h3 className="font-medium">{t("ChecklistTemplate.events")}</h3>

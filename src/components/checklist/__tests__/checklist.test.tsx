@@ -23,7 +23,7 @@ vi.mock("@/hooks/use-action-feedback", () => ({useActionFeedback: () => () => tr
 const item = (overrides: Partial<ChecklistItemFieldsFragment> = {}): ChecklistItemFieldsFragment => ({
     id: "1", required: false, text: {sv: "Boka lokal", en: null}, state: "OPEN", stateChangedBy: null, stateChangedAt: null,
     reason: null, owner: null, deadline: null, deadlineManual: false, overdue: false, comment: null, guideItem: null,
-    defaultCapability: null, logEntries: [], checklist: {id: "9", kind: "PHASE", phase: "B", name: null}, version: 0,
+    defaultCapability: null, logEntries: [], checklist: {id: "9", kind: "CHAPTER", chapterKey: "B", chapterTitle: {sv: "Lokaler", en: null}, name: null}, version: 0,
     ...overrides,
 });
 

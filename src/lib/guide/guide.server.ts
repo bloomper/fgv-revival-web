@@ -2,7 +2,9 @@ import "server-only";
 
 import {graphql} from "@/gql";
 import type {
+    GuideChapterCreateInput,
     GuideChapterInput,
+    GuideChapterMoveInput,
     GuideDraftPublishInput,
     GuideIntroductionInput,
     GuideItemCreateInput,
@@ -17,12 +19,23 @@ import type {
     GuideSuggestionStatus,
     RevivalGuideVersionChangeInput,
 } from "@/gql/graphql";
-import {apiFetch} from "@/lib/api.server";
-import {type ErrorCode, GraphQLRequestError, runMutation, runQuery} from "@/lib/graphql.server";
+import {runMutation, runQuery} from "@/lib/graphql.server";
 
 const GuideVersionsQuery = graphql(`
     query GuideVersions {
         guideVersions { id label publishedAt }
+    }
+`);
+
+const GuideVersionsAdminQuery = graphql(`
+    query GuideVersionsAdmin {
+        guideVersions { id label note publishedAt publishedBy revivalCount suggestionCount deletable version }
+    }
+`);
+
+const GuideVersionDeleteMutation = graphql(`
+    mutation GuideVersionDelete($id: ID!, $version: Int!) {
+        guideVersionDelete(id: $id, version: $version)
     }
 `);
 
@@ -47,7 +60,7 @@ const RevivalGuideQuery = graphql(`
             status
             guideVersion { id label publishedAt }
             newerGuideVersion { id label publishedAt }
-            guideVersionHistory { from { id label } to { id label } changedBy changedAt }
+            guideVersionHistory { fromLabel toLabel changedBy changedAt }
             permissions { canSuggestGuideChange guideVersionsAllowed { id label publishedAt } }
         }
     }
@@ -59,16 +72,26 @@ const GuideChangesQuery = graphql(`
             from { id label publishedAt }
             to { id label publishedAt }
             introductionChanged
-            chapters { phase renamed before { sv en } after { sv en } }
-            sections { key kind phaseBefore phaseAfter renamed moved reordered before { sv en } after { sv en } }
+            chapters { key kind renamed moved before { sv en } after { sv en } }
+            sections {
+                key
+                kind
+                chapterBefore { key title { sv en } }
+                chapterAfter { key title { sv en } }
+                renamed
+                moved
+                reordered
+                before { sv en }
+                after { sv en }
+            }
             items {
                 key
                 kind
                 reworded
                 retyped
                 moved
-                before { phase sectionKey sectionTitle { sv en } type text { sv en } }
-                after { phase sectionKey sectionTitle { sv en } type text { sv en } }
+                before { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type text { sv en } }
+                after { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type text { sv en } }
             }
         }
     }
@@ -89,6 +112,39 @@ const GuideDraftStartMutation = graphql(`
 const GuideIntroductionUpdateMutation = graphql(`
     mutation GuideIntroductionUpdate($input: GuideIntroductionInput!) {
         guideIntroductionUpdate(input: $input) { id version }
+    }
+`);
+
+const GuideChapterCreateMutation = graphql(`
+    mutation GuideChapterCreate($input: GuideChapterCreateInput!) {
+        guideChapterCreate(input: $input) { id key }
+    }
+`);
+
+const GuideChapterMoveMutation = graphql(`
+    mutation GuideChapterMove($input: GuideChapterMoveInput!) {
+        guideChapterMove(input: $input) { id }
+    }
+`);
+
+const GuideChapterRemoveMutation = graphql(`
+    mutation GuideChapterRemove($id: ID!, $version: Int!) {
+        guideChapterRemove(id: $id, version: $version)
+    }
+`);
+
+const GuideChapterRemovalImpactQuery = graphql(`
+    query GuideChapterRemovalImpact($chapterKey: ID!) {
+        guideChapterRemovalImpact(chapterKey: $chapterKey) { chapterKey revivalCount itemCount doneCount }
+    }
+`);
+
+const RevivalGuideVersionChangeImpactQuery = graphql(`
+    query RevivalGuideVersionChangeImpact($id: ID!, $toId: ID!) {
+        revival(id: $id) {
+            id
+            guideVersionChangeImpact(toId: $toId) { checklistId chapterKey chapterTitle { sv en } itemCount doneCount linkedLogEntryCount }
+        }
     }
 `);
 
@@ -150,7 +206,7 @@ const GuideSearchQuery = graphql(`
     query GuideSearch($versionId: ID, $query: String!) {
         guideSearch(versionId: $versionId, query: $query) {
             kind
-            phase
+            chapterKey
             chapterTitle { sv en }
             sectionKey
             sectionTitle { sv en }
@@ -190,13 +246,6 @@ const GuideDraftQuery = graphql(`
     query GuideDraft {
         guideDraft {
             draft { ...GuideVersionFields }
-            importReport {
-                fileName
-                createdAt
-                totals { sections tips requirements questions texts }
-                chapters { phase counts { sections tips requirements questions texts } }
-                warnings { code phase sectionTitle detail }
-            }
             acceptedSuggestionCount
             untranslatedCount
         }
@@ -219,6 +268,17 @@ export async function getGuideVersions() {
     return (await runQuery(GuideVersionsQuery, {}))?.guideVersions ?? [];
 }
 
+/**
+ * Published versions with how much each is used, for super admins.
+ */
+export async function getGuideVersionsAdmin() {
+    return (await runQuery(GuideVersionsAdminQuery, {}))?.guideVersions ?? [];
+}
+
+export async function deleteGuideVersion(id: string, version: number) {
+    await runMutation(GuideVersionDeleteMutation, {id, version});
+}
+
 export async function getGuideDraft() {
     return (await runQuery(GuideDraftQuery, {}))?.guideDraft ?? null;
 }
@@ -229,27 +289,6 @@ export async function publishGuideDraft(input: GuideDraftPublishInput) {
 
 export async function discardGuideDraft(id: string, version: number) {
     await runMutation(DiscardMutation, {id, version});
-}
-
-const HTTP_CODES: Record<number, ErrorCode> = {400: "BAD_REQUEST", 401: "UNAUTHORIZED", 403: "FORBIDDEN", 404: "NOT_FOUND", 409: "CONFLICT", 413: "BAD_REQUEST"};
-
-/**
- * Uploads a Word document as the first draft (contracts/http.md). Errors come back as GraphQL's do.
- */
-export async function importGuide(file: File): Promise<{ draftId: number }> {
-    const body = new FormData();
-
-    body.append("file", file, file.name);
-
-    const response = await apiFetch("/api/guide/import", {method: "POST", body});
-    const json = await response.json().catch(() => ({})) as { draftId?: number, code?: string, message?: string };
-
-    if (!response.ok) {
-        const code = (json.code as ErrorCode | undefined) ?? HTTP_CODES[response.status] ?? "INTERNAL_ERROR";
-
-        throw new GraphQLRequestError(code, json.message ?? response.statusText);
-    }
-    return {draftId: json.draftId ?? 0};
 }
 
 export async function getGuideChanges(fromId: string, toId: string) {
@@ -268,8 +307,54 @@ export async function updateGuideIntroduction(input: GuideIntroductionInput) {
     await runMutation(GuideIntroductionUpdateMutation, {input});
 }
 
+export async function createGuideChapter(input: GuideChapterCreateInput) {
+    return (await runMutation(GuideChapterCreateMutation, {input}))?.guideChapterCreate;
+}
+
 export async function updateGuideChapter(input: GuideChapterInput) {
     await runMutation(GuideChapterUpdateMutation, {input});
+}
+
+export async function moveGuideChapter(input: GuideChapterMoveInput) {
+    await runMutation(GuideChapterMoveMutation, {input});
+}
+
+export async function removeGuideChapter(id: string, version: number) {
+    await runMutation(GuideChapterRemoveMutation, {id, version});
+}
+
+/**
+ * What removing the chapter would delete in revivals' checklists once they move to a version without it.
+ */
+export async function getChapterRemovalImpact(chapterKey: string) {
+    return (await runQuery(GuideChapterRemovalImpactQuery, {chapterKey}))?.guideChapterRemovalImpact ?? null;
+}
+
+/**
+ * The chapters of the version the draft is based on that the draft no longer has, each with what removing it would
+ * delete in revivals' checklists.
+ */
+export async function getRemovedChapters(draft: { basedOn?: { id: string } | null; chapters: { key: string }[] }) {
+    if (!draft.basedOn) {
+        return [];
+    }
+
+    const basedOn = await getGuideVersion(draft.basedOn.id);
+    const kept = new Set(draft.chapters.map(chapter => chapter.key));
+    const removed = (basedOn?.chapters ?? []).filter(chapter => !kept.has(chapter.key));
+
+    return Promise.all(removed.map(async chapter => {
+        const impact = await getChapterRemovalImpact(chapter.key);
+
+        return {key: chapter.key, title: chapter.title, revivalCount: impact?.revivalCount ?? 0, itemCount: impact?.itemCount ?? 0, doneCount: impact?.doneCount ?? 0};
+    }));
+}
+
+/**
+ * The revival's chapter checklists that moving to the version would delete.
+ */
+export async function getGuideVersionChangeImpact(revivalId: string, toId: string) {
+    return (await runQuery(RevivalGuideVersionChangeImpactQuery, {id: revivalId, toId}))?.revival?.guideVersionChangeImpact ?? [];
 }
 
 export async function createGuideSection(input: GuideSectionCreateInput) {
@@ -312,7 +397,8 @@ export const GuideSuggestionFields = graphql(`
         version
         mine
         author
-        phase
+        chapterKey
+        chapterTitle { sv en }
         sectionKey
         itemKey
         reason
@@ -326,7 +412,7 @@ export const GuideSuggestionFields = graphql(`
         revival { id title year }
         madeOn { id label }
         publishedIn { id label }
-        item { phase sectionKey sectionTitle { sv en } type text { sv en } }
+        item { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type text { sv en } }
     }
 `);
 

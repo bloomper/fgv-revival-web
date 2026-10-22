@@ -4,7 +4,7 @@
 import {createServer} from "node:http";
 import {randomUUID} from "node:crypto";
 import {exportJWK, generateKeyPair, SignJWT} from "jose";
-import {createGuideState, guideResolvers, handleGuideImport, handleGuidePdf} from "./mock-guide.mjs";
+import {createGuideState, guideResolvers, handleGuidePdf} from "./mock-guide.mjs";
 import {createLogState, handleLogImport, logResolvers} from "./mock-log.mjs";
 import {createMeetingState, meetingResolvers} from "./mock-meeting.mjs";
 import {checklistResolvers, createChecklistState} from "./mock-checklist.mjs";
@@ -71,16 +71,16 @@ function seedGuide(seed) {
 }
 
 /**
- * After revival 1's phase checklists exist: an event template "Rephelg" with the quickstart's four items, and a phase B
- * template with one item, so adding from it is not done at creation.
+ * After revival 1's chapter checklists exist: an event template "Rephelg" with the quickstart's four items, and a
+ * template for chapter B with one item, so adding from it is not done at creation.
  */
 function seedTemplates() {
     const as = PERSONAS.superadmin;
 
     resolvers.RevivalChecklists(PERSONAS.styrgrupp, {id: "1", filter: null, filtered: false});
     resolvers.ChecklistTemplateCreate(as, {input: {kind: "EVENT", name: {sv: "Rephelg", en: null}}});
-    resolvers.ChecklistTemplateCreate(as, {input: {kind: "PHASE", phase: "B"}});
-    const [event, phase] = state.checklist.templates;
+    resolvers.ChecklistTemplateCreate(as, {input: {kind: "CHAPTER", chapterKey: "B"}});
+    const [event, chapter] = state.checklist.templates;
 
     [
         {text: {sv: "Utskick"}, deadline: {kind: "WEEKDAY_WEEK_BEFORE", weekday: "MONDAY"}},
@@ -88,7 +88,7 @@ function seedTemplates() {
         {text: {sv: "Allergier insamlade"}, deadline: {kind: "WORKING_DAYS", amount: -5}, defaultCapability: "FINANCE"},
         {text: {sv: "Fika"}},
     ].forEach(item => resolvers.ChecklistTemplateItemCreate(as, {input: {templateId: event.id, ...item}}));
-    resolvers.ChecklistTemplateItemCreate(as, {input: {templateId: phase.id, text: {sv: "Boka kalaslokal"}}});
+    resolvers.ChecklistTemplateItemCreate(as, {input: {templateId: chapter.id, text: {sv: "Boka kalaslokal"}}});
 }
 
 // --- Rules, as in the server's AccessPolicy ----------------------------------------------------------------------
@@ -553,8 +553,6 @@ const server = createServer((req, res) => {
             handleGuidePdf({state: () => state, isSuperAdmin, seesEverything, roleIn, canSee}, personaOf(req), path, url, res);
         } else if (req.method === "POST" && /^\/api\/revivals\/[^/]+\/log\/import/.test(path)) {
             handleLogImport({state: () => state, roleIn, canSee, personas: bySub}, personaOf(req), path, body, res);
-        } else if (req.method === "POST" && path === "/api/guide/import") {
-            handleGuideImport({state: () => state, isSuperAdmin}, personaOf(req), body, res);
         } else if (req.method === "POST" && path === "/__persona") {
             currentPersona = JSON.parse(body).persona;
             res.writeHead(204).end();

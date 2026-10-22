@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
             validationLevel: "manual-warning",
         },
         serverActions: {
-            // The guide's Word import is up to 10 MB (FR-022)
+            // The decision log's Excel import is up to 10 MB
             bodySizeLimit: "11mb",
         },
     },

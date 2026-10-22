@@ -28,9 +28,16 @@ export function GuideIntroductionDialog({trigger, children, versionId, version, 
     const [open, setOpen] = useState(false);
     const [pending, startTransition] = useTransition();
     const form = useForm<Values>({resolver: zodResolver(guideIntroductionSchema), values: {sv: initial.sv, en: initial.en ?? ""}});
+    // The sheet stays mounted, so drop edits left over from a cancelled opening.
+    const change = (next: boolean) => {
+        if (next) {
+            form.reset();
+        }
+        setOpen(next);
+    };
 
     return (
-        <Sheet open={open} onOpenChange={setOpen}>
+        <Sheet open={open} onOpenChange={change}>
             <SheetTrigger render={trigger}>{children}</SheetTrigger>
             <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
                 <SheetHeader className="p-6 pb-4 shrink-0">

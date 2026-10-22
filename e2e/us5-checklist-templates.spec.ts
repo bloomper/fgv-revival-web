@@ -35,7 +35,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await expect(items.getByRole("listitem").first()).toContainText("Lokaler bokade");
     });
 
-    test("the steering group makes a rehearsal weekend checklist, moves its date and adds from the phase template", async ({page, mock, loginAs}) => {
+    test("the steering group makes a rehearsal weekend checklist, moves its date and adds from the chapter template", async ({page, mock, loginAs}) => {
         await mock.guide("published");
         await mock.setStatus("1", "ORGANISING");
         await mock.templates();
@@ -73,7 +73,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await expect(row("Fika")).toContainText("Klart senast: 2027-11-01");
 
         await page.goto("/revivals/1/checklists");
-        await page.getByRole("link", {name: /Fas B/}).click();
+        await page.getByRole("link", {name: /Boka lokaler/}).click();
         await page.getByRole("button", {name: "Lägg till punkter från mall"}).click();
         await expect(row("Boka kalaslokal")).toHaveCount(1);
         await page.getByRole("button", {name: "Lägg till punkter från mall"}).click();

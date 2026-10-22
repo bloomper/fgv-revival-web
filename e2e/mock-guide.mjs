@@ -1,7 +1,7 @@
-// The guide part of the mock backend: versions, the draft, the import and the PDF, with the server's rules
-// (specs/003-m2-guide/contracts/README.md). The guide content is fictitious.
+// The guide part of the mock backend: versions, the draft and the PDF, with the server's rules
+// (specs/003-m2-guide/contracts/README.md). The guide content is fictitious. Chapters are keyed A–J in the fixture.
 
-const PHASES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+const KEYS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 const TITLES = {
     A: "Först: godkännande och tajmning", B: "Boka lokaler och lägg fast er tidslinje", C: "Sätt budgeten",
     D: "Bygg organisationen", E: "Ordna tillgångar", F: "Repetitioner", G: "Marknadsföring och biljetter",
@@ -12,7 +12,7 @@ let nextKey = 1;
 const key = prefix => `${prefix}-${String(nextKey++).padStart(4, "0")}`;
 
 /**
- * A fictitious version with ten chapters, one item of each type, and English text on some of it.
+ * A fictitious version with ten chapters keyed A–J, one item of each type, and English text on some of it.
  */
 export function fixtureVersion(id, {status = "PUBLISHED", label = "v1", publishedAt = "2026-11-01T10:00:00Z"} = {}) {
     let itemId = Number(id) * 1000;
@@ -23,12 +23,12 @@ export function fixtureVersion(id, {status = "PUBLISHED", label = "v1", publishe
         publishedAt: status === "PUBLISHED" ? publishedAt : null, publishedBy: status === "PUBLISHED" ? "Sara Admin" : null,
         basedOnId: null, version: 0,
         introduction: {sv: "Ni funderar alltså över en nyuppsättning? **Grattis!**", en: null},
-        chapters: PHASES.map((phase, index) => ({
-            id: `${id}-${phase}`, phase, title: {sv: TITLES[phase], en: phase === "A" ? "First: approval and timing" : null}, version: 0,
-            items: phase === "A"
+        chapters: KEYS.map((chapterKey, index) => ({
+            id: `${id}-${chapterKey}`, key: chapterKey, title: {sv: TITLES[chapterKey], en: chapterKey === "A" ? "First: approval and timing" : null}, version: 0,
+            items: chapterKey === "A"
                 ? [item("TEXT", "Innan något annat görs behöver ni klartecken."), item("REQUIREMENT", "Nyuppsättningen ska godkännas av JK och FGV.", "The revival must be approved by JK and FGV.")]
-                : [item("TEXT", `Inledning till kapitel ${phase}.`)],
-            sections: phase === "B"
+                : [item("TEXT", `Inledning till kapitlet ${TITLES[chapterKey]}.`)],
+            sections: chapterKey === "B"
                 ? [{
                     id: `${id}-B-1`, key: "sec-kalaslokal", title: {sv: "Kalaslokal", en: null}, version: 0,
                     items: [
@@ -43,16 +43,6 @@ export function fixtureVersion(id, {status = "PUBLISHED", label = "v1", publishe
     };
 }
 
-const IMPORT_REPORT = fileName => ({
-    fileName, createdAt: new Date().toISOString(),
-    totals: {sections: 2, tips: 1, requirements: 2, questions: 1, texts: 11},
-    chapters: PHASES.map(phase => ({phase, counts: {sections: phase === "B" || phase === "J" ? 1 : 0, tips: phase === "B" ? 1 : 0, requirements: phase === "A" || phase === "J" ? 1 : 0, questions: phase === "B" ? 1 : 0, texts: 1}})),
-    warnings: [
-        {code: "UNKNOWN_LABEL", phase: "B", sectionTitle: "Kalaslokal", detail: "Om kalaset"},
-        {code: "IMAGE", phase: "B", sectionTitle: "Tidslinjen", detail: null},
-    ],
-});
-
 export function createGuideState(seed = "none") {
     const versions = seed === "published" || seed === "two" || seed === "draft" ? [fixtureVersion(1)] : [];
 
@@ -65,15 +55,18 @@ export function createGuideState(seed = "none") {
 
         Object.assign(v2, {id: "2", label: "v2", publishedAt: "2027-03-01T10:00:00Z"});
         v2.chapters.forEach(chapter => {
-            chapter.id = `2-${chapter.phase}`;
+            chapter.id = `2-${chapter.key}`;
         });
         v2.chapters[1].sections[0].items[0].text = {sv: "Kontrollera sprittillstånd och ljudtillstånd i vald lokal.", en: null};
         versions.push(v2);
     }
-    return {versions, report: null, nextVersionId: 20, suggestions: [], nextSuggestionId: 1};
+    return {versions, nextVersionId: 20, suggestions: [], nextSuggestionId: 1};
 }
 
-const summary = version => version ? {__typename: "GuideVersionSummary", id: version.id, label: version.label, publishedAt: version.publishedAt} : null;
+const summary = version => version ? {
+    __typename: "GuideVersionSummary", id: version.id, label: version.label, note: version.note, publishedAt: version.publishedAt,
+    publishedBy: version.publishedBy, version: version.version,
+} : null;
 const published = guide => guide.versions.filter(version => version.status === "PUBLISHED")
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
@@ -103,6 +96,7 @@ const untranslated = version => (version.introduction.en ? 0 : 1)
 export function guideResolvers(ctx) {
     const {GraphQLError, forbidden, isSuperAdmin, seesEverything, roleIn, canSee, visibleRevival} = ctx;
     const guide = () => ctx.state().guide;
+    const withBase = version => ({...toVersion(version), basedOn: summary(guide().versions.find(candidate => candidate.id === version.basedOnId))});
 
     const canRead = persona => seesEverything(persona) || ctx.state().revivals.some(revival =>
         ["DIRECTEUR", "STEERING_GROUP"].includes(roleIn(persona, revival)) && canSee(persona, revival));
@@ -152,20 +146,20 @@ export function guideResolvers(ctx) {
         }
         const latest = published(guide())[0];
         const id = String(guide().nextVersionId++);
-        const copy = latest ? JSON.parse(JSON.stringify(latest)) : fixtureVersion(id, {status: "DRAFT"});
+        const copy = latest ? JSON.parse(JSON.stringify(latest)) : {...fixtureVersion(id, {status: "DRAFT"}), introduction: {sv: "", en: null}, chapters: []};
 
         Object.assign(copy, {id, status: "DRAFT", label: null, note: null, publishedAt: null, publishedBy: null, basedOnId: latest?.id ?? null, version: 0});
         let nextItemId = Number(id) * 1000;
         copy.chapters.forEach(chapter => {
-            chapter.id = `${id}-${chapter.phase}`;
+            chapter.id = `${id}-${chapter.key}`;
             chapter.items.forEach(entry => { entry.id = String(nextItemId++); });
             chapter.sections.forEach((section, index) => {
-                section.id = `${id}-${chapter.phase}-${index}`;
+                section.id = `${id}-${chapter.key}-${index}`;
                 section.items.forEach(entry => { entry.id = String(nextItemId++); });
             });
         });
         guide().versions.push(copy);
-        return {__typename: "GuideDraft", draft: toVersion(copy)};
+        return {__typename: "GuideDraft", draft: withBase(copy)};
     };
 
     return {
@@ -173,13 +167,54 @@ export function guideResolvers(ctx) {
             requireRead(persona);
             return {guideVersions: published(guide()).map(summary)};
         },
+        GuideVersionsAdmin(persona) {
+            requireManage(persona);
+            return {
+                guideVersions: published(guide()).map(version => {
+                    const revivalCount = ctx.state().revivals.filter(revival => revival.guideVersionId === version.id).length;
+                    const suggestionCount = guide().suggestions.filter(suggestion => suggestion.versionId === version.id).length;
+
+                    return {...summary(version), revivalCount, suggestionCount, deletable: revivalCount === 0 && suggestionCount === 0};
+                }),
+            };
+        },
+        GuideVersionUpdate(persona, {input}) {
+            requireManage(persona);
+            const version = published(guide()).find(entry => entry.id === String(input.id));
+            if (!version) {
+                throw notFound();
+            }
+            if (input.version !== version.version) {
+                throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
+            }
+            Object.assign(version, {note: input.note?.trim() || null, version: version.version + 1});
+            return {guideVersionUpdate: summary(version)};
+        },
+        GuideVersionDelete(persona, {id, version}) {
+            requireManage(persona);
+            const found = published(guide()).find(entry => entry.id === String(id));
+            if (!found) {
+                throw notFound();
+            }
+            if (version !== found.version) {
+                throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
+            }
+            if (ctx.state().revivals.some(revival => revival.guideVersionId === found.id) || guide().suggestions.some(suggestion => suggestion.versionId === found.id)) {
+                throw new GraphQLError("BAD_REQUEST", "Versionen används av en nyuppsättning eller har förslag och kan inte tas bort.");
+            }
+            guide().versions = guide().versions.filter(entry => entry !== found);
+            guide().versions.filter(entry => entry.basedOnId === found.id).forEach(entry => {
+                entry.basedOnId = null;
+            });
+            return {guideVersionDelete: null};
+        },
         GuideLatestVersion(persona) {
             requireRead(persona);
             const latest = published(guide())[0];
-            return {guideLatestVersion: latest ? toVersion(latest) : null};
+            return {guideLatestVersion: latest ? withBase(latest) : null};
         },
         GuideVersion(persona, {id}) {
-            return {guideVersion: toVersion(readable(persona, id))};
+            return {guideVersion: withBase(readable(persona, id))};
         },
         RevivalGuide(persona, {id}) {
             const revival = visibleRevival(persona, id);
@@ -213,7 +248,7 @@ export function guideResolvers(ctx) {
                 throw forbidden();
             }
             revival.guideHistory = [...(revival.guideHistory ?? []), {
-                __typename: "RevivalGuideVersionChange", from: summary(pinned), to: summary(target), changedBy: persona.name, changedAt: new Date().toISOString(),
+                __typename: "RevivalGuideVersionChange", fromLabel: pinned?.label ?? null, toLabel: target.label, changedBy: persona.name, changedAt: new Date().toISOString(),
             }];
             revival.guideVersionId = target.id;
             return {revivalGuideVersionChange: {__typename: "Revival", id: revival.id, guideVersion: summary(target)}};
@@ -221,9 +256,10 @@ export function guideResolvers(ctx) {
         GuideChanges(persona, {fromId, toId}) {
             const from = readable(persona, fromId);
             const to = readable(persona, toId);
+            const ref = chapter => ({key: chapter.key, title: chapter.title});
             const snapshots = version => new Map(version.chapters.flatMap(chapter => [
-                ...chapter.items.map(entry => [entry.key, {phase: chapter.phase, sectionKey: null, sectionTitle: null, type: entry.type, text: entry.text}]),
-                ...chapter.sections.flatMap(section => section.items.map(entry => [entry.key, {phase: chapter.phase, sectionKey: section.key, sectionTitle: section.title, type: entry.type, text: entry.text}])),
+                ...chapter.items.map(entry => [entry.key, {chapter: ref(chapter), sectionKey: null, sectionTitle: null, type: entry.type, text: entry.text}]),
+                ...chapter.sections.flatMap(section => section.items.map(entry => [entry.key, {chapter: ref(chapter), sectionKey: section.key, sectionTitle: section.title, type: entry.type, text: entry.text}])),
             ]));
             const before = snapshots(from);
             const after = snapshots(to);
@@ -238,7 +274,7 @@ export function guideResolvers(ctx) {
                 }
                 const reworded = languages(old.text, current.text);
                 const retyped = old.type !== current.type;
-                const moved = old.phase !== current.phase || old.sectionKey !== current.sectionKey;
+                const moved = old.chapter.key !== current.chapter.key || old.sectionKey !== current.sectionKey;
                 if (reworded.length || retyped || moved) {
                     items.push({key, kind: "CHANGED", reworded, retyped, moved, before: old, after: current});
                 }
@@ -252,8 +288,20 @@ export function guideResolvers(ctx) {
                 guideChanges: {
                     from: summary(from), to: summary(to),
                     introductionChanged: languages(from.introduction, to.introduction),
-                    chapters: from.chapters.map((chapter, index) => ({phase: chapter.phase, renamed: languages(chapter.title, to.chapters[index].title), before: chapter.title, after: to.chapters[index].title}))
-                        .filter(change => change.renamed.length),
+                    chapters: [
+                        ...to.chapters.map(chapter => {
+                            const old = from.chapters.find(candidate => candidate.key === chapter.key);
+                            const shared = version => version.chapters.filter(candidate => from.chapters.some(a => a.key === candidate.key) && to.chapters.some(b => b.key === candidate.key))
+                                .map(candidate => candidate.key);
+
+                            return old
+                                ? {key: chapter.key, kind: "CHANGED", renamed: languages(old.title, chapter.title),
+                                    moved: shared(from).indexOf(chapter.key) !== shared(to).indexOf(chapter.key), before: old.title, after: chapter.title}
+                                : {key: chapter.key, kind: "ADDED", renamed: [], moved: false, before: null, after: chapter.title};
+                        }).filter(change => change.kind === "ADDED" || change.renamed.length || change.moved),
+                        ...from.chapters.filter(chapter => !to.chapters.some(candidate => candidate.key === chapter.key))
+                            .map(chapter => ({key: chapter.key, kind: "REMOVED", renamed: [], moved: false, before: chapter.title, after: null})),
+                    ],
                     sections: [],
                     items,
                 },
@@ -274,12 +322,13 @@ export function guideResolvers(ctx) {
                 throw forbidden();
             }
             const version = readable(persona, input.versionId);
-            const item = input.itemKey ? version.chapters.flatMap(chapter => [...chapter.items.map(entry => ({entry, phase: chapter.phase})),
-                ...chapter.sections.flatMap(section => section.items.map(entry => ({entry, phase: chapter.phase})))]).find(found => found.entry.key === input.itemKey) : null;
+            const item = input.itemKey ? version.chapters.flatMap(chapter => [...chapter.items.map(entry => ({entry, chapter})),
+                ...chapter.sections.flatMap(section => section.items.map(entry => ({entry, chapter})))]).find(found => found.entry.key === input.itemKey) : null;
+            const chapter = item?.chapter ?? version.chapters.find(candidate => candidate.key === input.chapterKey);
             const suggestion = {
                 id: String(guide().nextSuggestionId++), revivalId: revival.id, authorSub: persona.sub, versionId: version.id, kind: input.kind,
-                itemKey: input.itemKey ?? null, phase: item?.phase ?? input.phase, sectionKey: input.sectionKey ?? null,
-                item: item ? {phase: item.phase, sectionKey: null, sectionTitle: null, type: item.entry.type, text: item.entry.text} : null,
+                itemKey: input.itemKey ?? null, chapterKey: chapter.key, chapterTitle: chapter.title, sectionKey: input.sectionKey ?? null,
+                item: item ? {chapter: {key: chapter.key, title: chapter.title}, sectionKey: null, sectionTitle: null, type: item.entry.type, text: item.entry.text} : null,
                 proposedType: input.proposedType ?? null,
                 proposedText: input.proposedTextSv || input.proposedTextEn ? {sv: input.proposedTextSv ?? "", en: input.proposedTextEn ?? null} : null,
                 reason: input.reason ?? null, status: "OPEN", version: 0, decidedBy: null, decisionReason: null, acceptedInto: null, reopenedAt: null,
@@ -296,7 +345,11 @@ export function guideResolvers(ctx) {
             }
             const current = draft();
             if (suggestion.kind === "ADD") {
-                const chapter = current.chapters.find(candidate => candidate.phase === suggestion.phase);
+                const chapter = current.chapters.find(candidate => candidate.key === suggestion.chapterKey);
+
+                if (!chapter) {
+                    throw new GraphQLError("CONFLICT", "Kapitlet har tagits bort ur utkastet.");
+                }
                 chapter.items.push({id: String(Date.now()), key: key("item"), type: suggestion.proposedType, text: {sv: suggestion.proposedText.sv, en: suggestion.proposedText.en}, version: 0});
             } else {
                 for (const chapter of current.chapters) {
@@ -338,6 +391,31 @@ export function guideResolvers(ctx) {
             current.introduction = {sv: input.introduction.sv, en: input.introduction.en || null};
             current.version += 1;
             return {guideIntroductionUpdate: {__typename: "GuideVersion", id: current.id, version: current.version}};
+        },
+        GuideChapterCreate(persona, {input}) {
+            requireManage(persona);
+            const current = draft();
+            const chapter = {id: `${current.id}-c${nextKey}`, key: key("chapter"), title: {sv: input.title.sv, en: input.title.en || null}, version: 0, items: [], sections: []};
+
+            current.chapters.splice(input.position ?? current.chapters.length, 0, chapter);
+            return {guideChapterCreate: {__typename: "GuideChapter", id: chapter.id, key: chapter.key}};
+        },
+        GuideChapterMove(persona, {input}) {
+            requireManage(persona);
+            const current = draft();
+            const index = current.chapters.findIndex(candidate => candidate.id === input.id);
+            const [chapter] = current.chapters.splice(index, 1);
+
+            current.chapters.splice(Math.min(input.position, current.chapters.length), 0, chapter);
+            chapter.version += 1;
+            return {guideChapterMove: {__typename: "GuideVersion", id: current.id}};
+        },
+        GuideChapterRemove(persona, {id}) {
+            requireManage(persona);
+            const current = draft();
+
+            current.chapters = current.chapters.filter(candidate => candidate.id !== id);
+            return {guideChapterRemove: null};
         },
         GuideChapterUpdate(persona, {input}) {
             requireManage(persona);
@@ -410,7 +488,7 @@ export function guideResolvers(ctx) {
                     const en = !sv && (entry.text.en ?? "").toLowerCase().indexOf(needle) >= 0;
                     if (sv || en) {
                         hits.push({
-                            __typename: "GuideSearchHit", kind: "ITEM", phase: chapter.phase, chapterTitle: title(chapter.title),
+                            __typename: "GuideSearchHit", kind: "ITEM", chapterKey: chapter.key, chapterTitle: title(chapter.title),
                             sectionKey: section?.key ?? null, sectionTitle: section ? title(section.title) : null, itemKey: entry.key,
                             itemType: entry.type, snippet: sv ? entry.text.sv : entry.text.en, matchedLanguage: sv ? "sv" : "en",
                         });
@@ -426,7 +504,7 @@ export function guideResolvers(ctx) {
             const current = draft();
             return {
                 guideDraft: current ? {
-                    __typename: "GuideDraft", draft: toVersion(current), importReport: guide().report,
+                    __typename: "GuideDraft", draft: withBase(current),
                     acceptedSuggestionCount: guide().suggestions.filter(suggestion => suggestion.acceptedInto === current.id && suggestion.status === "ACCEPTED").length,
                     untranslatedCount: untranslated(current),
                 } : null,
@@ -441,16 +519,19 @@ export function guideResolvers(ctx) {
             if (input.version !== current.version) {
                 throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
             }
-            const label = input.label.trim();
-            if (guide().versions.some(version => version.label?.toLowerCase() === label.toLowerCase())) {
-                throw new GraphQLError("BAD_REQUEST", `Versionsbeteckningen ${label} används redan.`);
+            if (current.chapters.length === 0) {
+                throw new GraphQLError("BAD_REQUEST", "Utkastet är inte klart: det saknar kapitel, eller har en tom titel eller punkt.");
             }
-            Object.assign(current, {status: "PUBLISHED", label, note: input.note ?? null, publishedAt: new Date().toISOString(), publishedBy: persona.name, version: current.version + 1});
-            guide().report = null;
+            const label = `v${Math.max(0, ...guide().versions.map(version => /^v\d+$/.test(version.label ?? "") ? Number(version.label.slice(1)) : 0)) + 1}`;
+            Object.assign(current, {status: "PUBLISHED", label, note: input.note?.trim() || null, publishedAt: new Date().toISOString(), publishedBy: persona.name, version: current.version + 1});
+            ctx.state().checklist.templates.filter(template => template.kind === "CHAPTER" && !template.retired
+                && !current.chapters.some(chapter => chapter.key === template.chapterKey)).forEach(template => {
+                template.retired = true;
+            });
             ctx.state().revivals.filter(revival => !revival.guideVersionId).forEach(revival => {
                 revival.guideVersionId = current.id;
             });
-            return {guideDraftPublish: toVersion(current)};
+            return {guideDraftPublish: withBase(current)};
         },
         GuideDraftDiscard(persona, {id, version}) {
             requireManage(persona);
@@ -462,41 +543,12 @@ export function guideResolvers(ctx) {
                 throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
             }
             guide().versions = guide().versions.filter(candidate => candidate !== current);
-            guide().report = null;
             guide().suggestions.filter(suggestion => suggestion.acceptedInto === current.id).forEach(suggestion => {
                 Object.assign(suggestion, {status: "OPEN", acceptedInto: null, decidedBy: null, decisionReason: null, reopenedAt: new Date().toISOString()});
             });
             return {guideDraftDiscard: null};
         },
     };
-}
-
-/**
- * POST /api/guide/import. The mock does not read the Word file; it creates the fixture draft and a report.
- */
-export function handleGuideImport(ctx, persona, body, res) {
-    const guide = ctx.state().guide;
-    const send = (status, json) => res.writeHead(status, {"content-type": "application/json"}).end(JSON.stringify(json));
-
-    if (!persona || !persona.roles.includes("USER")) {
-        return send(401, {code: "UNAUTHORIZED", message: "Du är inte inloggad."});
-    }
-    if (!ctx.isSuperAdmin(persona)) {
-        return send(403, {code: "FORBIDDEN", message: "Du har inte behörighet att göra det."});
-    }
-    if (guide.versions.some(version => version.status === "PUBLISHED")) {
-        return send(400, {code: "BAD_REQUEST", message: "Guiden har redan publicerats. Nya versioner görs genom att redigera ett utkast."});
-    }
-    if (guide.versions.some(version => version.status === "DRAFT")) {
-        return send(409, {code: "CONFLICT", message: "Det finns redan ett utkast. Publicera eller kasta det först."});
-    }
-
-    const fileName = /filename="([^"]+)"/.exec(body)?.[1] ?? "guide.docx";
-    const id = guide.nextVersionId++;
-
-    guide.versions.push(fixtureVersion(id, {status: "DRAFT"}));
-    guide.report = {__typename: "GuideImportReport", ...IMPORT_REPORT(fileName)};
-    return send(201, {draftId: id, report: guide.report});
 }
 
 /**

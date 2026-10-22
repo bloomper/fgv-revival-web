@@ -27,7 +27,7 @@ const CAPABILITIES = ["FINANCE", "CATERING", "STAFFING", "COMMS"] as const;
  */
 export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}: {
     templateId: string;
-    kind: "PHASE" | "EVENT";
+    kind: "CHAPTER" | "EVENT";
     item: TemplateItem | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;

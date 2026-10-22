@@ -37,9 +37,17 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
     const {errors} = form.formState;
     const sv = useWatch({control: form.control, name: "text.sv"});
     const en = useWatch({control: form.control, name: "text.en"});
+    // The sheet stays mounted and `values` rarely changes (never when adding), so start each opening afresh.
+    const change = (next: boolean) => {
+        if (next) {
+            form.reset();
+            setPreview(false);
+        }
+        setOpen(next);
+    };
 
     return (
-        <Sheet open={open} onOpenChange={setOpen}>
+        <Sheet open={open} onOpenChange={change}>
             <SheetTrigger render={trigger}>{children}</SheetTrigger>
             <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
                 <SheetHeader className="p-6 pb-4 shrink-0">

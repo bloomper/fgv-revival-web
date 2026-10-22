@@ -34,7 +34,7 @@ async function load(id: string, filter: ChecklistFilterValues | null, cancelled:
 }
 
 /**
- * A revival's checklists: the phases A–J and its events, or, with a filter, the matching items across them (M3 US4).
+ * A revival's checklists: one per guide chapter and its events, or, with a filter, the matching items across them (M3 US4).
  * Cancelled event checklists only when asked for (FR-023).
  */
 export default async function ChecklistsPage({params, searchParams}: {

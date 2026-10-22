@@ -1,13 +1,15 @@
 import Link from "next/link";
-import {useTranslations} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import {Badge} from "@/components/ui/badge";
 import {buttonVariants} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {pickText} from "@/components/guide/localized";
 
 type Summary = {
     id: string;
-    kind: "PHASE" | "EVENT";
-    phase?: string | null;
+    kind: "CHAPTER" | "EVENT";
+    chapterKey?: string | null;
+    chapterTitle?: { sv: string; en?: string | null } | null;
     name?: string | null;
     date?: string | null;
     cancelled: boolean;
@@ -28,28 +30,33 @@ function Counts({summary}: { summary: Summary }) {
 }
 
 /**
- * The ten phase checklists A–J side by side, then the event checklists, cancelled ones when asked for (M3 FR-022,
- * FR-023).
+ * One checklist per chapter of the pinned guide version, in the guide's order, then the event checklists, cancelled
+ * ones when asked for (M3 FR-022, FR-023).
  */
 export function ChecklistOverview({revivalId, checklists, showCancelled}: { revivalId: string; checklists: Summary[]; showCancelled: boolean }) {
     const t = useTranslations("Checklist");
-    const phases = checklists.filter(checklist => checklist.kind === "PHASE");
+    const locale = useLocale();
+    const chapters = checklists.filter(checklist => checklist.kind === "CHAPTER");
     const events = checklists.filter(checklist => checklist.kind === "EVENT");
 
     return (
         <div className="space-y-6">
-            <section className="space-y-2" aria-label={t("phases")}>
-                <h3 className="font-medium">{t("phases")}</h3>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                    {phases.map(phase => (
-                        <Link key={phase.id} href={`/revivals/${revivalId}/checklists/${phase.id}`}>
-                            <Card className="h-full hover:bg-accent">
-                                <CardHeader><CardTitle>{t("phase", {phase: phase.phase ?? ""})}</CardTitle></CardHeader>
-                                <CardContent><Counts summary={phase}/></CardContent>
-                            </Card>
-                        </Link>
-                    ))}
-                </div>
+            <section className="space-y-2" aria-label={t("chapters")}>
+                <h3 className="font-medium">{t("chapters")}</h3>
+                {chapters.length === 0 ? <p className="text-sm text-muted-foreground">{t("noChapters")}</p> : (
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        {chapters.map((chapter, index) => (
+                            <Link key={chapter.id} href={`/revivals/${revivalId}/checklists/${chapter.id}`}>
+                                <Card className="h-full hover:bg-accent">
+                                    <CardHeader>
+                                        <CardTitle>{index + 1}. {chapter.chapterTitle ? pickText(chapter.chapterTitle, locale).text : chapter.chapterKey}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent><Counts summary={chapter}/></CardContent>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+                )}
             </section>
             <section className="space-y-2" aria-label={t("events")}>
                 <div className="flex flex-wrap items-center justify-between gap-2">

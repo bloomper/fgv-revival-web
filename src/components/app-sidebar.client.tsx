@@ -87,7 +87,8 @@ export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
                 icon: Settings,
                 isActive: pathname.startsWith("/admin/guide") || pathname.startsWith("/admin/checklist-templates"),
                 items: [
-                    {title: t("Nav.adminGuide"), url: "/admin/guide"},
+                    // Under "Administration" the short name suffices; the command palette keeps "Nav.adminGuide"
+                    {title: t("Nav.adminGuideShort"), url: "/admin/guide"},
                     {title: t("Nav.adminChecklistTemplates"), url: "/admin/checklist-templates"},
                 ],
             });

@@ -25,7 +25,7 @@ async function load(revivalId: string, id: string) {
 }
 
 /**
- * One checklist: a phase's with the chapter's tips (M3 FR-029), or an event's.
+ * One checklist: a guide chapter's with the chapter's tips (M3 FR-029), or an event's.
  */
 export default async function ChecklistPage({params}: { params: Promise<{ id: string; checklistId: string }> }) {
     const {id, checklistId} = await params;
@@ -40,8 +40,8 @@ export default async function ChecklistPage({params}: { params: Promise<{ id: st
         const t = await getTranslations("Checklist");
         const locale = await getLocale();
         const {revival, checklist} = loaded;
-        const title = checklist.kind === "PHASE"
-            ? `${t("phase", {phase: checklist.phase ?? ""})}${checklist.chapterTitle ? `: ${pickText(checklist.chapterTitle, locale).text}` : ""}`
+        const title = checklist.kind === "CHAPTER"
+            ? checklist.chapterTitle ? pickText(checklist.chapterTitle, locale).text : checklist.chapterKey ?? ""
             : checklist.name ?? "";
 
         return (

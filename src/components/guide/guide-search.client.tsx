@@ -1,6 +1,7 @@
 "use client";
 
 import {useEffect, useState} from "react";
+import Link from "next/link";
 import {useLocale, useTranslations} from "next-intl";
 import {Search} from "lucide-react";
 import {Input} from "@/components/ui/input";
@@ -10,20 +11,31 @@ import {pickText} from "@/components/guide/localized";
 
 const MIN_QUERY = 2;
 
-function anchorOf(hit: GuideSearchHit) {
+/**
+ * Where a hit is: the chapter's page, at the item or section, or the start page for the introduction.
+ */
+export function hrefOf(hit: GuideSearchHit, basePath: string, query: string) {
+    if (!hit.chapterKey) {
+        return `${basePath}${query}`;
+    }
+
+    const chapter = `${basePath}/${encodeURIComponent(hit.chapterKey)}${query}`;
+
     if (hit.itemKey) {
-        return `#item-${hit.itemKey}`;
+        return `${chapter}#item-${hit.itemKey}`;
     }
-    if (hit.sectionKey) {
-        return `#section-${hit.sectionKey}`;
-    }
-    return hit.phase ? `#chapter-${hit.phase}` : "#";
+    return hit.sectionKey ? `${chapter}#section-${hit.sectionKey}` : chapter;
 }
 
 /**
- * Searches the version shown (FR-021). Results link to the matching place on the page.
+ * Searches the version shown (FR-021). Results link to the matching place, in its chapter.
  */
-export function GuideSearch({versionId}: { versionId: string }) {
+export function GuideSearch({versionId, basePath, query: versionQuery = "", chapterNumbers}: {
+    versionId: string;
+    basePath: string;
+    query?: string;
+    chapterNumbers: Record<string, number>;
+}) {
     const t = useTranslations("Guide.search");
     const locale = useLocale();
     const [query, setQuery] = useState("");
@@ -79,15 +91,20 @@ export function GuideSearch({versionId}: { versionId: string }) {
                 ) : (
                     <ul className="max-h-80 divide-y overflow-y-auto rounded-md border" aria-label={t("results")}>
                         {hits.map((hit, index) => (
-                            <li key={`${hit.itemKey ?? hit.sectionKey ?? hit.phase}-${index}`}>
-                                <a href={anchorOf(hit)} className="block space-y-1 px-3 py-2 text-sm hover:bg-accent">
+                            <li key={`${hit.itemKey ?? hit.sectionKey ?? hit.chapterKey}-${index}`}>
+                                <Link href={hrefOf(hit, basePath, versionQuery)} className="block space-y-1 px-3 py-2 text-sm hover:bg-accent">
                                     <span className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                                        {hit.phase && <span>{hit.phase}. {hit.chapterTitle ? pickText(hit.chapterTitle, locale).text : ""}</span>}
+                                        {hit.chapterKey && (
+                                            <span>
+                                                {chapterNumbers[hit.chapterKey] ? `${chapterNumbers[hit.chapterKey]}. ` : ""}
+                                                {hit.chapterTitle ? pickText(hit.chapterTitle, locale).text : ""}
+                                            </span>
+                                        )}
                                         {hit.sectionTitle && <span>› {pickText(hit.sectionTitle, locale).text}</span>}
                                         {hit.itemType && hit.itemType !== "TEXT" && <GuideTypeBadge type={hit.itemType}/>}
                                     </span>
                                     <span className="block">{hit.snippet}</span>
-                                </a>
+                                </Link>
                             </li>
                         ))}
                     </ul>

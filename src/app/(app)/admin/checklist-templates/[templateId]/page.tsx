@@ -40,8 +40,10 @@ export default async function ChecklistTemplatePage({params}: { params: Promise<
         const superAdmin = isSuperAdmin(roles);
         const t = await getTranslations();
         const locale = await getLocale();
-        const title = template.kind === "PHASE"
-            ? t("ChecklistTemplate.phaseTitle", {phase: template.phase ?? ""})
+        const title = template.kind === "CHAPTER"
+            ? template.chapterTitle
+                ? t("ChecklistTemplate.chapterTitle", {chapter: pickText(template.chapterTitle, locale).text})
+                : t("ChecklistTemplate.chapterGone")
             : template.name ? pickText(template.name, locale).text : "";
 
         return (

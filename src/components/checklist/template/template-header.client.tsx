@@ -15,7 +15,7 @@ import {MAX_TEMPLATE_NAME} from "@/lib/checklist/schema";
  * An event template's name, and retiring a template, which leaves checklists made from it as they are (FR-030).
  */
 export function TemplateHeader({template}: {
-    template: { id: string; kind: "PHASE" | "EVENT"; version: number; name?: { sv: string; en?: string | null } | null };
+    template: { id: string; kind: "CHAPTER" | "EVENT"; version: number; name?: { sv: string; en?: string | null } | null };
 }) {
     const t = useTranslations();
     const id = useId();

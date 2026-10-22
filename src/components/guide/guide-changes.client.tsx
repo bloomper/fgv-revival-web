@@ -8,9 +8,24 @@ import {GuideTypeBadge} from "@/components/guide/guide-type-badge";
 import {pickText} from "@/components/guide/localized";
 
 type Changes = GuideChangesQuery["guideChanges"];
-type ItemChange = Changes["items"][number];
+type Text = { sv: string; en?: string | null };
 
-const PHASES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as const;
+/**
+ * The chapters the changes touch, in the order they first appear, with a title from whichever version has one.
+ */
+function chaptersOf(changes: Changes): { key: string; title: Text | null }[] {
+    const chapters = new Map<string, Text | null>();
+    const add = (key: string | undefined, title: Text | null | undefined) => {
+        if (key && (!chapters.has(key) || (!chapters.get(key) && title))) {
+            chapters.set(key, title ?? null);
+        }
+    };
+
+    changes.chapters.forEach(change => add(change.key, change.after ?? change.before));
+    changes.sections.forEach(change => add((change.chapterAfter ?? change.chapterBefore)?.key, (change.chapterAfter ?? change.chapterBefore)?.title));
+    changes.items.forEach(change => add((change.after ?? change.before)?.chapter.key, (change.after ?? change.before)?.chapter.title));
+    return [...chapters].map(([key, title]) => ({key, title}));
+}
 
 /**
  * What changed between two versions, grouped by chapter (FR-016, research R5).
@@ -19,7 +34,6 @@ export function GuideChanges({changes}: { changes: Changes }) {
     const t = useTranslations("Guide.changes");
     const locale = useLocale();
     const text = (value: { sv: string; en?: string | null } | null | undefined) => value ? pickText(value, locale).text : "";
-    const phaseOf = (change: ItemChange) => change.after?.phase ?? change.before?.phase;
     const empty = changes.introductionChanged.length === 0 && changes.chapters.length === 0 && changes.sections.length === 0 && changes.items.length === 0;
 
     if (empty) {
@@ -31,22 +45,25 @@ export function GuideChanges({changes}: { changes: Changes }) {
             {changes.introductionChanged.length > 0 && (
                 <p className="text-sm"><Badge variant="secondary">{t("introduction")}</Badge></p>
             )}
-            {PHASES.map(phase => {
-                const chapter = changes.chapters.find(change => change.phase === phase);
-                const sections = changes.sections.filter(change => (change.phaseAfter ?? change.phaseBefore) === phase);
-                const items = changes.items.filter(change => phaseOf(change) === phase);
+            {chaptersOf(changes).map(({key, title}) => {
+                const chapter = changes.chapters.find(change => change.key === key);
+                const sections = changes.sections.filter(change => (change.chapterAfter ?? change.chapterBefore)?.key === key);
+                const items = changes.items.filter(change => (change.after ?? change.before)?.chapter.key === key);
 
-                if (!chapter && sections.length === 0 && items.length === 0) {
-                    return null;
-                }
                 return (
-                    <section key={phase} className="space-y-3" aria-label={t("chapter", {phase})}>
-                        <h3 className="text-lg font-semibold">{t("chapter", {phase})}</h3>
+                    <section key={key} className="space-y-3" aria-label={t("chapter", {title: text(title)})}>
+                        <h3 className="text-lg font-semibold">{t("chapter", {title: text(title)})}</h3>
                         {chapter && (
-                            <p className="text-sm">
-                                <Badge variant="secondary">{t("renamed")}</Badge>{" "}
-                                <span className="line-through">{text(chapter.before)}</span> → {text(chapter.after)}
-                            </p>
+                            <div className="flex flex-wrap items-center gap-2 text-sm" data-testid={`chapter-change-${key}`}>
+                                <Badge variant={chapter.kind === "REMOVED" ? "destructive" : chapter.kind === "ADDED" ? "default" : "secondary"}>
+                                    {t(`chapterKind.${chapter.kind}`)}
+                                </Badge>
+                                {chapter.renamed.length > 0 && (
+                                    <span><span className="line-through">{text(chapter.before)}</span> → {text(chapter.after)}</span>
+                                )}
+                                {chapter.moved && <Badge variant="outline">{t("moved")}</Badge>}
+                                {chapter.kind === "REMOVED" && <span className="text-destructive">{t("chapterRemovedChecklists")}</span>}
+                            </div>
                         )}
                         {sections.map(change => (
                             <p key={change.key} className="flex flex-wrap items-center gap-2 text-sm">

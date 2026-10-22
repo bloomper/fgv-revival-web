@@ -80,7 +80,8 @@ export function selectColumn<TData extends RowData>(labels: { all: string; row: 
 
 /**
  * The look of Spexregister's tables for data that is all on the client: sorting and paging happen here, and the
- * caller filters the rows it passes. The toolbar goes in {@code children}.
+ * caller filters the rows it passes. The toolbar goes in {@code children}, and {@code empty} replaces the generic text
+ * shown when there are no rows at all.
  */
 export function DataTable<TData extends { id: string }>({
                                                             columns,
@@ -90,6 +91,7 @@ export function DataTable<TData extends { id: string }>({
                                                             filtered = false,
                                                             onRowClick,
                                                             onSelectionChange,
+                                                            empty,
                                                             children,
                                                         }: {
     columns: DataTableColumnDef<TData>[];
@@ -99,6 +101,7 @@ export function DataTable<TData extends { id: string }>({
     filtered?: boolean;
     onRowClick?: (row: TData) => void;
     onSelectionChange?: (rows: TData[]) => void;
+    empty?: React.ReactNode;
     children?: React.ReactNode;
 }) {
     // TanStack Table changes its objects in place, which the React Compiler would cache across renders
@@ -157,7 +160,7 @@ export function DataTable<TData extends { id: string }>({
                         )) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    {filtered ? <DataEmpty title={t("noFilterMatchHeading")} description={t("noFilterMatchDescription")}/> : <DataEmpty/>}
+                                    {filtered ? <DataEmpty title={t("noFilterMatchHeading")} description={t("noFilterMatchDescription")}/> : empty ?? <DataEmpty/>}
                                 </TableCell>
                             </TableRow>
                         )}

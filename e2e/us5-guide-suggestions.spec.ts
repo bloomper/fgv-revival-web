@@ -8,7 +8,7 @@ test.describe("Guide, user story 5: the steering group suggests changes", () => 
     });
 
     test("suggests new text for a tip and a new requirement, and withdraws one", async ({page}) => {
-        await page.goto("/revivals/1/guide");
+        await page.goto("/revivals/1/guide/B");
 
         const tip = page.locator("[id^='item-']").filter({hasText: "Kontrollera sprittillstånd"});
 
@@ -18,12 +18,14 @@ test.describe("Guide, user story 5: the steering group suggests changes", () => 
         await page.getByRole("button", {name: "Skicka förslaget"}).click();
         await expect(page.getByRole("dialog")).toHaveCount(0, {timeout: 15_000});
 
-        await page.getByRole("region", {name: /^E\./}).getByRole("button", {name: "Föreslå ny punkt"}).first().click();
+        await page.goto("/revivals/1/guide/E");
+        await page.getByRole("region", {name: /^5\. Ordna tillgångar/}).getByRole("button", {name: "Föreslå ny punkt"}).first().click();
         await page.getByLabel("Typ").selectOption("REQUIREMENT");
         await page.getByLabel("Svenska").fill("Förrådet ska inventeras innan första rephelgen.");
         await page.getByRole("button", {name: "Skicka förslaget"}).click();
         await expect(page.getByRole("dialog")).toHaveCount(0, {timeout: 15_000});
 
+        await page.getByRole("link", {name: "Guidens startsida"}).click();
         await page.getByRole("link", {name: "Förslag"}).click();
         await expect(page.getByText("Kontrollera sprittillstånd och ljudtillstånd.")).toBeVisible();
         await expect(page.getByText("Förrådet ska inventeras innan första rephelgen.")).toBeVisible();
@@ -43,7 +45,7 @@ test.describe("Guide, user story 5: the super admin decides", () => {
         // Two suggestions from the steering group, made through the mock's GraphQL as Stina
         for (const proposal of [
             {kind: "CHANGE", itemKey: null, proposedTextSv: "Ändrat tips.", reason: "Inaktuellt"},
-            {kind: "ADD", phase: "E", proposedType: "TIP", proposedTextSv: "Ett nytt tips.", reason: null},
+            {kind: "ADD", chapterKey: "E", proposedType: "TIP", proposedTextSv: "Ett nytt tips.", reason: null},
         ]) {
             await request.post("http://localhost:4101/__suggest", {data: {revivalId: "1", ...proposal}});
         }

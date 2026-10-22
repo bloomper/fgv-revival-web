@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
 import {render, screen} from "@testing-library/react";
-import {GuideView} from "@/components/guide/guide-view.client";
+import {GuideChapterView} from "@/components/guide/guide-view.client";
 import {guideVersion} from "@/components/guide/__tests__/fixtures";
 
 const useLocale = vi.hoisted(() => vi.fn(() => "sv"));
@@ -10,22 +10,25 @@ vi.mock("next-intl", () => ({
     useLocale,
 }));
 
-describe("GuideView", () => {
+const chapter = (key: string) => guideVersion().chapters.find(candidate => candidate.key === key)!;
+
+describe("GuideChapterView", () => {
     afterEach(() => {
         useLocale.mockReturnValue("sv");
     });
 
-    it("shows the introduction and every chapter with an anchor", () => {
-        const {container} = render(<GuideView version={guideVersion()}/>);
+    it("shows one chapter, numbered, with its sections as anchors", () => {
+        const {container} = render(<GuideChapterView chapter={chapter("B")} number={2}/>);
 
-        expect(screen.getByText("Välkommen till guiden.")).toBeInTheDocument();
-        expect(container.querySelectorAll("section[id^='chapter-']")).toHaveLength(10);
-        expect(screen.getByRole("heading", {name: "A. Kapitel A"})).toBeInTheDocument();
+        expect(screen.getByRole("heading", {name: "2. Kapitel B"})).toBeInTheDocument();
         expect(screen.getByRole("heading", {name: "Kalaslokal"})).toBeInTheDocument();
+        expect(container.querySelector("section#section-s-kalas")).not.toBeNull();
+        expect(container.querySelector("#item-k-tip")).not.toBeNull();
+        expect(screen.queryByText("Ett krav.")).not.toBeInTheDocument();
     });
 
     it("labels every item type except plain text", () => {
-        render(<GuideView version={guideVersion()}/>);
+        render(<><GuideChapterView chapter={chapter("A")} number={1}/><GuideChapterView chapter={chapter("B")} number={2}/></>);
 
         expect(screen.getByText("REQUIREMENT")).toBeInTheDocument();
         expect(screen.getByText("TIP")).toBeInTheDocument();
@@ -33,41 +36,28 @@ describe("GuideView", () => {
         expect(screen.queryByText("TEXT")).not.toBeInTheDocument();
     });
 
-    it("lists the chapters in an index", () => {
-        render(<GuideView version={guideVersion()}/>);
-
-        const index = screen.getByRole("navigation", {name: "chapters"});
-
-        expect(index.querySelectorAll("a")).toHaveLength(10);
-        expect(index.querySelector("a")).toHaveAttribute("href", "#chapter-A");
-    });
-
     it("adds the given controls to items and places", () => {
-        render(<GuideView version={guideVersion()}
-                          itemActions={item => <button>suggest {item.key}</button>}
-                          placeActions={place => <button>add to {place.phase}{place.sectionKey ? ` ${place.sectionKey}` : ""}</button>}/>);
+        render(<GuideChapterView chapter={chapter("B")} number={2}
+                                 itemActions={item => <button>suggest {item.key}</button>}
+                                 placeActions={place => <button>add to {place.chapterKey}{place.sectionKey ? ` ${place.sectionKey}` : ""}</button>}/>);
 
         expect(screen.getByRole("button", {name: "suggest k-tip"})).toBeInTheDocument();
         expect(screen.getByRole("button", {name: "add to B s-kalas"})).toBeInTheDocument();
-        expect(screen.getByRole("button", {name: "add to J"})).toBeInTheDocument();
+        expect(screen.getByRole("button", {name: "add to B"})).toBeInTheDocument();
     });
 
     it("marks titles shown in Swedish to an English reader as not translated", () => {
         useLocale.mockReturnValue("en");
-        render(<GuideView version={guideVersion()}/>);
+        render(<><GuideChapterView chapter={chapter("A")} number={1}/><GuideChapterView chapter={chapter("B")} number={2}/></>);
 
-        const translated = screen.getByRole("heading", {name: "A. Chapter A"});
-        const chapter = screen.getByRole("heading", {name: "B. Kapitel B"});
-        const section = screen.getByRole("heading", {name: "Kalaslokal"});
-
-        expect(translated.parentElement).not.toHaveTextContent("notTranslated");
-        expect(chapter.parentElement).toHaveTextContent("notTranslated");
-        expect(section.parentElement).toHaveTextContent("notTranslated");
+        expect(screen.getByRole("heading", {name: "1. Chapter A"}).parentElement).not.toHaveTextContent("notTranslated");
+        expect(screen.getByRole("heading", {name: "2. Kapitel B"}).parentElement).toHaveTextContent("notTranslated");
+        expect(screen.getByRole("heading", {name: "Kalaslokal"}).parentElement).toHaveTextContent("notTranslated");
     });
 
     it("marks no title in Swedish", () => {
-        render(<GuideView version={guideVersion()}/>);
+        render(<GuideChapterView chapter={chapter("B")} number={2}/>);
 
-        expect(screen.getByRole("heading", {name: "B. Kapitel B"}).parentElement).not.toHaveTextContent("notTranslated");
+        expect(screen.getByRole("heading", {name: "2. Kapitel B"}).parentElement).not.toHaveTextContent("notTranslated");
     });
 });

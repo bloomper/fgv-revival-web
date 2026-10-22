@@ -7,11 +7,11 @@ vi.mock("@/app/(app)/revivals/[id]/guide/actions.server", () => ({withdrawSugges
 vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn()})}));
 
 const suggestion = (overrides: Partial<GuideSuggestionFieldsFragment> = {}): GuideSuggestionFieldsFragment => ({
-    id: "1", kind: "CHANGE", status: "OPEN", version: 0, mine: true, author: "Stina Styrgrupp", phase: "B", sectionKey: null, itemKey: "k",
+    id: "1", kind: "CHANGE", status: "OPEN", version: 0, mine: true, author: "Stina Styrgrupp", chapterKey: "B", chapterTitle: {sv: "Lokaler", en: null}, sectionKey: null, itemKey: "k",
     reason: "Inaktuellt", decidedBy: null, decidedAt: null, decisionReason: null, reopenedAt: null, createdAt: "2026-11-02T10:00:00Z",
     proposedType: null, proposedText: {sv: "Nytt tips.", en: null},
     revival: {id: "1", title: "Ali Baba 2028", year: 2028}, madeOn: {id: "1", label: "v1"}, publishedIn: null,
-    item: {phase: "B", sectionKey: null, sectionTitle: null, type: "TIP", text: {sv: "Gammalt tips.", en: null}},
+    item: {chapter: {key: "B", title: {sv: "Lokaler", en: null}}, sectionKey: null, sectionTitle: null, type: "TIP", text: {sv: "Gammalt tips.", en: null}},
     ...overrides,
 });
 
@@ -23,6 +23,12 @@ describe("SuggestionList", () => {
         expect(screen.getByText("Nytt tips.")).toBeInTheDocument();
         expect(screen.getByText("Inaktuellt")).toBeInTheDocument();
         expect(screen.getByRole("button", {name: "withdraw"})).toBeInTheDocument();
+    });
+
+    it("says which chapter and version it was made on", () => {
+        render(<SuggestionList suggestions={[suggestion()]}/>);
+
+        expect(screen.getByText(/where:\{"chapter":"Lokaler","version":"v1"\}/)).toBeInTheDocument();
     });
 
     it("offers no withdrawal on someone else's or a decided suggestion", () => {

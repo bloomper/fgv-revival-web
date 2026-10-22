@@ -3,6 +3,7 @@ import {getTranslations} from "next-intl/server";
 import {buttonVariants} from "@/components/ui/button";
 import {TemplateList} from "@/components/checklist/template/template-list.client";
 import {getChecklistTemplates} from "@/lib/checklist/template.server";
+import {getGuideLatestVersion} from "@/lib/guide/guide.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
@@ -14,7 +15,8 @@ export default async function ChecklistTemplatesPage({searchParams}: { searchPar
 
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {
         const t = await getTranslations("ChecklistTemplate");
-        const templates = await getChecklistTemplates(retired);
+        const [templates, latest] = await Promise.all([getChecklistTemplates(retired), getGuideLatestVersion()]);
+        const chapters = (latest?.chapters ?? []).map(chapter => ({key: chapter.key, title: chapter.title}));
 
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
@@ -24,7 +26,7 @@ export default async function ChecklistTemplatesPage({searchParams}: { searchPar
                         {retired ? t("hideRetired") : t("showRetired")}
                     </Link>
                 </div>
-                <TemplateList templates={templates}/>
+                <TemplateList templates={templates} chapters={chapters}/>
             </div>
         );
     });

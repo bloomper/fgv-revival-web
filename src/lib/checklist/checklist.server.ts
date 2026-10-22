@@ -20,7 +20,7 @@ const RevivalChecklistsQuery = graphql(`
             permissions { canWriteLog }
             ownerCandidates { id displayName }
         }
-        checklists(revivalId: $id, includeCancelled: $includeCancelled) { id kind phase name date cancelled openCount overdueCount totalCount }
+        checklists(revivalId: $id, includeCancelled: $includeCancelled) { id kind chapterKey chapterTitle { sv en } name date cancelled openCount overdueCount totalCount }
         checklistItems(revivalId: $id, filter: $filter) @include(if: $filtered) { ...ChecklistItemFields }
     }
 `);
@@ -37,14 +37,14 @@ const ChecklistQuery = graphql(`
             id
             revivalId
             kind
-            phase
+            chapterKey
             chapterTitle { sv en }
             name
             date
             cancelled
             version
             template { id name { sv en } }
-            templatesAvailable { id kind phase name { sv en } }
+            templatesAvailable { id kind chapterKey chapterTitle { sv en } name { sv en } }
             tips { ...GuideItemFields }
             items { ...ChecklistItemFields }
         }

@@ -35,6 +35,22 @@ describe("GuideItemDialog", () => {
         await waitFor(() => expect(onSave).toHaveBeenCalledWith({type: "REQUIREMENT", text: {sv: "Ett **tips**.", en: null}}));
     });
 
+    it("opens blank again after adding an item", async () => {
+        const onSave = vi.fn().mockResolvedValue({ok: true, data: null});
+        render(<GuideItemDialog trigger={<Button/>} heading="Add" onSave={onSave}>Open</GuideItemDialog>);
+
+        fireEvent.click(screen.getByRole("button", {name: "Open"}));
+        fireEvent.change(screen.getByLabelText("Guide.editor.type"), {target: {value: "REQUIREMENT"}});
+        fireEvent.change(screen.getByLabelText("Guide.editor.swedish"), {target: {value: "Första"}});
+        fireEvent.click(screen.getByRole("button", {name: "Common.save"}));
+        await waitFor(() => expect(screen.queryByLabelText("Guide.editor.swedish")).not.toBeInTheDocument());
+
+        fireEvent.click(screen.getByRole("button", {name: "Open"}));
+
+        expect(screen.getByLabelText("Guide.editor.swedish")).toHaveValue("");
+        expect(screen.getByLabelText("Guide.editor.type")).toHaveValue("TIP");
+    });
+
     it("previews the Markdown as readers see it", () => {
         open();
 

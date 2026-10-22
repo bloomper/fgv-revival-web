@@ -40,7 +40,7 @@ export function SuggestionList({suggestions, actions, showRevival = false}: {
                         <Badge variant={STATUS_VARIANTS[suggestion.status]}>{t(`status.${suggestion.status}`)}</Badge>
                         <span className="font-medium">{t(`kind.${suggestion.kind}`)}</span>
                         <span className="text-muted-foreground">
-                            {t("where", {phase: suggestion.phase, version: suggestion.madeOn.label ?? ""})}
+                            {t("where", {chapter: suggestion.chapterTitle ? pickText(suggestion.chapterTitle, locale).text : "–", version: suggestion.madeOn.label ?? ""})}
                             {showRevival && ` · ${suggestion.revival.title}`}
                             {" · "}{suggestion.author}
                         </span>

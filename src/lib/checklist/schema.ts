@@ -69,7 +69,7 @@ const localized = (max: number, required: string, tooLong: string) => z.object({
 });
 
 export const templateCreateSchema = z.discriminatedUnion("kind", [
-    z.object({kind: z.literal("PHASE"), phase: z.enum(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"])}),
+    z.object({kind: z.literal("CHAPTER"), chapterKey: z.string().min(1)}),
     z.object({kind: z.literal("EVENT"), name: localized(MAX_TEMPLATE_NAME, "templateNameRequired", "templateNameTooLong")}),
 ]);
 

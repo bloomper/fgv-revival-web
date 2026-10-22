@@ -125,8 +125,17 @@ changing routing or data fetching; this area differs sharply from older Next.
   `src/lib/member/member.server.ts`, `src/lib/spex/spex.server.ts`, `src/lib/guide/guide.server.ts`,
   `src/lib/decision-log/log.server.ts`, `src/lib/meeting/meeting.server.ts`, `src/lib/checklist/checklist.server.ts` and
   `src/lib/checklist/template.server.ts`.
-- The server's plain HTTP endpoints (guide import and PDF, log import) go through `apiFetch` in `src/lib/api.server.ts`, which
+- The server's plain HTTP endpoints (guide PDF, log import) go through `apiFetch` in `src/lib/api.server.ts`, which
   adds the token on the server. The browser reaches the PDF only through the route handler `/api/guide-pdf`.
+- **Guide chapters are free-form.** A version has any number of chapters, each with a `key` that stays the same
+  across versions, ordered by place and numbered from 1 in the UI; there is no `Phase` enum any more. Reading is one
+  chapter per page (`[chapterKey]` routes) with `GuideChapterNav` (a bar and bottom sheet on phones, a list beside the
+  text from `lg`) and `GuideChapterPager`.
+- A revival's chapter checklists follow its pinned version on the server: one per chapter, and the one for a chapter
+  the version lacks is **deleted with its items** when the revival moves to that version. That is the only deletion in
+  checklists, so the web confirms it three times: removing the chapter in the draft (typed title, plus
+  `guideChapterRemovalImpact`), publishing a draft that removed chapters, and changing a revival's version
+  (`Revival.guideVersionChangeImpact`), each through `RemovalWarning`.
 - Guide Markdown is rendered only through `src/components/guide/guide-markdown.tsx`: no `rehype-raw`, and only the
   elements FR-010 allows, so raw HTML stays text and images are never loaded. Guide text has a Swedish and an optional
   English version; pick with `pickText` from `src/components/guide/localized.ts`.

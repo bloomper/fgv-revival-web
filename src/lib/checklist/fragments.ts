@@ -17,7 +17,7 @@ export const ChecklistItemFields = graphql(`
         guideItem { id key type text { sv en } version }
         defaultCapability
         logEntries { id number type status }
-        checklist { id kind phase name }
+        checklist { id kind chapterKey chapterTitle { sv en } name }
         version
     }
 `);

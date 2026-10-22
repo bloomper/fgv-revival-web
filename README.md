@@ -15,16 +15,19 @@ Playwright against a mock backend.
 What a user may do with a revival comes from the server's `Revival.permissions`; the web never computes it. Global
 roles (`USER`, `SUPER_ADMIN`, `OBSERVER` on `fgv-revival`) only decide which pages to show.
 
-The guide is read at `/guide` and per revival at `/revivals/[id]/guide`, with search, the changes between versions
-(`/guide/changes`), suggestions and a PDF download (`/api/guide-pdf`, which adds the user's token on the server). Super
-admins import, edit and publish it under `/admin/guide`. The Word import is sent through a server action, so
-`next.config.ts` allows server action bodies of 11 MB.
+The guide is read one chapter at a time: `/guide` and `/revivals/[id]/guide` show the introduction and the chapters,
+and `/guide/[chapterKey]` and `/revivals/[id]/guide/[chapterKey]` one chapter, with search, the changes between
+versions (`/guide/changes`), suggestions and a PDF download (`/api/guide-pdf`, which adds the user's token on the
+server). Super admins edit and publish it under `/admin/guide`: the draft's chapters are added, renamed, reordered and
+removed at `/admin/guide/draft`, and each is edited at `/admin/guide/draft/[chapterKey]`.
 
 Each revival has a decision log at `/revivals/[id]/log` (with the Excel import at `/log/import`, through
 `apiFetch`), meetings at `/revivals/[id]/meetings`, where a meeting in progress records what was done to each row and
-closed minutes can be emailed, and checklists at `/revivals/[id]/checklists`: the phases A–J with the guide's
-requirements and tips, and dated event checklists. Super admins keep checklist templates under
-`/admin/checklist-templates`. Nothing on these pages is ever deleted.
+closed minutes can be emailed, and checklists at `/revivals/[id]/checklists`: one per chapter of the revival's guide
+version, with the guide's requirements and tips, and dated event checklists. Super admins keep checklist templates
+under `/admin/checklist-templates`. Nothing on these pages is ever deleted, with one exception: a revival that moves to
+a guide version without a chapter loses its checklist for it, which the web asks to confirm (see `AGENTS.md`). The
+Excel log import is sent through a server action, so `next.config.ts` allows server action bodies of 11 MB.
 
 ## Running locally
 

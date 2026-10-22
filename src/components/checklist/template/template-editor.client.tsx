@@ -15,7 +15,7 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
  */
 export function TemplateEditor({templateId, kind, items, readOnly}: {
     templateId: string;
-    kind: "PHASE" | "EVENT";
+    kind: "CHAPTER" | "EVENT";
     items: TemplateItem[];
     readOnly: boolean;
 }) {

@@ -11,7 +11,7 @@ vi.mock("next/navigation", () => ({
     usePathname: () => pathname,
 }));
 vi.mock("next/link", () => ({
-    default: ({children, href}: { children?: ReactNode; href: string }) => <a href={href}>{children}</a>,
+    default: ({children, href, ...rest}: { children?: ReactNode; href: string }) => <a href={href} {...rest}>{children}</a>,
 }));
 vi.mock("@/hooks/use-is-client.client", () => ({
     useIsClient: () => true,
@@ -61,8 +61,16 @@ describe("AppSidebar", () => {
 
         expect(screen.getByRole("link", {name: "Nav.guide"})).toHaveAttribute("href", "/guide");
         expect(screen.getByRole("link", {name: "Nav.admin"})).toHaveAttribute("href", "/admin/guide");
-        expect(screen.getByRole("link", {name: "Nav.adminGuide"})).toHaveAttribute("href", "/admin/guide");
+        expect(screen.getByRole("link", {name: "Nav.adminGuideShort"})).toHaveAttribute("href", "/admin/guide");
         expect(screen.getByRole("link", {name: "Nav.adminChecklistTemplates"})).toHaveAttribute("href", "/admin/checklist-templates");
+    });
+
+    it("keeps the guide administration entry highlighted on the pages beneath it", () => {
+        pathname = "/admin/guide/draft/inledning";
+        sidebar(["USER", "SUPER_ADMIN"]);
+
+        expect(screen.getByRole("link", {name: "Nav.adminGuideShort"})).toHaveAttribute("data-active", "true");
+        expect(screen.getByRole("link", {name: "Nav.adminChecklistTemplates"})).not.toHaveAttribute("data-active", "true");
     });
 
     it("does not offer administration to others", () => {
@@ -70,7 +78,7 @@ describe("AppSidebar", () => {
 
         expect(screen.getByRole("link", {name: "Nav.guide"})).toBeInTheDocument();
         expect(screen.queryByRole("link", {name: "Nav.admin"})).not.toBeInTheDocument();
-        expect(screen.queryByRole("link", {name: "Nav.adminGuide"})).not.toBeInTheDocument();
+        expect(screen.queryByRole("link", {name: "Nav.adminGuideShort"})).not.toBeInTheDocument();
         expect(screen.queryByRole("link", {name: "Nav.adminChecklistTemplates"})).not.toBeInTheDocument();
     });
 });

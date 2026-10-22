@@ -5,34 +5,24 @@ import {MessagesSquare} from "lucide-react";
 import {buttonVariants} from "@/components/ui/button";
 import {Card, CardContent} from "@/components/ui/card";
 import {GuidePdfButton} from "@/components/guide/guide-pdf-button.client";
+import {chapterNumbers} from "@/components/guide/chapters";
+import {GuideOverview} from "@/components/guide/guide-overview";
 import {GuideSearch} from "@/components/guide/guide-search.client";
-import {RevivalGuideView} from "@/components/guide/suggestion/revival-guide-view.client";
 import {GuideVersionBanner} from "@/components/guide/guide-version-banner";
 import {GuideVersionChangeDialog} from "@/components/guide/guide-version-change-dialog.client";
-import {GraphQLRequestError} from "@/lib/graphql.server";
-import {getRevivalGuide} from "@/lib/guide/guide.server";
+import {loadRevivalGuide} from "@/app/(app)/revivals/[id]/guide/load.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
-async function load(id: string) {
-    try {
-        return await getRevivalGuide(id);
-    } catch (error) {
-        if (error instanceof GraphQLRequestError && (error.code === "NOT_FOUND" || error.code === "FORBIDDEN")) {
-            return null;
-        }
-        throw error;
-    }
-}
-
 /**
- * A revival's guide: the version it is pinned to (FR-019). A revival the user cannot see is not found (M1 FR-017).
+ * A revival's guide: the start page of the version it is pinned to (FR-019), with the version controls. Each chapter
+ * is read on its own page. A revival the user cannot see is not found (M1 FR-017).
  */
 export default async function RevivalGuidePage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
 
     return withPolicyPage(Policies.app.requireAccess, async () => {
-        const loaded = await load(id);
+        const loaded = await loadRevivalGuide(id);
 
         if (!loaded) {
             notFound();
@@ -60,8 +50,8 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
                 )}
                 {version ? (
                     <>
-                        <GuideSearch versionId={version.id}/>
-                        <RevivalGuideView version={version} revivalId={revival.id} canSuggest={revival.permissions.canSuggestGuideChange}/>
+                        <GuideSearch versionId={version.id} basePath={`/revivals/${revival.id}/guide`} chapterNumbers={chapterNumbers(version)}/>
+                        <GuideOverview version={version} basePath={`/revivals/${revival.id}/guide`}/>
                     </>
                 ) : (
                     <Card><CardContent className="pt-6 text-sm">{t("notPublished")}</CardContent></Card>
@@ -73,7 +63,7 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
                             {revival.guideVersionHistory.map((change, index) => (
                                 <li key={index}>
                                     {t("version.historyEntry", {
-                                        from: change.from?.label ?? "–", to: change.to.label ?? "", name: change.changedBy ?? "", at: change.changedAt.slice(0, 10),
+                                        from: change.fromLabel ?? "–", to: change.toLabel, name: change.changedBy ?? "", at: change.changedAt.slice(0, 10),
                                     })}
                                 </li>
                             ))}

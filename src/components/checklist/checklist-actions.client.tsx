@@ -10,14 +10,15 @@ import {pickText} from "@/components/guide/localized";
 import {addFromTemplateAction, cancelEventChecklistAction} from "@/app/(app)/revivals/[id]/checklists/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 
-type Template = { id: string; kind: "PHASE" | "EVENT"; phase?: string | null; name?: { sv: string; en?: string | null } | null };
+type Text = { sv: string; en?: string | null };
+type Template = { id: string; kind: "CHAPTER" | "EVENT"; chapterTitle?: Text | null; name?: Text | null };
 
 /**
  * Adding the items a template has and the checklist lacks (M3 FR-032a), and cancelling an event checklist.
  */
 export function ChecklistActions({revivalId, checklist, templates}: {
     revivalId: string;
-    checklist: { id: string; version: number; kind: "PHASE" | "EVENT" };
+    checklist: { id: string; version: number; kind: "CHAPTER" | "EVENT" };
     templates: Template[];
 }) {
     const t = useTranslations("Checklist");
@@ -27,8 +28,8 @@ export function ChecklistActions({revivalId, checklist, templates}: {
     const add = (templateId: string) => startTransition(async () => {
         feedback(await addFromTemplateAction({revivalId, id: checklist.id, version: checklist.version, templateId}), t("addedFromTemplate"));
     });
-    const label = (template: Template) => template.kind === "PHASE"
-        ? t("phaseTemplate", {phase: template.phase ?? ""})
+    const label = (template: Template) => template.kind === "CHAPTER"
+        ? t("chapterTemplate", {chapter: template.chapterTitle ? pickText(template.chapterTitle, locale).text : ""})
         : template.name ? pickText(template.name, locale).text : template.id;
 
     return (

@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Decision log, user story 4: the steering group works through the phase checklists", () => {
+test.describe("Decision log, user story 4: the steering group works through the chapter checklists", () => {
     test.beforeEach(async ({mock}) => {
         await mock.guide("published");
         await mock.setStatus("1", "ORGANISING");
@@ -12,8 +12,9 @@ test.describe("Decision log, user story 4: the steering group works through the 
         await page.getByRole("link", {name: "Checklistor"}).click();
 
         await expect(page.getByRole("heading", {level: 3, name: "Checklistor"})).toBeVisible();
-        await page.getByRole("link", {name: /Fas A/}).click();
-        await expect(page.getByRole("heading", {level: 3, name: "Fas A: Först: godkännande och tajmning"})).toBeVisible();
+        await expect(page.getByRole("region", {name: "Guidens kapitel"}).getByRole("link")).toHaveCount(10);
+        await page.getByRole("link", {name: /1\. Först: godkännande/}).click();
+        await expect(page.getByRole("heading", {level: 3, name: "Först: godkännande och tajmning"})).toBeVisible();
 
         const requirement = page.getByRole("checkbox", {name: "Nyuppsättningen ska godkännas av JK och FGV."});
 
@@ -39,7 +40,7 @@ test.describe("Decision log, user story 4: the steering group works through the 
     test("shows the chapter's tips with its checklist", async ({page, loginAs}) => {
         await loginAs("styrgrupp");
         await page.goto("/revivals/1/checklists");
-        await page.getByRole("link", {name: /Fas B/}).click();
+        await page.getByRole("link", {name: /Boka lokaler/}).click();
 
         await page.getByText("Tips från guiden (1)").click();
         await expect(page.getByText("Kontrollera sprittillstånd i vald lokal.")).toBeVisible();
@@ -48,7 +49,7 @@ test.describe("Decision log, user story 4: the steering group works through the 
     test("a directeur waives a requirement with a reason", async ({page, loginAs}) => {
         await loginAs("directeur");
         await page.goto("/revivals/1/checklists");
-        await page.getByRole("link", {name: /Fas J/}).click();
+        await page.getByRole("link", {name: /Stänga nyuppsättningen/}).click();
 
         await page.getByRole("button", {name: "Gäller inte"}).click();
         const dialog = page.getByRole("dialog");

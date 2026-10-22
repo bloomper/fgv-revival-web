@@ -54,6 +54,7 @@
     "manage": "Hantera",
     "admin": "Administration",
     "adminGuide": "Hantera guiden",
+    "adminGuideShort": "Guiden",
     "adminChecklistTemplates": "Checklistmallar"
   },
   "Home": {
@@ -220,8 +221,6 @@
     "venueBlank": "En spelplats får inte vara tom.",
     "venuesTooMany": "Högst 20 spelplatser.",
     "emailInvalid": "Ange en giltig e-postadress.",
-    "labelRequired": "Ange en versionsbeteckning, t.ex. v6.",
-    "labelTooLong": "Högst 32 tecken.",
     "noteTooLong": "Högst 2 000 tecken.",
     "guideTextRequired": "Texten får inte vara tom.",
     "guideTextTooLong": "Högst 5 000 tecken.",
@@ -290,51 +289,43 @@
       "title": "Hantera guiden",
       "draft": "Utkast",
       "basedOn": "Kopia av {label}",
-      "fromImport": "Importerat från Word",
       "empty": "Tomt utkast",
       "untranslated": "{count, plural, =0 {allt är översatt} one {# text saknar engelska} other {# texter saknar engelska}}",
       "edit": "Redigera utkastet",
       "noDraft": "Det finns inget utkast.",
+      "noDraftHint": "Ändringar i guiden görs i ett utkast som sedan publiceras som en ny version.",
+      "openSuggestions": "{count, plural, =0 {Inga öppna förslag.} one {# öppet förslag.} other {# öppna förslag.}}",
+      "suggestionsHint": "Styrgruppernas förslag godtas in i utkastet eller avslås.",
+      "handleSuggestions": "Hantera förslag",
+      "versionLabel": "Version",
+      "publishedAt": "Publicerad",
+      "notPublishedHint": "Publicera ett utkast för att skapa den första versionen.",
       "versions": "Publicerade versioner",
       "startDraft": "Starta ett utkast",
-      "draftStarted": "Utkastet är startat"
-    },
-    "import": {
-      "open": "Importera från Word",
-      "title": "Importera guiden från Word",
-      "description": "Dokumentet blir ett utkast som du granskar innan du publicerar det. Det går bara innan guiden har publicerats första gången.",
-      "file": "Word-dokument (.docx, högst 10 MB)",
-      "submit": "Importera",
-      "done": "Utkastet är importerat",
-      "tooLarge": "Filen är för stor. Högst 10 MB.",
-      "reportOf": "Importrapport för {fileName}",
-      "chapter": "Kapitel",
-      "total": "Totalt",
-      "counts": {
-        "sections": "Avsnitt",
-        "tips": "Tips",
-        "requirements": "Krav",
-        "questions": "Frågor",
-        "texts": "Texter"
-      },
-      "warnings": "Att granska",
-      "noWarnings": "Inget att granska.",
-      "warning": {
-        "IMAGE": "En bild importerades inte.",
-        "TABLE": "En tabell importerades inte.",
-        "UNKNOWN_LABEL": "”{detail}” är ingen känd rubrik, så punkterna under den blev text."
-      },
-      "where": "(kapitel {phase}, {section})",
-      "beforeChapterA": "(före kapitel A)"
+      "draftStarted": "Utkastet är startat",
+      "note": "Beskrivning",
+      "revivals": "Nyuppsättningar",
+      "publishedBy": "Publicerad av",
+      "suggestions": "Förslag",
+      "versionDetails": "Uppgifter om versionen",
+      "delete": "Ta bort",
+      "deleteTitle": "Ta bort {label}?",
+      "deleteDescription": "Versionen och allt innehåll i den tas bort. Nyuppsättningar som tidigare följt den behåller beteckningen i sin historik.",
+      "deleted": "Versionen är borttagen",
+      "inUseRevivals": "{count, plural, one {Används av # nyuppsättning} other {Används av # nyuppsättningar}}",
+      "inUseSuggestions": "{count, plural, one {Har # förslag} other {Har # förslag}}",
+      "view": "Visa versionen"
     },
     "publish": {
       "open": "Publicera",
       "title": "Publicera utkastet",
-      "description": "En publicerad version kan aldrig ändras. Nyuppsättningar utan version knyts till den.",
-      "label": "Versionsbeteckning",
-      "note": "Anteckning (frivillig)",
+      "description": "En publicerad version kan aldrig ändras. Den numreras automatiskt, och nyuppsättningar utan version knyts till den.",
+      "note": "Vad har ändrats? (frivilligt)",
       "submit": "Publicera",
-      "done": "Versionen är publicerad"
+      "done": "Versionen är publicerad",
+      "removedTitle": "{count, plural, one {Ett kapitel har tagits bort} other {# kapitel har tagits bort}}",
+      "removedDescription": "Nyuppsättningar som byter till den nya versionen förlorar sin checklista för de här kapitlen, med alla punkter i den. Loggrader som är kopplade till punkterna finns kvar.",
+      "removedConfirm": "Jag förstår att checklistorna raderas när nyuppsättningarna byter till den nya versionen"
     },
     "discard": {
       "open": "Kasta utkastet",
@@ -374,14 +365,24 @@
       "addSection": "Lägg till avsnitt",
       "renameSection": "Byt namn på avsnittet",
       "moveSectionTo": "Flytta avsnittet till…",
-      "removeSection": "Radera avsnittet"
+      "removeSection": "Radera avsnittet",
+      "addChapter": "Lägg till kapitel",
+      "noChapters": "Utkastet har inga kapitel. Lägg till det första.",
+      "removeChapter": "Radera kapitlet",
+      "removeChapterTitle": "Radera kapitlet ”{title}”?",
+      "removeChapterContents": "Kapitlets avsnitt ({sections}) och punkter ({items}) raderas ur utkastet.",
+      "removeChapterImpact": "När utkastet publiceras och nyuppsättningarna byter till det förlorar {revivals, plural, one {# nyuppsättning sin checklista} other {# nyuppsättningar sina checklistor}} för kapitlet: {items} punkter, varav {done} klara.",
+      "removeChapterNoImpact": "Ingen nyuppsättning har en checklista för kapitlet än.",
+      "removeChapterCounting": "Räknar vilka checklistor som berörs…",
+      "removeChapterType": "Skriv kapitlets svenska titel för att bekräfta",
+      "chapterRemoved": "Kapitlet är raderat"
     },
     "changes": {
       "title": "Ändringar från {from} till {to}",
       "draft": "utkastet",
       "none": "Inga ändringar.",
       "introduction": "Inledningen är ändrad",
-      "chapter": "Kapitel {phase}",
+      "chapter": "{title}",
       "section": "Avsnitt",
       "renamed": "Nytt namn",
       "kind": {
@@ -392,7 +393,13 @@
       "reworded": "Ny text ({language})",
       "retyped": "Ny typ",
       "moved": "Flyttad",
-      "reordered": "Ny ordning"
+      "reordered": "Ny ordning",
+      "chapterKind": {
+        "ADDED": "Nytt kapitel",
+        "REMOVED": "Kapitlet borttaget",
+        "CHANGED": "Kapitlet ändrat"
+      },
+      "chapterRemovedChecklists": "Nyuppsättningar som byter till den här versionen förlorar sin checklista för kapitlet."
     },
     "version": {
       "change": "Byt version",
@@ -405,7 +412,11 @@
       "newer": "Det finns en nyare version av guiden, {label}.",
       "whatChanged": "Se vad som ändrats",
       "history": "Versionshistorik",
-      "historyEntry": "{at}: {name} bytte från {from} till {to}"
+      "historyEntry": "{at}: {name} bytte från {from} till {to}",
+      "removalTitle": "{count, plural, one {# checklista raderas} other {# checklistor raderas}}",
+      "removalDescription": "Den nya versionen har inte längre de här kapitlen, så nyuppsättningens checklistor för dem raderas med alla punkter i dem. Krav som flyttats till ett annat kapitel följer med till dess checklista. Loggrader finns kvar, utan kopplingen.",
+      "removalCounts": "{items, plural, one {# punkt} other {# punkter}}, {done} klara{log, plural, =0 {} one {, # kopplad loggrad} other {, # kopplade loggrader}}",
+      "removalConfirm": "Jag förstår att checklistorna raderas och inte kan återställas"
     },
     "pdf": {
       "download": "Ladda ner PDF",
@@ -445,7 +456,7 @@
         "REMOVE": "Borttagning",
         "ADD": "Ny punkt"
       },
-      "where": "kapitel {phase}, {version}",
+      "where": "{chapter}, {version}",
       "now": "Nu",
       "proposed": "Förslag",
       "reason": "Varför",
@@ -469,7 +480,16 @@
       "rejectTitle": "Avslå förslaget",
       "rejectReason": "Motivering (frivillig, visas för den som föreslog)",
       "rejected": "Förslaget är avslaget"
-    }
+    },
+    "chapterOf": "{number}/{count}",
+    "chapterPager": "Föregående och nästa kapitel",
+    "previousChapter": "Föregående kapitel",
+    "nextChapter": "Nästa kapitel",
+    "noChapters": "Guiden har inga kapitel än.",
+    "chapterContents": "{sections, plural, =0 {} one {# avsnitt · } other {# avsnitt · }}{items, plural, one {# punkt} other {# punkter}}",
+    "startPage": "Guidens startsida",
+    "chapterImpact": "{revivals, plural, =0 {ingen nyuppsättning har en checklista för kapitlet} one {# nyuppsättning förlorar sin checklista, med {items} punkter varav {done} klara} other {# nyuppsättningar förlorar sina checklistor, med {items} punkter varav {done} klara}}",
+    "latest": "senaste"
   },
   "Owner": {
     "label": "Ansvarig",
@@ -645,9 +665,7 @@
   },
   "Checklist": {
     "title": "Checklistor",
-    "phases": "Faser",
     "events": "Händelser",
-    "phase": "Fas {phase}",
     "counts": "{open} öppna av {total}",
     "overdueCount": "{count} försenade",
     "empty": "Checklistan har inga punkter.",
@@ -696,28 +714,27 @@
     "noTemplate": "Ingen mall, börja tomt",
     "addFromTemplate": "Lägg till punkter från mall",
     "addedFromTemplate": "Punkterna från mallen är tillagda",
-    "phaseTemplate": "Mallen för fas {phase}",
     "cancelEvent": "Stryk checklistan",
     "cancelledDone": "Checklistan är struken",
     "fromTemplate": "Från mallen {name}",
     "showCancelled": "Visa strukna",
     "hideCancelled": "Dölj strukna",
-    "noEvents": "Inga händelse-checklistor."
+    "noEvents": "Inga händelse-checklistor.",
+    "chapters": "Guidens kapitel",
+    "noChapters": "Nyuppsättningen följer ingen guideversion än, så den har inga kapitelchecklistor.",
+    "chapterTemplate": "Mallen för {chapter}"
   },
   "ChecklistTemplate": {
     "title": "Checklistmallar",
     "showRetired": "Visa avvecklade",
     "hideRetired": "Dölj avvecklade",
-    "phases": "Faser",
     "events": "Händelser",
     "itemCount": "{count, plural, one {# punkt} other {# punkter}}",
-    "createPhase": "Skapa mall för fas {phase}",
     "createEvent": "Ny händelsemall",
     "noEvents": "Inga händelsemallar än.",
     "retired": "Avvecklad",
     "nameSv": "Namn (svenska)",
     "nameEn": "Namn (engelska)",
-    "phaseTitle": "Mall för fas {phase}",
     "retire": "Avveckla mallen",
     "retiredDone": "Mallen är avvecklad",
     "items": "Punkter",
@@ -765,6 +782,13 @@
       "DAYSRule": "{amount} dagar {direction, select, before {före} other {efter}}",
       "WORKING_DAYSRule": "{amount} arbetsdagar {direction, select, before {före} other {efter}}",
       "weekdayRule": "{weekday} veckan innan"
-    }
+    },
+    "chapters": "Guidens kapitel",
+    "noChapters": "Ingen guideversion är publicerad än.",
+    "createChapter": "Skapa mall",
+    "chapterTitle": "Mall för {chapter}",
+    "orphaned": "Kapitel som inte längre finns i guiden",
+    "orphanedDescription": "De här kapitlen togs bort ur guiden, så deras mallar pensionerades när versionen publicerades.",
+    "chapterGone": "Mall för ett borttaget kapitel"
   }
 }

@@ -4,10 +4,14 @@ import {revalidatePath} from "next/cache";
 import type {z} from "zod";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
 import {
+    createGuideChapter,
     createGuideItem,
     createGuideSection,
+    getChapterRemovalImpact,
+    moveGuideChapter,
     moveGuideItem,
     moveGuideSection,
+    removeGuideChapter,
     removeGuideItem,
     removeGuideSection,
     startGuideDraft,
@@ -17,6 +21,8 @@ import {
     updateGuideSection,
 } from "@/lib/guide/guide.server";
 import {
+    guideChapterCreateSchema,
+    guideChapterMoveSchema,
     guideChapterUpdateSchema,
     guideIntroductionUpdateSchema,
     guideItemCreateSchema,
@@ -56,8 +62,28 @@ export async function updateIntroductionAction(input: z.input<typeof guideIntrod
         updateGuideIntroduction({...parsed, introduction: {sv: parsed.introduction.sv, en: en(parsed.introduction)}}));
 }
 
+export async function createChapterAction(input: z.input<typeof guideChapterCreateSchema>) {
+    return edit(guideChapterCreateSchema, input, parsed =>
+        createGuideChapter({versionId: parsed.versionId, position: parsed.position ?? null, title: {sv: parsed.title.sv, en: en(parsed.title)}}));
+}
+
 export async function updateChapterAction(input: z.input<typeof guideChapterUpdateSchema>) {
     return edit(guideChapterUpdateSchema, input, parsed => updateGuideChapter({...parsed, title: {sv: parsed.title.sv, en: en(parsed.title)}}));
+}
+
+export async function moveChapterAction(input: z.input<typeof guideChapterMoveSchema>) {
+    return edit(guideChapterMoveSchema, input, parsed => moveGuideChapter(parsed));
+}
+
+export async function removeChapterAction(input: z.input<typeof guideRemoveSchema>) {
+    return edit(guideRemoveSchema, input, parsed => removeGuideChapter(parsed.id, parsed.version));
+}
+
+/**
+ * What removing the chapter would delete in revivals' checklists, for the remove dialog.
+ */
+export async function chapterRemovalImpactAction(chapterKey: string): Promise<ActionResult<Awaited<ReturnType<typeof getChapterRemovalImpact>>>> {
+    return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(() => getChapterRemovalImpact(chapterKey)));
 }
 
 export async function createSectionAction(input: z.input<typeof guideSectionCreateSchema>) {

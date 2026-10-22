@@ -3,7 +3,13 @@
 import {revalidatePath} from "next/cache";
 import type {z} from "zod";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
-import {changeRevivalGuideVersion, createGuideSuggestion, getGuideChanges, withdrawGuideSuggestion} from "@/lib/guide/guide.server";
+import {
+    changeRevivalGuideVersion,
+    createGuideSuggestion,
+    getGuideChanges,
+    getGuideVersionChangeImpact,
+    withdrawGuideSuggestion,
+} from "@/lib/guide/guide.server";
 import {guideRemoveSchema, guideSuggestionCreateSchema, revivalGuideVersionChangeSchema} from "@/lib/guide/schema";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
@@ -18,6 +24,11 @@ export async function changeGuideVersionAction(input: z.input<typeof revivalGuid
     }));
 }
 
+export async function guideVersionChangeImpactAction(revivalId: string, toId: string):
+    Promise<ActionResult<Awaited<ReturnType<typeof getGuideVersionChangeImpact>>>> {
+    return withPolicyAction(Policies.app.requireAccess, () => toActionResult(() => getGuideVersionChangeImpact(revivalId, toId)));
+}
+
 export async function guideChangesAction(fromId: string, toId: string): Promise<ActionResult<Awaited<ReturnType<typeof getGuideChanges>>>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(() => getGuideChanges(fromId, toId)));
 }
@@ -29,7 +40,7 @@ export async function suggestAction(input: z.input<typeof guideSuggestionCreateS
         await createGuideSuggestion({
             ...place,
             itemKey: place.itemKey ?? null,
-            phase: place.phase ?? null,
+            chapterKey: place.chapterKey ?? null,
             sectionKey: place.sectionKey ?? null,
             kind: values.kind,
             proposedType: values.proposedType ?? null,

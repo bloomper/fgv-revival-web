@@ -12,20 +12,43 @@ test.describe("Guide, user story 2: a steering group member reads the guide for 
         await page.getByRole("link", {name: "Guiden v1"}).click();
 
         await expect(page.getByRole("heading", {level: 3, name: "Guiden v1"})).toBeVisible();
-        await expect(page.getByRole("heading", {name: "A. Först: godkännande och tajmning"})).toBeVisible();
-        await expect(page.getByRole("heading", {name: "J. Stänga nyuppsättningen"})).toBeVisible();
-        await expect(page.getByText("Krav").first()).toBeVisible();
+        const chapters = page.getByRole("region", {name: "Kapitel"});
 
-        await page.getByRole("searchbox", {name: "Sök i guiden"}).fill("sprit");
-        const hit = page.getByRole("list", {name: "Sökträffar"}).getByRole("link", {name: /sprittillstånd/});
+        await expect(chapters.getByRole("link")).toHaveCount(10);
+        await chapters.getByRole("link", {name: /Först: godkännande och tajmning/}).click();
+
+        await expect(page.getByRole("heading", {name: "1. Först: godkännande och tajmning"})).toBeVisible();
+        await expect(page.getByText("Krav").first()).toBeVisible();
+        await page.getByRole("link", {name: /Nästa kapitel/}).click();
+        await expect(page.getByRole("heading", {name: "2. Boka lokaler och lägg fast er tidslinje"})).toBeVisible();
+        await expect(page).toHaveURL(/\/revivals\/1\/guide\/B$/);
+
+        await page.getByRole("searchbox", {name: "Sök i guiden"}).fill("lån");
+        const hit = page.getByRole("list", {name: "Sökträffar"}).getByRole("link", {name: /lån/});
 
         await expect(hit).toBeVisible();
         await hit.click();
-        await expect(page).toHaveURL(/#item-/);
+        await expect(page).toHaveURL(/\/revivals\/1\/guide\/J#item-/);
+        await expect(page.getByRole("heading", {name: "10. Stänga nyuppsättningen"})).toBeVisible();
+    });
+
+    test("on a phone, finds the chapters in a bar that opens a list", async ({page}) => {
+        await page.setViewportSize({width: 390, height: 844});
+        await page.goto("/revivals/1/guide/B");
+
+        const bar = page.getByRole("button", {name: /2\/10 · Boka lokaler/});
+
+        await expect(bar).toBeVisible();
+        await bar.click();
+        await page.getByRole("dialog").getByRole("link", {name: /Sätt budgeten/}).click();
+
+        await expect(page).toHaveURL(/\/revivals\/1\/guide\/C$/);
+        await expect(page.getByRole("button", {name: /3\/10 · Sätt budgeten/})).toBeVisible();
+        await expect(page.getByRole("link", {name: /Föregående kapitel/})).toBeVisible();
     });
 
     test("shows English text where there is one, and Swedish marked as not translated", async ({page}) => {
-        await page.goto("/guide");
+        await page.goto("/guide/A");
         await page.getByRole("button", {name: "Byt språk"}).click();
         await page.getByRole("menuitem", {name: "English"}).click();
 
@@ -40,7 +63,7 @@ test("a steering group member whose revival is not visible is refused the guide"
     await page.goto("/guide");
 
     await expect(page.getByText(/Guiden visas för styrgrupper/)).toBeVisible();
-    await expect(page.getByRole("heading", {name: /^A\./})).toHaveCount(0);
+    await expect(page.getByRole("region", {name: "Kapitel"})).toHaveCount(0);
 });
 
 test("before the first publication the revival's guide says so", async ({page, mock, loginAs}) => {

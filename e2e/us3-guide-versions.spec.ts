@@ -11,7 +11,8 @@ test.describe("Guide, user story 3: the super admin edits a draft and publishes 
         await page.getByRole("button", {name: "Starta ett utkast"}).click();
         await expect(page.getByRole("heading", {level: 2, name: "Utkast"})).toBeVisible();
 
-        const chapterC = page.getByRole("region", {name: /^C\. Sätt budgeten/});
+        await page.getByRole("link", {name: /Sätt budgeten/}).click();
+        const chapterC = page.getByRole("region", {name: /^3\. Sätt budgeten/});
 
         await chapterC.getByRole("button", {name: "Lägg till punkt"}).first().click();
         await page.getByLabel("Typ").selectOption("REQUIREMENT");
@@ -20,6 +21,7 @@ test.describe("Guide, user story 3: the super admin edits a draft and publishes 
         await page.getByRole("dialog").getByRole("button", {name: "Spara"}).click();
         await expect(chapterC.getByText("Budget ska vara klar innan första rephelgen.")).toBeVisible();
 
+        await page.getByRole("navigation", {name: "Kapitel", exact: true}).getByRole("link", {name: /Boka lokaler/}).click();
         const tip = page.getByTestId(/draft-item-/).filter({hasText: "Kontrollera sprittillstånd"});
 
         await tip.getByRole("button", {name: "Redigera punkten"}).click();
@@ -27,18 +29,50 @@ test.describe("Guide, user story 3: the super admin edits a draft and publishes 
         await page.getByRole("dialog").getByRole("button", {name: "Spara"}).click();
         await expect(page.getByText("Kontrollera sprittillstånd i god tid.")).toBeVisible();
 
+        await page.getByRole("link", {name: "Utkast"}).click();
         await page.getByRole("button", {name: "Publicera"}).click();
-        await page.getByLabel("Versionsbeteckning").fill("v1");
-        await page.getByRole("dialog").getByRole("button", {name: "Publicera"}).click();
-        await expect(page.getByText("Versionsbeteckningen v1 används redan.")).toBeVisible();
-
-        await page.getByLabel("Versionsbeteckning").fill("v2");
+        await page.getByLabel("Vad har ändrats? (frivilligt)").fill("Krav på budget före första rephelgen.");
         await page.getByRole("dialog").getByRole("button", {name: "Publicera"}).click();
         await expect(page.getByText("Versionen är publicerad")).toBeVisible();
 
         await page.goto("/admin/guide");
-        await expect(page.getByRole("link", {name: "v2"})).toBeVisible();
-        await expect(page.getByRole("link", {name: "v1"})).toBeVisible();
+        const rows = page.getByRole("row");
+
+        await expect(rows.filter({hasText: "v2"})).toContainText("Krav på budget före första rephelgen.");
+        await expect(rows.filter({hasText: "v1"})).toContainText("3");
+        await expect(page.getByRole("link", {name: "v2"})).toHaveCount(0);
+    });
+
+    test("shows a summary from the row, the whole version from the menu, and deletes a version only when unused", async ({page}) => {
+        await page.goto("/admin/guide");
+        await page.getByRole("button", {name: "Starta ett utkast"}).click();
+        await expect(page.getByRole("heading", {level: 2, name: "Utkast"})).toBeVisible();
+        await page.getByRole("button", {name: "Publicera"}).click();
+        await page.getByRole("dialog").getByRole("button", {name: "Publicera"}).click();
+        await expect(page.getByText("Versionen är publicerad")).toBeVisible();
+        await page.goto("/admin/guide");
+
+        await page.getByRole("row").filter({hasText: "v1"}).getByText("v1").click();
+        const view = page.getByRole("dialog");
+
+        await expect(view.getByRole("heading", {name: "v1"})).toBeVisible();
+        await expect(view.getByText("Sara Admin")).toBeVisible();
+        await expect(view.getByText("Används av 3 nyuppsättningar")).toBeVisible();
+        await expect(view.getByRole("textbox")).toHaveCount(0);
+        await view.getByRole("button", {name: "Stäng"}).click();
+
+        await page.getByRole("button", {name: "Åtgärder för v1"}).click();
+        await expect(page.getByRole("menuitem", {name: /Ta bort/})).toHaveAttribute("aria-disabled", "true");
+        await page.getByRole("menuitem", {name: "Visa versionen"}).click();
+        await expect(page).toHaveURL(/\/guide\?version=1$/);
+        await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
+
+        await page.goto("/admin/guide");
+        await page.getByRole("button", {name: "Åtgärder för v2"}).click();
+        await page.getByRole("menuitem", {name: /Ta bort/}).click();
+        await page.getByRole("alertdialog").getByRole("button", {name: "Ta bort"}).click();
+        await expect(page.getByText("Versionen är borttagen")).toBeVisible();
+        await expect(page.getByRole("row").filter({hasText: "v2"})).toHaveCount(0);
     });
 });
 
@@ -77,4 +111,23 @@ test("a steering group member cannot change the version", async ({page, mock, lo
 
     await expect(page.getByText("Det finns en nyare version av guiden, v2.")).toBeVisible();
     await expect(page.getByRole("button", {name: "Byt version"})).toHaveCount(0);
+});
+
+test("an observer picks an older version in the guide's version selector", async ({page, mock, loginAs}) => {
+    await mock.guide("two");
+    await loginAs("observer");
+    await page.goto("/guide");
+
+    await expect(page.getByRole("heading", {level: 2, name: "Guiden v2"})).toBeVisible();
+    const select = page.getByRole("combobox", {name: "Versioner"});
+
+    await expect(select).toContainText("v2 (senaste)");
+    await select.click();
+    await page.getByRole("option", {name: "v1"}).click();
+    await expect(page).toHaveURL(/\/guide\?version=1$/);
+    await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
+
+    await select.click();
+    await page.getByRole("option", {name: "v2 (senaste)"}).click();
+    await expect(page).toHaveURL(/\/guide$/);
 });

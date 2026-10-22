@@ -1,7 +1,6 @@
 // The checklist part of the mock backend, with the server's rules (specs/004-m3-log/contracts/README.md). A revival's
-// ten phase checklists are made on first read, with the pinned version's requirements, as RevivalGuideSync does.
-
-const PHASES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+// chapter checklists follow its pinned version on every read, as RevivalGuideSync does: one per chapter, with the
+// requirements, and none for chapters the version no longer has.
 
 export function createChecklistState() {
     return {checklists: [], items: [], templates: [], templateItems: [], nextId: 1};
@@ -39,29 +38,49 @@ export function checklistResolvers(ctx) {
     const canWrite = (persona, revival) => ["DIRECTEUR", "STEERING_GROUP"].includes(roleIn(persona, revival))
         && canSee(persona, revival) && revival.status !== "ARCHIVED";
     const canWaive = (persona, revival) => roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED";
-    const chapters = revival => ctx.state().guide.versions.find(version => version.id === revival.guideVersionId)?.chapters ?? [];
+    const chaptersOf = version => version?.chapters ?? [];
+    const chapters = revival => chaptersOf(ctx.state().guide.versions.find(version => version.id === revival.guideVersionId));
     const chapterItems = chapter => [...chapter.items, ...chapter.sections.flatMap(section => section.items)];
-    const ensure = revival => {
-        if (store().checklists.some(checklist => checklist.revivalId === revival.id)) {
-            return;
-        }
-        for (const phase of PHASES) {
-            const checklist = {id: String(store().nextId++), revivalId: revival.id, kind: "PHASE", phase, name: null, date: null, cancelled: false, version: 0};
+    const chapterChecklists = revival => store().checklists.filter(checklist => checklist.revivalId === revival.id && checklist.kind === "CHAPTER");
+    const sync = revival => {
+        const version = chapters(revival);
+
+        for (const chapter of version.filter(candidate => !chapterChecklists(revival).some(checklist => checklist.chapterKey === candidate.key))) {
+            const checklist = {id: String(store().nextId++), revivalId: revival.id, kind: "CHAPTER", chapterKey: chapter.key, name: null, date: null, cancelled: false, version: 0};
+            const template = activeTemplates().find(candidate => candidate.kind === "CHAPTER" && candidate.chapterKey === chapter.key);
 
             store().checklists.push(checklist);
-            const chapter = chapters(revival).find(candidate => candidate.phase === phase);
-
-            (chapter ? chapterItems(chapter).filter(item => item.type === "REQUIREMENT") : []).forEach(item => store().items.push({
-                id: String(store().nextId++), checklistId: checklist.id, required: true, guideItemKey: item.key, text: null, state: "OPEN",
-                reason: null, owner: null, deadline: null, comment: null, version: 0,
-            }));
-            const template = activeTemplates().find(candidate => candidate.kind === "PHASE" && candidate.phase === phase);
-
             if (template) {
                 addTemplateItems(revival, checklist, template);
             }
         }
+
+        const byKey = new Map(chapterChecklists(revival).map(checklist => [checklist.chapterKey, checklist]));
+        const own = new Set([...byKey.values()].map(checklist => checklist.id));
+
+        for (const chapter of version) {
+            for (const requirement of chapterItems(chapter).filter(item => item.type === "REQUIREMENT")) {
+                const target = byKey.get(chapter.key);
+                const existing = store().items.find(item => item.required && item.guideItemKey === requirement.key && own.has(item.checklistId));
+
+                if (!existing) {
+                    store().items.push({
+                        id: String(store().nextId++), checklistId: target.id, required: true, guideItemKey: requirement.key, text: null, state: "OPEN",
+                        reason: null, owner: null, deadline: null, comment: null, version: 0,
+                    });
+                } else if (existing.checklistId !== target.id) {
+                    existing.checklistId = target.id;
+                }
+            }
+        }
+        for (const checklist of chapterChecklists(revival).filter(candidate => !version.some(chapter => chapter.key === candidate.chapterKey))) {
+            store().items = store().items.filter(item => item.checklistId !== checklist.id);
+            store().checklists = store().checklists.filter(candidate => candidate !== checklist);
+        }
     };
+    const latestChapters = () => chaptersOf(ctx.state().guide.versions.filter(version => version.status === "PUBLISHED")
+        .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0]);
+    const localized = value => value ? {__typename: "LocalizedText", en: null, ...value} : null;
     const activeTemplates = () => store().templates.filter(template => !template.retired);
     const templateItemsOf = template => store().templateItems.filter(item => item.templateId === template.id && !item.retired)
         .sort((a, b) => a.position - b.position);
@@ -81,7 +100,8 @@ export function checklistResolvers(ctx) {
             });
         }
     };
-    const templateSummary = template => ({__typename: "ChecklistTemplateSummary", id: template.id, kind: template.kind, phase: template.phase,
+    const templateSummary = template => ({__typename: "ChecklistTemplateSummary", id: template.id, kind: template.kind, chapterKey: template.chapterKey,
+        chapterTitle: localized(latestChapters().find(chapter => chapter.key === template.chapterKey)?.title),
         name: template.name ? {__typename: "LocalizedText", ...template.name} : null, retired: template.retired});
     const toTemplate = template => ({
         ...templateSummary(template), __typename: "ChecklistTemplate", version: template.version,
@@ -131,18 +151,22 @@ export function checklistResolvers(ctx) {
         return {checklist, revival};
     };
     const checklistsOf = revival => {
-        ensure(revival);
+        sync(revival);
         return store().checklists.filter(checklist => checklist.revivalId === revival.id);
     };
+    const chapterTitle = (revival, checklist) => localized(chapters(revival).find(chapter => chapter.key === checklist.chapterKey)?.title);
+    const chapterOrder = (revival, checklist) => checklist.kind === "CHAPTER" ? chapters(revival).findIndex(chapter => chapter.key === checklist.chapterKey) : Infinity;
     const guideItem = (revival, key) => chapters(revival).flatMap(chapterItems).find(item => item.key === key) ?? null;
     const overdue = item => item.state === "OPEN" && !!item.deadline && item.deadline < today();
     const itemsOf = checklist => store().items.filter(item => item.checklistId === checklist.id)
         .sort((a, b) => Number(b.required) - Number(a.required) || Number(a.id) - Number(b.id));
     const summary = checklist => {
         const items = itemsOf(checklist);
+        const revival = ctx.state().revivals.find(candidate => candidate.id === checklist.revivalId);
 
         return {
-            __typename: "ChecklistSummary", id: checklist.id, kind: checklist.kind, phase: checklist.phase, name: checklist.name, date: checklist.date,
+            __typename: "ChecklistSummary", id: checklist.id, kind: checklist.kind, chapterKey: checklist.chapterKey ?? null,
+            chapterTitle: checklist.kind === "CHAPTER" ? chapterTitle(revival, checklist) : null, name: checklist.name, date: checklist.date,
             cancelled: checklist.cancelled, openCount: items.filter(item => item.state === "OPEN").length,
             overdueCount: items.filter(overdue).length, totalCount: items.length,
         };
@@ -209,10 +233,13 @@ export function checklistResolvers(ctx) {
         },
         ChecklistTemplateCreate(persona, {input}) {
             superAdmin(persona);
-            if (input.kind === "PHASE" && activeTemplates().some(template => template.phase === input.phase)) {
-                throw new GraphQLError("CONFLICT", `Fas ${input.phase} har redan en mall.`);
+            if (input.kind === "CHAPTER" && !latestChapters().some(chapter => chapter.key === input.chapterKey)) {
+                throw new GraphQLError("BAD_REQUEST", "Den senast publicerade guideversionen har inget sådant kapitel.");
             }
-            const template = {id: `t${store().nextId++}`, kind: input.kind, phase: input.phase ?? null, name: input.name ?? null, retired: false, version: 0};
+            if (input.kind === "CHAPTER" && activeTemplates().some(template => template.chapterKey === input.chapterKey)) {
+                throw new GraphQLError("CONFLICT", "Kapitlet har redan en mall.");
+            }
+            const template = {id: `t${store().nextId++}`, kind: input.kind, chapterKey: input.chapterKey ?? null, name: input.name ?? null, retired: false, version: 0};
 
             store().templates.push(template);
             return {checklistTemplateCreate: {__typename: "ChecklistTemplate", id: template.id}};
@@ -284,7 +311,7 @@ export function checklistResolvers(ctx) {
             }
             checklistsOf(revival);
             const checklist = {
-                id: String(store().nextId++), revivalId: revival.id, kind: "EVENT", phase: null, name: text(input.name), date: input.date ?? null,
+                id: String(store().nextId++), revivalId: revival.id, kind: "EVENT", chapterKey: null, name: text(input.name), date: input.date ?? null,
                 cancelled: false, version: 0, templateId: input.templateId ?? null,
             };
 
@@ -319,7 +346,7 @@ export function checklistResolvers(ctx) {
         ChecklistAddFromTemplate(persona, {input}) {
             const {checklist, revival} = writableChecklist(persona, input.checklistId, input.version);
             const template = input.templateId ? findTemplate(input.templateId)
-                : activeTemplates().find(candidate => candidate.kind === "PHASE" && candidate.phase === checklist.phase);
+                : activeTemplates().find(candidate => candidate.kind === "CHAPTER" && candidate.chapterKey === checklist.chapterKey);
 
             if (!template) {
                 throw new GraphQLError("BAD_REQUEST", "Mallen passar inte den här checklistan.");
@@ -336,7 +363,7 @@ export function checklistResolvers(ctx) {
             return {
                 revival: revivalHeader(persona, revival),
                 checklists: checklists.filter(checklist => includeCancelled || !checklist.cancelled)
-                    .sort((a, b) => (a.kind === b.kind ? 0 : a.kind === "PHASE" ? -1 : 1) || (a.date ?? "9999").localeCompare(b.date ?? "9999")).map(summary),
+                    .sort((a, b) => chapterOrder(revival, a) - chapterOrder(revival, b) || (a.date ?? "9999").localeCompare(b.date ?? "9999")).map(summary),
                 ...(filtered ? {checklistItems: checklists.flatMap(itemsOf).filter(matches).map(item => toItem(revival, item))} : {}),
             };
         },
@@ -347,7 +374,7 @@ export function checklistResolvers(ctx) {
             if (!checklist) {
                 return {revival: revivalHeader(persona, revival), checklist: null};
             }
-            const chapter = chapters(revival).find(candidate => candidate.phase === checklist.phase);
+            const chapter = chapters(revival).find(candidate => candidate.key === checklist.chapterKey);
 
             return {
                 revival: revivalHeader(persona, revival),
@@ -357,9 +384,53 @@ export function checklistResolvers(ctx) {
                     tips: chapter ? chapterItems(chapter).filter(item => item.type === "TIP").map(toGuideItem) : [],
                     template: checklist.templateId ? templateSummary(findTemplate(checklist.templateId)) : null,
                     templatesAvailable: !canWrite(persona, revival) || checklist.cancelled ? [] : activeTemplates()
-                        .filter(template => checklist.kind === "PHASE" ? template.kind === "PHASE" && template.phase === checklist.phase : template.kind === "EVENT")
+                        .filter(template => checklist.kind === "CHAPTER" ? template.kind === "CHAPTER" && template.chapterKey === checklist.chapterKey : template.kind === "EVENT")
                         .map(templateSummary),
                     items: itemsOf(checklist).map(item => toItem(revival, item)),
+                },
+            };
+        },
+        GuideChapterRemovalImpact(persona, {chapterKey}) {
+            superAdmin(persona);
+            const revivals = ctx.state().revivals.filter(revival => revival.status !== "ARCHIVED");
+
+            revivals.forEach(sync);
+            const checklists = store().checklists.filter(checklist => checklist.kind === "CHAPTER" && checklist.chapterKey === chapterKey
+                && revivals.some(revival => revival.id === checklist.revivalId));
+            const items = checklists.flatMap(itemsOf);
+
+            return {
+                guideChapterRemovalImpact: {
+                    __typename: "GuideChapterRemovalImpact", chapterKey, revivalCount: checklists.length, itemCount: items.length,
+                    doneCount: items.filter(item => item.state === "DONE").length,
+                },
+            };
+        },
+        RevivalGuideVersionChangeImpact(persona, {id, toId}) {
+            const revival = visibleRevival(persona, id);
+            const target = ctx.state().guide.versions.find(version => version.id === String(toId) && version.status === "PUBLISHED");
+
+            if (!target) {
+                throw new GraphQLError("BAD_REQUEST", "Versionen är inte publicerad.");
+            }
+            sync(revival);
+            const requirements = new Set(chaptersOf(target).flatMap(chapterItems).filter(item => item.type === "REQUIREMENT").map(item => item.key));
+            const removed = chapterChecklists(revival).filter(checklist => !chaptersOf(target).some(chapter => chapter.key === checklist.chapterKey))
+                .sort((a, b) => chapterOrder(revival, a) - chapterOrder(revival, b));
+
+            return {
+                revival: {
+                    __typename: "Revival", id: revival.id,
+                    guideVersionChangeImpact: removed.map(checklist => {
+                        const items = itemsOf(checklist).filter(item => !item.required || !requirements.has(item.guideItemKey));
+                        const ids = new Set(items.map(item => item.id));
+
+                        return {
+                            __typename: "ChecklistRemoval", checklistId: checklist.id, chapterKey: checklist.chapterKey, chapterTitle: chapterTitle(revival, checklist),
+                            itemCount: items.length, doneCount: items.filter(item => item.state === "DONE").length,
+                            linkedLogEntryCount: ctx.state().log.entries.filter(entry => ids.has(entry.checklistItemId)).length,
+                        };
+                    }),
                 },
             };
         },

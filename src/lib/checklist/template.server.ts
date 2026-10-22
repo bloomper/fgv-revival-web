@@ -11,7 +11,7 @@ import {runMutation, runQuery} from "@/lib/graphql.server";
 
 const ChecklistTemplatesQuery = graphql(`
     query ChecklistTemplates($includeRetired: Boolean) {
-        checklistTemplates(includeRetired: $includeRetired) { id kind phase name { sv en } retired version items { id } }
+        checklistTemplates(includeRetired: $includeRetired) { id kind chapterKey chapterTitle { sv en } name { sv en } retired version items { id } }
     }
 `);
 
@@ -20,7 +20,8 @@ const ChecklistTemplateQuery = graphql(`
         checklistTemplate(id: $id) {
             id
             kind
-            phase
+            chapterKey
+            chapterTitle { sv en }
             name { sv en }
             retired
             version
