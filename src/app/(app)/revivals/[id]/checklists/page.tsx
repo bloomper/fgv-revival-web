@@ -24,9 +24,9 @@ async function eventTemplates(): Promise<EventTemplate[]> {
     }
 }
 
-async function load(id: string, filter: ChecklistFilterValues | null) {
+async function load(id: string, filter: ChecklistFilterValues | null, cancelled: boolean) {
     try {
-        return await getRevivalChecklists(id, filter);
+        return await getRevivalChecklists(id, filter, cancelled);
     } catch (error) {
         if (error instanceof GraphQLRequestError && (error.code === "NOT_FOUND" || error.code === "FORBIDDEN")) {
             return null;
@@ -37,16 +37,19 @@ async function load(id: string, filter: ChecklistFilterValues | null) {
 
 /**
  * A revival's checklists: the phases A–J and its events, or, with a filter, the matching items across them (M3 US4).
+ * Cancelled event checklists only when asked for (FR-023).
  */
 export default async function ChecklistsPage({params, searchParams}: {
     params: Promise<{ id: string }>;
     searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
     const {id} = await params;
-    const filter = parseChecklistFilter(await searchParams);
+    const query = await searchParams;
+    const filter = parseChecklistFilter(query);
+    const cancelled = query.cancelled === "1";
 
     return withPolicyPage(Policies.app.requireAccess, async () => {
-        const loaded = await load(id, filter);
+        const loaded = await load(id, filter, cancelled);
 
         if (!loaded) {
             notFound();
@@ -69,7 +72,7 @@ export default async function ChecklistsPage({params, searchParams}: {
                     {revival.permissions.canWriteLog && <EventChecklistDialog revivalId={revival.id} templates={templates}/>}
                 </div>
                 <ChecklistFilters revivalId={revival.id} filter={filter}/>
-                {items ? <ChecklistItemList revivalId={revival.id} items={items}/> : <ChecklistOverview revivalId={revival.id} checklists={checklists}/>}
+                {items ? <ChecklistItemList revivalId={revival.id} items={items}/> : <ChecklistOverview revivalId={revival.id} checklists={checklists} showCancelled={cancelled}/>}
             </div>
         );
     });

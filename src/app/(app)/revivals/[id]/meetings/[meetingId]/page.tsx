@@ -4,6 +4,7 @@ import {getTranslations} from "next-intl/server";
 import {ArrowLeft} from "lucide-react";
 import {MeetingMode, MeetingStatusBadge} from "@/components/meeting/meeting-mode.client";
 import {MinutesEmailDialog} from "@/components/meeting/minutes-email-dialog.client";
+import {MinutesEmailHistory} from "@/components/meeting/minutes-email-history.client";
 import {MinutesView} from "@/components/meeting/minutes-view";
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getMeeting} from "@/lib/meeting/meeting.server";
@@ -52,20 +53,13 @@ export default async function MeetingPage({params}: { params: Promise<{ id: stri
                 </div>
                 {meeting.minutes ? (
                     <div className="space-y-4">
-                        {meeting.canEmailMinutes && <MinutesEmailDialog revivalId={revival.id} meetingId={meeting.id}/>}
+                        <div className="flex flex-wrap items-center gap-2">
+                            {meeting.canEmailMinutes && <MinutesEmailDialog revivalId={revival.id} meetingId={meeting.id}/>}
+                            <Link href={`/revivals/${revival.id}/log?meeting=${meeting.id}`} className="text-sm hover:underline">{t("logRows")}</Link>
+                        </div>
                         <MinutesView minutes={meeting.minutes}/>
                         {meeting.emails.length > 0 && (
-                            <section className="space-y-1 text-sm">
-                                <h3 className="font-medium">{t("emails")}</h3>
-                                <ul className="space-y-1 text-muted-foreground">
-                                    {meeting.emails.map(email => (
-                                        <li key={email.id}>{t("emailEntry", {
-                                            at: email.sentAt.slice(0, 16).replace("T", " "), name: email.sentBy.displayName ?? "",
-                                            count: email.recipients.filter(recipient => recipient.status === "SENT").length,
-                                        })}</li>
-                                    ))}
-                                </ul>
-                            </section>
+                            <MinutesEmailHistory revivalId={revival.id} meetingId={meeting.id} emails={meeting.emails} canSend={meeting.canEmailMinutes}/>
                         )}
                     </div>
                 ) : meeting.status === "CANCELLED" ? (

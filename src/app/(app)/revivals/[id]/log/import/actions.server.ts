@@ -14,7 +14,7 @@ async function workbook(formData: FormData): Promise<File> {
     if (!(file instanceof File) || file.size === 0 || file.size > MAX_IMPORT_BYTES) {
         const t = await getTranslations("Log.import");
 
-        throw new GraphQLRequestError("BAD_REQUEST", t("tooLarge"));
+        throw new GraphQLRequestError("BAD_REQUEST", file instanceof File && file.size > 0 ? t("tooLarge") : t("noFile"));
     }
     return file;
 }

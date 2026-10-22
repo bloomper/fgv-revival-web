@@ -79,6 +79,23 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await page.getByRole("button", {name: "Lägg till punkter från mall"}).click();
         await expect(page.getByText("Punkterna från mallen är tillagda").first()).toBeVisible();
         await expect(row("Boka kalaslokal")).toHaveCount(1);
+
+        await page.goto("/revivals/1/checklists");
+        await page.getByRole("link", {name: /Rephelg 2/}).click();
+        await page.getByRole("link", {name: "Från mallen Rephelg"}).click();
+        await expect(page.getByRole("heading", {level: 2, name: "Rephelg"})).toBeVisible();
+        await expect(page.getByRole("list", {name: "Punkter"}).getByText("Utskick")).toBeVisible();
+        await expect(page.getByRole("button", {name: "Ny punkt"})).toHaveCount(0);
+
+        await page.goBack();
+        await page.getByRole("button", {name: "Stryk checklistan"}).click();
+        await expect(page.getByText("Checklistan är struken").first()).toBeVisible();
+        await page.goto("/revivals/1/checklists");
+        const events = page.getByRole("region", {name: "Händelser"});
+
+        await expect(events.getByText("Rephelg 2")).toHaveCount(0);
+        await events.getByRole("link", {name: "Visa strukna"}).click();
+        await expect(page.getByRole("region", {name: "Händelser"}).getByRole("listitem").filter({hasText: "Rephelg 2"})).toContainText("Struken");
     });
 
     test("the steering group cannot reach the template admin", async ({page, loginAs}) => {

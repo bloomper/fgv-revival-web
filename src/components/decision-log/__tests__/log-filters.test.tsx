@@ -14,14 +14,14 @@ vi.mock("next-intl", () => ({
 
 describe("LogFilters", () => {
     it("adds a toggle to the URL", () => {
-        render(<LogFilters filter={{open: true}} tags={[]}/>);
+        render(<LogFilters filter={{open: true}} tags={[]} meetings={[]}/>);
         fireEvent.click(screen.getByRole("button", {name: "filter.overdue"}));
 
         expect(push).toHaveBeenLastCalledWith("/revivals/1/log?open=1&overdue=1");
     });
 
     it("removes a pressed toggle", () => {
-        render(<LogFilters filter={{open: true}} tags={[]}/>);
+        render(<LogFilters filter={{open: true}} tags={[]} meetings={[]}/>);
         expect(screen.getByRole("button", {name: "filter.open"})).toHaveAttribute("aria-pressed", "true");
         fireEvent.click(screen.getByRole("button", {name: "filter.open"}));
 
@@ -29,7 +29,7 @@ describe("LogFilters", () => {
     });
 
     it("combines types and tags", () => {
-        render(<LogFilters filter={{types: ["TODO"]}} tags={["lokal", "budget"]}/>);
+        render(<LogFilters filter={{types: ["TODO"]}} tags={["lokal", "budget"]} meetings={[]}/>);
         fireEvent.click(screen.getByRole("button", {name: "type.QUESTION"}));
         expect(push).toHaveBeenLastCalledWith("/revivals/1/log?type=TODO%2CQUESTION");
 
@@ -37,8 +37,16 @@ describe("LogFilters", () => {
         expect(push).toHaveBeenLastCalledWith("/revivals/1/log?type=TODO&tag=budget");
     });
 
+    it("filters by meeting", () => {
+        render(<LogFilters filter={{open: true}} tags={[]} meetings={[{id: "5", date: "2026-10-19", title: "Direktionsmöte 4"}]}/>);
+        fireEvent.change(screen.getByRole("combobox"), {target: {value: "5"}});
+
+        expect(push).toHaveBeenLastCalledWith("/revivals/1/log?open=1&meeting=5");
+        expect(screen.getByRole("option", {name: "2026-10-19 Direktionsmöte 4"})).toBeInTheDocument();
+    });
+
     it("searches text", () => {
-        render(<LogFilters filter={{}} tags={[]}/>);
+        render(<LogFilters filter={{}} tags={[]} meetings={[]}/>);
         fireEvent.change(screen.getByLabelText("search", {selector: "input"}), {target: {value: " RunAn "}});
         fireEvent.submit(screen.getByLabelText("search", {selector: "input"}).closest("form")!);
 

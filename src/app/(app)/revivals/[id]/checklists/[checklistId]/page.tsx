@@ -57,7 +57,9 @@ export default async function ChecklistPage({params}: { params: Promise<{ id: st
                         {checklist.cancelled && <Badge variant="outline">{t("cancelled")}</Badge>}
                     </h2>
                     {checklist.template && (
-                        <p className="text-sm text-muted-foreground">{t("fromTemplate", {name: checklist.template.name ? pickText(checklist.template.name, locale).text : ""})}</p>
+                        <Link href={`/admin/checklist-templates/${checklist.template.id}`} className="text-sm text-muted-foreground hover:underline">
+                            {t("fromTemplate", {name: checklist.template.name ? pickText(checklist.template.name, locale).text : ""})}
+                        </Link>
                     )}
                 </div>
                 <ChecklistTips tips={checklist.tips}/>

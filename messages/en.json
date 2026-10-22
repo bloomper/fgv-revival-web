@@ -463,7 +463,9 @@
     "filter": {
       "mine": "Mine",
       "open": "Open",
-      "overdue": "Overdue"
+      "overdue": "Overdue",
+      "meeting": "Meeting",
+      "allMeetings": "All meetings"
     },
     "tags": "Tags",
     "search": "Search",
@@ -534,7 +536,9 @@
         "TEXT_TRUNCATED": "The text is cut",
         "COMMENT_TRUNCATED": "The comment is cut",
         "OWNER_TRUNCATED": "The owner's name is cut"
-      }
+      },
+      "cancel": "Cancel",
+      "noFile": "Choose an Excel file (.xlsx) that is not empty."
     }
   },
   "Meeting": {
@@ -598,7 +602,8 @@
     "waitingLeftOut": "{count, plural, one {# member waiting for access got nothing} other {# members waiting for access got nothing}}",
     "emailFailed": "These did not get the minutes:",
     "emails": "Sends",
-    "emailEntry": "{at} by {name} to {count} people"
+    "emailEntry": "{at} by {name} to {count} people",
+    "logRows": "The meeting's rows in the log"
   },
   "Checklist": {
     "title": "Checklists",
@@ -656,7 +661,10 @@
     "phaseTemplate": "The phase {phase} template",
     "cancelEvent": "Cancel the checklist",
     "cancelledDone": "The checklist is cancelled",
-    "fromTemplate": "From the template {name}"
+    "fromTemplate": "From the template {name}",
+    "showCancelled": "Show cancelled",
+    "hideCancelled": "Hide cancelled",
+    "noEvents": "No event checklists."
   },
   "ChecklistTemplate": {
     "title": "Checklist templates",

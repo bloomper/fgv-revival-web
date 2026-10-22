@@ -327,7 +327,7 @@ export function checklistResolvers(ctx) {
             addTemplateItems(revival, checklist, template);
             return {checklistAddFromTemplate: {__typename: "Checklist", id: checklist.id}};
         },
-        RevivalChecklists(persona, {id, filter, filtered}) {
+        RevivalChecklists(persona, {id, filter, filtered, includeCancelled}) {
             const revival = visibleRevival(persona, id);
             const checklists = checklistsOf(revival);
             const matches = item => (!filter?.mine || item.owner?.personId === persona.sub) && (!filter?.open || item.state === "OPEN")
@@ -335,7 +335,7 @@ export function checklistResolvers(ctx) {
 
             return {
                 revival: revivalHeader(persona, revival),
-                checklists: checklists.filter(checklist => !checklist.cancelled)
+                checklists: checklists.filter(checklist => includeCancelled || !checklist.cancelled)
                     .sort((a, b) => (a.kind === b.kind ? 0 : a.kind === "PHASE" ? -1 : 1) || (a.date ?? "9999").localeCompare(b.date ?? "9999")).map(summary),
                 ...(filtered ? {checklistItems: checklists.flatMap(itemsOf).filter(matches).map(item => toItem(revival, item))} : {}),
             };

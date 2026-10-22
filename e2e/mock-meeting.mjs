@@ -2,7 +2,7 @@
 // with a meetingId are recorded by mock-log.mjs in the meeting's `changes`.
 
 export function createMeetingState() {
-    return {meetings: [], nextId: 1, emails: []};
+    return {meetings: [], nextId: 1, emails: [], failOnce: []};
 }
 
 export function meetingResolvers(ctx) {
@@ -56,6 +56,17 @@ export function meetingResolvers(ctx) {
                 sentBy: person(email.sentBy), recipients: email.recipients.map(recipient => ({__typename: "MinutesEmailRecipient", person: person(recipient.sub),
                     status: recipient.status}))})),
         };
+    };
+    // Addresses in failOnce fail on the next send only, so a retry reaches them.
+    const send = (persona, meeting, language, subs, waitingLeftOut) => {
+        const recipients = subs.map(sub => ({sub, status: meetings().failOnce.includes(sub) ? "FAILED" : "SENT"}));
+        const email = {id: String(meetings().emails.length + 1), meetingId: meeting.id, language, sentBy: persona.sub,
+            sentAt: new Date().toISOString(), waitingLeftOut, recipients};
+
+        meetings().failOnce = [];
+        meetings().emails.push(email);
+        return {__typename: "MinutesEmail", id: email.id, waitingLeftOut,
+            recipients: recipients.map(recipient => ({__typename: "MinutesEmailRecipient", person: person(recipient.sub), status: recipient.status}))};
     };
     const revivalHeader = (persona, revival) => ({
         __typename: "Revival", id: revival.id, workingTitle: revival.workingTitle,
@@ -147,14 +158,26 @@ export function meetingResolvers(ctx) {
             const meeting = find(persona, input.meetingId);
 
             writable(persona, meeting);
-            const recipients = ctx.state().members.filter(member => member.revivalId === meeting.revivalId && member.sub)
-                .map(member => ({sub: member.sub, status: "SENT"}));
-            const email = {id: String(meetings().emails.length + 1), meetingId: meeting.id, language: input.language, sentBy: persona.sub,
-                sentAt: new Date().toISOString(), waitingLeftOut: 0, recipients};
+            const members = ctx.state().members.filter(member => member.revivalId === meeting.revivalId && !member.removed);
 
-            meetings().emails.push(email);
-            return {minutesEmailSend: {__typename: "MinutesEmail", id: email.id, waitingLeftOut: 0,
-                recipients: recipients.map(recipient => ({__typename: "MinutesEmailRecipient", person: person(recipient.sub), status: recipient.status}))}};
+            return {minutesEmailSend: send(persona, meeting, input.language, members.filter(member => member.sub).map(member => member.sub),
+                members.filter(member => !member.sub).length)};
+        },
+        MinutesEmailRetry(persona, {emailId}) {
+            const earlier = meetings().emails.find(email => email.id === String(emailId));
+
+            if (!earlier) {
+                throw new GraphQLError("NOT_FOUND", "Utskicket finns inte.");
+            }
+            const meeting = find(persona, earlier.meetingId);
+
+            writable(persona, meeting);
+            const failed = earlier.recipients.filter(recipient => recipient.status === "FAILED").map(recipient => recipient.sub);
+
+            if (failed.length === 0) {
+                throw new GraphQLError("BAD_REQUEST", "Alla mottagare har fått protokollet.");
+            }
+            return {minutesEmailRetry: send(persona, meeting, earlier.language, failed, 0)};
         },
     };
 }

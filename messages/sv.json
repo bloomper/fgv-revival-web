@@ -463,7 +463,9 @@
     "filter": {
       "mine": "Mina",
       "open": "Öppna",
-      "overdue": "Försenade"
+      "overdue": "Försenade",
+      "meeting": "Möte",
+      "allMeetings": "Alla möten"
     },
     "tags": "Taggar",
     "search": "Sök",
@@ -534,7 +536,9 @@
         "TEXT_TRUNCATED": "Texten är kapad",
         "COMMENT_TRUNCATED": "Kommentaren är kapad",
         "OWNER_TRUNCATED": "Namnet på den ansvarige är kapat"
-      }
+      },
+      "cancel": "Avbryt",
+      "noFile": "Välj en Excel-fil (.xlsx) som inte är tom."
     }
   },
   "Meeting": {
@@ -598,7 +602,8 @@
     "waitingLeftOut": "{count, plural, one {# medlem väntar på åtkomst och fick inget} other {# medlemmar väntar på åtkomst och fick inget}}",
     "emailFailed": "De här fick inte protokollet:",
     "emails": "Utskick",
-    "emailEntry": "{at} av {name} till {count} personer"
+    "emailEntry": "{at} av {name} till {count} personer",
+    "logRows": "Mötets rader i loggen"
   },
   "Checklist": {
     "title": "Checklistor",
@@ -656,7 +661,10 @@
     "phaseTemplate": "Mallen för fas {phase}",
     "cancelEvent": "Stryk checklistan",
     "cancelledDone": "Checklistan är struken",
-    "fromTemplate": "Från mallen {name}"
+    "fromTemplate": "Från mallen {name}",
+    "showCancelled": "Visa strukna",
+    "hideCancelled": "Dölj strukna",
+    "noEvents": "Inga händelse-checklistor."
   },
   "ChecklistTemplate": {
     "title": "Checklistmallar",

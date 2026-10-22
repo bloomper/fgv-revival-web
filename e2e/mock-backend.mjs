@@ -507,6 +507,14 @@ const server = createServer((req, res) => {
         } else if (req.method === "POST" && path === "/__log") {
             resolvers.LogEntryCreate(PERSONAS.styrgrupp, {input: JSON.parse(body)});
             res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__mail") {
+            const {failOnce, waiting} = JSON.parse(body);
+            state.meeting.failOnce = failOnce ?? [];
+            for (let index = 0; index < (waiting ?? 0); index++) {
+                state.members.push({id: `m${state.nextId++}`, revivalId: "1", role: "STEERING_GROUP", capabilities: [], email: `waiting${index}@example.org`,
+                    sub: null, version: 0});
+            }
+            res.writeHead(204).end();
         } else if (req.method === "POST" && path === "/__templates") {
             seedTemplates();
             res.writeHead(204).end();

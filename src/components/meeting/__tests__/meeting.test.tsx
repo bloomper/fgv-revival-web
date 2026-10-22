@@ -44,17 +44,23 @@ describe("MinutesView", () => {
 });
 
 describe("MeetingCloseDialog", () => {
-    it("lists the unowned to-dos and does not let the meeting close", () => {
-        render(<MeetingCloseDialog revivalId="1" meeting={{id: "5", version: 1}} blocking={[{id: "a", number: 4}, {id: "b", number: 9}]}/>);
+    it("lists the unowned to-dos, opens one to assign it, and does not let the meeting close", () => {
+        const openRow = vi.fn();
+
+        render(<MeetingCloseDialog revivalId="1" meeting={{id: "5", version: 1}} blocking={[{id: "a", number: 4}, {id: "b", number: 9}]}
+                                  onOpenRow={openRow}/>);
         fireEvent.click(screen.getByRole("button", {name: "Meeting.close"}));
 
         expect(screen.getByText('Meeting.blockingRow {"number":4}')).toBeInTheDocument();
         expect(screen.getByText('Meeting.blockingRow {"number":9}')).toBeInTheDocument();
         expect(screen.getAllByRole("button", {name: "Meeting.close"}).at(-1)).toBeDisabled();
+
+        fireEvent.click(screen.getByRole("button", {name: 'Meeting.blockingRow {"number":9}'}));
+        expect(openRow).toHaveBeenCalledWith("b");
     });
 
     it("lets the meeting close when every to-do has an owner", () => {
-        render(<MeetingCloseDialog revivalId="1" meeting={{id: "5", version: 1}} blocking={[]}/>);
+        render(<MeetingCloseDialog revivalId="1" meeting={{id: "5", version: 1}} blocking={[]} onOpenRow={() => undefined}/>);
         fireEvent.click(screen.getByRole("button", {name: "Meeting.close"}));
 
         expect(screen.getAllByRole("button", {name: "Meeting.close"}).at(-1)).toBeEnabled();

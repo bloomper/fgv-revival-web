@@ -34,6 +34,9 @@ export const test = base.extend<{ resetBackend: void; loginAs: (persona: Persona
             templates: async () => {
                 await request.post(`${MOCK_URL}/__templates`);
             },
+            mail: async (setup: { failOnce?: string[]; waiting?: number }) => {
+                await request.post(`${MOCK_URL}/__mail`, {data: setup});
+            },
         });
     },
 });
@@ -49,6 +52,8 @@ type Mock = {
     logRow: (row: LogRow) => Promise<void>;
     /** After revival 1's phase checklists exist, adds the event template "Rephelg" with four items and a phase B template with one. */
     templates: () => Promise<void>;
+    /** Makes the next minutes email fail for these persona ids, and adds waiting steering group members to revival 1. */
+    mail: (setup: { failOnce?: string[]; waiting?: number }) => Promise<void>;
 };
 
 export async function openRevival(page: Page, title: string) {

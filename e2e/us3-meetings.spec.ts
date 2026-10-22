@@ -7,7 +7,7 @@ test.describe("Decision log, user story 3: the steering group runs a meeting fro
         await loginAs("styrgrupp");
     });
 
-    test("plans and runs a meeting, refuses to close with an unowned to-do, and emails the minutes", async ({page}) => {
+    test("plans and runs a meeting, refuses to close with an unowned to-do, and emails the minutes", async ({page, mock}) => {
         await page.goto("/revivals/1");
         await page.getByRole("link", {name: "Möten"}).click();
         await expect(page.getByText("Inga möten än.")).toBeVisible();
@@ -38,9 +38,8 @@ test.describe("Decision log, user story 3: the steering group runs a meeting fro
         await page.getByRole("button", {name: "Avsluta mötet"}).click();
         await expect(page.getByRole("list", {name: "Rader utan ansvarig"})).toContainText("Rad 1");
         await expect(page.getByRole("dialog").getByRole("button", {name: "Avsluta mötet"})).toBeDisabled();
-        await page.getByRole("dialog").getByRole("button", {name: "Avbryt"}).click();
+        await page.getByRole("dialog").getByRole("button", {name: "Rad 1"}).click();
 
-        await page.getByRole("table").getByRole("button", {name: "Ändra rad 1"}).click();
         await page.getByRole("dialog").getByLabel("Ansvarig").selectOption({label: "Stina Styrgrupp"});
         await page.getByRole("dialog").getByRole("button", {name: "Spara"}).click();
         await expect(page.getByRole("dialog")).toBeHidden();
@@ -60,9 +59,27 @@ test.describe("Decision log, user story 3: the steering group runs a meeting fro
         await expect(minutes.getByRole("heading", {name: "Att göra"})).toBeVisible();
         await expect(minutes.getByText("Boka RunAn")).toBeVisible();
 
+        await mock.mail({failOnce: ["p-directeur"], waiting: 1});
         await page.getByRole("button", {name: "Skicka protokollet"}).click();
         await page.getByRole("dialog").getByLabel("Språk").selectOption("en");
         await page.getByRole("dialog").getByRole("button", {name: "Skicka", exact: true}).click();
-        await expect(page.getByRole("dialog").getByText("Skickat till 2 personer")).toBeVisible();
+        await expect(page.getByRole("dialog").getByText("Skickat till 1 person")).toBeVisible();
+        await expect(page.getByRole("dialog").getByText("1 medlem väntar på åtkomst och fick inget")).toBeVisible();
+        await expect(page.getByRole("dialog").getByText("Dana Directeur")).toBeVisible();
+        await page.getByRole("dialog").getByRole("button", {name: "Klar"}).click();
+
+        const sends = page.getByRole("region", {name: "Utskick"});
+
+        await expect(sends.getByText(/De här fick inte protokollet: Dana Directeur/)).toBeVisible();
+        await sends.getByRole("button", {name: "Skicka igen till dessa"}).click();
+        await expect(page.getByText("Skickat till 1 person").first()).toBeVisible();
+        await expect(sends.getByRole("listitem")).toHaveCount(2);
+
+        await page.getByRole("link", {name: "Mötets rader i loggen"}).click();
+        const rows = page.getByRole("table");
+
+        await expect(rows.getByText("Vi spelar i RunAn")).toBeVisible();
+        await expect(rows.getByText("Boka RunAn")).toHaveCount(0);
+        await expect(page.getByRole("combobox", {name: "Möte"})).toHaveValue(/.+/);
     });
 });

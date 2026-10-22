@@ -13,14 +13,14 @@ import type {
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
 const RevivalChecklistsQuery = graphql(`
-    query RevivalChecklists($id: ID!, $filter: ChecklistItemFilter, $filtered: Boolean!) {
+    query RevivalChecklists($id: ID!, $filter: ChecklistItemFilter, $filtered: Boolean!, $includeCancelled: Boolean!) {
         revival(id: $id) {
             id
             workingTitle
             permissions { canWriteLog }
             ownerCandidates { id displayName }
         }
-        checklists(revivalId: $id) { id kind phase name date cancelled openCount overdueCount totalCount }
+        checklists(revivalId: $id, includeCancelled: $includeCancelled) { id kind phase name date cancelled openCount overdueCount totalCount }
         checklistItems(revivalId: $id, filter: $filter) @include(if: $filtered) { ...ChecklistItemFields }
     }
 `);
@@ -93,8 +93,8 @@ const ChecklistItemSetStateMutation = graphql(`
     }
 `);
 
-export async function getRevivalChecklists(revivalId: string, filter: ChecklistItemFilter | null) {
-    const data = await runQuery(RevivalChecklistsQuery, {id: revivalId, filter, filtered: filter !== null});
+export async function getRevivalChecklists(revivalId: string, filter: ChecklistItemFilter | null, includeCancelled = false) {
+    const data = await runQuery(RevivalChecklistsQuery, {id: revivalId, filter, filtered: filter !== null, includeCancelled});
 
     return data?.revival ? {revival: data.revival, checklists: data.checklists, items: data.checklistItems ?? null} : null;
 }

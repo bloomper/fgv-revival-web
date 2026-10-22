@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import {useState, useTransition} from "react";
+import Link from "next/link";
 import {useTranslations} from "next-intl";
 import {MessageSquareReply, Pencil, Plus} from "lucide-react";
 import type {LogEntryFieldsFragment, LogEntryStatus} from "@/gql/graphql";
@@ -50,14 +51,18 @@ function closed(entry: Entry) {
     return entry.status === "DONE" || entry.status === "CANCELLED";
 }
 
-function Links({entry}: { entry: Entry }) {
+function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
     const t = useTranslations("Log");
 
     return (
         <>
             {entry.answers && <span className="text-xs text-muted-foreground">{t("answersRow", {number: entry.answers.number})}</span>}
             {entry.answeredBy && <span className="text-xs text-muted-foreground">{t("answeredByRow", {number: entry.answeredBy.number})}</span>}
-            {entry.meeting && <span className="text-xs text-muted-foreground">{t("fromMeeting", {date: entry.meeting.date})}</span>}
+            {entry.meeting && (
+                <Link href={`/revivals/${revivalId}/log?meeting=${entry.meeting.id}`} className="text-xs text-muted-foreground hover:underline">
+                    {t("fromMeeting", {date: entry.meeting.date})}
+                </Link>
+            )}
         </>
     );
 }
@@ -66,7 +71,7 @@ function Links({entry}: { entry: Entry }) {
  * The decision log in number order, as a table on wide screens and as cards on phones. A closed row is greyed, as in
  * the Excel log. There is no delete (M3 FR-010).
  */
-export function LogTable({revivalId, entries, members, tags, canWrite, meetingId, emptyMessage}: {
+export function LogTable({revivalId, entries, members, tags, canWrite, meetingId, emptyMessage, editingId, onEditingIdChange}: {
     revivalId: string;
     entries: Entry[];
     members: OwnerMember[];
@@ -74,9 +79,13 @@ export function LogTable({revivalId, entries, members, tags, canWrite, meetingId
     canWrite: boolean;
     meetingId?: string | null;
     emptyMessage?: string;
+    editingId?: string | null;
+    onEditingIdChange?: (id: string | null) => void;
 }) {
     const t = useTranslations("Log");
-    const [editing, setEditing] = useState<Entry | null>(null);
+    const [ownEditing, setOwnEditing] = useState<Entry | null>(null);
+    const editing = onEditingIdChange ? entries.find(entry => entry.id === editingId) ?? null : ownEditing;
+    const setEditing = (entry: Entry | null) => onEditingIdChange ? onEditingIdChange(entry?.id ?? null) : setOwnEditing(entry);
     const [adding, setAdding] = useState(false);
     const [answering, setAnswering] = useState<Entry | null>(null);
 
@@ -127,7 +136,7 @@ export function LogTable({revivalId, entries, members, tags, canWrite, meetingId
                                                 <PlainText text={entry.text}/>
                                                 {entry.comment && <PlainText className="text-xs text-muted-foreground" text={entry.comment}/>}
                                                 {entry.tags.length > 0 && <span className="text-xs text-muted-foreground">{entry.tags.join(", ")}</span>}
-                                                <Links entry={entry}/>
+                                                <Links entry={entry} revivalId={revivalId}/>
                                             </div>
                                         </TableCell>
                                         <TableCell><OwnerLabel owner={entry.owner}/></TableCell>
@@ -159,7 +168,8 @@ export function LogTable({revivalId, entries, members, tags, canWrite, meetingId
                                     <span>{t("owner")}: <OwnerLabel owner={entry.owner}/></span>
                                     {entry.deadline && <span>{t("deadline")}: {entry.deadline}</span>}
                                 </div>
-                                <Links entry={entry}/>
+                                {entry.tags.length > 0 && <p className="text-xs text-muted-foreground">{t("tags")}: {entry.tags.join(", ")}</p>}
+                                <Links entry={entry} revivalId={revivalId}/>
                                 {actions(entry)}
                             </li>
                         ))}

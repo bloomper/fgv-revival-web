@@ -72,16 +72,19 @@ export function LogImportWizard({revivalId}: { revivalId: string }) {
             {preview && (
                 <>
                     <LogImportPreview preview={preview} choices={choices} onChange={setChoices}/>
-                    <Button disabled={pending} onClick={() => startTransition(async () => {
-                        const payload = {owners: choices.owners, ...(preview.layout === "NOBEL" ? {nobelType: choices.nobelType} : {})};
-                        const result = await importLogAction(revivalId, form({choices: JSON.stringify(payload)}));
+                    <div className="flex flex-wrap gap-2">
+                        <Button variant="outline" disabled={pending} onClick={() => router.push(`/revivals/${revivalId}/log`)}>{t("import.cancel")}</Button>
+                        <Button disabled={pending} onClick={() => startTransition(async () => {
+                            const payload = {owners: choices.owners, ...(preview.layout === "NOBEL" ? {nobelType: choices.nobelType} : {})};
+                            const result = await importLogAction(revivalId, form({choices: JSON.stringify(payload)}));
 
-                        if (feedback(result, t("import.done", {count: result.ok ? result.data.rowCount : 0}))) {
-                            router.push(`/revivals/${revivalId}/log`);
-                        }
-                    })}>
-                        {t("import.confirm", {count: preview.rowCount})}
-                    </Button>
+                            if (feedback(result, t("import.done", {count: result.ok ? result.data.rowCount : 0}))) {
+                                router.push(`/revivals/${revivalId}/log`);
+                            }
+                        })}>
+                            {t("import.confirm", {count: preview.rowCount})}
+                        </Button>
+                    </div>
                 </>
             )}
         </div>

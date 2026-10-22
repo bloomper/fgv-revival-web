@@ -49,13 +49,18 @@ export function logResolvers(ctx) {
             active: candidates(revival).some(candidate => candidate.id === value.personId)}}
         : value?.name ? {__typename: "Owner", name: value.name, person: null} : null;
     const summary = entry => entry ? {__typename: "LogEntrySummary", id: entry.id, number: entry.number, type: entry.type, status: entry.status} : null;
+    const meetingOf = entry => {
+        const meeting = entry.meetingId ? ctx.state().meeting.meetings.find(candidate => candidate.id === entry.meetingId) : null;
+
+        return meeting ? {__typename: "MeetingSummary", id: meeting.id, date: meeting.date, title: meeting.title, status: meeting.status} : null;
+    };
     const toEntry = entry => {
         const revival = ctx.state().revivals.find(candidate => candidate.id === entry.revivalId);
 
         return {
             __typename: "LogEntry", ...entry, owner: toOwner(revival, entry.owner),
             overdue: OPEN.includes(entry.status) && !!entry.deadline && entry.deadline < today(),
-            meeting: null, guideItem: null, checklistItem: null,
+            meeting: meetingOf(entry), guideItem: null, checklistItem: null,
             answers: summary(log().entries.find(other => other.id === entry.answersId)),
             answeredBy: summary(log().entries.find(other => other.answersId === entry.id)),
             createdAt: "2026-10-21T10:00:00Z",
@@ -92,6 +97,7 @@ export function logResolvers(ctx) {
             && (!filter?.overdue || (OPEN.includes(entry.status) && entry.deadline && entry.deadline < today()))
             && (!filter?.types?.length || filter.types.includes(entry.type))
             && (!filter?.tags?.length || entry.tags.some(tag => filter.tags.includes(tag)))
+            && (!filter?.meetingId || entry.meetingId === filter.meetingId)
             && (!needle || [entry.text, entry.comment, entry.owner?.name].some(value => value?.toLowerCase().includes(needle)));
     };
 
@@ -117,6 +123,8 @@ export function logResolvers(ctx) {
                 },
                 logEntries: entries.filter(matches(persona, filter)).sort((a, b) => a.number - b.number).map(toEntry),
                 logTags: [...new Set(entries.flatMap(entry => entry.tags))].sort(),
+                meetings: ctx.state().meeting.meetings.filter(meeting => meeting.revivalId === revival.id).reverse()
+                    .map(meeting => ({__typename: "MeetingSummary", id: meeting.id, date: meeting.date, title: meeting.title, status: meeting.status})),
             };
         },
         RevivalLogImport(persona, {id}) {

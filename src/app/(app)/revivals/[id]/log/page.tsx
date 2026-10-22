@@ -40,7 +40,7 @@ export default async function RevivalLogPage({params, searchParams}: {
         }
 
         const t = await getTranslations("Log");
-        const {revival, entries, tags} = loaded;
+        const {revival, entries, tags, meetings} = loaded;
         const filtered = Object.values(filter).some(value => value !== undefined);
 
         return (
@@ -60,7 +60,7 @@ export default async function RevivalLogPage({params, searchParams}: {
                         </Button>
                     )}
                 </div>
-                <LogFilters key={JSON.stringify(filter)} filter={filter} tags={tags}/>
+                <LogFilters key={JSON.stringify(filter)} filter={filter} tags={tags} meetings={meetings}/>
                 <LogTable revivalId={revival.id} entries={entries} members={revival.ownerCandidates} tags={tags}
                           canWrite={revival.permissions.canWriteLog} emptyMessage={filtered ? t("noMatches") : t("empty")}/>
             </div>

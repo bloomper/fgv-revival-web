@@ -24,10 +24,14 @@ function toggled<T>(values: T[] | undefined, value: T): T[] | undefined {
 }
 
 /**
- * The log's filters: mine, open, overdue, type, tag and text, in any combination (M3 FR-012). They live in the URL, so
- * a filtered view can be reloaded and shared.
+ * The log's filters: mine, open, overdue, type, meeting, tag and text, in any combination (M3 FR-012). They live in the
+ * URL, so a filtered view can be reloaded and shared.
  */
-export function LogFilters({filter, tags}: { filter: LogFilterValues; tags: string[] }) {
+export function LogFilters({filter, tags, meetings}: {
+    filter: LogFilterValues;
+    tags: string[];
+    meetings: { id: string; date: string; title?: string | null }[];
+}) {
     const t = useTranslations("Log");
     const router = useRouter();
     const pathname = usePathname();
@@ -61,6 +65,18 @@ export function LogFilters({filter, tags}: { filter: LogFilterValues; tags: stri
                         </Toggle>
                     ))}
                 </div>
+            )}
+            {meetings.length > 0 && (
+                <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                    {t("filter.meeting")}:
+                    <select className="h-8 rounded-md border border-input bg-background px-2 text-foreground" value={filter.meetingId ?? ""}
+                            onChange={event => apply({...filter, meetingId: event.target.value || undefined})}>
+                        <option value="">{t("filter.allMeetings")}</option>
+                        {meetings.map(meeting => (
+                            <option key={meeting.id} value={meeting.id}>{meeting.title ? `${meeting.date} ${meeting.title}` : meeting.date}</option>
+                        ))}
+                    </select>
+                </label>
             )}
             <form className="flex max-w-md gap-2" onSubmit={(event) => {
                 event.preventDefault();

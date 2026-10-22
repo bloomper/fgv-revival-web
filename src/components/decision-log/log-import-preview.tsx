@@ -14,6 +14,9 @@ export function LogImportPreview({preview, choices, onChange}: {
     onChange: (choices: ImportChoiceState) => void;
 }) {
     const t = useTranslations("Log");
+    const byType = preview.layout === "NOBEL"
+        ? Object.fromEntries(LOG_ENTRY_TYPES.map(type => [type, type === choices.nobelType ? preview.rowCount : 0]))
+        : preview.byType;
 
     return (
         <div className="space-y-4">
@@ -30,7 +33,7 @@ export function LogImportPreview({preview, choices, onChange}: {
                 </>}
             </dl>
             <ul className="flex flex-wrap gap-x-4 text-sm" aria-label={t("import.counts")}>
-                {LOG_ENTRY_TYPES.map(type => <li key={type}>{t(`type.${type}`)}: {preview.byType[type]}</li>)}
+                {LOG_ENTRY_TYPES.map(type => <li key={type}>{t(`type.${type}`)}: {byType[type]}</li>)}
                 {(["OPEN", "WAITING", "DONE", "CANCELLED"] as const).map(status =>
                     <li key={status}>{t(`status.${status}`)}: {preview.byStatus[status]}</li>)}
             </ul>

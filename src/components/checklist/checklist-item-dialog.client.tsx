@@ -50,7 +50,10 @@ export function ChecklistItemDialog({revivalId, checklistId, item, members, open
                 </DialogHeader>
                 <form className="space-y-4" onSubmit={form.handleSubmit(values => startTransition(async () => {
                     const result = item
-                        ? await updateChecklistItemAction({id: item.id, version: item.version, revivalId, values})
+                        ? await updateChecklistItemAction({
+                            id: item.id, version: item.version, revivalId,
+                            values: {...values, deadline: values.deadline === (item.deadline ?? null) ? undefined : values.deadline},
+                        })
                         : await createChecklistItemAction({checklistId, revivalId, values: {...values, text: values.text ?? ""}});
 
                     if (feedback(result, t("Common.saved"))) {

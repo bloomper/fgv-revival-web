@@ -9,12 +9,14 @@ import {closeMeetingAction} from "@/app/(app)/revivals/[id]/meetings/actions.ser
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 
 /**
- * Closes a meeting once every open or waiting to-do has an owner (M3 FR-019); lists those that don't.
+ * Closes a meeting once every open or waiting to-do has an owner (M3 FR-019); lists those that don't, each opening the
+ * row to give it one.
  */
-export function MeetingCloseDialog({revivalId, meeting, blocking}: {
+export function MeetingCloseDialog({revivalId, meeting, blocking, onOpenRow}: {
     revivalId: string;
     meeting: { id: string; version: number };
     blocking: { id: string; number: number }[];
+    onOpenRow: (id: string) => void;
 }) {
     const t = useTranslations();
     const feedback = useActionFeedback();
@@ -32,7 +34,14 @@ export function MeetingCloseDialog({revivalId, meeting, blocking}: {
                     </DialogHeader>
                     {blocking.length > 0 && (
                         <ul className="list-disc pl-5 text-sm" aria-label={t("Meeting.blockingRows")}>
-                            {blocking.map(entry => <li key={entry.id}>{t("Meeting.blockingRow", {number: entry.number})}</li>)}
+                            {blocking.map(entry => (
+                                <li key={entry.id}>
+                                    <Button variant="link" className="h-auto p-0" onClick={() => {
+                                        setOpen(false);
+                                        onOpenRow(entry.id);
+                                    }}>{t("Meeting.blockingRow", {number: entry.number})}</Button>
+                                </li>
+                            ))}
                         </ul>
                     )}
                     <DialogFooter>

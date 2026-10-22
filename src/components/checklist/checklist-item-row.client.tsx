@@ -60,7 +60,12 @@ export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, o
                 </div>
                 {item.reason && <p className="text-sm">{t("reasonLabel")}: <PlainText text={item.reason}/></p>}
                 {item.comment && <PlainText className="block text-sm" text={item.comment}/>}
-                {item.guideItem && !item.required && <p className="text-xs">{t("guideItem")}: {item.guideItem.text.sv}</p>}
+                {item.guideItem && !item.required && (
+                    <div className="text-xs">
+                        <span>{t("guideItem")}:</span>
+                        <ChecklistItemText item={{required: true, text: item.guideItem.text}}/>
+                    </div>
+                )}
                 {item.logEntries.length > 0 && (
                     <p className="text-xs">{t("logRows", {numbers: item.logEntries.map(entry => `#${entry.number}`).join(", ")})}</p>
                 )}
