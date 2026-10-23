@@ -10,8 +10,10 @@ import {CalendarPlus, Pencil} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
+import {DateInput} from "@/components/date-input.client";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
+import {NativeSelect} from "@/components/ui/native-select";
 import {pickText} from "@/components/guide/localized";
 import {saveEventChecklistAction} from "@/app/(app)/revivals/[id]/checklists/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
@@ -23,10 +25,12 @@ export type EventTemplate = { id: string; name?: { sv: string; en?: string | nul
  * Creates an event checklist, from a template or empty, or changes its name and date, which recomputes deadlines not
  * set by hand (M3 FR-023).
  */
-export function EventChecklistDialog({revivalId, templates, checklist}: {
+export function EventChecklistDialog({revivalId, templates, checklist, compact = false}: {
     revivalId: string;
     templates: EventTemplate[];
     checklist?: { id: string; version: number; name?: string | null; date?: string | null };
+    /** A small outline trigger, for the list of checklists. */
+    compact?: boolean;
 }) {
     const t = useTranslations();
     const id = useId();
@@ -45,7 +49,10 @@ export function EventChecklistDialog({revivalId, templates, checklist}: {
         <Sheet open={open} onOpenChange={setOpen}>
             {checklist
                 ? <Button variant="outline" onClick={() => setOpen(true)}><Pencil/>{t("Checklist.editEvent")}</Button>
-                : <Button onClick={() => setOpen(true)}><CalendarPlus/>{t("Checklist.newEvent")}</Button>}
+                : <Button size={compact ? "sm" : "default"} variant={compact ? "outline" : "default"}
+                          aria-label={compact ? t("Checklist.newEvent") : undefined} onClick={() => setOpen(true)}>
+                    <CalendarPlus/>{compact ? t("Checklist.newEventShort") : t("Checklist.newEvent")}
+                </Button>}
             <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
                 <SheetHeader className="p-6 pb-4 shrink-0">
                     <SheetTitle>{checklist ? t("Checklist.editEvent") : t("Checklist.newEvent")}</SheetTitle>
@@ -70,18 +77,18 @@ export function EventChecklistDialog({revivalId, templates, checklist}: {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-date`}>{t("Checklist.eventDate")}</Label>
-                                <Input id={`${id}-date`} type="date" {...form.register("date", {setValueAs: value => value || null})}/>
+                                <DateInput id={`${id}-date`} {...form.register("date", {setValueAs: value => value || null})}/>
                             </div>
                             {!checklist && (
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-template`}>{t("Checklist.template")}</Label>
-                                    <select id={`${id}-template`} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
+                                    <NativeSelect className="w-full" id={`${id}-template`}
                                             {...form.register("templateId", {setValueAs: value => value || null})}>
                                         <option value="">{t("Checklist.noTemplate")}</option>
                                         {templates.map(template => (
                                             <option key={template.id} value={template.id}>{template.name ? pickText(template.name, locale).text : template.id}</option>
                                         ))}
-                                    </select>
+                                    </NativeSelect>
                                 </div>
                             )}
                         </div>

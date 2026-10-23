@@ -7,6 +7,7 @@ import {toast} from "sonner";
 import {Mail} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {NativeSelect} from "@/components/ui/native-select";
 import {type MinutesEmailResult, retryMinutesAction, sendMinutesAction} from "@/app/(app)/revivals/[id]/meetings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 
@@ -56,11 +57,11 @@ export function MinutesEmailDialog({revivalId, meetingId}: { revivalId: string; 
                     ) : (
                         <label className="flex items-center gap-2 text-sm">
                             {t("language")}
-                            <select className="h-8 rounded-md border border-input bg-background px-2" value={language}
+                            <NativeSelect size="sm" value={language}
                                     onChange={event => setLanguage(event.target.value as "sv" | "en")}>
                                 <option value="sv">Svenska</option>
                                 <option value="en">English</option>
-                            </select>
+                            </NativeSelect>
                         </label>
                     )}
                     <DialogFooter>

@@ -2,25 +2,28 @@
 
 import * as React from "react";
 import {useState} from "react";
-import {useLocale, useTranslations} from "next-intl";
+import {useTranslations} from "next-intl";
 import type {RevivalDetailFragment} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
 import {Card, CardAction, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {SpexTitle} from "@/components/revival/spex-title";
+import {StatusBadge} from "@/components/revival/status-badge";
 import {RevivalDetailsForm} from "@/components/revival/revival-details-form.client";
+import {RevivalStatusSelect} from "@/components/revival/revival-status-select.client";
 import {formatDate, formatInstant} from "@/utils/format";
 
 /**
- * A revival's details and status history. Edit controls show only when `permissions.canEditDetails` is set.
+ * A revival's details, and its current status above the history of changes, with the control to change it in the
+ * status card's header. Edit controls show only when `permissions.canEditDetails` is set.
  */
 export function RevivalDetails({revival}: { revival: RevivalDetailFragment }) {
     const t = useTranslations();
-    const locale = useLocale();
     const [editing, setEditing] = useState(false);
 
     return (
         <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
+            {/* Editing takes the whole width, so each show's date, time and venue fit on one line */}
+            <Card className={editing ? "lg:col-span-2" : undefined}>
                 <CardHeader>
                     <CardTitle>{t("Revival.details")}</CardTitle>
                     {revival.permissions.canEditDetails && !editing && (
@@ -39,37 +42,57 @@ export function RevivalDetails({revival}: { revival: RevivalDetailFragment }) {
                             <dt className="text-muted-foreground">{t("Revival.year")}</dt>
                             <dd>{revival.year}</dd>
                             <dt className="text-muted-foreground">{t("Revival.premiereDate")}</dt>
-                            <dd>{formatDate(revival.premiereDate, locale) ?? t("Revival.notSet")}</dd>
-                            <dt className="text-muted-foreground">{t("Revival.showDates")}</dt>
-                            <dd>{revival.showDates.length === 0 ? t("Revival.none") : revival.showDates.map(date => formatDate(date, locale)).join(", ")}</dd>
-                            <dt className="text-muted-foreground">{t("Revival.venues")}</dt>
-                            <dd>{revival.venues.length === 0 ? t("Revival.none") : revival.venues.join(", ")}</dd>
+                            <dd>{formatDate(revival.premiereDate) ?? t("Revival.notSet")}</dd>
+                            <dt className="text-muted-foreground">{t("Revival.shows")}</dt>
+                            <dd>
+                                {revival.shows.length === 0 ? t("Revival.none") : (
+                                    <ul className="space-y-0.5">
+                                        {revival.shows.map((show, index) => (
+                                            <li key={index}>
+                                                <span className="tabular-nums">{[formatDate(show.date), show.time].filter(Boolean).join(" ")}</span>{" "}
+                                                {show.venue ?? <span className="text-muted-foreground">({t("Revival.venueNotSet")})</span>}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </dd>
                         </dl>
                     )}
                 </CardContent>
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle>{t("Revival.statusHistory")}</CardTitle>
+                    <CardTitle>{t("Revival.status")}</CardTitle>
+                    {revival.permissions.allowedStatuses.length > 0 && (
+                        <CardAction>
+                            <RevivalStatusSelect revivalId={revival.id} status={revival.status} allowedStatuses={revival.permissions.allowedStatuses}/>
+                        </CardAction>
+                    )}
                 </CardHeader>
-                <CardContent>
-                    {revival.statusHistory.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">{t("Revival.noStatusHistory")}</p>
-                    ) : (
-                        <ol className="space-y-2 text-sm">
+                <CardContent className="space-y-5">
+                    <StatusBadge status={revival.status} className="h-7 px-3 text-sm"/>
+                    <div className="space-y-2">
+                        <h4 className="text-sm font-medium text-muted-foreground">{t("Revival.statusHistory")}</h4>
+                        {/* Newest first, ending with the revival's creation */}
+                        <ol className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-2 text-sm">
                             {revival.statusHistory.map((change, index) => (
-                                <li key={index}>
-                                    <span className="text-muted-foreground">{formatInstant(change.changedAt, locale)}</span>{" "}
-                                    {t("Revival.changedBy", {
-                                        name: change.changedBy ?? "–",
-                                        from: t(`Status.${change.from}`),
-                                        to: t(`Status.${change.to}`),
-                                    })}
+                                <li key={index} className="col-span-2 grid grid-cols-subgrid">
+                                    <span className="text-muted-foreground tabular-nums">{formatInstant(change.changedAt)}</span>
+                                    <span>
+                                        {t(`Status.${change.from}`)} → {t(`Status.${change.to}`)}
+                                        {change.changedBy && <span className="text-muted-foreground"> {t("Revival.changedBy", {name: change.changedBy})}</span>}
+                                    </span>
                                 </li>
                             ))}
+                            <li className="col-span-2 grid grid-cols-subgrid">
+                                <span className="text-muted-foreground tabular-nums">{formatInstant(revival.createdAt)}</span>
+                                <span>
+                                    {t("Revival.created")}
+                                    {revival.createdBy && <span className="text-muted-foreground"> {t("Revival.changedBy", {name: revival.createdBy})}</span>}
+                                </span>
+                            </li>
                         </ol>
-                    )}
-                    <p className="mt-4 text-xs text-muted-foreground">{t("Revival.created", {name: revival.createdBy})}</p>
+                    </div>
                 </CardContent>
             </Card>
         </div>

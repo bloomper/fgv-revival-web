@@ -2,16 +2,16 @@ import {describe, expect, it} from "vitest";
 import {formatDate, formatInstant} from "@/utils/format";
 
 describe("format", () => {
-    it("formats dates without shifting them", () => {
-        expect(formatDate("2028-02-10", "en")).toBe("Feb 10, 2028");
-        expect(formatDate("2028-02-10", "sv")).toContain("2028");
-        expect(formatDate(null, "sv")).toBeNull();
-        expect(formatDate("not a date", "sv")).toBe("not a date");
+    it("formats dates as yyyy-mm-dd without shifting them", () => {
+        expect(formatDate("2028-02-10")).toBe("2028-02-10");
+        expect(formatDate(null)).toBeNull();
+        expect(formatDate("not a date")).toBe("not a date");
     });
 
-    it("formats instants in Swedish time", () => {
-        expect(formatInstant("2028-02-10T12:00:00Z", "en")).toContain("2028");
-        expect(formatInstant(undefined, "en")).toBeNull();
-        expect(formatInstant("garbage", "en")).toBe("garbage");
+    it("formats instants as yyyy-mm-dd hh:mm in Swedish time", () => {
+        expect(formatInstant("2028-02-10T12:00:00Z")).toBe("2028-02-10 13:00");
+        expect(formatInstant("2028-07-01T22:30:00Z")).toBe("2028-07-02 00:30");
+        expect(formatInstant(undefined)).toBeNull();
+        expect(formatInstant("garbage")).toBe("garbage");
     });
 });

@@ -61,7 +61,7 @@ describe("ChecklistItemRow", () => {
 
         expect(screen.getByText("Vi har ingen kassa")).toBeInTheDocument();
         expect(screen.getByRole("button", {name: "reopen"})).toBeInTheDocument();
-        expect(screen.getByRole("checkbox")).toBeDisabled();
+        expect(screen.getByRole("checkbox")).toHaveAttribute("aria-disabled", "true");
     });
 });
 

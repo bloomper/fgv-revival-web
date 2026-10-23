@@ -124,6 +124,12 @@
         @apply bg-background text-foreground;
     }
 
+    /* As shadcn's NativeSelectOption, for the plain options inside a NativeSelect, whose select is transparent */
+    [data-slot="native-select"] option,
+    [data-slot="native-select"] optgroup {
+        @apply bg-[Canvas] text-[CanvasText];
+    }
+
     :root {
         --chart-1: oklch(0.646 0.222 41.116);
         --chart-2: oklch(0.6 0.118 184.704);

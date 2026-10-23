@@ -90,6 +90,7 @@ export function DataTable<TData extends { id: string }>({
                                                             initialPageSize = 15,
                                                             filtered = false,
                                                             onRowClick,
+                                                            rowClassName,
                                                             onSelectionChange,
                                                             empty,
                                                             children,
@@ -100,6 +101,7 @@ export function DataTable<TData extends { id: string }>({
     initialPageSize?: number;
     filtered?: boolean;
     onRowClick?: (row: TData) => void;
+    rowClassName?: (row: TData) => string | false | undefined;
     onSelectionChange?: (rows: TData[]) => void;
     empty?: React.ReactNode;
     children?: React.ReactNode;
@@ -148,7 +150,7 @@ export function DataTable<TData extends { id: string }>({
                     </TableHeader>
                     <TableBody>
                         {rows.length ? rows.map(row => (
-                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className={cn(onRowClick && "cursor-pointer")}
+                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className={cn(onRowClick && "cursor-pointer", rowClassName?.(row.original))}
                                       onClick={() => onRowClick?.(row.original)}>
                                 {row.getAllCells().map(cell => (
                                     <TableCell key={cell.id} className={cn("h-12", cell.column.columnDef.meta?.className)}

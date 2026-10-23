@@ -19,7 +19,7 @@ beforeEach(() => {
 
 describe("RevivalTabs", () => {
     it("links every section of the revival", () => {
-        render(<RevivalTabs revivalId="7" work={null} guideLabel={null}/>);
+        render(<RevivalTabs revivalId="7" work={null}/>);
 
         expect(screen.getByRole("link", {name: "overview"})).toHaveAttribute("href", "/revivals/7");
         expect(screen.getByRole("link", {name: "log"})).toHaveAttribute("href", "/revivals/7/log");
@@ -29,7 +29,7 @@ describe("RevivalTabs", () => {
     });
 
     it("marks the overview current on the revival itself", () => {
-        render(<RevivalTabs revivalId="7" work={null} guideLabel={null}/>);
+        render(<RevivalTabs revivalId="7" work={null}/>);
 
         expect(screen.getByRole("link", {name: "overview"})).toHaveAttribute("aria-current", "page");
         expect(screen.getByRole("link", {name: "log"})).not.toHaveAttribute("aria-current");
@@ -37,22 +37,22 @@ describe("RevivalTabs", () => {
 
     it("marks the section current below it, also on a page inside the section", () => {
         segment = "meetings";
-        render(<RevivalTabs revivalId="7" work={null} guideLabel={null}/>);
+        render(<RevivalTabs revivalId="7" work={null}/>);
 
         expect(screen.getByRole("link", {name: "meetings"})).toHaveAttribute("aria-current", "page");
         expect(screen.getByRole("link", {name: "overview"})).not.toHaveAttribute("aria-current");
     });
 
     it("counts open and overdue work on the log and the checklists", () => {
-        render(<RevivalTabs revivalId="7" work={work} guideLabel={null}/>);
+        render(<RevivalTabs revivalId="7" work={work}/>);
 
         expect(screen.getByRole("link", {name: /^log ?openOverdue:\{"open":3,"overdue":1\}/})).toBeInTheDocument();
         expect(screen.getByRole("link", {name: /^checklists ?requirementsOverdue:\{"open":5,"overdue":0\}/})).toBeInTheDocument();
     });
 
-    it("names the guide version the revival is pinned to", () => {
-        render(<RevivalTabs revivalId="7" work={null} guideLabel="v2"/>);
+    it("links the guide without naming its version", () => {
+        render(<RevivalTabs revivalId="7" work={null}/>);
 
-        expect(screen.getByRole("link", {name: 'guideVersion:{"label":"v2"}'})).toHaveAttribute("href", "/revivals/7/guide");
+        expect(screen.getByRole("link", {name: "guide"})).toHaveAttribute("href", "/revivals/7/guide");
     });
 });

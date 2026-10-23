@@ -32,7 +32,7 @@ describe("RelativeDeadlineField", () => {
     it("shows a live example for the rule", () => {
         render(<RelativeDeadlineField value={{kind: "WEEKDAY_WEEK_BEFORE", weekday: "MONDAY"}} onChange={() => undefined} exampleDate="2027-11-20"/>);
 
-        expect(screen.getByText('example {"date":"2027-11-20","deadline":"2027-11-08"}')).toBeInTheDocument();
+        expect(screen.getByText('example {"date":"2027-11-20 2027-11-20","deadline":"2027-11-08 2027-11-08"}')).toBeInTheDocument();
     });
 
     it("keeps the sign from before or after when the amount changes", () => {

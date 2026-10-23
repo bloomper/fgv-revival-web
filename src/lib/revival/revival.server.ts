@@ -20,7 +20,7 @@ export const RevivalSummary = graphql(`
         status
         version
         spex { id title year available }
-        members { id role state displayName email }
+        members { id role state displayName email invitedAt }
         permissions { canEditCore canEditDetails allowedStatuses canManageDirecteurs canManageSteeringGroup canDelete }
     }
 `);
@@ -28,8 +28,7 @@ export const RevivalSummary = graphql(`
 export const RevivalDetail = graphql(`
     fragment RevivalDetail on Revival {
         ...RevivalSummary
-        showDates
-        venues
+        shows { date time venue }
         createdBy
         createdAt
         lastModifiedBy

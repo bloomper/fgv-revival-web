@@ -13,8 +13,8 @@ export function ChecklistTips({tips}: { tips: GuideItemFieldsFragment[] }) {
     }
     return (
         <details className="rounded-lg border p-3">
-            <summary className="cursor-pointer font-medium">{t("tips", {count: tips.length})}</summary>
-            <div className="mt-3 space-y-2">{tips.map(tip => <GuideItem key={tip.key} item={tip}/>)}</div>
+            <summary className="cursor-pointer text-sm font-medium">{t("tips", {count: tips.length})}</summary>
+            <div className="mt-3 space-y-2 text-sm">{tips.map(tip => <GuideItem key={tip.key} item={tip}/>)}</div>
         </details>
     );
 }

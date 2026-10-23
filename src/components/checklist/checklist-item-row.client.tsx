@@ -6,6 +6,7 @@ import {useLocale, useTranslations} from "next-intl";
 import {Ban, Pencil, RotateCcw} from "lucide-react";
 import type {ChecklistItemFieldsFragment} from "@/gql/graphql";
 import {Badge} from "@/components/ui/badge";
+import {Checkbox} from "@/components/ui/checkbox";
 import {catalogName} from "@/components/catalog/catalog";
 import {Button} from "@/components/ui/button";
 import {OwnerLabel} from "@/components/owner/owner-label";
@@ -14,6 +15,7 @@ import {OverdueBadge} from "@/components/decision-log/overdue-badge";
 import {ChecklistItemText} from "@/components/checklist/checklist-item-text";
 import {setChecklistItemStateAction} from "@/app/(app)/revivals/[id]/checklists/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
+import {formatDate} from "@/utils/format";
 import {cn} from "@/utils/utils";
 
 /**
@@ -41,9 +43,9 @@ export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, o
 
     return (
         <li className={cn("flex gap-3 rounded-lg border p-3", item.state !== "OPEN" && "text-muted-foreground")}>
-            <input type="checkbox" className="mt-1 size-4" aria-labelledby={textId} checked={state === "DONE"}
-                   disabled={!canWrite || pending || item.state === "NOT_APPLICABLE"}
-                   onChange={event => setState(event.target.checked ? "DONE" : "OPEN")}/>
+            <Checkbox className="mt-1" aria-labelledby={textId} checked={state === "DONE"}
+                      disabled={!canWrite || pending || item.state === "NOT_APPLICABLE"}
+                      onCheckedChange={checked => setState(checked ? "DONE" : "OPEN")}/>
             <div className="min-w-0 flex-1 space-y-1">
                 <div id={textId} className={cn(item.state === "NOT_APPLICABLE" && "line-through")}>
                     <ChecklistItemText item={item}/>
@@ -52,9 +54,9 @@ export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, o
                     {item.required && <Badge>{t("required")}</Badge>}
                     {item.state === "NOT_APPLICABLE" && <Badge variant="outline">{t("state.NOT_APPLICABLE")}</Badge>}
                     {item.overdue && <OverdueBadge/>}
-                    <span>{t("owner")}: <OwnerLabel owner={item.owner}/></span>
+                    {item.deadline && <Badge variant="outline">{t("deadline")}: {formatDate(item.deadline)}</Badge>}
                     {!item.owner && item.defaultCapability && <Badge variant="outline">{t("capabilityHint", {capability: catalogName(item.defaultCapability, locale)})}</Badge>}
-                    {item.deadline && <span>{t("deadline")}: {item.deadline}</span>}
+                    <span>{t("owner")}: <OwnerLabel owner={item.owner}/></span>
                     {item.stateChangedBy?.displayName && item.state !== "OPEN" && (
                         <span className="text-xs">{t("changedBy", {name: item.stateChangedBy.displayName})}</span>
                     )}

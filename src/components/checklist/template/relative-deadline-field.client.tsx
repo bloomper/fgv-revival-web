@@ -4,9 +4,10 @@ import {useId} from "react";
 import {useFormatter, useTranslations} from "next-intl";
 import type {RelativeDeadlineKind, Weekday} from "@/gql/graphql";
 import {Input} from "@/components/ui/input";
+import {NativeSelect} from "@/components/ui/native-select";
+import {formatDate} from "@/utils/format";
 import {AMOUNT_LIMIT, applyRelativeDeadline, type RelativeDeadlineValue, validRelativeDeadline, WEEKDAYS} from "@/lib/checklist/relative-deadline";
 
-const SELECT = "h-9 rounded-md border border-input bg-background px-2 text-sm shadow-xs";
 const NONE = "";
 
 function nextSaturday(today = new Date()) {
@@ -31,7 +32,7 @@ export function RelativeDeadlineField({value, onChange, exampleDate}: {
     const example = exampleDate ?? nextSaturday();
     const before = (value?.amount ?? 0) <= 0;
     const amount = Math.abs(value?.amount ?? 0);
-    const asDate = (date: string) => format.dateTime(new Date(`${date}T12:00:00`), {weekday: "long", day: "numeric", month: "long"});
+    const asDate = (date: string) => `${format.dateTime(new Date(`${date}T12:00:00`), {weekday: "long"})} ${formatDate(date)}`;
     const changeKind = (kind: RelativeDeadlineKind | typeof NONE) => onChange(kind === NONE ? null
         : kind === "WEEKDAY_WEEK_BEFORE" ? {kind, amount: null, weekday: value?.weekday ?? "MONDAY"} : {kind, amount: value?.amount ?? -1, weekday: null});
 
@@ -39,29 +40,29 @@ export function RelativeDeadlineField({value, onChange, exampleDate}: {
         <fieldset className="space-y-2">
             <legend className="text-sm font-medium">{t("label")}</legend>
             <div className="flex flex-wrap items-center gap-2">
-                <select aria-label={t("kind")} className={SELECT} value={value?.kind ?? NONE}
+                <NativeSelect aria-label={t("kind")} value={value?.kind ?? NONE}
                         onChange={event => changeKind(event.target.value as RelativeDeadlineKind | typeof NONE)}>
                     <option value={NONE}>{t("none")}</option>
                     <option value="DAYS">{t("DAYS")}</option>
                     <option value="WORKING_DAYS">{t("WORKING_DAYS")}</option>
                     <option value="WEEKDAY_WEEK_BEFORE">{t("WEEKDAY_WEEK_BEFORE")}</option>
-                </select>
+                </NativeSelect>
                 {value && value.kind !== "WEEKDAY_WEEK_BEFORE" && (
                     <>
                         <Input id={`${id}-amount`} aria-label={t("amount")} type="number" min={0} max={AMOUNT_LIMIT} className="w-24" value={amount}
                                onChange={event => onChange({...value, amount: (before ? -1 : 1) * Math.min(AMOUNT_LIMIT, Math.abs(Number(event.target.value) || 0))})}/>
-                        <select aria-label={t("direction")} className={SELECT} value={before ? "before" : "after"}
+                        <NativeSelect aria-label={t("direction")} value={before ? "before" : "after"}
                                 onChange={event => onChange({...value, amount: (event.target.value === "before" ? -1 : 1) * amount})}>
                             <option value="before">{t("before")}</option>
                             <option value="after">{t("after")}</option>
-                        </select>
+                        </NativeSelect>
                     </>
                 )}
                 {value?.kind === "WEEKDAY_WEEK_BEFORE" && (
-                    <select aria-label={t("weekday")} className={SELECT} value={value.weekday ?? "MONDAY"}
+                    <NativeSelect aria-label={t("weekday")} value={value.weekday ?? "MONDAY"}
                             onChange={event => onChange({...value, weekday: event.target.value as Weekday})}>
                         {WEEKDAYS.map(weekday => <option key={weekday} value={weekday}>{t(`weekdays.${weekday}`)}</option>)}
-                    </select>
+                    </NativeSelect>
                 )}
             </div>
             {value && validRelativeDeadline(value) && (

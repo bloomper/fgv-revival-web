@@ -19,11 +19,13 @@ test.describe("Administration: the areas of responsibility and guide item types 
         await page.getByRole("button", {name: "Avveckla Bemanning"}).click();
         await expect(row("Bemanning")).toHaveCount(0);
 
-        await page.goto("/revivals/1");
-        const steeringGroup = page.getByRole("group", {name: "Ansvarsområden"}).first();
+        await page.goto("/revivals/1/members");
+        await page.getByRole("button", {name: "Åtgärder för Stina Styrgrupp"}).click();
+        await page.getByRole("menuitem", {name: "Ändra ansvarsområden"}).click();
+        const steeringGroup = page.getByRole("dialog").getByRole("group", {name: "Ansvarsområden"});
 
-        await expect(steeringGroup.getByLabel("Scenografi")).toBeVisible();
-        await expect(steeringGroup.getByLabel("Bemanning")).toHaveCount(0);
+        await expect(steeringGroup.getByRole("checkbox", {name: "Scenografi"})).toBeVisible();
+        await expect(steeringGroup.getByRole("checkbox", {name: "Bemanning"})).toHaveCount(0);
 
         await page.goto("/admin/capabilities");
         await page.getByRole("button", {name: "Radera Scenografi"}).click();

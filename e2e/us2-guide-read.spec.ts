@@ -9,10 +9,11 @@ test.describe("Guide, user story 2: a steering group member reads the guide for 
 
     test("reads the pinned version chapter by chapter and finds an item by search", async ({page}) => {
         await page.goto("/revivals/1");
-        await page.getByRole("link", {name: "Guiden v1"}).click();
+        await page.getByRole("navigation", {name: "Nyuppsättningens delar"}).getByRole("link", {name: "Guiden"}).click();
 
-        await expect(page.getByRole("heading", {level: 3, name: "Guiden v1"})).toBeVisible();
-        const chapters = page.getByRole("region", {name: "Kapitel"});
+        await expect(page.getByText(/Nyuppsättningen följer v1/)).toBeVisible();
+        await page.getByRole("link", {name: "Öppna guiden"}).click();
+        const chapters = page.getByRole("navigation", {name: "Kapitel", exact: true});
 
         await expect(chapters.getByRole("link")).toHaveCount(10);
         await chapters.getByRole("link", {name: /Först: godkännande och tajmning/}).click();

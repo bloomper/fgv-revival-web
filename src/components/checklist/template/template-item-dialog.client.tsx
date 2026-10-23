@@ -11,6 +11,7 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
+import {NativeSelect} from "@/components/ui/native-select";
 import {catalogChoices} from "@/components/catalog/catalog";
 import {CatalogOptions, useCapabilities} from "@/components/catalog/catalog-provider.client";
 import {GuideItemPicker} from "@/components/checklist/template/guide-item-picker.client";
@@ -82,11 +83,11 @@ export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}:
                             )}/>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-item-capability`}>{t("ChecklistTemplate.defaultCapability")}</Label>
-                                <select id={`${id}-item-capability`} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
+                                <NativeSelect className="w-full" id={`${id}-item-capability`}
                                         {...form.register("defaultCapability", {setValueAs: value => value || null})}>
                                     <option value="">{t("ChecklistTemplate.noCapability")}</option>
                                     <CatalogOptions entries={capabilities}/>
-                                </select>
+                                </NativeSelect>
                             </div>
                             {kind === "EVENT" && (
                                 <Controller control={form.control} name="deadline" render={({field}) => (

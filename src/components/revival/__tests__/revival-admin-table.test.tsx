@@ -21,7 +21,7 @@ const revivals = [
 ];
 
 function spex() {
-    return screen.getAllByRole("row").slice(1).map(row => within(row).getAllByRole("cell")[1].textContent);
+    return screen.getAllByRole("row").slice(1).map(row => within(row).getAllByRole("cell")[2].textContent);
 }
 
 describe("RevivalAdminTable", () => {

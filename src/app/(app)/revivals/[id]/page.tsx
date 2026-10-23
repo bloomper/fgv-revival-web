@@ -1,11 +1,7 @@
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {RevivalDetails} from "@/components/revival/revival-details.client";
-import {DirecteurList} from "@/components/member/directeur-list.client";
-import {SteeringGroupList} from "@/components/member/steering-group-list.client";
-import {CatalogProvider} from "@/components/catalog/catalog-provider.client";
-import {getCapabilities} from "@/lib/catalog/catalog.server";
+import {MemberSummary} from "@/components/member/member-summary";
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getRevival} from "@/lib/revival/revival.server";
 import {Policies} from "@/utils/policy.server";
@@ -23,8 +19,8 @@ async function loadRevival(id: string) {
 }
 
 /**
- * A revival's overview: details, directeurs and steering group. The layout fetches the same revival, which urql
- * answers from its request cache; both show a revival the user cannot see as not found (FR-017).
+ * A revival's overview: details, status and who leads it. The layout fetches the same revival, which urql answers from
+ * its request cache; both show a revival the user cannot see as not found (FR-017).
  */
 export default async function RevivalPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
@@ -37,30 +33,12 @@ export default async function RevivalPage({params}: { params: Promise<{ id: stri
         }
 
         const t = await getTranslations("Revival");
-        // Only those who manage the steering group pick areas of responsibility; members already carry their names
-        const capabilities = revival.permissions.canManageSteeringGroup ? await getCapabilities() : [];
 
         return (
             <div className="flex flex-1 flex-col gap-6">
                 <h3 className="sr-only">{t("overview")}</h3>
                 <RevivalDetails key={revival.version} revival={revival}/>
-
-                <div className="grid gap-6 lg:grid-cols-2">
-                    <Card>
-                        <CardHeader><CardTitle>{t("directeurs")}</CardTitle></CardHeader>
-                        <CardContent>
-                            <DirecteurList revivalId={revival.id} members={revival.members} canManage={revival.permissions.canManageDirecteurs}/>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader><CardTitle>{t("steeringGroup")}</CardTitle></CardHeader>
-                        <CardContent>
-                            <CatalogProvider capabilities={capabilities}>
-                                <SteeringGroupList revivalId={revival.id} members={revival.members} canManage={revival.permissions.canManageSteeringGroup}/>
-                            </CatalogProvider>
-                        </CardContent>
-                    </Card>
-                </div>
+                <MemberSummary revivalId={revival.id} members={revival.members}/>
             </div>
         );
     });

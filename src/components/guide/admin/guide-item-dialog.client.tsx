@@ -9,6 +9,7 @@ import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger}
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
+import {NativeSelect} from "@/components/ui/native-select";
 import type {ActionResult} from "@/lib/graphql.server";
 import {catalogChoices, defaultItemType, type GuideItemTypeValue} from "@/components/catalog/catalog";
 import {CatalogOptions, useGuideItemTypes} from "@/components/catalog/catalog-provider.client";
@@ -68,10 +69,10 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
                         <div className="space-y-4 px-6 py-6 pb-12">
                             <div className="space-y-2">
                                 <Label htmlFor="guide-item-type">{t("Guide.editor.type")}</Label>
-                                <select id="guide-item-type" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
+                                <NativeSelect className="w-full" id="guide-item-type"
                                         {...form.register("type")}>
                                     <CatalogOptions entries={catalogChoices(types, [initial?.type])}/>
-                                </select>
+                                </NativeSelect>
                             </div>
                             <div className="flex gap-2" role="tablist">
                                 <Button type="button" role="tab" aria-selected={!preview} variant={preview ? "ghost" : "secondary"} size="sm"

@@ -4,9 +4,6 @@ import {notFound} from "next/navigation";
 import {CalendarCheck} from "lucide-react";
 import {getTranslations} from "next-intl/server";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
-import {StatusBadge} from "@/components/revival/status-badge";
-import {SpexTitle} from "@/components/revival/spex-title";
-import {RevivalStatusSelect} from "@/components/revival/revival-status-select.client";
 import {RevivalTabs} from "@/components/revival/revival-tabs.client";
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getRevival, getRevivalWorkSummary} from "@/lib/revival/revival.server";
@@ -36,7 +33,7 @@ async function loadWorkSummary(id: string) {
 }
 
 /**
- * Everything under one revival: its title, status and a tab per section, so the sections are one click apart. A
+ * Everything under one revival: its title and a tab per section, so the sections are one click apart. A
  * revival the user cannot see is shown as not found (FR-017).
  */
 export default async function RevivalLayout({children, params}: {
@@ -56,15 +53,7 @@ export default async function RevivalLayout({children, params}: {
 
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="space-y-1">
-                        <h2 className="text-lg font-bold tracking-tight">{revival.title}</h2>
-                        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                            <SpexTitle spex={revival.spex}/> · {revival.year} · <StatusBadge status={revival.status}/>
-                        </div>
-                    </div>
-                    <RevivalStatusSelect revivalId={revival.id} status={revival.status} allowedStatuses={revival.permissions.allowedStatuses}/>
-                </div>
+                <h2 className="text-lg font-bold tracking-tight">{revival.title}</h2>
 
                 {work?.meetingInProgress && (
                     <Alert>
@@ -78,7 +67,7 @@ export default async function RevivalLayout({children, params}: {
                     </Alert>
                 )}
 
-                <RevivalTabs revivalId={revival.id} work={work} guideLabel={revival.guideVersion ? revival.guideVersion.label ?? "" : null}/>
+                <RevivalTabs revivalId={revival.id} work={work} />
 
                 {children}
             </div>

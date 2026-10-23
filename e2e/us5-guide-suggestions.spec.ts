@@ -25,10 +25,16 @@ test.describe("Guide, user story 5: the steering group suggests changes", () => 
         await page.getByRole("button", {name: "Skicka förslaget"}).click();
         await expect(page.getByRole("dialog")).toHaveCount(0, {timeout: 15_000});
 
-        await page.getByRole("link", {name: "Guidens startsida"}).click();
-        await page.getByRole("link", {name: "Förslag"}).click();
+        await page.getByRole("link", {name: "Version och förslag"}).click();
+        await page.getByRole("link", {name: "Alla förslag"}).click();
         await expect(page.getByText("Kontrollera sprittillstånd och ljudtillstånd.")).toBeVisible();
         await expect(page.getByText("Förrådet ska inventeras innan första rephelgen.")).toBeVisible();
+
+        await page.getByRole("button", {name: "Föreslå ny punkt"}).click();
+        await page.getByRole("combobox", {name: "Kapitel", exact: true}).selectOption({label: "10. Stänga nyuppsättningen"});
+        await page.getByLabel("Svenska").fill("Lärdomar ska skrivas ner.");
+        await page.getByRole("button", {name: "Skicka förslaget"}).click();
+        await expect(page.getByText("Lärdomar ska skrivas ner.")).toBeVisible();
 
         await page.getByTestId(/suggestion-/).filter({hasText: "Förrådet ska inventeras"}).getByRole("button", {name: "Återkalla"}).click();
         await expect(page.getByText("Förslaget är återkallat")).toBeVisible();

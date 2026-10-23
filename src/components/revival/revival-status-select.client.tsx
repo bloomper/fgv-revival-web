@@ -3,6 +3,7 @@
 import * as React from "react";
 import {useTransition} from "react";
 import {useTranslations} from "next-intl";
+import {NativeSelect} from "@/components/ui/native-select";
 import type {RevivalStatus} from "@/gql/graphql";
 import {changeStatusAction} from "@/app/(app)/revivals/[id]/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
@@ -28,9 +29,8 @@ export function RevivalStatusSelect({revivalId, status, allowedStatuses}: {
     return (
         <label className="flex items-center gap-2 text-sm">
             <span className="sr-only">{t("Revival.changeStatus")}</span>
-            <select
+            <NativeSelect size="sm"
                 aria-label={t("Revival.changeStatus")}
-                className="h-8 rounded-md border border-input bg-background px-2 text-sm shadow-xs disabled:opacity-50"
                 value=""
                 disabled={pending}
                 onChange={(event) => {
@@ -50,7 +50,7 @@ export function RevivalStatusSelect({revivalId, status, allowedStatuses}: {
                 {allowedStatuses.map(allowed => (
                     <option key={allowed} value={allowed}>{t(`Status.${allowed}`)}</option>
                 ))}
-            </select>
+            </NativeSelect>
         </label>
     );
 }

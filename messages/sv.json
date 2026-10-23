@@ -40,7 +40,9 @@
     "previousPage": "Föregående sida",
     "nextPage": "Nästa sida",
     "lastPage": "Sista sidan",
-    "clearSearch": "Rensa sökningen"
+    "clearSearch": "Rensa sökningen",
+    "datePlaceholder": "ÅÅÅÅ-MM-DD",
+    "pickDate": "Välj datum"
   },
   "Header": {
     "toggleLanguage": "Byt språk",
@@ -113,36 +115,44 @@
   "Revival": {
     "filterPlaceholder": "Filtrera på titel eller år…",
     "spex": "Spex",
+    "poster": "Affisch",
     "year": "År",
     "premiereDate": "Premiär",
-    "showDates": "Föreställningar",
-    "venues": "Spelplatser",
     "status": "Status",
     "directeurs": "Directeurer",
     "steeringGroup": "Styrgrupp",
     "statusHistory": "Statushistorik",
-    "noStatusHistory": "Statusen har inte ändrats.",
     "spexUnavailable": "Spexregistret är tillfälligt otillgängligt",
     "notSet": "Inte angivet",
     "memberCount": "{count, plural, one {# medlem} other {# medlemmar}}",
     "none": "Inga",
     "changeStatus": "Ändra status",
     "statusChanged": "Statusen ändrades",
-    "changedBy": "{name} ändrade {from} → {to}",
-    "created": "Skapad av {name}",
+    "changedBy": "av {name}",
+    "created": "Skapad",
     "details": "Uppgifter",
     "editDetails": "Redigera uppgifter",
     "open": "Öppna",
     "guide": "Guiden",
     "overview": "Översikt",
+    "members": "Styrgrupp",
     "sections": "Nyuppsättningens delar",
-    "guideVersion": "Guiden {label}",
     "log": "Beslutslogg",
     "meetings": "Möten",
     "checklists": "Checklistor",
     "meetingInProgress": "Ett möte pågår",
     "openOverdue": "{open} öppna rader, {overdue} försenade",
-    "requirementsOverdue": "{open} öppna krav, {overdue} försenade punkter"
+    "requirementsOverdue": "{open} öppna krav, {overdue} försenade punkter",
+    "readOnly": {
+      "title": "Endast läsning",
+      "archived": "Nyuppsättningen är arkiverad, så inget i den kan ändras.",
+      "superAdmin": "Som superadministratör kan du läsa allt här. Bara nyuppsättningens directeurer och direktion lägger till och ändrar rader, möten, checklistpunkter och förslag till guiden.",
+      "join": "Lägg till dig själv i direktionen under Styrgrupp för att arbeta i den.",
+      "observer": "Som observatör kan du läsa allt här. Bara nyuppsättningens directeurer och direktion gör ändringar.",
+      "other": "Du kan läsa det här, men bara nyuppsättningens directeurer och direktion gör ändringar."
+    },
+    "shows": "Föreställningar",
+    "venueNotSet": "lokal ej bestämd"
   },
   "Admin": {
     "title": "Alla nyuppsättningar",
@@ -177,10 +187,13 @@
   },
   "DetailsForm": {
     "addShowDate": "Lägg till föreställning",
-    "addVenue": "Lägg till spelplats",
-    "removeShowDate": "Ta bort föreställningen",
-    "removeVenue": "Ta bort spelplatsen",
-    "clearPremiere": "Ta bort premiärdatum"
+    "removeShowDate": "Ta bort föreställning {number}",
+    "clearPremiere": "Ta bort premiärdatum",
+    "showDate": "Datum för föreställning {number}",
+    "showVenue": "Lokal för föreställning {number}",
+    "venuePlaceholder": "Lokal (när den är bestämd)",
+    "showTime": "Starttid för föreställning {number}",
+    "timePlaceholder": "TT:MM"
   },
   "Members": {
     "email": "E-postadress",
@@ -195,7 +208,38 @@
     "noDirecteurs": "Ingen directeur är utsedd.",
     "noMembers": "Styrgruppen har inga medlemmar.",
     "waitingPerson": "Väntande person",
-    "allCapabilities": "Alla behörigheter"
+    "allCapabilities": "Alla behörigheter",
+    "search": "Namn eller e-post",
+    "searchPlaceholder": "Sök på namn eller e-post, eller skriv en e-postadress",
+    "candidates": "FGV-konton",
+    "searching": "Söker…",
+    "noCandidates": "Inget FGV-konto matchar. Skriv personens e-postadress för att bjuda in hen.",
+    "directoryUnavailable": "Det går inte att söka bland FGV-kontona just nu. Du kan fortfarande skriva en e-postadress.",
+    "noAccessYet": "Saknar åtkomst",
+    "selectedWithoutAccess": "Kontot har ännu inte åtkomst till Nyuppsättning. Superadministratörerna får veta det, och rollen gäller när de har gett åtkomst.",
+    "changePerson": "Välj någon annan",
+    "pickOrType": "Välj en person i listan, eller skriv en e-postadress.",
+    "invite": "Bjud in",
+    "inviteDescription": "Inget FGV-konto använder {email}. Ett skapas, och personen får ett mejl för att bekräfta adressen och välja lösenord. En superadministratör ger sedan kontot åtkomst till Nyuppsättning. Kontot innebär inget medlemskap i FGV.",
+    "firstName": "Förnamn",
+    "lastName": "Efternamn",
+    "invited": "Inbjuden. Personen får ett mejl, och superadministratörerna ombeds ge åtkomst.",
+    "invitedAt": "inbjuden {at}",
+    "addedSoFar": "Tillagda ({count})",
+    "done": "Klar",
+    "name": "Namn",
+    "role": "Roll",
+    "actions": "Åtgärder",
+    "openMenu": "Åtgärder för {name}",
+    "filterPlaceholder": "Filtrera på namn eller område…",
+    "editCapabilities": "Ändra ansvarsområden",
+    "editCapabilitiesTitle": "Ansvarsområden för {name}",
+    "editCapabilitiesDescription": "Varje ändring sparas direkt.",
+    "addDirecteurDescription": "Välj ett FGV-konto, eller skriv en e-postadress för att bjuda in någon. Lägg till en i taget; panelen är öppen tills du klickar Klar.",
+    "addMemberDescription": "Välj ett FGV-konto, eller skriv en e-postadress för att bjuda in någon, och ange vilka områden hen ansvarar för. Lägg till en i taget; panelen är öppen tills du klickar Klar.",
+    "empty": "Ingen är utsedd ännu",
+    "emptyHint": "Directeurer och styrgruppens medlemmar visas här.",
+    "showAll": "Visa styrgruppen"
   },
   "Errors": {
     "CONFLICT": "Någon annan har ändrat detta. Ladda om och försök igen.",
@@ -205,7 +249,8 @@
     "SPEXREGISTER_UNAVAILABLE": "Spexregistret är tillfälligt otillgängligt. Försök igen om en stund.",
     "UNAUTHORIZED": "Du är inte inloggad.",
     "INTERNAL_ERROR": "Något gick fel. Försök igen.",
-    "MAIL_UNAVAILABLE": "E-post kan inte skickas just nu. Försök igen senare."
+    "MAIL_UNAVAILABLE": "E-post kan inte skickas just nu. Försök igen senare.",
+    "DIRECTORY_UNAVAILABLE": "FGV-kontona går inte att nå just nu. Försök igen om en stund."
   },
   "Validation": {
     "spexRequired": "Välj ett spex.",
@@ -214,8 +259,6 @@
     "showDateBeforePremiere": "En föreställning får inte ligga före premiären.",
     "showDateWithoutPremiere": "Ange premiärdatum innan föreställningar.",
     "dateInvalid": "Ange ett datum.",
-    "venueBlank": "En spelplats får inte vara tom.",
-    "venuesTooMany": "Högst 20 spelplatser.",
     "emailInvalid": "Ange en giltig e-postadress.",
     "noteTooLong": "Högst 2 000 tecken.",
     "guideTextRequired": "Texten får inte vara tom.",
@@ -244,7 +287,12 @@
     "checklistNameRequired": "Skriv ett namn.",
     "checklistNameTooLong": "Namnet får vara högst 255 tecken.",
     "catalogNameRequired": "Ange ett namn.",
-    "catalogNameTooLong": "Namnet får vara högst 100 tecken."
+    "catalogNameTooLong": "Namnet får vara högst 100 tecken.",
+    "venueTooLong": "En lokal får vara högst 255 tecken.",
+    "showsTooMany": "Högst 50 föreställningar.",
+    "showDuplicate": "Den här föreställningen finns redan.",
+    "memberNameTooLong": "Ett namn får vara högst 100 tecken.",
+    "timeInvalid": "Ange tiden som TT:MM, till exempel 19:00."
   },
   "About": {
     "title": "Om",
@@ -428,7 +476,8 @@
       "reason": "Varför?",
       "reasonOptional": "Varför? (frivilligt)",
       "submit": "Skicka förslaget",
-      "done": "Förslaget är skickat"
+      "done": "Förslaget är skickat",
+      "chapter": "Kapitel"
     },
     "suggestions": {
       "title": "Förslag",
@@ -481,7 +530,18 @@
     "chapterContents": "{sections, plural, =0 {} one {# avsnitt · } other {# avsnitt · }}{items, plural, one {# punkt} other {# punkter}}",
     "startPage": "Guidens startsida",
     "chapterImpact": "{revivals, plural, =0 {ingen nyuppsättning har en checklista för kapitlet} one {# nyuppsättning förlorar sin checklista, med {items} punkter varav {done} klara} other {# nyuppsättningar förlorar sina checklistor, med {items} punkter varav {done} klara}}",
-    "latest": "senaste"
+    "latest": "senaste",
+    "tab": {
+      "versionTitle": "Guideversion",
+      "follows": "Nyuppsättningen följer {label}, publicerad {at}.",
+      "readTitle": "Läs guiden",
+      "readDescription": "{count, plural, one {# kapitel} other {# kapitel}} i den version nyuppsättningen följer. Vid varje punkt kan du föreslå en ändring.",
+      "open": "Öppna guiden",
+      "suggestDescription": "Föreslå en ändring eller borttagning vid en punkt i guiden, eller en ny punkt här. FGV/JK beslutar vad som kommer med i nästa version.",
+      "suggestionsDescription": "De förslag direktionen har lämnat från den här nyuppsättningen.",
+      "allSuggestions": "Alla förslag",
+      "back": "Version och förslag"
+    }
   },
   "Owner": {
     "label": "Ansvarig",
@@ -512,7 +572,7 @@
       "open": "Öppna",
       "overdue": "Försenade",
       "meeting": "Möte",
-      "allMeetings": "Alla möten"
+      "show": "Visa"
     },
     "tags": "Taggar",
     "search": "Sök",
@@ -543,7 +603,6 @@
     "answeredByRow": "Besvarad i rad {number}",
     "fromMeeting": "Från mötet {date}",
     "empty": "Loggen är tom.",
-    "noMatches": "Inga rader matchar filtret.",
     "import": {
       "back": "Beslutslogg",
       "title": "Importera från Excel",
@@ -589,7 +648,16 @@
       "noFile": "Välj en Excel-fil (.xlsx) som inte är tom.",
       "logNotEmpty": "Excel-importen är bara till för att starta loggen. Loggen har redan rader, så det går inte att importera längre.",
       "alreadyImported": "Loggen importerades redan från {fileName} ({count} rader). En Excel-logg kan bara importeras en gång, till en tom logg."
-    }
+    },
+    "rowMenu": "Åtgärder för rad {number}",
+    "setStatus": "Ändra status",
+    "statusChanged": "Rad {number} uppdaterades",
+    "actions": "Åtgärder",
+    "emptyHint": "Lägg till den första raden med Ny rad, eller importera den befintliga loggen från Excel.",
+    "emptyReadOnly": "Rader visas här när direktionen lägger till dem.",
+    "dateLabel": "Noterad",
+    "dateHint": "När raden kom in i loggen. Lämnas det tomt blir det i dag.",
+    "deadlineHint": "När det ska vara klart. En öppen rad efter det visas som försenad."
   },
   "Meeting": {
     "title": "Möten",
@@ -653,7 +721,10 @@
     "emailFailed": "De här fick inte protokollet:",
     "emails": "Utskick",
     "emailEntry": "{at} av {name} till {count, plural, one {# person} other {# personer}}",
-    "logRows": "Mötets rader i loggen"
+    "logRows": "Mötets rader i loggen",
+    "statusLabel": "Status",
+    "filterPlaceholder": "Sök titel eller datum",
+    "emptyHint": "Ett möte går igenom loggens öppna rader. Skapa ett med Nytt möte."
   },
   "Checklist": {
     "title": "Checklistor",
@@ -710,11 +781,14 @@
     "cancelledDone": "Checklistan är struken",
     "fromTemplate": "Från mallen {name}",
     "showCancelled": "Visa strukna",
-    "hideCancelled": "Dölj strukna",
     "noEvents": "Inga händelse-checklistor.",
     "chapters": "Guidens kapitel",
     "noChapters": "Nyuppsättningen följer ingen guideversion än, så den har inga kapitelchecklistor.",
-    "chapterTemplate": "Mallen för {chapter}"
+    "chapterTemplate": "Mallen för {chapter}",
+    "newEventShort": "Ny",
+    "find": "Hitta punkter",
+    "choose": "Välj en checklista, eller hitta punkter i alla.",
+    "chapterTitle": "{number}. {chapter}"
   },
   "ChecklistTemplate": {
     "title": "Checklistmallar",

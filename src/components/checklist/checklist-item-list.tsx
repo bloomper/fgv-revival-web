@@ -6,6 +6,7 @@ import {OwnerLabel} from "@/components/owner/owner-label";
 import {OverdueBadge} from "@/components/decision-log/overdue-badge";
 import {ChecklistItemText} from "@/components/checklist/checklist-item-text";
 import {pickText} from "@/components/guide/localized";
+import {formatDate} from "@/utils/format";
 
 /**
  * Items from several checklists, each with a link to its own checklist, where it is changed (M3 FR-028).
@@ -20,8 +21,8 @@ export function ChecklistItemList({revivalId, items}: { revivalId: string; items
     return (
         <ul className="space-y-2" aria-label={t("matches")}>
             {items.map(item => (
-                <li key={item.id} className="space-y-1 rounded-lg border p-3">
-                    <Link href={`/revivals/${revivalId}/checklists/${item.checklist.id}`} className="text-sm text-muted-foreground hover:underline">
+                <li key={item.id} className="space-y-2 rounded-lg border p-3">
+                    <Link href={`/revivals/${revivalId}/checklists/${item.checklist.id}`} className="block w-fit text-xs text-muted-foreground hover:underline">
                         {item.checklist.kind === "CHAPTER"
                             ? item.checklist.chapterTitle ? pickText(item.checklist.chapterTitle, locale).text : item.checklist.chapterKey
                             : item.checklist.name}
@@ -31,8 +32,8 @@ export function ChecklistItemList({revivalId, items}: { revivalId: string; items
                         {item.required && <Badge>{t("required")}</Badge>}
                         {item.state !== "OPEN" && <Badge variant="outline">{t(`state.${item.state}`)}</Badge>}
                         {item.overdue && <OverdueBadge/>}
-                        <span>{t("owner")}: <OwnerLabel owner={item.owner}/></span>
-                        {item.deadline && <span>{t("deadline")}: {item.deadline}</span>}
+                        <span className="text-muted-foreground">{t("owner")}: <span className="text-foreground"><OwnerLabel owner={item.owner}/></span></span>
+                        {item.deadline && <Badge variant="outline">{t("deadline")}: {formatDate(item.deadline)}</Badge>}
                     </div>
                 </li>
             ))}

@@ -40,7 +40,9 @@
     "previousPage": "Previous page",
     "nextPage": "Next page",
     "lastPage": "Last page",
-    "clearSearch": "Clear search"
+    "clearSearch": "Clear search",
+    "datePlaceholder": "YYYY-MM-DD",
+    "pickDate": "Pick a date"
   },
   "Header": {
     "toggleLanguage": "Change language",
@@ -113,36 +115,44 @@
   "Revival": {
     "filterPlaceholder": "Filter by title or year…",
     "spex": "Spex",
+    "poster": "Poster",
     "year": "Year",
     "premiereDate": "Premiere",
-    "showDates": "Shows",
-    "venues": "Venues",
     "status": "Status",
     "directeurs": "Directeurs",
     "steeringGroup": "Steering group",
     "statusHistory": "Status history",
-    "noStatusHistory": "The status has not changed.",
     "spexUnavailable": "Spexregister is temporarily unavailable",
     "notSet": "Not set",
     "memberCount": "{count, plural, one {# member} other {# members}}",
     "none": "None",
     "changeStatus": "Change status",
     "statusChanged": "The status was changed",
-    "changedBy": "{name} changed {from} → {to}",
-    "created": "Created by {name}",
+    "changedBy": "by {name}",
+    "created": "Created",
     "details": "Details",
     "editDetails": "Edit details",
     "open": "Open",
     "guide": "The guide",
     "overview": "Overview",
+    "members": "Steering group",
     "sections": "Revival sections",
-    "guideVersion": "The guide {label}",
     "log": "Decision log",
     "meetings": "Meetings",
     "checklists": "Checklists",
     "meetingInProgress": "A meeting is in progress",
     "openOverdue": "{open} open rows, {overdue} overdue",
-    "requirementsOverdue": "{open} open requirements, {overdue} overdue items"
+    "requirementsOverdue": "{open} open requirements, {overdue} overdue items",
+    "readOnly": {
+      "title": "Read only",
+      "archived": "The revival is archived, so nothing in it can be changed.",
+      "superAdmin": "As super admin you can read everything here. Only the revival’s directeurs and steering group add and change rows, meetings, checklist items and guide suggestions.",
+      "join": "Add yourself to the steering group under Steering group to work in it.",
+      "observer": "As observer you can read everything here. Only the revival’s directeurs and steering group make changes.",
+      "other": "You can read this, but only the revival’s directeurs and steering group make changes."
+    },
+    "shows": "Shows",
+    "venueNotSet": "venue not decided"
   },
   "Admin": {
     "title": "All revivals",
@@ -177,10 +187,13 @@
   },
   "DetailsForm": {
     "addShowDate": "Add show",
-    "addVenue": "Add venue",
-    "removeShowDate": "Remove the show",
-    "removeVenue": "Remove the venue",
-    "clearPremiere": "Clear premiere date"
+    "removeShowDate": "Remove show {number}",
+    "clearPremiere": "Clear premiere date",
+    "showDate": "Date of show {number}",
+    "showVenue": "Venue of show {number}",
+    "venuePlaceholder": "Venue (when decided)",
+    "showTime": "Start time of show {number}",
+    "timePlaceholder": "HH:MM"
   },
   "Members": {
     "email": "Email address",
@@ -195,7 +208,38 @@
     "noDirecteurs": "No directeur is appointed.",
     "noMembers": "The steering group has no members.",
     "waitingPerson": "Waiting person",
-    "allCapabilities": "All capabilities"
+    "allCapabilities": "All capabilities",
+    "search": "Name or email",
+    "searchPlaceholder": "Search by name or email, or type an email",
+    "candidates": "FGV accounts",
+    "searching": "Searching…",
+    "noCandidates": "No FGV account matches. Type the person’s email address to invite them.",
+    "directoryUnavailable": "The FGV accounts cannot be searched right now. You can still type an email address.",
+    "noAccessYet": "No access yet",
+    "selectedWithoutAccess": "This account has no access to Nyuppsättning yet. The super admins are told, and the role takes effect once they grant it.",
+    "changePerson": "Choose someone else",
+    "pickOrType": "Pick a person from the list, or type an email address.",
+    "invite": "Invite",
+    "inviteDescription": "No FGV account uses {email}. One is created, and they get an email to confirm the address and choose a password. A super admin then gives the account access to Nyuppsättning. The account is not an FGV membership.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "invited": "Invited. They get an email, and the super admins are asked to grant access.",
+    "invitedAt": "invited {at}",
+    "addedSoFar": "Added ({count})",
+    "done": "Done",
+    "name": "Name",
+    "role": "Role",
+    "actions": "Actions",
+    "openMenu": "Actions for {name}",
+    "filterPlaceholder": "Filter by name or area…",
+    "editCapabilities": "Change areas of responsibility",
+    "editCapabilitiesTitle": "Areas of responsibility for {name}",
+    "editCapabilitiesDescription": "Each change is saved at once.",
+    "addDirecteurDescription": "Pick an FGV account, or type an email address to invite someone. Add one at a time; the panel stays open until you click Done.",
+    "addMemberDescription": "Pick an FGV account, or type an email address to invite someone, and choose the areas they are responsible for. Add one at a time; the panel stays open until you click Done.",
+    "empty": "No one has been appointed yet",
+    "emptyHint": "Directeurs and the steering group's members are shown here.",
+    "showAll": "Show the steering group"
   },
   "Errors": {
     "CONFLICT": "Someone else has changed this. Reload and try again.",
@@ -205,7 +249,8 @@
     "SPEXREGISTER_UNAVAILABLE": "Spexregister is temporarily unavailable. Try again in a moment.",
     "UNAUTHORIZED": "You are not logged in.",
     "INTERNAL_ERROR": "Something went wrong. Please try again.",
-    "MAIL_UNAVAILABLE": "Email cannot be sent at the moment. Try again later."
+    "MAIL_UNAVAILABLE": "Email cannot be sent at the moment. Try again later.",
+    "DIRECTORY_UNAVAILABLE": "The FGV accounts cannot be reached right now. Try again in a moment."
   },
   "Validation": {
     "spexRequired": "Pick a spex.",
@@ -214,8 +259,6 @@
     "showDateBeforePremiere": "A show must not be before the premiere.",
     "showDateWithoutPremiere": "Set the premiere date before shows.",
     "dateInvalid": "Enter a date.",
-    "venueBlank": "A venue must not be empty.",
-    "venuesTooMany": "At most 20 venues.",
     "emailInvalid": "Enter a valid email address.",
     "noteTooLong": "At most 2,000 characters.",
     "guideTextRequired": "The text cannot be empty.",
@@ -244,7 +287,12 @@
     "checklistNameRequired": "Write a name.",
     "checklistNameTooLong": "The name can be at most 255 characters.",
     "catalogNameRequired": "Enter a name.",
-    "catalogNameTooLong": "The name may be at most 100 characters."
+    "catalogNameTooLong": "The name may be at most 100 characters.",
+    "venueTooLong": "A venue is at most 255 characters.",
+    "showsTooMany": "At most 50 shows.",
+    "showDuplicate": "This show is already listed.",
+    "memberNameTooLong": "A name is at most 100 characters.",
+    "timeInvalid": "Give the time as HH:MM, for example 19:00."
   },
   "About": {
     "title": "About",
@@ -428,7 +476,8 @@
       "reason": "Why?",
       "reasonOptional": "Why? (optional)",
       "submit": "Send the suggestion",
-      "done": "The suggestion has been sent"
+      "done": "The suggestion has been sent",
+      "chapter": "Chapter"
     },
     "suggestions": {
       "title": "Suggestions",
@@ -481,7 +530,18 @@
     "chapterContents": "{sections, plural, =0 {} one {# section · } other {# sections · }}{items, plural, one {# item} other {# items}}",
     "startPage": "The guide's start page",
     "chapterImpact": "{revivals, plural, =0 {no revival has a checklist for the chapter} one {# revival loses its checklist, with {items} items of which {done} done} other {# revivals lose their checklists, with {items} items of which {done} done}}",
-    "latest": "latest"
+    "latest": "latest",
+    "tab": {
+      "versionTitle": "Guide version",
+      "follows": "The revival follows {label}, published {at}.",
+      "readTitle": "Read the guide",
+      "readDescription": "{count, plural, one {# chapter} other {# chapters}}, in the version the revival follows. Next to each item you can suggest a change.",
+      "open": "Open the guide",
+      "suggestDescription": "Suggest a change or removal next to an item in the guide, or a new item here. FGV/JK decide what goes into the next version.",
+      "suggestionsDescription": "The suggestions the steering group has made from this revival.",
+      "allSuggestions": "All suggestions",
+      "back": "Version and suggestions"
+    }
   },
   "Owner": {
     "label": "Owner",
@@ -512,7 +572,7 @@
       "open": "Open",
       "overdue": "Overdue",
       "meeting": "Meeting",
-      "allMeetings": "All meetings"
+      "show": "Show"
     },
     "tags": "Tags",
     "search": "Search",
@@ -543,7 +603,6 @@
     "answeredByRow": "Answered in row {number}",
     "fromMeeting": "From the meeting on {date}",
     "empty": "The log is empty.",
-    "noMatches": "No rows match the filter.",
     "import": {
       "back": "Decision log",
       "title": "Import from Excel",
@@ -589,7 +648,16 @@
       "noFile": "Choose an Excel file (.xlsx) that is not empty.",
       "logNotEmpty": "The Excel import is only for starting the log. This log already has rows, so it can no longer be imported into.",
       "alreadyImported": "The log was already imported from {fileName} ({count} rows). An Excel log can only be imported once, into an empty log."
-    }
+    },
+    "rowMenu": "Actions for row {number}",
+    "setStatus": "Set status",
+    "statusChanged": "Row {number} was updated",
+    "actions": "Actions",
+    "emptyHint": "Add the first row with New row, or import the existing log from Excel.",
+    "emptyReadOnly": "Rows appear here when the steering group adds them.",
+    "dateLabel": "Entered",
+    "dateHint": "When the row came into the log. Left empty, it is today.",
+    "deadlineHint": "When it must be done. An open row past it shows as overdue."
   },
   "Meeting": {
     "title": "Meetings",
@@ -653,7 +721,10 @@
     "emailFailed": "These did not get the minutes:",
     "emails": "Sends",
     "emailEntry": "{at} by {name} to {count, plural, one {# person} other {# people}}",
-    "logRows": "The meeting's rows in the log"
+    "logRows": "The meeting's rows in the log",
+    "statusLabel": "Status",
+    "filterPlaceholder": "Search title or date",
+    "emptyHint": "A meeting walks through the log’s open rows. Create one with New meeting."
   },
   "Checklist": {
     "title": "Checklists",
@@ -710,11 +781,14 @@
     "cancelledDone": "The checklist is cancelled",
     "fromTemplate": "From the template {name}",
     "showCancelled": "Show cancelled",
-    "hideCancelled": "Hide cancelled",
     "noEvents": "No event checklists.",
     "chapters": "Guide chapters",
     "noChapters": "The revival does not follow a guide version yet, so it has no chapter checklists.",
-    "chapterTemplate": "The template for {chapter}"
+    "chapterTemplate": "The template for {chapter}",
+    "newEventShort": "New",
+    "find": "Find items",
+    "choose": "Choose a checklist, or find items across all of them.",
+    "chapterTitle": "{number}. {chapter}"
   },
   "ChecklistTemplate": {
     "title": "Checklist templates",

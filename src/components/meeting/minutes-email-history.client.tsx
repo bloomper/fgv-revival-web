@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import {useTransition} from "react";
-import {useLocale, useTranslations} from "next-intl";
+import {useTranslations} from "next-intl";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
 import {retryMinutesAction} from "@/app/(app)/revivals/[id]/meetings/actions.server";
@@ -28,7 +28,6 @@ export function MinutesEmailHistory({revivalId, meetingId, emails, canSend}: {
     canSend: boolean;
 }) {
     const t = useTranslations("Meeting");
-    const locale = useLocale();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
     const latest = [...emails].sort((a, b) => b.sentAt.localeCompare(a.sentAt)).at(0);
@@ -44,7 +43,7 @@ export function MinutesEmailHistory({revivalId, meetingId, emails, canSend}: {
                     return (
                         <li key={email.id} className="space-y-1">
                             <p>{t("emailEntry", {
-                                at: formatInstant(email.sentAt, locale) ?? email.sentAt, name: email.sentBy.displayName ?? "",
+                                at: formatInstant(email.sentAt) ?? email.sentAt, name: email.sentBy.displayName ?? "",
                                 count: email.recipients.length - failed.length,
                             })}</p>
                             {email.waitingLeftOut > 0 && <p>{t("waitingLeftOut", {count: email.waitingLeftOut})}</p>}

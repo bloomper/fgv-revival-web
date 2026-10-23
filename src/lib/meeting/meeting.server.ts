@@ -9,6 +9,7 @@ const RevivalMeetingsQuery = graphql(`
         revival(id: $id) {
             id
             title
+            status
             permissions { canWriteLog }
             ownerCandidates { id displayName }
         }

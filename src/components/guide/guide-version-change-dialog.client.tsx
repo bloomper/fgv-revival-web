@@ -7,6 +7,7 @@ import type {GuideChangesQuery, RevivalGuideVersionChangeImpactQuery} from "@/gq
 import {Button} from "@/components/ui/button";
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import {Label} from "@/components/ui/label";
+import {NativeSelect} from "@/components/ui/native-select";
 import {changeGuideVersionAction, guideChangesAction, guideVersionChangeImpactAction} from "@/app/(app)/revivals/[id]/guide/actions.server";
 import {GuideChanges} from "@/components/guide/guide-changes.client";
 import {pickText} from "@/components/guide/localized";
@@ -70,11 +71,10 @@ export function GuideVersionChangeDialog({revivalId, current, allowed}: { reviva
                 </DialogHeader>
                 <div className="space-y-2">
                     <Label htmlFor="guide-version-target">{t("Guide.version.target")}</Label>
-                    <select id="guide-version-target" value={target} onChange={event => choose(event.target.value)}
-                            className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs">
+                    <NativeSelect className="w-full" id="guide-version-target" value={target} onChange={event => choose(event.target.value)}>
                         <option value="">{t("Guide.version.choose")}</option>
                         {allowed.map(version => <option key={version.id} value={version.id}>{version.label}</option>)}
-                    </select>
+                    </NativeSelect>
                 </div>
                 {removals && removals.length > 0 && (
                     <RemovalWarning title={t("Guide.version.removalTitle", {count: removals.length})} confirmLabel={t("Guide.version.removalConfirm")}

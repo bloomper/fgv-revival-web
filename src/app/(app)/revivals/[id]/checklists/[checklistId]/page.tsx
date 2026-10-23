@@ -12,6 +12,7 @@ import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getChecklist} from "@/lib/checklist/checklist.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {formatDate} from "@/utils/format";
 
 async function load(revivalId: string, id: string) {
     try {
@@ -25,7 +26,8 @@ async function load(revivalId: string, id: string) {
 }
 
 /**
- * One checklist: a guide chapter's with the chapter's tips (M3 FR-029), or an event's.
+ * One checklist: a guide chapter's with the chapter's tips (M3 FR-029), or an event's. The list of checklists beside it
+ * is in the layout.
  */
 export default async function ChecklistPage({params}: { params: Promise<{ id: string; checklistId: string }> }) {
     const {id, checklistId} = await params;
@@ -47,13 +49,14 @@ export default async function ChecklistPage({params}: { params: Promise<{ id: st
         return (
             <div className="flex flex-1 flex-col gap-4">
                 <div className="space-y-1">
-                    <Link href={`/revivals/${revival.id}/checklists`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                    <Link href={`/revivals/${revival.id}/checklists`}
+                          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline lg:hidden">
                         <ArrowLeft className="size-4"/>
                         {t("title")}
                     </Link>
-                    <h3 className="flex flex-wrap items-center gap-2 text-lg font-bold tracking-tight">
+                    <h3 className="flex flex-wrap items-center gap-2 text-base font-semibold tracking-tight">
                         {title}
-                        {checklist.date && <span className="text-base font-normal text-muted-foreground">{checklist.date}</span>}
+                        {checklist.date && <span className="font-normal text-muted-foreground tabular-nums">{formatDate(checklist.date)}</span>}
                         {checklist.cancelled && <Badge variant="outline">{t("cancelled")}</Badge>}
                     </h3>
                     {checklist.template && (

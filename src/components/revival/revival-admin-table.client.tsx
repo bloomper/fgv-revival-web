@@ -21,6 +21,7 @@ import {
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {StatusBadge} from "@/components/revival/status-badge";
 import {SpexTitle} from "@/components/revival/spex-title";
+import {RevivalPoster} from "@/components/revival/revival-poster.client";
 import {REVIVAL_STATUSES, RevivalFilterBar, useRevivalFilter} from "@/components/revival/revival-filter.client";
 import {RevivalFormSheet} from "@/components/revival/revival-form-sheet.client";
 import {deleteRevivalsAction} from "@/app/(app)/revivals/manage/actions.server";
@@ -33,6 +34,12 @@ function useColumns(onEdit: (revival: Revival) => void, onDelete: (revivals: Rev
 
     return [
         selectColumn<Revival>({all: t("Admin.selectAll"), row: revival => t("Admin.selectRow", {title: revival.title})}),
+        {
+            id: "poster",
+            header: () => <span className="sr-only">{t("Revival.poster")}</span>,
+            cell: ({row}) => <RevivalPoster revivalId={row.original.id} className="h-10 w-7 rounded-sm"/>,
+            meta: {className: "w-12"},
+        },
         {
             id: "spex",
             accessorFn: revival => revival.spex.title ?? undefined,

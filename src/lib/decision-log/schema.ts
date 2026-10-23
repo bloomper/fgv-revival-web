@@ -85,6 +85,10 @@ export function parseLogFilter(query: Record<string, string | string[] | undefin
     };
 }
 
+export function isLogFiltered(filter: LogFilterValues): boolean {
+    return Object.values(filter).some(value => value !== undefined);
+}
+
 export function logFilterQuery(filter: LogFilterValues): string {
     const params = new URLSearchParams();
 

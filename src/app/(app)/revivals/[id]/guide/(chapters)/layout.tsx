@@ -37,7 +37,7 @@ export default async function RevivalGuideChaptersLayout({children, params}: {
                 </h3>
                 <Link href={basePath} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                     <ArrowLeft className="size-4"/>
-                    {t("startPage")}
+                    {t("tab.back")}
                 </Link>
                 <GuideSearch versionId={version.id} basePath={basePath} chapterNumbers={chapterNumbers(version)}/>
                 <div className="flex flex-col gap-6 lg:flex-row">

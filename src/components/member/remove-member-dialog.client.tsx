@@ -2,9 +2,7 @@
 
 import * as React from "react";
 import {useTransition} from "react";
-import {Trash2} from "lucide-react";
 import {useTranslations} from "next-intl";
-import {Button} from "@/components/ui/button";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,22 +12,23 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {removeMemberAction} from "@/app/(app)/revivals/[id]/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {track} from "@/utils/umami";
 
-export function RemoveMemberButton({memberId, name}: { memberId: string; name: string }) {
+export function RemoveMemberDialog({memberId, name, open, onOpenChange}: {
+    memberId: string;
+    name: string;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}) {
     const t = useTranslations();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
 
     return (
-        <AlertDialog>
-            <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" className="text-destructive hover:bg-destructive/10 hover:text-destructive" aria-label={`${t("Common.remove")} ${name}`}/>}>
-                <Trash2/>
-            </AlertDialogTrigger>
+        <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{t("Members.confirmRemoveTitle", {name})}</AlertDialogTitle>
@@ -43,6 +42,7 @@ export function RemoveMemberButton({memberId, name}: { memberId: string; name: s
                         onClick={() => startTransition(async () => {
                             if (feedback(await removeMemberAction(memberId), t("Members.removed"))) {
                                 track("member-remove");
+                                onOpenChange(false);
                             }
                         })}
                     >

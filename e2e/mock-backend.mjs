@@ -50,9 +50,9 @@ function resetState(guideSeed = "none") {
         catalog: createCatalogState(),
         nextId: 100,
         revivals: [
-            {id: "1", spexId: "1", year: 2028, title: "Ali Baba 2028", premiereDate: null, showDates: [], venues: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
-            {id: "2", spexId: "2", year: 2030, title: "Nobel 2030", premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: [], guideVersionId: null},
-            {id: "3", spexId: "3", year: 2027, title: "Snorre 2027", premiereDate: "2027-03-01", showDates: ["2027-03-01"], venues: ["Kårhuset"], status: "OPEN", version: 0, history: [], guideVersionId: null},
+            {id: "1", spexId: "1", year: 2028, title: "Ali Baba 2028", premiereDate: null, shows: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
+            {id: "2", spexId: "2", year: 2030, title: "Nobel 2030", premiereDate: null, shows: [], status: "PROPOSED", version: 0, history: [], guideVersionId: null},
+            {id: "3", spexId: "3", year: 2027, title: "Snorre 2027", premiereDate: "2027-03-01", shows: [{date: "2027-03-01", time: "19:00", venue: "Kårhuset"}], status: "OPEN", version: 0, history: [], guideVersionId: null},
         ],
         members: [
             {id: "m1", revivalId: "1", role: "DIRECTEUR", capabilities: [], email: "dana@example.org", sub: "p-directeur", version: 0},
@@ -162,8 +162,7 @@ function toRevival(persona, revival) {
         year: revival.year,
         title: revival.title,
         premiereDate: revival.premiereDate,
-        showDates: revival.showDates,
-        venues: revival.venues,
+        shows: revival.shows.map(show => ({__typename: "RevivalShow", ...show})),
         status: revival.status,
         version: revival.version,
         createdBy: "Sara Admin",
@@ -185,6 +184,7 @@ function toRevival(persona, revival) {
             state: member.sub ? "ACTIVE" : "WAITING",
             displayName: member.sub ? bySub[member.sub]?.name ?? null : null,
             email: showEmails ? member.email : null,
+            invitedAt: member.invitedAt ?? null,
             version: member.version,
         })),
         guideVersion: (() => {
@@ -276,7 +276,7 @@ const resolvers = {
         }
         const revival = {
             id: String(state.nextId++), spexId: String(input.spexId), year: Number(input.year), title: titleOf(input.spexId, input.year),
-            premiereDate: null, showDates: [], venues: [], status: "PROPOSED", version: 0, history: [],
+            premiereDate: null, shows: [], status: "PROPOSED", version: 0, history: [],
             guideVersionId: state.guide.versions.filter(version => version.status === "PUBLISHED").sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0]?.id ?? null,
         };
         state.revivals.push(revival);
@@ -298,14 +298,15 @@ const resolvers = {
             return {revivalUpdate: toRevival(persona, revival)};
         }
         const premiereDate = input.clearPremiereDate ? null : input.premiereDate ?? revival.premiereDate;
-        const showDates = input.showDates ?? revival.showDates;
+        const shows = (input.shows ?? revival.shows).map(show => ({date: show.date, time: show.time?.trim() || null, venue: show.venue?.trim() || null}));
         if (premiereDate && Number(premiereDate.slice(0, 4)) !== revival.year) {
             throw new GraphQLError("BAD_REQUEST", `Premiären måste ligga år ${revival.year}, nyuppsättningens år.`);
         }
-        if (showDates.some(date => !premiereDate || date < premiereDate)) {
+        if (shows.some(show => !premiereDate || show.date < premiereDate)) {
             throw new GraphQLError("BAD_REQUEST", "Föreställningsdatum får inte ligga före premiären.");
         }
-        Object.assign(revival, {premiereDate, showDates: [...showDates].sort(), venues: input.venues ?? revival.venues, version: revival.version + 1});
+        shows.sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? "~").localeCompare(b.time ?? "~") || (a.venue ?? "~").localeCompare(b.venue ?? "~"));
+        Object.assign(revival, {premiereDate, shows, version: revival.version + 1});
         return {revivalUpdate: toRevival(persona, revival)};
     },
     RevivalDelete(persona, {id, version}) {
@@ -344,9 +345,27 @@ const resolvers = {
         if (state.members.some(member => member.revivalId === revival.id && (member.email === email || (person && member.sub === person.sub)))) {
             throw new GraphQLError("BAD_REQUEST", "Personen har redan en roll i nyuppsättningen.");
         }
-        const member = {id: `m${state.nextId++}`, revivalId: revival.id, role: input.role, capabilities: input.capabilities ?? [], email, sub: person?.sub ?? null, version: 0};
+        // An address that is no persona's stands for one with no Keycloak user: the server creates and invites it
+        const member = {id: `m${state.nextId++}`, revivalId: revival.id, role: input.role, capabilities: input.capabilities ?? [], email, sub: person?.sub ?? null,
+            invitedAt: person ? null : new Date().toISOString(), version: 0};
         state.members.push(member);
         return {revivalMemberAdd: toRevival(persona, revival).members.find(candidate => candidate.id === member.id)};
+    },
+    RevivalMemberCandidates(persona, {revivalId, query}) {
+        const revival = visibleRevival(persona, revivalId);
+        if (!permissions(persona, revival).canManageSteeringGroup) {
+            throw forbidden();
+        }
+        const words = query.trim().toLowerCase();
+        if (words.length < 3) {
+            return {revivalMemberCandidates: []};
+        }
+        return {
+            revivalMemberCandidates: Object.values(PERSONAS)
+                .filter(candidate => `${candidate.name} ${candidate.email}`.toLowerCase().includes(words))
+                .slice(0, 10)
+                .map(candidate => ({__typename: "MemberCandidate", email: candidate.email, displayName: candidate.name, hasAccess: candidate.roles.includes("USER")})),
+        };
     },
     RevivalMemberCapabilitiesSet(persona, {input}) {
         const member = state.members.find(candidate => candidate.id === input.id);
@@ -575,6 +594,16 @@ const server = createServer((req, res) => {
             res.writeHead(204).end();
         } else if (req.method === "GET" && path.endsWith("/pdf") && path.startsWith("/api/")) {
             handleGuidePdf({state: () => state, isSuperAdmin, seesEverything, roleIn, canSee}, personaOf(req), path, url, res);
+        } else if (req.method === "GET" && /^\/api\/revivals\/[^/]+\/poster$/.test(path)) {
+            // Revival 1's spex has a poster (a 1×1 PNG); the others have none
+            const revival = state.revivals.find(candidate => candidate.id === path.split("/")[3]);
+            if (!revival || !canSee(personaOf(req), revival)) {
+                res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({code: "NOT_FOUND", message: "Not found"}));
+            } else if (revival.id === "1") {
+                res.writeHead(200, {"Content-Type": "image/png"}).end(Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", "base64"));
+            } else {
+                res.writeHead(204).end();
+            }
         } else if (req.method === "POST" && /^\/api\/revivals\/[^/]+\/log\/import/.test(path)) {
             handleLogImport({state: () => state, roleIn, canSee, personas: bySub}, personaOf(req), path, body, res);
         } else if (req.method === "POST" && path === "/__persona") {

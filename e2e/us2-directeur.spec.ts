@@ -21,13 +21,12 @@ test.describe("User story 2: the directeur runs their revival", () => {
 
         await page.getByLabel("Premiär").fill("2028-02-10");
         await page.getByRole("button", {name: "Lägg till föreställning"}).click();
-        await page.getByLabel("Föreställningar 1").fill("2028-02-09");
+        await page.getByLabel("Datum för föreställning 1", {exact: true}).fill("2028-02-09");
         await page.getByRole("button", {name: "Spara"}).click();
         await expect(page.getByRole("alert").filter({hasText: "premiären"})).toHaveText("En föreställning får inte ligga före premiären.");
 
-        await page.getByLabel("Föreställningar 1").fill("2028-02-12");
-        await page.getByRole("button", {name: "Lägg till spelplats"}).click();
-        await page.getByLabel("Spelplatser 1").fill("Chalmers kårhus");
+        await page.getByLabel("Datum för föreställning 1", {exact: true}).fill("2028-02-12");
+        await page.getByLabel("Lokal för föreställning 1").fill("Chalmers kårhus");
         await page.getByRole("button", {name: "Spara"}).click();
 
         await expect(page.getByText("Chalmers kårhus")).toBeVisible();

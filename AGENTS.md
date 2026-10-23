@@ -101,10 +101,16 @@ changing routing or data fetching; this area differs sharply from older Next.
   rather than calling the session again. Don't hand-roll role checks —
   `requireUser` / `requireAnyRole` are in `src/utils/auth.server.ts`. Roles: `USER | SUPER_ADMIN | OBSERVER`. `USER` is required for
   any access; without it the `(app)` layout redirects to `/no-access`.
+- Where the server refuses writes (super admins and observers only read a revival's log, meetings, checklists and
+  suggestions), `ReadOnlyNotice` (`src/components/revival/read-only-notice.tsx`) says why instead of hiding the
+  controls silently.
 - **Revival permissions are never computed in the web.** Each `Revival` carries a `permissions` object
   (`canEditCore`, `canEditDetails`, `allowedStatuses`, `canManageDirecteurs`, `canManageSteeringGroup`)
   computed by the server's `AccessPolicy`. Show or hide controls from it; the server enforces every rule
   anyway. Don't re-derive directeur or steering-group rules from the role and status.
+- Directeurs and steering group members are picked among the FGV realm's users (`revivalMemberCandidates`). An email
+  that is no user's is invited: the server creates a Keycloak user without roles and Keycloak emails them; a super
+  admin then grants `USER`. `DIRECTORY_UNAVAILABLE` means Keycloak cannot be searched; typing an address still works.
 - Client side: `src/lib/auth-client.ts` (`useSession`, `signOut`); no session provider is needed.
   Logout uses `signOut({disableRedirect: true})` and appends `ui_locales`/`theme` to the returned
   Keycloak `end_session` URL via `appendLogoutParams` (`src/utils/auth.ts`).
@@ -132,8 +138,10 @@ changing routing or data fetching; this area differs sharply from older Next.
   behaviour and styling (`GuideTypeBadge`, hiding `TEXT`); branch on `type.kind`, never on a type's id. Retired entries
   stay on rows that hold them; pickers offer `catalogChoices(active, held)`. Pages with a picker fetch the active list
   and wrap it in `CatalogProvider`.
-- The server's plain HTTP endpoints (guide PDF, log import) go through `apiFetch` in `src/lib/api.server.ts`, which
-  adds the token on the server. The browser reaches the PDF only through the route handler `/api/guide-pdf`.
+- The server's plain HTTP endpoints (guide PDF, log import, spex poster) go through `apiFetch` in
+  `src/lib/api.server.ts`, which adds the token on the server. The browser reaches the PDF only through the route
+  handler `/api/guide-pdf`, and a revival's poster only through `/api/revival-poster/[id]` (rendered by
+  `RevivalPoster`, which falls back to a placeholder; never `next/image`, whose optimizer has no session).
 - **Guide chapters are free-form.** A version has any number of chapters, each with a `key` that stays the same
   across versions, ordered by place and numbered from 1 in the UI; there is no `Phase` enum any more. Reading is one
   chapter per page (`[chapterKey]` routes) with `GuideChapterNav` (a bar and bottom sheet on phones, a list beside the
@@ -157,7 +165,8 @@ changing routing or data fetching; this area differs sharply from older Next.
   are re-used from `./schema` so identities match.
 - Errors carry `extensions.code`: `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND` (also for revivals the
   caller may not see), `BAD_REQUEST`, `CONFLICT` (someone else changed it: ask to reload) and
-  `SPEXREGISTER_UNAVAILABLE` (show "temporarily unavailable", keep everything else working).
+  `SPEXREGISTER_UNAVAILABLE` (show "temporarily unavailable", keep everything else working) and
+  `DIRECTORY_UNAVAILABLE` (the FGV accounts cannot be searched).
 - Mutations send the `version` (or, for status, the `from` status) the user saw.
 
 ## Tables and forms
@@ -171,6 +180,17 @@ previously hit in `spexregister-web`:
   object never updates. Pass primitives as props.
 
 Forms use `react-hook-form` + `zodResolver`.
+
+List pages follow one pattern, as in Spexregister: `DataTable` (`src/components/data-table.client.tsx`) with the
+toolbar as its children — a search field, a `DataFilter` popover per kind, a reset button, actions on the right — and
+a row menu (`MoreHorizontal`) instead of inline controls. The decision log keeps its filters in the URL and the server
+filters; other lists filter on the client.
+
+## Dates
+
+Dates and times are always shown as `yyyy-mm-dd` and `yyyy-mm-dd hh:mm` (Swedish time), in both languages, as in
+Spexregister: use `formatDate` / `formatInstant` from `src/utils/format.ts`, never `Intl` date styles. Date fields use
+`DateInput` (`src/components/date-input.client.tsx`), not `<input type="date">`, whose format follows the browser.
 
 ## Consent and visitor statistics
 

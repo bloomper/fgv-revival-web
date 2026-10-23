@@ -13,8 +13,8 @@ const VARIANTS: Record<RevivalStatus, "default" | "secondary" | "outline" | "des
     REJECTED: "destructive",
 };
 
-export function StatusBadge({status}: { status: RevivalStatus }) {
+export function StatusBadge({status, className}: { status: RevivalStatus; className?: string }) {
     const t = useTranslations("Status");
 
-    return <Badge variant={VARIANTS[status]}>{t(status)}</Badge>;
+    return <Badge variant={VARIANTS[status]} className={className}>{t(status)}</Badge>;
 }

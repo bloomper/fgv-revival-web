@@ -9,7 +9,7 @@ import type {ChecklistItemFieldsFragment} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
-import {Input} from "@/components/ui/input";
+import {DateInput} from "@/components/date-input.client";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
 import {OwnerField, type OwnerMember} from "@/components/owner/owner-field.client";
@@ -74,7 +74,7 @@ export function ChecklistItemDialog({revivalId, checklistId, item, members, open
                             )}/>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-deadline`}>{t("Checklist.deadline")}</Label>
-                                <Input id={`${id}-deadline`} type="date" {...form.register("deadline", {setValueAs: value => value || null})}/>
+                                <DateInput id={`${id}-deadline`} {...form.register("deadline", {setValueAs: value => value || null})}/>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-comment`}>{t("Checklist.comment")}</Label>

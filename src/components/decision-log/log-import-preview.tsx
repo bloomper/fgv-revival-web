@@ -2,6 +2,7 @@ import {useTranslations} from "next-intl";
 import type {LogImportPreview as Preview} from "@/lib/decision-log/log.server";
 import {LOG_ENTRY_TYPES} from "@/lib/decision-log/schema";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {NativeSelect} from "@/components/ui/native-select";
 
 export type ImportChoiceState = { owners: Record<string, string | null>; nobelType: (typeof LOG_ENTRY_TYPES)[number] };
 
@@ -40,10 +41,10 @@ export function LogImportPreview({preview, choices, onChange}: {
             {preview.layout === "NOBEL" && (
                 <label className="flex items-center gap-2 text-sm">
                     {t("import.nobelType")}
-                    <select className="h-8 rounded-md border border-input bg-background px-2" value={choices.nobelType}
+                    <NativeSelect size="sm" value={choices.nobelType}
                             onChange={event => onChange({...choices, nobelType: event.target.value as ImportChoiceState["nobelType"]})}>
                         {LOG_ENTRY_TYPES.map(type => <option key={type} value={type}>{t(`type.${type}`)}</option>)}
-                    </select>
+                    </NativeSelect>
                 </label>
             )}
             {preview.owners.length > 0 && (
@@ -63,13 +64,12 @@ export function LogImportPreview({preview, choices, onChange}: {
                                     <TableCell>{owner.name}</TableCell>
                                     <TableCell>{owner.rows}</TableCell>
                                     <TableCell>
-                                        <select aria-label={t("import.matchOwner", {name: owner.name})}
-                                                className="h-8 rounded-md border border-input bg-background px-2 text-sm"
+                                        <NativeSelect size="sm" aria-label={t("import.matchOwner", {name: owner.name})}
                                                 value={choices.owners[owner.name] ?? ""}
                                                 onChange={event => onChange({...choices, owners: {...choices.owners, [owner.name]: event.target.value || null}})}>
                                             <option value="">{t("import.keepName")}</option>
                                             {preview.members.map(member => <option key={member.id} value={String(member.id)}>{member.displayName ?? member.id}</option>)}
-                                        </select>
+                                        </NativeSelect>
                                     </TableCell>
                                 </TableRow>
                             ))}

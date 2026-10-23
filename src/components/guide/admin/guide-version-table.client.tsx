@@ -4,7 +4,7 @@ import * as React from "react";
 import {useState, useTransition} from "react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
-import {useFormatter, useTranslations} from "next-intl";
+import {useTranslations} from "next-intl";
 import {BookOpen, MoreHorizontal, Trash2} from "lucide-react";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
 import {DataEmpty} from "@/components/data-empty";
@@ -24,6 +24,7 @@ import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Di
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {deleteGuideVersionAction} from "@/app/(app)/admin/guide/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
+import {formatInstant} from "@/utils/format";
 
 export type GuideVersion = {
     id: string;
@@ -50,7 +51,6 @@ function useInUse() {
 
 function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnDef<GuideVersion>[] {
     const t = useTranslations();
-    const format = useFormatter();
     const inUse = useInUse();
 
     return [
@@ -75,7 +75,7 @@ function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnD
             sortFn: "basic",
             sortUndefined: "last",
             header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Guide.admin.publishedAt")}/>,
-            cell: ({row}) => row.original.publishedAt && format.dateTime(new Date(row.original.publishedAt), {dateStyle: "medium"}),
+            cell: ({row}) => formatInstant(row.original.publishedAt)?.slice(0, 10),
             meta: {className: "whitespace-nowrap"},
         },
         {
@@ -123,7 +123,6 @@ function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnD
  */
 function GuideVersionViewDialog({version, onClose}: { version: GuideVersion | null; onClose: () => void }) {
     const t = useTranslations();
-    const format = useFormatter();
     const inUse = useInUse();
     const field = (label: string, value: React.ReactNode) => (
         <div className="space-y-1">
@@ -141,7 +140,7 @@ function GuideVersionViewDialog({version, onClose}: { version: GuideVersion | nu
                 </DialogHeader>
                 {version && (
                     <div className="grid gap-4 sm:grid-cols-2">
-                        {field(t("Guide.admin.publishedAt"), version.publishedAt && format.dateTime(new Date(version.publishedAt), {dateStyle: "long", timeStyle: "short"}))}
+                        {field(t("Guide.admin.publishedAt"), formatInstant(version.publishedAt))}
                         {field(t("Guide.admin.publishedBy"), version.publishedBy)}
                         {field(t("Guide.admin.revivals"), version.revivalCount)}
                         {field(t("Guide.admin.suggestions"), version.suggestionCount)}

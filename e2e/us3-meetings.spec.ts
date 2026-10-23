@@ -82,6 +82,6 @@ test.describe("Decision log, user story 3: the steering group runs a meeting fro
 
         await expect(rows.getByText("Vi spelar i RunAn")).toBeVisible();
         await expect(rows.getByText("Boka RunAn")).toHaveCount(0);
-        await expect(page.getByRole("combobox", {name: "Möte"})).toHaveValue(/.+/);
+        await expect(page.getByRole("button", {name: /^Möte/})).toContainText("1 vald");
     });
 });

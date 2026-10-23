@@ -5,6 +5,15 @@ test.describe("User story 1: the super admin records and approves a revival", ()
         await loginAs("superadmin");
     });
 
+    test("shows each spex's poster, or a placeholder when it has none, in the grid and the table", async ({page}) => {
+        for (const path of ["/revivals", "/revivals/manage"]) {
+            await page.goto(path);
+
+            await expect(page.locator('img[src="/api/revival-poster/1"]')).toHaveJSProperty("naturalWidth", 1);
+            await expect(page.locator('img[src^="/api/revival-poster/"]')).toHaveCount(1);
+        }
+    });
+
     test("creates a revival from a spex search, approves it and appoints a waiting directeur", async ({page}) => {
         await page.goto("/revivals/manage");
         await page.getByRole("button", {name: "Ny nyuppsättning"}).click();
@@ -20,9 +29,11 @@ test.describe("User story 1: the super admin records and approves a revival", ()
         await page.getByRole("combobox", {name: "Ändra status"}).selectOption("APPROVED");
         await expect(page.locator('[data-slot="badge"]:visible', {hasText: "Godkänd"})).toBeVisible();
 
-        await page.getByRole("textbox", {name: /Utse directeur/}).fill("ny.directeur@example.org");
+        await page.getByRole("link", {name: "Styrgrupp", exact: true}).click();
         await page.getByRole("button", {name: "Utse directeur"}).click();
-        await expect(page.getByText("ny.directeur@example.org")).toBeVisible();
+        await page.getByRole("dialog").getByRole("combobox", {name: /Utse directeur/}).fill("ny.directeur@example.org");
+        await page.getByRole("dialog").getByRole("button", {name: "Bjud in"}).click();
+        await expect(page.getByText("ny.directeur@example.org").first()).toBeVisible();
         await expect(page.getByText("Väntar på åtkomst")).toBeVisible();
     });
 
@@ -118,6 +129,8 @@ test.describe("User story 1: the super admin records and approves a revival", ()
         await openRevival(page, "Ali Baba 2028");
 
         await expect(page.getByText("Stina Styrgrupp")).toBeVisible();
+        await page.getByRole("link", {name: "Visa styrgruppen"}).click();
+        await expect(page.getByRole("row").filter({hasText: "Stina Styrgrupp"})).toBeVisible();
         await expect(page.getByRole("button", {name: "Lägg till i styrgruppen"})).toBeVisible();
     });
 });

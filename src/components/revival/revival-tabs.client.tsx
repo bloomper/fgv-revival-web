@@ -3,7 +3,7 @@
 import type {ReactNode} from "react";
 import Link from "next/link";
 import {useSelectedLayoutSegment} from "next/navigation";
-import {BookOpen, CalendarCheck, ClipboardCheck, LayoutDashboard, ListChecks, type LucideIcon} from "lucide-react";
+import {BookOpen, CalendarCheck, ClipboardCheck, LayoutDashboard, ListChecks, type LucideIcon, Users} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {Badge} from "@/components/ui/badge";
 import {cn} from "@/utils/utils";
@@ -36,11 +36,9 @@ interface Tab {
  * The sections of a revival as links styled as tabs, one per route, so each section keeps its own URL. The active tab
  * follows the first segment below the revival, which also keeps it lit on a meeting or a checklist.
  */
-export function RevivalTabs({revivalId, work, guideLabel}: {
+export function RevivalTabs({revivalId, work}: {
     revivalId: string;
     work: RevivalWork | null;
-    /** The label of the guide version the revival is pinned to, or null when it is pinned to none. */
-    guideLabel: string | null;
 }) {
     const t = useTranslations("Revival");
     const segment = useSelectedLayoutSegment();
@@ -58,12 +56,13 @@ export function RevivalTabs({revivalId, work, guideLabel}: {
             count: work && <WorkCount open={work.openRequiredItems} overdue={work.overdueChecklistItems}
                                       label={t("requirementsOverdue", {open: work.openRequiredItems, overdue: work.overdueChecklistItems})}/>,
         },
-        {segment: "guide", title: guideLabel === null ? t("guide") : t("guideVersion", {label: guideLabel}), icon: BookOpen},
+        {segment: "guide", title: t("guide"), icon: BookOpen},
+        {segment: "members", title: t("members"), icon: Users},
     ];
 
     return (
-        <nav aria-label={t("sections")} className="-mx-4 overflow-x-auto border-b px-4 md:mx-0 md:px-0">
-            <ul className="flex min-w-max gap-1">
+        <nav aria-label={t("sections")} className="-mx-4 overflow-x-auto overflow-y-hidden px-4 [scrollbar-width:none] md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden">
+            <ul className="flex min-w-max gap-1 border-b">
                 {tabs.map(tab => {
                     const active = tab.segment === segment;
                     return (

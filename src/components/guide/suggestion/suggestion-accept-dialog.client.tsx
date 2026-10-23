@@ -8,6 +8,7 @@ import {Button} from "@/components/ui/button";
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
+import {NativeSelect} from "@/components/ui/native-select";
 import {acceptSuggestionAction, rejectSuggestionAction} from "@/app/(app)/admin/guide/suggestions/actions.server";
 import {catalogChoices, defaultItemType, type GuideItemTypeValue} from "@/components/catalog/catalog";
 import {CatalogOptions, useGuideItemTypes} from "@/components/catalog/catalog-provider.client";
@@ -78,10 +79,9 @@ export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: Gu
                             <>
                                 <div className="space-y-2">
                                     <Label htmlFor="resolution-type">{t("Guide.editor.type")}</Label>
-                                    <select id="resolution-type" value={type} onChange={event => setType(event.target.value)}
-                                            className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs">
+                                    <NativeSelect className="w-full" id="resolution-type" value={type} onChange={event => setType(event.target.value)}>
                                         <CatalogOptions entries={catalogChoices(types, [suggestion.proposedType, draftItem?.type, suggestion.item?.type])}/>
-                                    </select>
+                                    </NativeSelect>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="resolution-text">{t("Guide.suggestions.draftGets")}</Label>

@@ -46,7 +46,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         const dialog = page.getByRole("dialog");
 
         await dialog.getByLabel("Namn").fill("Rephelg 2");
-        await dialog.getByLabel("Datum").fill("2027-11-20");
+        await dialog.getByLabel("Datum", {exact: true}).fill("2027-11-20");
         await dialog.getByLabel("Mall").selectOption({label: "Rephelg"});
         await dialog.getByRole("button", {name: "Spara"}).click();
 
@@ -65,7 +65,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await expect(dialog).toBeHidden();
 
         await page.getByRole("button", {name: "Ändra namn och datum"}).click();
-        await dialog.getByLabel("Datum").fill("2027-11-27");
+        await dialog.getByLabel("Datum", {exact: true}).fill("2027-11-27");
         await dialog.getByRole("button", {name: "Spara"}).click();
         await expect(dialog).toBeHidden();
         await expect(row("Utskick")).toContainText("Klart senast: 2027-11-15");
@@ -94,7 +94,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         const events = page.getByRole("region", {name: "Händelser"});
 
         await expect(events.getByText("Rephelg 2")).toHaveCount(0);
-        await events.getByRole("link", {name: "Visa strukna"}).click();
+        await events.getByRole("switch", {name: "Visa strukna"}).click();
         await expect(page.getByRole("region", {name: "Händelser"}).getByRole("listitem").filter({hasText: "Rephelg 2"})).toContainText("Struken");
     });
 

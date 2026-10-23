@@ -4,35 +4,32 @@ import * as React from "react";
 import {useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
-import {Search} from "lucide-react";
+import {X} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
-import {LOG_ENTRY_TYPES, logFilterQuery, type LogFilterValues} from "@/lib/decision-log/schema";
+import {DataFilter} from "@/components/data-filter";
+import {isLogFiltered, LOG_ENTRY_TYPES, logFilterQuery, type LogFilterValues} from "@/lib/decision-log/schema";
+import {formatDate} from "@/utils/format";
 
-function Toggle({pressed, onClick, children}: { pressed: boolean; onClick: () => void; children: React.ReactNode }) {
-    return (
-        <Button type="button" size="sm" variant={pressed ? "default" : "outline"} aria-pressed={pressed} onClick={onClick}>
-            {children}
-        </Button>
-    );
-}
+const QUICK = ["mine", "open", "overdue"] as const;
 
-function toggled<T>(values: T[] | undefined, value: T): T[] | undefined {
-    const next = values?.includes(value) ? values.filter(entry => entry !== value) : [...(values ?? []), value];
+type Quick = (typeof QUICK)[number];
 
-    return next.length > 0 ? next : undefined;
+function listOrUndefined<T>(values: Set<T>): T[] | undefined {
+    return values.size > 0 ? [...values] : undefined;
 }
 
 /**
- * The log's filters: mine, open, overdue, type, meeting, tag and text, in any combination (M3 FR-012). They live in the
- * URL, so a filtered view can be reloaded and shared.
+ * The log's filters, as on the other list pages: a search field and a filter per kind — mine, open and overdue; type;
+ * tag; meeting — in any combination (M3 FR-012). They live in the URL, so a filtered view can be reloaded and shared,
+ * and the server does the filtering.
  */
 export function LogFilters({filter, tags, meetings}: {
     filter: LogFilterValues;
     tags: string[];
     meetings: { id: string; date: string; title?: string | null }[];
 }) {
-    const t = useTranslations("Log");
+    const t = useTranslations();
     const router = useRouter();
     const pathname = usePathname();
     const [text, setText] = useState(filter.text ?? "");
@@ -42,49 +39,65 @@ export function LogFilters({filter, tags, meetings}: {
 
         router.push(query ? `${pathname}?${query}` : pathname);
     };
+    const search = (value: string) => apply({...filter, text: value.trim() || undefined});
+    const quick = new Set<Quick>(QUICK.filter(key => filter[key]));
 
     return (
-        <div className="flex flex-col gap-3" role="group" aria-label={t("filters")}>
-            <div className="flex flex-wrap gap-2">
-                <Toggle pressed={!!filter.mine} onClick={() => apply({...filter, mine: !filter.mine || undefined})}>{t("filter.mine")}</Toggle>
-                <Toggle pressed={!!filter.open} onClick={() => apply({...filter, open: !filter.open || undefined})}>{t("filter.open")}</Toggle>
-                <Toggle pressed={!!filter.overdue} onClick={() => apply({...filter, overdue: !filter.overdue || undefined})}>{t("filter.overdue")}</Toggle>
-                {LOG_ENTRY_TYPES.map(type => (
-                    <Toggle key={type} pressed={!!filter.types?.includes(type)}
-                            onClick={() => apply({...filter, types: toggled(filter.types, type)})}>
-                        {t(`type.${type}`)}
-                    </Toggle>
-                ))}
-            </div>
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t("Log.filters")}>
+            <form className="relative w-full sm:w-75" onSubmit={(event) => {
+                event.preventDefault();
+                search(text);
+            }}>
+                <Input value={text} onChange={event => setText(event.target.value)} onBlur={() => text.trim() !== (filter.text ?? "") && search(text)}
+                       placeholder={t("Log.searchPlaceholder")} aria-label={t("Log.search")} className="h-8 pr-8"/>
+                {text && (
+                    <Button type="button" variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                            aria-label={t("Common.clearSearch")} onClick={() => {
+                        setText("");
+                        search("");
+                    }}>
+                        <X className="h-3 w-3"/>
+                    </Button>
+                )}
+            </form>
+            <DataFilter title={t("Log.filter.show")}
+                        options={QUICK.map((key, index) => ({label: t(`Log.filter.${key}`), value: key, sortKey: String(index)}))}
+                        selectedValues={quick}
+                        onSelect={values => apply({...filter, mine: values.has("mine") || undefined, open: values.has("open") || undefined,
+                            overdue: values.has("overdue") || undefined})}
+                        onClear={() => apply({...filter, mine: undefined, open: undefined, overdue: undefined})}/>
+            <DataFilter title={t("Log.typeLabel")}
+                        options={LOG_ENTRY_TYPES.map((type, index) => ({label: t(`Log.type.${type}`), value: type, sortKey: String(index)}))}
+                        selectedValues={new Set(filter.types)}
+                        onSelect={values => apply({...filter, types: listOrUndefined(values as Set<(typeof LOG_ENTRY_TYPES)[number]>)})}
+                        onClear={() => apply({...filter, types: undefined})}/>
             {tags.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm text-muted-foreground">{t("tags")}:</span>
-                    {tags.map(tag => (
-                        <Toggle key={tag} pressed={!!filter.tags?.includes(tag)} onClick={() => apply({...filter, tags: toggled(filter.tags, tag)})}>
-                            {tag}
-                        </Toggle>
-                    ))}
-                </div>
+                <DataFilter title={t("Log.tags")} options={tags.map(tag => ({label: tag, value: tag}))}
+                            selectedValues={new Set(filter.tags)}
+                            onSelect={values => apply({...filter, tags: listOrUndefined(values)})}
+                            onClear={() => apply({...filter, tags: undefined})}/>
             )}
             {meetings.length > 0 && (
-                <label className="flex items-center gap-2 text-sm text-muted-foreground">
-                    {t("filter.meeting")}:
-                    <select className="h-8 rounded-md border border-input bg-background px-2 text-foreground" value={filter.meetingId ?? ""}
-                            onChange={event => apply({...filter, meetingId: event.target.value || undefined})}>
-                        <option value="">{t("filter.allMeetings")}</option>
-                        {meetings.map(meeting => (
-                            <option key={meeting.id} value={meeting.id}>{meeting.title ? `${meeting.date} ${meeting.title}` : meeting.date}</option>
-                        ))}
-                    </select>
-                </label>
+                <DataFilter title={t("Log.filter.meeting")}
+                            options={meetings.map(meeting => ({
+                                label: [formatDate(meeting.date), meeting.title].filter(Boolean).join(" "),
+                                value: meeting.id,
+                                sortKey: meeting.date,
+                            }))}
+                            selectedValues={new Set(filter.meetingId ? [filter.meetingId] : [])}
+                            // One meeting at a time: the one just ticked replaces the one before
+                            onSelect={values => apply({...filter, meetingId: [...values].find(id => id !== filter.meetingId)})}
+                            onClear={() => apply({...filter, meetingId: undefined})}/>
             )}
-            <form className="flex max-w-md gap-2" onSubmit={(event) => {
-                event.preventDefault();
-                apply({...filter, text: text.trim() || undefined});
-            }}>
-                <Input value={text} onChange={event => setText(event.target.value)} placeholder={t("searchPlaceholder")} aria-label={t("search")}/>
-                <Button type="submit" variant="outline" size="icon" aria-label={t("search")}><Search/></Button>
-            </form>
+            {isLogFiltered(filter) && (
+                <Button variant="ghost" onClick={() => {
+                    setText("");
+                    apply({});
+                }} className="h-8 px-2 lg:px-3">
+                    <X className="mr-2 h-4 w-4"/>
+                    {t("Common.reset")}
+                </Button>
+            )}
         </div>
     );
 }

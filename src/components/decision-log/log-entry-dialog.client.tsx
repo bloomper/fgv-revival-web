@@ -9,9 +9,11 @@ import type {LogEntryFieldsFragment} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
+import {DateInput} from "@/components/date-input.client";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
+import {NativeSelect} from "@/components/ui/native-select";
 import {OwnerField, type OwnerMember} from "@/components/owner/owner-field.client";
 import {createLogEntryAction, updateLogEntryAction} from "@/app/(app)/revivals/[id]/log/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
@@ -75,15 +77,15 @@ export function LogEntryDialog({revivalId, entry, members, tags, meetingId, open
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="log-type">{t("Log.typeLabel")}</Label>
-                                    <select id="log-type" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm" {...form.register("type")}>
+                                    <NativeSelect className="w-full" id="log-type" {...form.register("type")}>
                                         {LOG_ENTRY_TYPES.map(type => <option key={type} value={type}>{t(`Log.type.${type}`)}</option>)}
-                                    </select>
+                                    </NativeSelect>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="log-status">{t("Log.statusLabel")}</Label>
-                                    <select id="log-status" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm" {...form.register("status")}>
+                                    <NativeSelect className="w-full" id="log-status" {...form.register("status")}>
                                         {LOG_ENTRY_STATUSES.map(status => <option key={status} value={status}>{t(`Log.status.${status}`)}</option>)}
-                                    </select>
+                                    </NativeSelect>
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -97,12 +99,14 @@ export function LogEntryDialog({revivalId, entry, members, tags, meetingId, open
                             {error(errors.owner?.name?.message ?? errors.owner?.message)}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="log-deadline">{t("Log.deadline")}</Label>
-                                    <Input id="log-deadline" type="date" {...form.register("deadline", {setValueAs: value => value || null})}/>
+                                    <Label htmlFor="log-date">{t("Log.dateLabel")}</Label>
+                                    <DateInput id="log-date" aria-describedby="log-date-hint" {...form.register("date", {setValueAs: value => value || undefined})}/>
+                                    <p id="log-date-hint" className="text-xs text-muted-foreground">{t("Log.dateHint")}</p>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="log-date">{t("Log.date")}</Label>
-                                    <Input id="log-date" type="date" {...form.register("date", {setValueAs: value => value || undefined})}/>
+                                    <Label htmlFor="log-deadline">{t("Log.deadline")}</Label>
+                                    <DateInput id="log-deadline" aria-describedby="log-deadline-hint" {...form.register("deadline", {setValueAs: value => value || null})}/>
+                                    <p id="log-deadline-hint" className="text-xs text-muted-foreground">{t("Log.deadlineHint")}</p>
                                 </div>
                             </div>
                             <div className="space-y-2">

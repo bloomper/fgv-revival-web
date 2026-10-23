@@ -6,6 +6,7 @@ import {ArrowDown, ArrowUp, PencilLine, Plus, Trash2} from "lucide-react";
 import type {GuideItemFieldsFragment, GuideVersionFieldsFragment} from "@/gql/graphql";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
+import {NativeSelect} from "@/components/ui/native-select";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -148,9 +149,8 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                                 onClick={() => run(() => moveItemAction({id: item.id, version: item.version, chapterId: chapter.id, sectionId: section?.id ?? null, position: index + 1}))}>
                         <ArrowDown/>
                     </IconAction>
-                    <select
+                    <NativeSelect size="sm" className="max-w-48"
                         aria-label={t("Guide.editor.moveTo")}
-                        className="h-8 max-w-48 rounded-md border border-input bg-background px-2 text-sm shadow-xs"
                         value=""
                         disabled={pending}
                         onChange={event => {
@@ -165,7 +165,7 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                         {places.map((place, placeIndex) => (place.chapterId === chapter.id && place.sectionId === (section?.id ?? null))
                             ? null
                             : <option key={`${place.chapterId}-${place.sectionId}`} value={placeIndex}>{place.label}</option>)}
-                    </select>
+                    </NativeSelect>
                     <ConfirmRemove label={t("Guide.editor.removeItem")} onConfirm={() => removeItemAction({id: item.id, version: item.version})}/>
                 </div>
             </div>
@@ -240,9 +240,8 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                                             onClick={() => run(() => moveSectionAction({id: section.id, version: section.version, chapterId: chapter.id, position: sectionIndex + 1}))}>
                                     <ArrowDown/>
                                 </IconAction>
-                                <select
+                                <NativeSelect size="sm"
                                     aria-label={t("Guide.editor.moveSectionTo")}
-                                    className="h-8 rounded-md border border-input bg-background px-2 text-sm shadow-xs"
                                     value=""
                                     disabled={pending}
                                     onChange={event => {
@@ -257,7 +256,7 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                                     {draft.chapters.map((candidate, index) => candidate.id === chapter.id ? null : (
                                         <option key={candidate.id} value={candidate.id}>{index + 1}. {title(candidate.title)}</option>
                                     ))}
-                                </select>
+                                </NativeSelect>
                                 <ConfirmRemove label={t("Guide.editor.removeSection")} onConfirm={() => removeSectionAction({id: section.id, version: section.version})}/>
                             </div>
                         </div>

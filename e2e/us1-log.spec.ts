@@ -48,11 +48,14 @@ test.describe("Decision log, user story 1: the steering group keeps the decision
         const table = page.getByRole("table");
 
         await expect(table.getByRole("row")).toHaveCount(4);
-        await expect(table.getByText("Försenad")).toBeVisible();
-        await expect(table.getByText("Sam på lokalen")).toBeVisible();
-        await expect(table.getByText("inte medlem")).toBeVisible();
+        await expect(table.getByText("Försenad").filter({visible: true})).toBeVisible();
+        await expect(table.getByText("Sam på lokalen").filter({visible: true})).toBeVisible();
+        await expect(table.getByText("inte medlem").filter({visible: true})).toBeVisible();
 
+        await page.getByRole("button", {name: /^Visa/}).click();
         await page.getByRole("button", {name: "Mina"}).click();
+        await expect(page).toHaveURL(/mine=1/);
+        await page.getByRole("button", {name: /^Visa/}).click();
         await page.getByRole("button", {name: "Försenade"}).click();
         await expect(page).toHaveURL(/mine=1&overdue=1/);
         await expect(table.getByRole("row")).toHaveCount(2);
@@ -62,14 +65,16 @@ test.describe("Decision log, user story 1: the steering group keeps the decision
         await expect(page.getByRole("table").getByRole("row")).toHaveCount(3);
 
         await page.goto("/revivals/1/log");
-        await page.getByRole("button", {name: "Besvara fråga 2"}).click();
+        await page.getByRole("button", {name: "Åtgärder för rad 2"}).click();
+        await page.getByRole("menuitem", {name: "Besvara fråga 2"}).click();
         await page.getByRole("dialog").getByLabel("Beslut").fill("Kalaset blir på Kårhuset");
         await page.getByRole("dialog").getByRole("button", {name: "Besvara"}).click();
         await expect(page.getByRole("table").getByText("Besvarar fråga 2")).toBeVisible();
         await expect(page.getByRole("table").getByText("Besvarad i rad 4")).toBeVisible();
 
-        await page.getByRole("table").getByLabel("Status för rad 3").selectOption({label: "Struken"});
-        await expect(page.getByRole("table").getByLabel("Status för rad 3")).toHaveValue("CANCELLED");
+        await page.getByRole("button", {name: "Åtgärder för rad 3"}).click();
+        await page.getByRole("menuitem", {name: "Struken"}).click();
+        await expect(page.getByRole("row").filter({hasText: "Skicka offert"})).toContainText("Struken");
         await expect(page.getByRole("button", {name: /Ta bort/})).toHaveCount(0);
     });
 });
@@ -82,5 +87,6 @@ test("an observer reads the log without any controls", async ({page, mock, login
 
     await expect(page.getByRole("table").getByText("Spexpengen är 1500 kr")).toBeVisible();
     await expect(page.getByRole("button", {name: "Ny rad"})).toHaveCount(0);
-    await expect(page.getByRole("button", {name: /Ändra rad/})).toHaveCount(0);
+    await expect(page.getByRole("button", {name: /Åtgärder för rad/})).toHaveCount(0);
+    await expect(page.getByText("Endast läsning")).toBeVisible();
 });

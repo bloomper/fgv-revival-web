@@ -2,6 +2,7 @@ import {useTranslations} from "next-intl";
 import type {MinutesRowFieldsFragment} from "@/gql/graphql";
 import {OwnerLabel} from "@/components/owner/owner-label";
 import {PlainText} from "@/components/plain-text";
+import {formatDate} from "@/utils/format";
 
 export type MinutesValue = {
     decisions: MinutesRowFieldsFragment[];
@@ -49,7 +50,7 @@ export function MinutesView({minutes}: { minutes: MinutesValue }) {
             <Section title={t("todos")} rows={minutes.todos} render={row => <>
                 <PlainText text={row.text}/>
                 <span className="text-muted-foreground">{t("owner")}: <OwnerLabel owner={row.owner}/></span>
-                {row.deadline && <span className="text-muted-foreground">{t("deadline")}: {row.deadline}</span>}
+                {row.deadline && <span className="text-muted-foreground">{t("deadline")}: {formatDate(row.deadline)}</span>}
             </>}/>
             <Section title={t("questions")} rows={minutes.questions} render={row => <PlainText text={row.text}/>}/>
             <Section title={t("closedRows")} rows={minutes.closed} render={row => <>

@@ -10,6 +10,7 @@ import {ArrowDown, ArrowUp, X} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
+import {DateInput} from "@/components/date-input.client";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
@@ -91,7 +92,7 @@ export function MeetingDialog({revivalId, meeting, members, open, onOpenChange}:
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="meeting-date">{t("Meeting.date")}</Label>
-                                    <Input id="meeting-date" type="date" {...form.register("date")}/>
+                                    <DateInput id="meeting-date" {...form.register("date")}/>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="meeting-title">{t("Meeting.titleLabel")}</Label>

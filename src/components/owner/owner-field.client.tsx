@@ -4,6 +4,7 @@ import * as React from "react";
 import {useId, useState} from "react";
 import {useTranslations} from "next-intl";
 import {Input} from "@/components/ui/input";
+import {NativeSelect} from "@/components/ui/native-select";
 
 export type OwnerMember = { id: string; displayName?: string | null };
 export type OwnerFieldValue = { personId?: string | null; name?: string | null } | null;
@@ -32,9 +33,8 @@ export function OwnerField({members, value, onChange, disabled, current}: {
     return (
         <div className="flex flex-col gap-2">
             <label htmlFor={id} className="text-sm font-medium">{t("label")}</label>
-            <select
+            <NativeSelect
                 id={id}
-                className="h-9 rounded-md border border-input bg-background px-2 text-sm shadow-xs disabled:opacity-50"
                 value={selected}
                 disabled={disabled}
                 onChange={(event) => {
@@ -56,7 +56,7 @@ export function OwnerField({members, value, onChange, disabled, current}: {
                 )}
                 {members.map(member => <option key={member.id} value={member.id}>{member.displayName ?? member.id}</option>)}
                 <option value={OTHER}>{t("someoneElse")}</option>
-            </select>
+            </NativeSelect>
             {other && (
                 <Input
                     aria-label={t("name")}

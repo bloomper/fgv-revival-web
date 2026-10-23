@@ -1,8 +1,8 @@
-import Link from "next/link";
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
 import {NewMeetingButton} from "@/components/meeting/new-meeting-button.client";
-import {MeetingStatusBadge} from "@/components/meeting/meeting-mode.client";
+import {MeetingTable} from "@/components/meeting/meeting-table.client";
+import {ReadOnlyNotice} from "@/components/revival/read-only-notice";
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getRevivalMeetings} from "@/lib/meeting/meeting.server";
 import {Policies} from "@/utils/policy.server";
@@ -25,7 +25,7 @@ async function load(id: string) {
 export default async function MeetingsPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
 
-    return withPolicyPage(Policies.app.requireAccess, async () => {
+    return withPolicyPage(Policies.app.requireAccess, async ({roles}) => {
         const loaded = await load(id);
 
         if (!loaded) {
@@ -37,26 +37,10 @@ export default async function MeetingsPage({params}: { params: Promise<{ id: str
 
         return (
             <div className="flex flex-1 flex-col gap-4">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                    <div className="space-y-1">
-                        <h3 className="sr-only">{t("title")}</h3>
-                    </div>
-                    {revival.permissions.canWriteLog && <NewMeetingButton revivalId={revival.id} members={revival.ownerCandidates}/>}
-                </div>
-                {meetings.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">{t("empty")}</p>
-                ) : (
-                    <ul className="divide-y rounded-lg border">
-                        {meetings.map(meeting => (
-                            <li key={meeting.id}>
-                                <Link href={`/revivals/${revival.id}/meetings/${meeting.id}`} className="flex items-center justify-between gap-2 p-3 hover:bg-accent">
-                                    <span>{meeting.title ?? t("untitled")} <span className="text-muted-foreground">{meeting.date}</span></span>
-                                    <MeetingStatusBadge status={meeting.status}/>
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                <h3 className="sr-only">{t("title")}</h3>
+                <ReadOnlyNotice revivalId={revival.id} status={revival.status} canWrite={revival.permissions.canWriteLog} roles={roles}/>
+                <MeetingTable revivalId={revival.id} meetings={meetings}
+                              actions={revival.permissions.canWriteLog && <NewMeetingButton revivalId={revival.id} members={revival.ownerCandidates}/>}/>
             </div>
         );
     });
