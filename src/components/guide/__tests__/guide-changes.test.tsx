@@ -1,10 +1,11 @@
 import {describe, expect, it} from "vitest";
 import {render, screen} from "@testing-library/react";
 import {GuideChanges} from "@/components/guide/guide-changes.client";
+import {ITEM_TYPES} from "@/components/catalog/__tests__/fixtures";
 
 const chapter = (key: "B" | "C") => ({key, title: {sv: key === "B" ? "Lokaler" : "Budget", en: null}});
 const snapshot = (key: "B" | "C", sv: string, type: "TIP" | "REQUIREMENT" = "TIP") => ({
-    chapter: chapter(key), sectionKey: null, sectionTitle: null, type, text: {sv, en: null},
+    chapter: chapter(key), sectionKey: null, sectionTitle: null, type: ITEM_TYPES[type], text: {sv, en: null},
 });
 
 describe("GuideChanges", () => {

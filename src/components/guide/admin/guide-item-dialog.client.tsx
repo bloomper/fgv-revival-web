@@ -9,20 +9,22 @@ import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger}
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
-import type {GuideItemType} from "@/gql/graphql";
 import type {ActionResult} from "@/lib/graphql.server";
+import {catalogChoices, defaultItemType, type GuideItemTypeValue} from "@/components/catalog/catalog";
+import {CatalogOptions, useGuideItemTypes} from "@/components/catalog/catalog-provider.client";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {GUIDE_ITEM_TYPES, guideItemSchema, type GuideItemValues, MAX_ITEM_TEXT} from "@/lib/guide/schema";
+import {guideItemSchema, type GuideItemValues, MAX_ITEM_TEXT} from "@/lib/guide/schema";
 
 /**
  * Edits an item's type and its Swedish and English Markdown, with a preview rendered as readers see it (research R9).
+ * The types are the active ones, and the item's own if it is retired.
  */
 export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
     trigger: ReactElement;
     children: ReactNode;
     heading: string;
-    initial?: { type: GuideItemType; text: { sv: string; en?: string | null } };
+    initial?: { type: GuideItemTypeValue; text: { sv: string; en?: string | null } };
     onSave: (values: GuideItemValues) => Promise<ActionResult<null>>;
 }) {
     const t = useTranslations();
@@ -30,9 +32,10 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
     const [open, setOpen] = useState(false);
     const [preview, setPreview] = useState(false);
     const [pending, startTransition] = useTransition();
+    const types = useGuideItemTypes();
     const form = useForm<GuideItemValues>({
         resolver: zodResolver(guideItemSchema),
-        values: {type: initial?.type ?? "TIP", text: {sv: initial?.text.sv ?? "", en: initial?.text.en ?? ""}},
+        values: {type: initial?.type.id ?? defaultItemType(types), text: {sv: initial?.text.sv ?? "", en: initial?.text.en ?? ""}},
     });
     const {errors} = form.formState;
     const sv = useWatch({control: form.control, name: "text.sv"});
@@ -67,7 +70,7 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
                                 <Label htmlFor="guide-item-type">{t("Guide.editor.type")}</Label>
                                 <select id="guide-item-type" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
                                         {...form.register("type")}>
-                                    {GUIDE_ITEM_TYPES.map(type => <option key={type} value={type}>{t(`Guide.type.${type}`)}</option>)}
+                                    <CatalogOptions entries={catalogChoices(types, [initial?.type])}/>
                                 </select>
                             </div>
                             <div className="flex gap-2" role="tablist">

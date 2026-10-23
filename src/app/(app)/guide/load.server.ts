@@ -1,14 +1,15 @@
 import "server-only";
 
+import {cache} from "react";
 import {notFound} from "next/navigation";
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getGuideLatestVersion, getGuideVersion, getGuideVersions} from "@/lib/guide/guide.server";
 
 /**
  * The published versions and the one to show: the one asked for, or the latest. Not found for an unknown version;
- * refused for users the guide is not shown to.
+ * refused for users the guide is not shown to. Once per request, as the chapters' layout and page both need it.
  */
-export async function loadGuide(version: string | undefined) {
+export const loadGuide = cache(async (version: string | undefined) => {
     try {
         const versions = await getGuideVersions();
         const shown = version ? await getGuideVersion(version) : await getGuideLatestVersion();
@@ -23,4 +24,4 @@ export async function loadGuide(version: string | undefined) {
         }
         throw error;
     }
-}
+});

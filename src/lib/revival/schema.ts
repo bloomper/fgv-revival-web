@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {catalogId} from "@/lib/catalog/schema";
 
 // Validation messages are keys under "Validation" in messages/{sv,en}.json, translated where they are shown.
 
@@ -7,7 +8,6 @@ export const MAX_YEAR = 2100;
 export const MAX_VENUES = 20;
 
 export const REVIVAL_STATUSES = ["PROPOSED", "APPROVED", "ORGANISING", "OPEN", "CLOSING", "SETTLING", "ARCHIVED", "REJECTED"] as const;
-export const CAPABILITIES = ["FINANCE", "CATERING", "STAFFING", "COMMS"] as const;
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid").refine(value => !Number.isNaN(Date.parse(value)), "dateInvalid");
 
@@ -67,11 +67,11 @@ export const memberAddSchema = z.object({
     revivalId: z.string().min(1),
     email: z.email("emailInvalid"),
     role: z.enum(["DIRECTEUR", "STEERING_GROUP"]),
-    capabilities: z.array(z.enum(CAPABILITIES)).default([]),
+    capabilities: z.array(catalogId).default([]),
 });
 
 export const memberCapabilitiesSchema = z.object({
     id: z.string().min(1),
     version: z.number().int(),
-    capabilities: z.array(z.enum(CAPABILITIES)),
+    capabilities: z.array(catalogId),
 });

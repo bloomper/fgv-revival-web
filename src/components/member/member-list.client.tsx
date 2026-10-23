@@ -2,22 +2,24 @@
 
 import * as React from "react";
 import {useState, useTransition} from "react";
-import {useTranslations} from "next-intl";
-import type {Capability, MemberState, RevivalRole} from "@/gql/graphql";
+import {useLocale, useTranslations} from "next-intl";
+import type {MemberState, RevivalRole} from "@/gql/graphql";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Checkbox} from "@/components/ui/checkbox";
 import {Input} from "@/components/ui/input";
+import {catalogChoices, catalogName, type CatalogEntryValue} from "@/components/catalog/catalog";
+import {useCapabilities} from "@/components/catalog/catalog-provider.client";
 import {RemoveMemberButton} from "@/components/member/remove-member-button.client";
 import {addMemberAction, setCapabilitiesAction} from "@/app/(app)/revivals/[id]/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {CAPABILITIES, memberAddSchema} from "@/lib/revival/schema";
+import {memberAddSchema} from "@/lib/revival/schema";
 import {track} from "@/utils/umami";
 
 export type Member = {
     id: string;
     role: RevivalRole;
-    capabilities?: Capability[] | null;
+    capabilities?: CatalogEntryValue[] | null;
     state: MemberState;
     displayName?: string | null;
     email?: string | null;
@@ -30,39 +32,45 @@ function memberName(member: Member, fallback: string): string {
     return member.displayName ?? member.email ?? fallback;
 }
 
+/**
+ * The member's areas of responsibility as checkboxes: the active ones, and any retired one the member still holds,
+ * which stays until it is unticked.
+ */
 function CapabilityEditor({member}: { member: Member }) {
     const t = useTranslations();
+    const locale = useLocale();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
-    const current = new Set(member.capabilities ?? []);
+    const choices = catalogChoices(useCapabilities(), member.capabilities ?? []);
+    const current = new Set((member.capabilities ?? []).map(capability => capability.id));
 
     return (
         <div className="flex flex-wrap gap-3" role="group" aria-label={t("Members.capabilities")}>
-            {CAPABILITIES.map(capability => (
-                <label key={capability} className="flex items-center gap-1.5 text-sm">
+            {choices.map(capability => (
+                <label key={capability.id} className="flex items-center gap-1.5 text-sm">
                     <Checkbox
-                        checked={current.has(capability)}
+                        checked={current.has(capability.id)}
                         disabled={pending}
                         onCheckedChange={(checked) => {
                             const next = new Set(current);
 
                             if (checked) {
-                                next.add(capability);
+                                next.add(capability.id);
                             } else {
-                                next.delete(capability);
+                                next.delete(capability.id);
                             }
                             startTransition(async () => {
                                 if (feedback(await setCapabilitiesAction({
                                     id: member.id,
                                     version: member.version ?? 0,
-                                    capabilities: CAPABILITIES.filter(c => next.has(c)),
+                                    capabilities: choices.filter(choice => next.has(choice.id)).map(choice => choice.id),
                                 }), t("Members.capabilitiesSaved"))) {
                                     track("member-capabilities", {count: next.size});
                                 }
                             });
                         }}
                     />
-                    {t(`Capability.${capability}`)}
+                    {capability.retired ? t("Catalog.retiredName", {name: catalogName(capability, locale)}) : catalogName(capability, locale)}
                 </label>
             ))}
         </div>
@@ -71,10 +79,12 @@ function CapabilityEditor({member}: { member: Member }) {
 
 function AddMemberForm({revivalId, role}: { revivalId: string; role: AssignableRole }) {
     const t = useTranslations();
+    const locale = useLocale();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
+    const choices = catalogChoices(useCapabilities());
     const [email, setEmail] = useState("");
-    const [capabilities, setCapabilitiesState] = useState<Capability[]>([]);
+    const [capabilities, setCapabilitiesState] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
     const label = role === "DIRECTEUR" ? t("Members.addDirecteur") : t("Members.addMember");
 
@@ -114,14 +124,14 @@ function AddMemberForm({revivalId, role}: { revivalId: string; role: AssignableR
             </div>
             {role === "STEERING_GROUP" && (
                 <div className="flex flex-wrap gap-3" role="group" aria-label={t("Members.capabilities")}>
-                    {CAPABILITIES.map(capability => (
-                        <label key={capability} className="flex items-center gap-1.5 text-sm">
+                    {choices.map(capability => (
+                        <label key={capability.id} className="flex items-center gap-1.5 text-sm">
                             <Checkbox
-                                checked={capabilities.includes(capability)}
+                                checked={capabilities.includes(capability.id)}
                                 onCheckedChange={(checked) => setCapabilitiesState(previous =>
-                                    checked ? [...previous, capability] : previous.filter(c => c !== capability))}
+                                    checked ? [...previous, capability.id] : previous.filter(id => id !== capability.id))}
                             />
-                            {t(`Capability.${capability}`)}
+                            {catalogName(capability, locale)}
                         </label>
                     ))}
                 </div>
@@ -143,6 +153,7 @@ export function MemberList({revivalId, role, members, canManage}: {
     canManage: boolean;
 }) {
     const t = useTranslations();
+    const locale = useLocale();
     const shown = members.filter(member => member.role === role);
     const showEmails = shown.some(member => member.email);
 
@@ -168,7 +179,7 @@ export function MemberList({revivalId, role, members, canManage}: {
                                     {role === "STEERING_GROUP" && !canManage && (
                                         <div className="flex flex-wrap gap-1">
                                             {(member.capabilities ?? []).map(capability => (
-                                                <Badge key={capability} variant="secondary">{t(`Capability.${capability}`)}</Badge>
+                                                <Badge key={capability.id} variant="secondary">{catalogName(capability, locale)}</Badge>
                                             ))}
                                         </div>
                                     )}

@@ -64,7 +64,7 @@ test.describe("Guide, user story 3: the super admin edits a draft and publishes 
         await page.getByRole("button", {name: "Åtgärder för v1"}).click();
         await expect(page.getByRole("menuitem", {name: /Ta bort/})).toHaveAttribute("aria-disabled", "true");
         await page.getByRole("menuitem", {name: "Visa versionen"}).click();
-        await expect(page).toHaveURL(/\/guide\?version=1$/);
+        await expect(page).toHaveURL(/\/guide\/versions\/1$/);
         await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
 
         await page.goto("/admin/guide");
@@ -124,7 +124,7 @@ test("an observer picks an older version in the guide's version selector", async
     await expect(select).toContainText("v2 (senaste)");
     await select.click();
     await page.getByRole("option", {name: "v1"}).click();
-    await expect(page).toHaveURL(/\/guide\?version=1$/);
+    await expect(page).toHaveURL(/\/guide\/versions\/1$/);
     await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
 
     await select.click();

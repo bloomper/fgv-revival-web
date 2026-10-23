@@ -32,6 +32,7 @@ import {GuideIntroductionDialog} from "@/components/guide/admin/guide-introducti
 import {GuideTitleDialog} from "@/components/guide/admin/guide-title-dialog.client";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {GuideTypeBadge} from "@/components/guide/guide-type-badge";
+import {catalogName} from "@/components/catalog/catalog";
 import {pickText} from "@/components/guide/localized";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import type {ActionResult} from "@/lib/graphql.server";
@@ -128,7 +129,7 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
     const itemRow = (item: GuideItemFieldsFragment, list: GuideItemFieldsFragment[], index: number, chapter: Chapter, section: Section | null) => (
         <li key={item.id} className="space-y-2 rounded-md border p-3" data-testid={`draft-item-${item.key}`}>
             <div className="flex flex-wrap items-center gap-2">
-                {item.type !== "TEXT" ? <GuideTypeBadge type={item.type}/> : <Badge variant="secondary">{t("Guide.type.TEXT")}</Badge>}
+                {item.type.kind !== "TEXT" ? <GuideTypeBadge type={item.type}/> : <Badge variant="secondary">{catalogName(item.type, locale)}</Badge>}
                 <NoEnglish text={item.text}/>
                 <div className="ml-auto flex flex-wrap items-center gap-1">
                     <GuideItemDialog

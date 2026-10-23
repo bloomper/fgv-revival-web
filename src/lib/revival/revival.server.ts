@@ -34,7 +34,7 @@ export const RevivalDetail = graphql(`
         createdAt
         lastModifiedBy
         lastModifiedAt
-        members { id role capabilities state displayName email version }
+        members { id role capabilities { ...CapabilityFields } state displayName email version }
         statusHistory { from to changedBy changedAt }
         guideVersion { id label }
     }
@@ -47,7 +47,7 @@ const MeQuery = graphql(`
             displayName
             email
             globalRoles
-            revivalRoles { role capabilities revival { id } }
+            revivalRoles { role capabilities { id } revival { id } }
         }
     }
 `);

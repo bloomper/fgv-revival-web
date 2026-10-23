@@ -30,10 +30,10 @@ describe("GuideChapterView", () => {
     it("labels every item type except plain text", () => {
         render(<><GuideChapterView chapter={chapter("A")} number={1}/><GuideChapterView chapter={chapter("B")} number={2}/></>);
 
-        expect(screen.getByText("REQUIREMENT")).toBeInTheDocument();
-        expect(screen.getByText("TIP")).toBeInTheDocument();
-        expect(screen.getByText("QUESTION")).toBeInTheDocument();
-        expect(screen.queryByText("TEXT")).not.toBeInTheDocument();
+        expect(screen.getByText("Krav")).toBeInTheDocument();
+        expect(screen.getByText("Praktiska tips")).toBeInTheDocument();
+        expect(screen.getByText("Att ta reda på")).toBeInTheDocument();
+        expect(screen.queryByText("Text")).not.toBeInTheDocument();
     });
 
     it("adds the given controls to items and places", () => {

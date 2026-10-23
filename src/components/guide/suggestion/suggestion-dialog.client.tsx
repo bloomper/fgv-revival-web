@@ -9,11 +9,12 @@ import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTi
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
-import type {GuideItemType} from "@/gql/graphql";
 import {suggestAction} from "@/app/(app)/revivals/[id]/guide/actions.server";
+import {catalogChoices, defaultItemType, type GuideItemTypeValue} from "@/components/catalog/catalog";
+import {CatalogOptions, useGuideItemTypes} from "@/components/catalog/catalog-provider.client";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {GUIDE_ITEM_TYPES, guideSuggestionSchema, type GuideSuggestionValues, MAX_ITEM_TEXT, MAX_REASON} from "@/lib/guide/schema";
+import {guideSuggestionSchema, type GuideSuggestionValues, MAX_ITEM_TEXT, MAX_REASON} from "@/lib/guide/schema";
 import {track} from "@/utils/umami";
 
 type Place = { chapterKey: string; sectionKey: string | null };
@@ -28,18 +29,19 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
     revivalId: string;
     versionId: string;
     kind: "CHANGE" | "REMOVE" | "ADD";
-    item?: { key: string; type: GuideItemType; text: { sv: string; en?: string | null } };
+    item?: { key: string; type: GuideItemTypeValue; text: { sv: string; en?: string | null } };
     place?: Place;
 }) {
     const t = useTranslations();
     const feedback = useActionFeedback();
     const [open, setOpen] = useState(false);
     const [pending, startTransition] = useTransition();
+    const types = useGuideItemTypes();
     const form = useForm<GuideSuggestionValues>({
         resolver: zodResolver(guideSuggestionSchema),
         values: {
             kind,
-            proposedType: kind === "ADD" ? "TIP" : kind === "CHANGE" ? item?.type ?? "TIP" : null,
+            proposedType: kind === "ADD" ? defaultItemType(types) : kind === "CHANGE" ? item?.type.id ?? defaultItemType(types) : null,
             proposedTextSv: kind === "CHANGE" ? item?.text.sv ?? "" : "",
             proposedTextEn: kind === "CHANGE" ? item?.text.en ?? "" : "",
             reason: "",
@@ -65,7 +67,7 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
                 <form
                     className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
-                        const changedType = kind === "CHANGE" && values.proposedType === item?.type ? null : values.proposedType;
+                        const changedType = kind === "CHANGE" && values.proposedType === item?.type.id ? null : values.proposedType;
                         const result = await suggestAction({
                             revivalId, versionId, itemKey: item?.key ?? null, chapterKey: place?.chapterKey ?? null, sectionKey: place?.sectionKey ?? null,
                             values: {
@@ -93,7 +95,7 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
                                         <Label htmlFor="suggest-type">{t("Guide.editor.type")}</Label>
                                         <select id="suggest-type" className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
                                                 {...form.register("proposedType")}>
-                                            {GUIDE_ITEM_TYPES.map(type => <option key={type} value={type}>{t(`Guide.type.${type}`)}</option>)}
+                                            <CatalogOptions entries={catalogChoices(types, [item?.type])}/>
                                         </select>
                                     </div>
                                     <div className="space-y-2">

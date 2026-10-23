@@ -2,6 +2,7 @@ import {describe, expect, it, vi} from "vitest";
 import {render, screen} from "@testing-library/react";
 import type {GuideSuggestionFieldsFragment} from "@/gql/graphql";
 import {SuggestionList} from "@/components/guide/suggestion/suggestion-list.client";
+import {ITEM_TYPES} from "@/components/catalog/__tests__/fixtures";
 
 vi.mock("@/app/(app)/revivals/[id]/guide/actions.server", () => ({withdrawSuggestionAction: vi.fn()}));
 vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn()})}));
@@ -11,7 +12,7 @@ const suggestion = (overrides: Partial<GuideSuggestionFieldsFragment> = {}): Gui
     reason: "Inaktuellt", decidedBy: null, decidedAt: null, decisionReason: null, reopenedAt: null, createdAt: "2026-11-02T10:00:00Z",
     proposedType: null, proposedText: {sv: "Nytt tips.", en: null},
     revival: {id: "1", title: "Ali Baba 2028", year: 2028}, madeOn: {id: "1", label: "v1"}, publishedIn: null,
-    item: {chapter: {key: "B", title: {sv: "Lokaler", en: null}}, sectionKey: null, sectionTitle: null, type: "TIP", text: {sv: "Gammalt tips.", en: null}},
+    item: {chapter: {key: "B", title: {sv: "Lokaler", en: null}}, sectionKey: null, sectionTitle: null, type: ITEM_TYPES.TIP, text: {sv: "Gammalt tips.", en: null}},
     ...overrides,
 });
 

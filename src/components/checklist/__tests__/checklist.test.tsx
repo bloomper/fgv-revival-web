@@ -6,6 +6,7 @@ import {ChecklistItemDialog} from "@/components/checklist/checklist-item-dialog.
 import {updateChecklistItemAction} from "@/app/(app)/revivals/[id]/checklists/actions.server";
 import {checklistFilterQuery, parseChecklistFilter} from "@/lib/checklist/schema";
 import type {ChecklistItemFieldsFragment} from "@/gql/graphql";
+import {ITEM_TYPES} from "@/components/catalog/__tests__/fixtures";
 
 const intl = vi.hoisted(() => ({locale: "sv"}));
 
@@ -48,7 +49,7 @@ describe("ChecklistItemRow", () => {
 
     it("shows a linked guide item in the reader's language, marked when not translated", () => {
         intl.locale = "en";
-        renderRow(item({guideItem: {id: "5", key: "lokal", type: "REQUIREMENT", text: {sv: "Boka **lokal**", en: null}, version: 1}}), false);
+        renderRow(item({guideItem: {id: "5", key: "lokal", type: ITEM_TYPES.REQUIREMENT, text: {sv: "Boka **lokal**", en: null}, version: 1}}), false);
         intl.locale = "sv";
 
         expect(screen.getByText("lokal").tagName).toBe("STRONG");

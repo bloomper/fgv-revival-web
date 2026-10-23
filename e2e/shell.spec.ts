@@ -66,7 +66,7 @@ test.describe("The application shell", () => {
 
         await page.keyboard.press("ControlOrMeta+k");
         await page.getByPlaceholder("Hoppa till sida eller åtgärd…").fill("om");
-        await page.getByRole("option", {name: "Om"}).click();
+        await page.getByRole("option", {name: "Om", exact: true}).click();
         await expect(page).toHaveURL(/\/about$/);
 
         await page.getByRole("button", {name: "Öppna kommandopaletten"}).click();

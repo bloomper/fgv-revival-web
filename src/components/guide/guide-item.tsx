@@ -16,7 +16,7 @@ export function GuideItem({item, actions}: { item: GuideItemFieldsFragment, acti
     return (
         <div id={`item-${item.key}`} className="scroll-mt-24 space-y-2 rounded-md border p-3">
             <div className="flex flex-wrap items-center gap-2">
-                {item.type !== "TEXT" && <GuideTypeBadge type={item.type}/>}
+                {item.type.kind !== "TEXT" && <GuideTypeBadge type={item.type}/>}
                 {!translated && <span className="text-xs text-muted-foreground">{t("notTranslated")}</span>}
                 {actions && <div className="ml-auto flex gap-1">{actions}</div>}
             </div>

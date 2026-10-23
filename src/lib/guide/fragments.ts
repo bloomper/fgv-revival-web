@@ -4,7 +4,7 @@ export const GuideItemFields = graphql(`
     fragment GuideItemFields on GuideItem {
         id
         key
-        type
+        type { ...GuideItemTypeFields }
         text { sv en }
         version
     }

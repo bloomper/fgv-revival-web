@@ -85,11 +85,13 @@ export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
                 title: t("Nav.admin"),
                 url: "/admin/guide",
                 icon: Settings,
-                isActive: pathname.startsWith("/admin/guide") || pathname.startsWith("/admin/checklist-templates"),
+                isActive: pathname.startsWith("/admin/"),
                 items: [
                     // Under "Administration" the short name suffices; the command palette keeps "Nav.adminGuide"
                     {title: t("Nav.adminGuideShort"), url: "/admin/guide"},
                     {title: t("Nav.adminChecklistTemplates"), url: "/admin/checklist-templates"},
+                    {title: t("Nav.adminGuideItemTypes"), url: "/admin/guide-item-types"},
+                    {title: t("Nav.adminCapabilities"), url: "/admin/capabilities"},
                 ],
             });
         }

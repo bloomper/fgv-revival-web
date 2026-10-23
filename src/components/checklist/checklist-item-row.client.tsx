@@ -2,10 +2,11 @@
 
 import * as React from "react";
 import {useOptimistic, useTransition} from "react";
-import {useTranslations} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import {Ban, Pencil, RotateCcw} from "lucide-react";
 import type {ChecklistItemFieldsFragment} from "@/gql/graphql";
 import {Badge} from "@/components/ui/badge";
+import {catalogName} from "@/components/catalog/catalog";
 import {Button} from "@/components/ui/button";
 import {OwnerLabel} from "@/components/owner/owner-label";
 import {PlainText} from "@/components/plain-text";
@@ -28,7 +29,7 @@ export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, o
     onNotApplicable: () => void;
 }) {
     const t = useTranslations("Checklist");
-    const tc = useTranslations("Capability");
+    const locale = useLocale();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
     const [state, setOptimisticState] = useOptimistic(item.state);
@@ -52,7 +53,7 @@ export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, o
                     {item.state === "NOT_APPLICABLE" && <Badge variant="outline">{t("state.NOT_APPLICABLE")}</Badge>}
                     {item.overdue && <OverdueBadge/>}
                     <span>{t("owner")}: <OwnerLabel owner={item.owner}/></span>
-                    {!item.owner && item.defaultCapability && <Badge variant="outline">{t("capabilityHint", {capability: tc(item.defaultCapability)})}</Badge>}
+                    {!item.owner && item.defaultCapability && <Badge variant="outline">{t("capabilityHint", {capability: catalogName(item.defaultCapability, locale)})}</Badge>}
                     {item.deadline && <span>{t("deadline")}: {item.deadline}</span>}
                     {item.stateChangedBy?.displayName && item.state !== "OPEN" && (
                         <span className="text-xs">{t("changedBy", {name: item.stateChangedBy.displayName})}</span>

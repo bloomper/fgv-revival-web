@@ -22,7 +22,7 @@ export const LogEntryFields = graphql(`
         tags
         meeting { id date title status }
         guideItemKey
-        guideItem { id key type text { sv en } version }
+        guideItem { id key type { ...GuideItemTypeFields } text { sv en } version }
         checklistItem { id checklistId state text { sv en } }
         answers { id number type status }
         answeredBy { id number type status }

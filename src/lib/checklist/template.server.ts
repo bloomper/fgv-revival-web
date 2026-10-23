@@ -31,7 +31,17 @@ const ChecklistTemplateQuery = graphql(`
                 text { sv en }
                 guideItemKey
                 guideItem { ...GuideItemFields }
-                defaultCapability
+                defaultCapability { ...CapabilityFields }
+                deadline { kind amount weekday }
+                version
+            }
+            retiredItems {
+                id
+                position
+                text { sv en }
+                guideItemKey
+                guideItem { ...GuideItemFields }
+                defaultCapability { ...CapabilityFields }
                 deadline { kind amount weekday }
                 version
             }
@@ -87,6 +97,18 @@ const ItemRetireMutation = graphql(`
     }
 `);
 
+const RestoreMutation = graphql(`
+    mutation ChecklistTemplateRestore($id: ID!, $version: Int!) {
+        checklistTemplateRestore(id: $id, version: $version) { id }
+    }
+`);
+
+const ItemRestoreMutation = graphql(`
+    mutation ChecklistTemplateItemRestore($id: ID!, $version: Int!) {
+        checklistTemplateItemRestore(id: $id, version: $version) { id }
+    }
+`);
+
 export async function getChecklistTemplates(includeRetired: boolean) {
     return (await runQuery(ChecklistTemplatesQuery, {includeRetired}))?.checklistTemplates ?? [];
 }
@@ -111,6 +133,10 @@ export async function retireChecklistTemplate(id: string, version: number) {
     await runMutation(RetireMutation, {id, version});
 }
 
+export async function restoreChecklistTemplate(id: string, version: number) {
+    await runMutation(RestoreMutation, {id, version});
+}
+
 export async function createChecklistTemplateItem(input: ChecklistTemplateItemCreateInput) {
     await runMutation(ItemCreateMutation, {input});
 }
@@ -125,4 +151,8 @@ export async function moveChecklistTemplateItem(id: string, version: number, pos
 
 export async function retireChecklistTemplateItem(id: string, version: number) {
     await runMutation(ItemRetireMutation, {id, version});
+}
+
+export async function restoreChecklistTemplateItem(id: string, version: number) {
+    await runMutation(ItemRestoreMutation, {id, version});
 }

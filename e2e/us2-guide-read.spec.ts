@@ -19,9 +19,13 @@ test.describe("Guide, user story 2: a steering group member reads the guide for 
 
         await expect(page.getByRole("heading", {name: "1. Först: godkännande och tajmning"})).toBeVisible();
         await expect(page.getByText("Krav").first()).toBeVisible();
+        const list = page.getByRole("navigation", {name: "Kapitel", exact: true});
+
+        await list.evaluate(element => element.setAttribute("data-kept", ""));
         await page.getByRole("link", {name: /Nästa kapitel/}).click();
         await expect(page.getByRole("heading", {name: "2. Boka lokaler och lägg fast er tidslinje"})).toBeVisible();
         await expect(page).toHaveURL(/\/revivals\/1\/guide\/B$/);
+        await expect(list, "the chapter list stays while the chapter beside it loads").toHaveAttribute("data-kept", "");
 
         await page.getByRole("searchbox", {name: "Sök i guiden"}).fill("lån");
         const hit = page.getByRole("list", {name: "Sökträffar"}).getByRole("link", {name: /lån/});
@@ -30,6 +34,7 @@ test.describe("Guide, user story 2: a steering group member reads the guide for 
         await hit.click();
         await expect(page).toHaveURL(/\/revivals\/1\/guide\/J#item-/);
         await expect(page.getByRole("heading", {name: "10. Stänga nyuppsättningen"})).toBeVisible();
+        await expect(page.getByRole("list", {name: "Sökträffar"})).toHaveCount(0);
     });
 
     test("on a phone, finds the chapters in a bar that opens a list", async ({page}) => {

@@ -14,12 +14,12 @@ const MIN_QUERY = 2;
 /**
  * Where a hit is: the chapter's page, at the item or section, or the start page for the introduction.
  */
-export function hrefOf(hit: GuideSearchHit, basePath: string, query: string) {
+export function hrefOf(hit: GuideSearchHit, basePath: string) {
     if (!hit.chapterKey) {
-        return `${basePath}${query}`;
+        return basePath;
     }
 
-    const chapter = `${basePath}/${encodeURIComponent(hit.chapterKey)}${query}`;
+    const chapter = `${basePath}/${encodeURIComponent(hit.chapterKey)}`;
 
     if (hit.itemKey) {
         return `${chapter}#item-${hit.itemKey}`;
@@ -28,12 +28,12 @@ export function hrefOf(hit: GuideSearchHit, basePath: string, query: string) {
 }
 
 /**
- * Searches the version shown (FR-021). Results link to the matching place, in its chapter.
+ * Searches the version shown (FR-021). Results link to the matching place, in its chapter. Above the chapters it stays
+ * while moving between them, so following a result clears the search.
  */
-export function GuideSearch({versionId, basePath, query: versionQuery = "", chapterNumbers}: {
+export function GuideSearch({versionId, basePath, chapterNumbers}: {
     versionId: string;
     basePath: string;
-    query?: string;
     chapterNumbers: Record<string, number>;
 }) {
     const t = useTranslations("Guide.search");
@@ -92,7 +92,7 @@ export function GuideSearch({versionId, basePath, query: versionQuery = "", chap
                     <ul className="max-h-80 divide-y overflow-y-auto rounded-md border" aria-label={t("results")}>
                         {hits.map((hit, index) => (
                             <li key={`${hit.itemKey ?? hit.sectionKey ?? hit.chapterKey}-${index}`}>
-                                <Link href={hrefOf(hit, basePath, versionQuery)} className="block space-y-1 px-3 py-2 text-sm hover:bg-accent">
+                                <Link href={hrefOf(hit, basePath)} onClick={() => setQuery("")} className="block space-y-1 px-3 py-2 text-sm hover:bg-accent">
                                     <span className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                                         {hit.chapterKey && (
                                             <span>
@@ -101,7 +101,7 @@ export function GuideSearch({versionId, basePath, query: versionQuery = "", chap
                                             </span>
                                         )}
                                         {hit.sectionTitle && <span>› {pickText(hit.sectionTitle, locale).text}</span>}
-                                        {hit.itemType && hit.itemType !== "TEXT" && <GuideTypeBadge type={hit.itemType}/>}
+                                        {hit.itemType && hit.itemType.kind !== "TEXT" && <GuideTypeBadge type={hit.itemType}/>}
                                     </span>
                                     <span className="block">{hit.snippet}</span>
                                 </Link>

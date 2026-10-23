@@ -51,7 +51,7 @@ describe("GuideVersionTable", () => {
 
         const remove = await screen.findByRole("menuitem", {name: /Guide.admin.delete/});
 
-        expect(screen.getByRole("menuitem", {name: "Guide.admin.view"})).toHaveAttribute("href", "/guide?version=2");
+        expect(screen.getByRole("menuitem", {name: "Guide.admin.view"})).toHaveAttribute("href", "/guide/versions/2");
 
         expect(remove).toHaveAttribute("aria-disabled", "true");
         expect(remove).toHaveTextContent(/inUseRevivals.*"count":3/);

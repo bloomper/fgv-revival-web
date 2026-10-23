@@ -55,7 +55,9 @@
     "admin": "Administration",
     "adminGuide": "Hantera guiden",
     "adminGuideShort": "Guiden",
-    "adminChecklistTemplates": "Checklistmallar"
+    "adminChecklistTemplates": "Checklistmallar",
+    "adminGuideItemTypes": "Punkttyper i guiden",
+    "adminCapabilities": "Ansvarsområden"
   },
   "Home": {
     "title": "Nyuppsättning",
@@ -103,12 +105,6 @@
     "STEERING_GROUP": "Styrgrupp",
     "PARTICIPANT": "Deltagare",
     "HELPER": "Funktionär"
-  },
-  "Capability": {
-    "FINANCE": "Ekonomi",
-    "CATERING": "Mat",
-    "STAFFING": "Bemanning",
-    "COMMS": "Kommunikation"
   },
   "MemberState": {
     "WAITING": "Väntar på åtkomst",
@@ -194,8 +190,8 @@
     "removed": "Borttagen",
     "confirmRemoveTitle": "Ta bort {name}?",
     "confirmRemoveText": "Personen förlorar sin roll i nyuppsättningen. Ändringen sparas i historiken.",
-    "capabilities": "Behörigheter",
-    "capabilitiesSaved": "Behörigheterna sparades",
+    "capabilities": "Ansvarsområden",
+    "capabilitiesSaved": "Ansvarsområdena sparades",
     "noDirecteurs": "Ingen directeur är utsedd.",
     "noMembers": "Styrgruppen har inga medlemmar.",
     "waitingPerson": "Väntande person",
@@ -246,7 +242,9 @@
     "templateNameTooLong": "Namnet får vara högst 255 tecken.",
     "deadlineAmount": "Antalet dagar ska vara 0–365.",
     "checklistNameRequired": "Skriv ett namn.",
-    "checklistNameTooLong": "Namnet får vara högst 255 tecken."
+    "checklistNameTooLong": "Namnet får vara högst 255 tecken.",
+    "catalogNameRequired": "Ange ett namn.",
+    "catalogNameTooLong": "Namnet får vara högst 100 tecken."
   },
   "About": {
     "title": "Om",
@@ -277,12 +275,6 @@
   },
   "Guide": {
     "title": "Guiden",
-    "type": {
-      "TIP": "Praktiska tips",
-      "REQUIREMENT": "Krav",
-      "QUESTION": "Att ta reda på",
-      "TEXT": "Text"
-    },
     "notTranslated": "Ej översatt",
     "notPublished": "Guiden är inte publicerad än.",
     "admin": {
@@ -727,7 +719,6 @@
   "ChecklistTemplate": {
     "title": "Checklistmallar",
     "showRetired": "Visa avvecklade",
-    "hideRetired": "Dölj avvecklade",
     "events": "Händelser",
     "itemCount": "{count, plural, one {# punkt} other {# punkter}}",
     "createEvent": "Ny händelsemall",
@@ -789,6 +780,64 @@
     "chapterTitle": "Mall för {chapter}",
     "orphaned": "Kapitel som inte längre finns i guiden",
     "orphanedDescription": "De här kapitlen togs bort ur guiden, så deras mallar pensionerades när versionen publicerades.",
-    "chapterGone": "Mall för ett borttaget kapitel"
+    "chapterGone": "Mall för ett borttaget kapitel",
+    "choose": "Välj en mall i listan, eller skapa en.",
+    "restore": "Återställ mallen",
+    "restoredDone": "Mallen är återställd",
+    "retiredItems": "Avvecklade punkter",
+    "restoreItem": "Återställ {text}",
+    "itemRestored": "Punkten är återställd"
+  },
+  "Catalog": {
+    "retiredName": "{name} (avvecklad)",
+    "nameSv": "Namn (svenska)",
+    "nameEn": "Namn (engelska, frivilligt)",
+    "editTitle": "Byt namn",
+    "moveUp": "Flytta upp {name}",
+    "moveDown": "Flytta ned {name}",
+    "edit": "Byt namn på {name}",
+    "retire": "Avveckla {name}",
+    "restore": "Återställ {name}",
+    "delete": "Radera {name}",
+    "retired": "Avvecklad",
+    "inUse": "Används",
+    "showRetired": "Visa avvecklade",
+    "empty": "Listan är tom.",
+    "retiredDone": "{name} är avvecklad",
+    "restored": "{name} är återställd",
+    "deleted": "{name} är raderad",
+    "deleteTitle": "Radera {name}?",
+    "deleteDescription": "Ingenting använder den, så den kan raderas. Det går inte att ångra.",
+    "kind": "Vad punkterna gör",
+    "kindDescription": "Välj vad punkter av typen gör. Det går inte att ändra senare.",
+    "kindFixed": "Vad punkterna gör bestämdes när typen skapades och kan inte ändras.",
+    "kinds": {
+      "TIP": {
+        "name": "Tips",
+        "description": "Visas vid kapitlets checklista."
+      },
+      "REQUIREMENT": {
+        "name": "Krav",
+        "description": "Blir en obligatorisk punkt i kapitlets checklista för varje nyuppsättning."
+      },
+      "QUESTION": {
+        "name": "Att ta reda på",
+        "description": "Blir en fråga i varje nyuppsättnings beslutslogg."
+      },
+      "TEXT": {
+        "name": "Löptext",
+        "description": "Vanlig text, som visas utan etikett."
+      }
+    }
+  },
+  "CapabilityAdmin": {
+    "title": "Ansvarsområden",
+    "create": "Nytt ansvarsområde",
+    "description": "Områdena som styrgruppsmedlemmar kan ansvara för och som checklistmallar kan föreslå ägare efter. Ett avvecklat område erbjuds inte längre, men finns kvar hos medlemmar och punkter som redan har det. Bara ett område som inget använder kan raderas."
+  },
+  "GuideItemTypeAdmin": {
+    "title": "Punkttyper i guiden",
+    "create": "Ny punkttyp",
+    "description": "Typerna som guidens punkter kan ha, i den ordning de erbjuds. Varje typ gör en av fyra saker, som bestäms när typen skapas. Ett nytt namn syns i alla versioner av guiden, även publicerade. En avvecklad typ erbjuds inte för nya punkter, men punkter som har den behåller den."
   }
 }

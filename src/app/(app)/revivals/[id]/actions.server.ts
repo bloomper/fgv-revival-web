@@ -1,7 +1,7 @@
 "use server";
 
 import {revalidatePath} from "next/cache";
-import type {Capability, RevivalRole, RevivalStatus} from "@/gql/graphql";
+import type {RevivalRole, RevivalStatus} from "@/gql/graphql";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
 import {changeStatus, updateRevival} from "@/lib/revival/revival.server";
 import {addMember, removeMember, setCapabilities} from "@/lib/member/member.server";
@@ -47,7 +47,8 @@ export async function addMemberAction(input: {
     revivalId: string;
     email: string;
     role: Extract<RevivalRole, "DIRECTEUR" | "STEERING_GROUP">;
-    capabilities: Capability[];
+    /** Capability ids. */
+    capabilities: string[];
 }): Promise<ActionResult<{ id: string }>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const parsed = memberAddSchema.parse(input);
@@ -58,7 +59,7 @@ export async function addMemberAction(input: {
     }));
 }
 
-export async function setCapabilitiesAction(input: { id: string; version: number; capabilities: Capability[] }): Promise<ActionResult<{ version: number }>> {
+export async function setCapabilitiesAction(input: { id: string; version: number; capabilities: string[] }): Promise<ActionResult<{ version: number }>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const parsed = memberCapabilitiesSchema.parse(input);
         const updated = await setCapabilities(parsed);

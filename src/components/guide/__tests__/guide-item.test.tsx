@@ -2,6 +2,7 @@ import {describe, expect, it, vi} from "vitest";
 import {render, screen} from "@testing-library/react";
 import {GuideItem} from "@/components/guide/guide-item";
 import {pickText} from "@/components/guide/localized";
+import {ITEM_TYPES} from "@/components/catalog/__tests__/fixtures";
 
 const useLocale = vi.hoisted(() => vi.fn(() => "sv"));
 
@@ -13,7 +14,7 @@ vi.mock("next-intl", () => ({
 const item = (en: string | null = null) => ({
     id: "1",
     key: "k1",
-    type: "REQUIREMENT" as const,
+    type: ITEM_TYPES.REQUIREMENT,
     text: {sv: "Budget ska upprättas.", en},
     version: 0,
 });
@@ -30,7 +31,7 @@ describe("GuideItem", () => {
     it("shows the type and the Swedish text", () => {
         render(<GuideItem item={item()}/>);
 
-        expect(screen.getByText("REQUIREMENT")).toBeInTheDocument();
+        expect(screen.getByText("Krav")).toBeInTheDocument();
         expect(screen.getByText("Budget ska upprättas.")).toBeInTheDocument();
         expect(screen.queryByText("notTranslated")).not.toBeInTheDocument();
     });
@@ -53,8 +54,8 @@ describe("GuideItem", () => {
 
     it("has no type badge for plain text", () => {
         useLocale.mockReturnValue("sv");
-        render(<GuideItem item={{...item(), type: "TEXT"}}/>);
+        render(<GuideItem item={{...item(), type: ITEM_TYPES.TEXT}}/>);
 
-        expect(screen.queryByText("TEXT")).not.toBeInTheDocument();
+        expect(screen.queryByText("Text")).not.toBeInTheDocument();
     });
 });

@@ -8,7 +8,7 @@ import {pickText} from "@/components/guide/localized";
 /**
  * A version's start page: the introduction, then the chapters to open one at a time, with what is in each.
  */
-export function GuideOverview({version, basePath, query = ""}: { version: GuideVersionFieldsFragment; basePath: string; query?: string }) {
+export function GuideOverview({version, basePath}: { version: GuideVersionFieldsFragment; basePath: string }) {
     const t = useTranslations("Guide");
     const locale = useLocale();
     const introduction = pickText(version.introduction, locale);
@@ -32,7 +32,7 @@ export function GuideOverview({version, basePath, query = ""}: { version: GuideV
 
                             return (
                                 <li key={chapter.id}>
-                                    <Link href={`${basePath}/${encodeURIComponent(chapter.key)}${query}`}
+                                    <Link href={`${basePath}/${encodeURIComponent(chapter.key)}`}
                                           className="flex h-full items-center gap-3 rounded-md border p-3 hover:bg-accent">
                                         <span className="w-6 shrink-0 text-right font-medium tabular-nums text-muted-foreground">{index + 1}.</span>
                                         <span className="min-w-0 flex-1">

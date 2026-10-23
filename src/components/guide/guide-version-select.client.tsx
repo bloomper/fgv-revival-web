@@ -8,7 +8,7 @@ type Version = { id: string; label: string | null };
 
 /**
  * Picks the published version to read, newest first (FR-002, FR-003). The latest is the guide's own address, an older
- * one is {@code ?version=}.
+ * one is under {@code /guide/versions/<id>}.
  */
 export function GuideVersionSelect({versions, current}: { versions: Version[]; current: string }) {
     const t = useTranslations("Guide");
@@ -21,7 +21,7 @@ export function GuideVersionSelect({versions, current}: { versions: Version[]; c
 
     return (
         <Select items={items} value={current}
-                onValueChange={value => value && router.push(value === latest ? "/guide" : `/guide?version=${encodeURIComponent(value)}`)}>
+                onValueChange={value => value && router.push(value === latest ? "/guide" : `/guide/versions/${encodeURIComponent(value)}`)}>
             <SelectTrigger className="h-8 w-44" aria-label={t("versions")}>
                 <SelectValue/>
             </SelectTrigger>

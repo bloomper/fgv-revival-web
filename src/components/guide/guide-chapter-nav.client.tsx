@@ -2,6 +2,7 @@
 
 import {useEffect, useState} from "react";
 import Link from "next/link";
+import {useParams} from "next/navigation";
 import {useLocale, useTranslations} from "next-intl";
 import {ChevronDown} from "lucide-react";
 import {Button} from "@/components/ui/button";
@@ -16,29 +17,40 @@ export type NavChapter = { key: string; title: Text; sections: { key: string; ti
 
 /**
  * The section of the chapter that is in view, by the {@code section-<key>} anchors {@link GuideChapterView} renders.
+ * The list is in the layout, so it can change chapter before the chapter's page has arrived: until the anchors are
+ * there, it waits for them.
  */
 function useSectionInView(sectionKeys: string) {
     const [inView, setInView] = useState<string | null>(null);
 
     useEffect(() => {
-        const elements = sectionKeys.split("|").filter(Boolean)
-            .map(key => document.getElementById(`section-${key}`))
-            .filter((element): element is HTMLElement => element !== null);
-
-        if (elements.length === 0) {
-            return;
-        }
-
-        const observer = new IntersectionObserver(entries => {
+        const keys = sectionKeys.split("|").filter(Boolean);
+        const intersections = new IntersectionObserver(entries => {
             const visible = entries.filter(entry => entry.isIntersecting);
 
             if (visible.length > 0) {
                 setInView(visible[0].target.id.slice("section-".length));
             }
         }, {rootMargin: "-15% 0px -70% 0px"});
+        const observe = () => {
+            const elements = keys.map(key => document.getElementById(`section-${key}`)).filter((element): element is HTMLElement => element !== null);
 
-        elements.forEach(element => observer.observe(element));
-        return () => observer.disconnect();
+            elements.forEach(element => intersections.observe(element));
+            return elements.length > 0;
+        };
+        const arrivals = new MutationObserver(() => {
+            if (observe()) {
+                arrivals.disconnect();
+            }
+        });
+
+        if (keys.length > 0 && !observe()) {
+            arrivals.observe(document.body, {childList: true, subtree: true});
+        }
+        return () => {
+            arrivals.disconnect();
+            intersections.disconnect();
+        };
     }, [sectionKeys]);
 
     return inView;
@@ -88,20 +100,18 @@ function ChapterList({chapters, current, hrefOf, inView, onNavigate}: {
 /**
  * Finding the way between chapters. On phones, a bar that stays at the top with the current chapter, opening the
  * chapter list from the bottom of the screen; from {@code lg}, the list beside the text, with the current chapter's
- * sections and the one in view marked.
+ * sections and the one in view marked. It is in the chapters' layout, so it stays while a chapter loads, and takes the
+ * current chapter from the URL.
  */
-export function GuideChapterNav({chapters, current, basePath, query = ""}: {
-    chapters: NavChapter[];
-    current: string;
-    basePath: string;
-    query?: string;
-}) {
+export function GuideChapterNav({chapters, basePath}: { chapters: NavChapter[]; basePath: string }) {
+    const params = useParams<{ chapterKey?: string }>();
+    const current = params.chapterKey ? decodeURIComponent(params.chapterKey) : "";
     const t = useTranslations("Guide");
     const locale = useLocale();
     const [open, setOpen] = useState(false);
     const index = chapters.findIndex(chapter => chapter.key === current);
     const chapter = chapters[index];
-    const hrefOf = (key: string) => `${basePath}/${encodeURIComponent(key)}${query}`;
+    const hrefOf = (key: string) => `${basePath}/${encodeURIComponent(key)}`;
     const inView = useSectionInView(chapter?.sections.map(section => section.key).join("|") ?? "");
 
     if (!chapter) {

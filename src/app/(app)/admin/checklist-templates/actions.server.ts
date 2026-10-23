@@ -8,6 +8,8 @@ import {
     createChecklistTemplate,
     createChecklistTemplateItem,
     moveChecklistTemplateItem,
+    restoreChecklistTemplate,
+    restoreChecklistTemplateItem,
     retireChecklistTemplate,
     retireChecklistTemplateItem,
     updateChecklistTemplate,
@@ -46,6 +48,14 @@ export async function renameTemplateAction(input: { id: string; version: number;
 export async function retireTemplateAction(input: { id: string; version: number }): Promise<ActionResult<null>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
         await retireChecklistTemplate(input.id, input.version);
+        revalidate();
+        return null;
+    }));
+}
+
+export async function restoreTemplateAction(input: { id: string; version: number }): Promise<ActionResult<null>> {
+    return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
+        await restoreChecklistTemplate(input.id, input.version);
         revalidate();
         return null;
     }));
@@ -100,6 +110,16 @@ export async function retireTemplateItemAction(input: z.input<typeof templateIte
         const {id, version} = templateItemTransitionSchema.parse(input);
 
         await retireChecklistTemplateItem(id, version);
+        revalidate();
+        return null;
+    }));
+}
+
+export async function restoreTemplateItemAction(input: z.input<typeof templateItemTransitionSchema>): Promise<ActionResult<null>> {
+    return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
+        const {id, version} = templateItemTransitionSchema.parse(input);
+
+        await restoreChecklistTemplateItem(id, version);
         revalidate();
         return null;
     }));

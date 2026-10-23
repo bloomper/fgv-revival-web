@@ -103,10 +103,15 @@ export function checklistResolvers(ctx) {
     const templateSummary = template => ({__typename: "ChecklistTemplateSummary", id: template.id, kind: template.kind, chapterKey: template.chapterKey,
         chapterTitle: localized(latestChapters().find(chapter => chapter.key === template.chapterKey)?.title),
         name: template.name ? {__typename: "LocalizedText", ...template.name} : null, retired: template.retired});
-    const toTemplate = template => ({
+    const toTemplateItem = item => ({__typename: "ChecklistTemplateItem", ...item, text: {__typename: "LocalizedText", ...item.text},
+        guideItem: null, deadline: item.deadline ? {__typename: "RelativeDeadline", amount: null, weekday: null, ...item.deadline} : null});
+    // Retired items only for super admins, the most recently retired first, as on the server.
+    const toTemplate = (template, persona) => ({
         ...templateSummary(template), __typename: "ChecklistTemplate", version: template.version,
-        items: templateItemsOf(template).map(item => ({__typename: "ChecklistTemplateItem", ...item, text: {__typename: "LocalizedText", ...item.text},
-            guideItem: null, deadline: item.deadline ? {__typename: "RelativeDeadline", amount: null, weekday: null, ...item.deadline} : null})),
+        items: templateItemsOf(template).map(toTemplateItem),
+        retiredItems: persona && isSuperAdmin(persona)
+            ? store().templateItems.filter(item => item.templateId === template.id && item.retired).sort((a, b) => b.retiredAt - a.retiredAt).map(toTemplateItem)
+            : [],
     });
     const superAdmin = persona => {
         if (!isSuperAdmin(persona)) {
@@ -223,13 +228,13 @@ export function checklistResolvers(ctx) {
             if (!persona.roles.some(role => ["SUPER_ADMIN", "OBSERVER"].includes(role)) && !ctx.state().members.some(member => member.sub === persona.sub)) {
                 throw forbidden();
             }
-            return {checklistTemplates: store().templates.filter(template => !template.retired || (includeRetired && isSuperAdmin(persona))).map(toTemplate)};
+            return {checklistTemplates: store().templates.filter(template => !template.retired || (includeRetired && isSuperAdmin(persona))).map(template => toTemplate(template))};
         },
         EventChecklistTemplates() {
-            return {checklistTemplates: activeTemplates().filter(template => template.kind === "EVENT").map(toTemplate)};
+            return {checklistTemplates: activeTemplates().filter(template => template.kind === "EVENT").map(template => toTemplate(template))};
         },
         ChecklistTemplate(persona, {id}) {
-            return {checklistTemplate: toTemplate(findTemplate(id))};
+            return {checklistTemplate: toTemplate(findTemplate(id), persona)};
         },
         ChecklistTemplateCreate(persona, {input}) {
             superAdmin(persona);
@@ -257,6 +262,22 @@ export function checklistResolvers(ctx) {
 
             Object.assign(template, {retired: true, version: template.version + 1});
             return {checklistTemplateRetire: {__typename: "ChecklistTemplate", id}};
+        },
+        ChecklistTemplateRestore(persona, {id, version}) {
+            superAdmin(persona);
+            const template = findTemplate(id, version);
+
+            if (!template.retired) {
+                throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
+            }
+            if (template.kind === "CHAPTER" && !latestChapters().some(chapter => chapter.key === template.chapterKey)) {
+                throw new GraphQLError("BAD_REQUEST", "Den senast publicerade guideversionen har inget sådant kapitel.");
+            }
+            if (template.kind === "CHAPTER" && activeTemplates().some(candidate => candidate.chapterKey === template.chapterKey)) {
+                throw new GraphQLError("CONFLICT", "Kapitlet har redan en mall.");
+            }
+            Object.assign(template, {retired: false, version: template.version + 1});
+            return {checklistTemplateRestore: {__typename: "ChecklistTemplate", id}};
         },
         ChecklistTemplateItemCreate(persona, {input}) {
             superAdmin(persona);
@@ -299,9 +320,23 @@ export function checklistResolvers(ctx) {
             superAdmin(persona);
             const item = findTemplateItem(id, version);
 
-            Object.assign(item, {retired: true, version: item.version + 1});
+            Object.assign(item, {retired: true, retiredAt: store().nextId++, version: item.version + 1});
             renumber(findTemplate(item.templateId));
             return {checklistTemplateItemRetire: {__typename: "ChecklistTemplate", id: item.templateId}};
+        },
+        ChecklistTemplateItemRestore(persona, {id, version}) {
+            superAdmin(persona);
+            const item = findTemplateItem(id, version);
+            const template = findTemplate(item.templateId);
+
+            if (!item.retired) {
+                throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
+            }
+            if (template.retired) {
+                throw new GraphQLError("BAD_REQUEST", "Mallen är avvecklad och kan inte ändras.");
+            }
+            Object.assign(item, {retired: false, retiredAt: null, position: templateItemsOf(template).length, version: item.version + 1});
+            return {checklistTemplateItemRestore: {__typename: "ChecklistTemplate", id: template.id}};
         },
         EventChecklistCreate(persona, {input}) {
             const revival = visibleRevival(persona, input.revivalId);

@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {catalogId} from "@/lib/catalog/schema";
 
 // Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
 // (M3 FR-024–FR-026, data-model.md).
@@ -82,7 +83,7 @@ const relativeDeadline = z.object({
 export const templateItemValuesSchema = z.object({
     text: localized(MAX_ITEM_TEXT, "itemTextRequired", "itemTextTooLong"),
     guideItemKey: z.string().nullable(),
-    defaultCapability: z.enum(["FINANCE", "CATERING", "STAFFING", "COMMS"]).nullable(),
+    defaultCapability: catalogId.nullable(),
     deadline: relativeDeadline,
 });
 

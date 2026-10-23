@@ -2,7 +2,9 @@ import Link from "next/link";
 import {getTranslations} from "next-intl/server";
 import {ArrowLeft} from "lucide-react";
 import type {GuideSuggestionStatus} from "@/gql/graphql";
+import {CatalogProvider} from "@/components/catalog/catalog-provider.client";
 import {AdminSuggestionList, type DraftItems} from "@/components/guide/suggestion/admin-suggestion-list.client";
+import {getGuideItemTypes} from "@/lib/catalog/catalog.server";
 import {getGuideDraft, getGuideSuggestions} from "@/lib/guide/guide.server";
 import {SUGGESTION_STATUSES} from "@/lib/guide/schema";
 import {Policies} from "@/utils/policy.server";
@@ -17,7 +19,7 @@ export default async function AdminGuideSuggestionsPage({searchParams}: { search
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {
         const t = await getTranslations("Guide.suggestions");
         const filter = SUGGESTION_STATUSES.find(candidate => candidate === status) ?? "OPEN";
-        const [suggestions, draft] = await Promise.all([getGuideSuggestions([filter as GuideSuggestionStatus], null), getGuideDraft()]);
+        const [suggestions, draft, itemTypes] = await Promise.all([getGuideSuggestions([filter as GuideSuggestionStatus], null), getGuideDraft(), getGuideItemTypes()]);
         const draftItems: DraftItems = Object.fromEntries((draft?.draft.chapters ?? [])
             .flatMap(chapter => [...chapter.items, ...chapter.sections.flatMap(section => section.items)])
             .map(item => [item.key, {type: item.type, text: item.text}]));
@@ -37,7 +39,9 @@ export default async function AdminGuideSuggestionsPage({searchParams}: { search
                         </Link>
                     ))}
                 </nav>
-                <AdminSuggestionList suggestions={suggestions} draftItems={draftItems}/>
+                <CatalogProvider itemTypes={itemTypes}>
+                    <AdminSuggestionList suggestions={suggestions} draftItems={draftItems}/>
+                </CatalogProvider>
             </div>
         );
     });

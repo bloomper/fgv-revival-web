@@ -9,7 +9,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await page.getByRole("button", {name: "Ny händelsemall"}).click();
         await page.getByRole("dialog").getByLabel("Namn (svenska)").fill("Rephelg");
         await page.getByRole("dialog").getByRole("button", {name: "Spara"}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "Rephelg"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 3, name: "Rephelg"})).toBeVisible();
 
         await page.getByRole("button", {name: "Ny punkt"}).click();
         const dialog = page.getByRole("dialog");
@@ -96,6 +96,63 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await expect(events.getByText("Rephelg 2")).toHaveCount(0);
         await events.getByRole("link", {name: "Visa strukna"}).click();
         await expect(page.getByRole("region", {name: "Händelser"}).getByRole("listitem").filter({hasText: "Rephelg 2"})).toContainText("Struken");
+    });
+
+    test("a super admin moves between templates in the list beside the editor", async ({page, mock, loginAs}) => {
+        await mock.guide("published");
+        await mock.setStatus("1", "ORGANISING");
+        await mock.templates();
+        await loginAs("superadmin");
+        await page.goto("/admin/checklist-templates");
+
+        const nav = page.getByRole("navigation", {name: "Checklistmallar"});
+        const chapters = nav.getByRole("region", {name: "Guidens kapitel"});
+
+        await chapters.getByRole("link", {name: /1 punkt/}).click();
+        await expect(page.getByRole("heading", {level: 3, name: /^Mall för/})).toBeVisible();
+        await expect(page.getByRole("list", {name: "Punkter"}).getByText("Boka kalaslokal")).toBeVisible();
+        await expect(chapters.locator("[aria-current=page]")).toContainText("1 punkt");
+
+        await nav.evaluate(element => element.setAttribute("data-kept", ""));
+        await nav.getByRole("region", {name: "Händelser"}).getByRole("link", {name: /Rephelg/}).click();
+        await expect(page.getByRole("heading", {level: 3, name: "Rephelg"})).toBeVisible();
+        await expect(nav, "the list stays while the template beside it loads").toHaveAttribute("data-kept", "");
+        await expect(page.getByLabel("Namn (svenska)")).toHaveValue("Rephelg");
+        await expect(page.getByRole("list", {name: "Punkter"}).getByText("Utskick")).toBeVisible();
+
+        await chapters.getByRole("button", {name: /Skapa mall/}).first().click();
+        await expect(page.getByText("Mallen har inga punkter.")).toBeVisible();
+        await expect(chapters.locator("[aria-current=page]")).toContainText("0 punkter");
+    });
+
+    test("a super admin sees retired items and restores them and the template", async ({page, mock, loginAs}) => {
+        await mock.guide("published");
+        await mock.setStatus("1", "ORGANISING");
+        await mock.templates();
+        await loginAs("superadmin");
+        await page.goto("/admin/checklist-templates");
+        await page.getByRole("navigation", {name: "Checklistmallar"}).getByRole("link", {name: /Rephelg/}).click();
+
+        const items = page.getByRole("list", {name: "Punkter"});
+        const retired = page.getByRole("region", {name: "Avvecklade punkter"});
+
+        await page.getByRole("button", {name: "Avveckla Utskick"}).click();
+        await expect(items.getByText("Utskick")).toHaveCount(0);
+        await expect(retired).toHaveCount(0);
+
+        await page.getByRole("switch", {name: "Visa avvecklade"}).click();
+        await expect(retired.getByText("Utskick")).toBeVisible();
+        await retired.getByRole("button", {name: "Återställ Utskick"}).click();
+        await expect(page.getByText("Punkten är återställd").first()).toBeVisible();
+        await expect(items.getByRole("listitem").last()).toContainText("Utskick");
+        await expect(retired).toHaveCount(0);
+
+        await page.getByRole("button", {name: "Avveckla mallen"}).click();
+        await expect(page.getByRole("heading", {level: 3, name: /Rephelg/})).toContainText("Avvecklad");
+        await expect(page.getByRole("button", {name: "Ny punkt"})).toHaveCount(0);
+        await page.getByRole("button", {name: "Återställ mallen"}).click();
+        await expect(page.getByText("Mallen är återställd").first()).toBeVisible();
+        await expect(page.getByRole("button", {name: "Ny punkt"})).toBeVisible();
     });
 
     test("the steering group cannot reach the template admin", async ({page, loginAs}) => {

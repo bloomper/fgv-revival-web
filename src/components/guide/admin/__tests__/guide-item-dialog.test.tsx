@@ -1,16 +1,23 @@
 import {describe, expect, it, vi} from "vitest";
-import {fireEvent, render, screen, waitFor} from "@testing-library/react";
+import {cleanup, fireEvent, render, screen, waitFor} from "@testing-library/react";
 import {GuideItemDialog} from "@/components/guide/admin/guide-item-dialog.client";
 import {Button} from "@/components/ui/button";
+import {CatalogProvider} from "@/components/catalog/catalog-provider.client";
+import {ITEM_TYPES} from "@/components/catalog/__tests__/fixtures";
 
 vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn()})}));
+
+const retired = {id: "OLD", kind: "TIP", name: {sv: "Gammal typ", en: null}, retired: true} as const;
+const types = [ITEM_TYPES.TIP, ITEM_TYPES.REQUIREMENT, ITEM_TYPES.QUESTION, ITEM_TYPES.TEXT, retired];
 
 describe("GuideItemDialog", () => {
     function open(onSave = vi.fn().mockResolvedValue({ok: true, data: null})) {
         render(
-            <GuideItemDialog trigger={<Button/>} heading="Edit" initial={{type: "TIP", text: {sv: "Ett **tips**.", en: null}}} onSave={onSave}>
-                Open
-            </GuideItemDialog>,
+            <CatalogProvider itemTypes={types}>
+                <GuideItemDialog trigger={<Button/>} heading="Edit" initial={{type: ITEM_TYPES.TIP, text: {sv: "Ett **tips**.", en: null}}} onSave={onSave}>
+                    Open
+                </GuideItemDialog>
+            </CatalogProvider>,
         );
         fireEvent.click(screen.getByRole("button", {name: "Open"}));
         return onSave;
@@ -37,7 +44,7 @@ describe("GuideItemDialog", () => {
 
     it("opens blank again after adding an item", async () => {
         const onSave = vi.fn().mockResolvedValue({ok: true, data: null});
-        render(<GuideItemDialog trigger={<Button/>} heading="Add" onSave={onSave}>Open</GuideItemDialog>);
+        render(<CatalogProvider itemTypes={types}><GuideItemDialog trigger={<Button/>} heading="Add" onSave={onSave}>Open</GuideItemDialog></CatalogProvider>);
 
         fireEvent.click(screen.getByRole("button", {name: "Open"}));
         fireEvent.change(screen.getByLabelText("Guide.editor.type"), {target: {value: "REQUIREMENT"}});
@@ -49,6 +56,26 @@ describe("GuideItemDialog", () => {
 
         expect(screen.getByLabelText("Guide.editor.swedish")).toHaveValue("");
         expect(screen.getByLabelText("Guide.editor.type")).toHaveValue("TIP");
+    });
+
+    it("offers the active types, and a retired one only to the item that has it", () => {
+        open();
+
+        expect([...(screen.getByLabelText("Guide.editor.type") as HTMLSelectElement).options].map(option => option.textContent))
+            .toEqual(["Praktiska tips", "Krav", "Att ta reda på", "Text"]);
+        cleanup();
+
+        render(
+            <CatalogProvider itemTypes={types}>
+                <GuideItemDialog trigger={<Button/>} heading="Edit" initial={{type: retired, text: {sv: "Gammalt.", en: null}}} onSave={vi.fn()}>Open</GuideItemDialog>
+            </CatalogProvider>,
+        );
+        fireEvent.click(screen.getByRole("button", {name: "Open"}));
+
+        const select = screen.getByLabelText("Guide.editor.type") as HTMLSelectElement;
+
+        expect(select).toHaveValue("OLD");
+        expect([...select.options].map(option => option.textContent)).toContain('retiredName:{"name":"Gammal typ"}');
     });
 
     it("previews the Markdown as readers see it", () => {

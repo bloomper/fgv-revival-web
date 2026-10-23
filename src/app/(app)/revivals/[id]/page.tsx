@@ -4,6 +4,8 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {RevivalDetails} from "@/components/revival/revival-details.client";
 import {DirecteurList} from "@/components/member/directeur-list.client";
 import {SteeringGroupList} from "@/components/member/steering-group-list.client";
+import {CatalogProvider} from "@/components/catalog/catalog-provider.client";
+import {getCapabilities} from "@/lib/catalog/catalog.server";
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getRevival} from "@/lib/revival/revival.server";
 import {Policies} from "@/utils/policy.server";
@@ -35,6 +37,8 @@ export default async function RevivalPage({params}: { params: Promise<{ id: stri
         }
 
         const t = await getTranslations("Revival");
+        // Only those who manage the steering group pick areas of responsibility; members already carry their names
+        const capabilities = revival.permissions.canManageSteeringGroup ? await getCapabilities() : [];
 
         return (
             <div className="flex flex-1 flex-col gap-6">
@@ -51,7 +55,9 @@ export default async function RevivalPage({params}: { params: Promise<{ id: stri
                     <Card>
                         <CardHeader><CardTitle>{t("steeringGroup")}</CardTitle></CardHeader>
                         <CardContent>
-                            <SteeringGroupList revivalId={revival.id} members={revival.members} canManage={revival.permissions.canManageSteeringGroup}/>
+                            <CatalogProvider capabilities={capabilities}>
+                                <SteeringGroupList revivalId={revival.id} members={revival.members} canManage={revival.permissions.canManageSteeringGroup}/>
+                            </CatalogProvider>
                         </CardContent>
                     </Card>
                 </div>

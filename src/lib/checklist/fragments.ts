@@ -14,8 +14,8 @@ export const ChecklistItemFields = graphql(`
         deadlineManual
         overdue
         comment
-        guideItem { id key type text { sv en } version }
-        defaultCapability
+        guideItem { id key type { ...GuideItemTypeFields } text { sv en } version }
+        defaultCapability { ...CapabilityFields }
         logEntries { id number type status }
         checklist { id kind chapterKey chapterTitle { sv en } name }
         version

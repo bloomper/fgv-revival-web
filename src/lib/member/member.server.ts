@@ -6,13 +6,13 @@ import {runMutation} from "@/lib/graphql.server";
 
 const MemberAddMutation = graphql(`
     mutation RevivalMemberAdd($input: RevivalMemberAddInput!) {
-        revivalMemberAdd(input: $input) { id role capabilities state displayName email version }
+        revivalMemberAdd(input: $input) { id role capabilities { ...CapabilityFields } state displayName email version }
     }
 `);
 
 const MemberCapabilitiesMutation = graphql(`
     mutation RevivalMemberCapabilitiesSet($input: RevivalMemberCapabilitiesInput!) {
-        revivalMemberCapabilitiesSet(input: $input) { id capabilities version }
+        revivalMemberCapabilitiesSet(input: $input) { id capabilities { ...CapabilityFields } version }
     }
 `);
 

@@ -98,7 +98,7 @@ function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnD
                             <MoreHorizontal className="h-4 w-4"/>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem render={<Link href={`/guide?version=${row.original.id}`}/>}>
+                            <DropdownMenuItem render={<Link href={`/guide/versions/${row.original.id}`}/>}>
                                 <BookOpen/>
                                 {t("Guide.admin.view")}
                             </DropdownMenuItem>

@@ -11,6 +11,8 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
+import {catalogChoices} from "@/components/catalog/catalog";
+import {CatalogOptions, useCapabilities} from "@/components/catalog/catalog-provider.client";
 import {GuideItemPicker} from "@/components/checklist/template/guide-item-picker.client";
 import {RelativeDeadlineField} from "@/components/checklist/template/relative-deadline-field.client";
 import {saveTemplateItemAction} from "@/app/(app)/admin/checklist-templates/actions.server";
@@ -19,11 +21,9 @@ import {MAX_ITEM_TEXT, type TemplateItemValues, templateItemValuesSchema} from "
 
 export type TemplateItem = NonNullable<ChecklistTemplateQuery["checklistTemplate"]>["items"][number];
 
-const CAPABILITIES = ["FINANCE", "CATERING", "STAFFING", "COMMS"] as const;
-
 /**
  * Adds or edits a template item: Swedish and English text, a guide item, a default capability and, for event
- * templates, a relative deadline (FR-031).
+ * templates, a relative deadline (FR-031). The capabilities are the active ones, and the item's own if it is retired.
  */
 export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}: {
     templateId: string;
@@ -36,13 +36,14 @@ export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}:
     const id = useId();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
+    const capabilities = catalogChoices(useCapabilities(), [item?.defaultCapability]);
     const [guideLabel, setGuideLabel] = useState<string | null>(item?.guideItem?.text.sv ?? null);
     const form = useForm<TemplateItemValues>({
         resolver: zodResolver(templateItemValuesSchema),
         defaultValues: {
             text: {sv: item?.text.sv ?? "", en: item?.text.en ?? ""},
             guideItemKey: item?.guideItemKey ?? null,
-            defaultCapability: item?.defaultCapability ?? null,
+            defaultCapability: item?.defaultCapability?.id ?? null,
             deadline: item?.deadline ?? null,
         },
     });
@@ -84,7 +85,7 @@ export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}:
                                 <select id={`${id}-item-capability`} className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs"
                                         {...form.register("defaultCapability", {setValueAs: value => value || null})}>
                                     <option value="">{t("ChecklistTemplate.noCapability")}</option>
-                                    {CAPABILITIES.map(capability => <option key={capability} value={capability}>{t(`Capability.${capability}`)}</option>)}
+                                    <CatalogOptions entries={capabilities}/>
                                 </select>
                             </div>
                             {kind === "EVENT" && (

@@ -123,8 +123,15 @@ changing routing or data fetching; this area differs sharply from older Next.
   in `src/lib/graphql.server.ts`; the urql client (`src/lib/urql.server.ts`) injects the access token.
 - Each area has a small lib with explicit GraphQL documents: `src/lib/revival/revival.server.ts`,
   `src/lib/member/member.server.ts`, `src/lib/spex/spex.server.ts`, `src/lib/guide/guide.server.ts`,
-  `src/lib/decision-log/log.server.ts`, `src/lib/meeting/meeting.server.ts`, `src/lib/checklist/checklist.server.ts` and
-  `src/lib/checklist/template.server.ts`.
+  `src/lib/decision-log/log.server.ts`, `src/lib/meeting/meeting.server.ts`, `src/lib/checklist/checklist.server.ts`,
+  `src/lib/checklist/template.server.ts` and `src/lib/catalog/catalog.server.ts`.
+- **Areas of responsibility (`Capability`) and guide item types are lists the super admin keeps** under Administration
+  (`/admin/capabilities`, `/admin/guide-item-types`), not enums. Rows hold an entry's id (the four original ones keep
+  `FINANCE`… and `TIP`…; new ones get a UUID) and GraphQL returns the entry, so show `name` with `catalogName` and
+  never translate an id. Each item type has a fixed `kind` (`TIP | REQUIREMENT | QUESTION | TEXT`) that drives
+  behaviour and styling (`GuideTypeBadge`, hiding `TEXT`); branch on `type.kind`, never on a type's id. Retired entries
+  stay on rows that hold them; pickers offer `catalogChoices(active, held)`. Pages with a picker fetch the active list
+  and wrap it in `CatalogProvider`.
 - The server's plain HTTP endpoints (guide PDF, log import) go through `apiFetch` in `src/lib/api.server.ts`, which
   adds the token on the server. The browser reaches the PDF only through the route handler `/api/guide-pdf`.
 - **Guide chapters are free-form.** A version has any number of chapters, each with a `key` that stays the same

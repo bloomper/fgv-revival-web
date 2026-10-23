@@ -55,7 +55,9 @@
     "admin": "Administration",
     "adminGuide": "Manage the guide",
     "adminGuideShort": "The guide",
-    "adminChecklistTemplates": "Checklist templates"
+    "adminChecklistTemplates": "Checklist templates",
+    "adminGuideItemTypes": "Guide item types",
+    "adminCapabilities": "Areas of responsibility"
   },
   "Home": {
     "title": "Nyuppsättning",
@@ -103,12 +105,6 @@
     "STEERING_GROUP": "Steering group",
     "PARTICIPANT": "Participant",
     "HELPER": "Helper"
-  },
-  "Capability": {
-    "FINANCE": "Finance",
-    "CATERING": "Catering",
-    "STAFFING": "Staffing",
-    "COMMS": "Communications"
   },
   "MemberState": {
     "WAITING": "Waiting for access",
@@ -194,8 +190,8 @@
     "removed": "Removed",
     "confirmRemoveTitle": "Remove {name}?",
     "confirmRemoveText": "The person loses their role in the revival. The change is kept in the history.",
-    "capabilities": "Capabilities",
-    "capabilitiesSaved": "The capabilities were saved",
+    "capabilities": "Areas of responsibility",
+    "capabilitiesSaved": "The areas of responsibility were saved",
     "noDirecteurs": "No directeur is appointed.",
     "noMembers": "The steering group has no members.",
     "waitingPerson": "Waiting person",
@@ -246,7 +242,9 @@
     "templateNameTooLong": "The name can be at most 255 characters.",
     "deadlineAmount": "The number of days must be 0–365.",
     "checklistNameRequired": "Write a name.",
-    "checklistNameTooLong": "The name can be at most 255 characters."
+    "checklistNameTooLong": "The name can be at most 255 characters.",
+    "catalogNameRequired": "Enter a name.",
+    "catalogNameTooLong": "The name may be at most 100 characters."
   },
   "About": {
     "title": "About",
@@ -277,12 +275,6 @@
   },
   "Guide": {
     "title": "The guide",
-    "type": {
-      "TIP": "Tip",
-      "REQUIREMENT": "Requirement",
-      "QUESTION": "To find out",
-      "TEXT": "Text"
-    },
     "notTranslated": "Not translated",
     "notPublished": "The guide has not been published yet.",
     "admin": {
@@ -727,7 +719,6 @@
   "ChecklistTemplate": {
     "title": "Checklist templates",
     "showRetired": "Show retired",
-    "hideRetired": "Hide retired",
     "events": "Events",
     "itemCount": "{count, plural, one {# item} other {# items}}",
     "createEvent": "New event template",
@@ -789,6 +780,64 @@
     "chapterTitle": "Template for {chapter}",
     "orphaned": "Chapters no longer in the guide",
     "orphanedDescription": "These chapters were removed from the guide, so their templates were retired when the version was published.",
-    "chapterGone": "Template for a removed chapter"
+    "chapterGone": "Template for a removed chapter",
+    "choose": "Pick a template from the list, or create one.",
+    "restore": "Restore the template",
+    "restoredDone": "The template is restored",
+    "retiredItems": "Retired items",
+    "restoreItem": "Restore {text}",
+    "itemRestored": "The item is restored"
+  },
+  "Catalog": {
+    "retiredName": "{name} (retired)",
+    "nameSv": "Name (Swedish)",
+    "nameEn": "Name (English, optional)",
+    "editTitle": "Rename",
+    "moveUp": "Move {name} up",
+    "moveDown": "Move {name} down",
+    "edit": "Rename {name}",
+    "retire": "Retire {name}",
+    "restore": "Restore {name}",
+    "delete": "Delete {name}",
+    "retired": "Retired",
+    "inUse": "In use",
+    "showRetired": "Show retired",
+    "empty": "The list is empty.",
+    "retiredDone": "{name} is retired",
+    "restored": "{name} is restored",
+    "deleted": "{name} is deleted",
+    "deleteTitle": "Delete {name}?",
+    "deleteDescription": "Nothing uses it, so it can be deleted. This cannot be undone.",
+    "kind": "What the items do",
+    "kindDescription": "Choose what items of this type do. It cannot be changed later.",
+    "kindFixed": "What the items do was set when the type was created and cannot be changed.",
+    "kinds": {
+      "TIP": {
+        "name": "Tip",
+        "description": "Shown beside the chapter's checklist."
+      },
+      "REQUIREMENT": {
+        "name": "Requirement",
+        "description": "Becomes a required item in the chapter's checklist for every revival."
+      },
+      "QUESTION": {
+        "name": "To find out",
+        "description": "Becomes a question in every revival's decision log."
+      },
+      "TEXT": {
+        "name": "Body text",
+        "description": "Plain text, shown without a label."
+      }
+    }
+  },
+  "CapabilityAdmin": {
+    "title": "Areas of responsibility",
+    "create": "New area of responsibility",
+    "description": "The areas steering group members can be responsible for, which checklist templates can suggest owners by. A retired area is no longer offered, but stays with members and items that already have it. Only an area nothing uses can be deleted."
+  },
+  "GuideItemTypeAdmin": {
+    "title": "Guide item types",
+    "create": "New item type",
+    "description": "The types the guide's items can have, in the order they are offered. Each type does one of four things, set when it is created. A new name shows in every version of the guide, published ones too. A retired type is not offered for new items, but items that have it keep it."
   }
 }

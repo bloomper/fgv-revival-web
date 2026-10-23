@@ -7,18 +7,13 @@ import type {NavChapter} from "@/components/guide/guide-chapter-nav.client";
 /**
  * The previous and next chapter at the end of a chapter, the way through the guide on a phone.
  */
-export function GuideChapterPager({chapters, current, basePath, query = ""}: {
-    chapters: NavChapter[];
-    current: string;
-    basePath: string;
-    query?: string;
-}) {
+export function GuideChapterPager({chapters, current, basePath}: { chapters: NavChapter[]; current: string; basePath: string }) {
     const t = useTranslations("Guide");
     const locale = useLocale();
     const index = chapters.findIndex(chapter => chapter.key === current);
     const previous = index > 0 ? chapters[index - 1] : null;
     const next = index >= 0 && index < chapters.length - 1 ? chapters[index + 1] : null;
-    const hrefOf = (key: string) => `${basePath}/${encodeURIComponent(key)}${query}`;
+    const hrefOf = (key: string) => `${basePath}/${encodeURIComponent(key)}`;
 
     return (
         <nav aria-label={t("chapterPager")} className="grid gap-2 border-t pt-4 sm:grid-cols-2">

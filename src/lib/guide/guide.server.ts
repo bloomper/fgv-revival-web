@@ -90,8 +90,8 @@ const GuideChangesQuery = graphql(`
                 reworded
                 retyped
                 moved
-                before { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type text { sv en } }
-                after { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type text { sv en } }
+                before { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type { ...GuideItemTypeFields } text { sv en } }
+                after { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type { ...GuideItemTypeFields } text { sv en } }
             }
         }
     }
@@ -211,7 +211,7 @@ const GuideSearchQuery = graphql(`
             sectionKey
             sectionTitle { sv en }
             itemKey
-            itemType
+            itemType { ...GuideItemTypeFields }
             snippet
             matchedLanguage
         }
@@ -407,12 +407,12 @@ export const GuideSuggestionFields = graphql(`
         decisionReason
         reopenedAt
         createdAt
-        proposedType
+        proposedType { ...GuideItemTypeFields }
         proposedText { sv en }
         revival { id title year }
         madeOn { id label }
         publishedIn { id label }
-        item { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type text { sv en } }
+        item { chapter { key title { sv en } } sectionKey sectionTitle { sv en } type { ...GuideItemTypeFields } text { sv en } }
     }
 `);
 

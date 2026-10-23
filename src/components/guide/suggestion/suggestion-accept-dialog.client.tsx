@@ -3,18 +3,19 @@
 import {useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {Check, X} from "lucide-react";
-import type {GuideItemType, GuideSuggestionFieldsFragment} from "@/gql/graphql";
+import type {GuideSuggestionFieldsFragment} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
 import {acceptSuggestionAction, rejectSuggestionAction} from "@/app/(app)/admin/guide/suggestions/actions.server";
+import {catalogChoices, defaultItemType, type GuideItemTypeValue} from "@/components/catalog/catalog";
+import {CatalogOptions, useGuideItemTypes} from "@/components/catalog/catalog-provider.client";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {pickText} from "@/components/guide/localized";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {GUIDE_ITEM_TYPES} from "@/lib/guide/schema";
 
-type DraftItem = { type: GuideItemType; text: { sv: string; en?: string | null } } | null;
+type DraftItem = { type: GuideItemTypeValue; text: { sv: string; en?: string | null } } | null;
 
 /**
  * Accepts a suggestion into the draft. When the item has changed in the draft since, the server answers CONFLICT and
@@ -27,11 +28,12 @@ export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: Gu
     const [open, setOpen] = useState(false);
     const [note, setNote] = useState("");
     const [conflict, setConflict] = useState(false);
-    const [type, setType] = useState<GuideItemType>(suggestion.proposedType ?? draftItem?.type ?? suggestion.item?.type ?? "TIP");
+    const types = useGuideItemTypes();
+    const [type, setType] = useState<string>(suggestion.proposedType?.id ?? draftItem?.type.id ?? suggestion.item?.type.id ?? defaultItemType(types));
     const [text, setText] = useState(suggestion.proposedText?.sv || draftItem?.text.sv || suggestion.item?.text.sv || "");
     const [pending, startTransition] = useTransition();
 
-    const accept = (resolution: { keep?: boolean; type?: GuideItemType; text?: { sv: string } } | null) => startTransition(async () => {
+    const accept = (resolution: { keep?: boolean; type?: string; text?: { sv: string } } | null) => startTransition(async () => {
         const result = await acceptSuggestionAction({id: suggestion.id, version: suggestion.version, note, resolution});
 
         if (!result.ok && result.code === "CONFLICT" && !resolution) {
@@ -76,9 +78,9 @@ export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: Gu
                             <>
                                 <div className="space-y-2">
                                     <Label htmlFor="resolution-type">{t("Guide.editor.type")}</Label>
-                                    <select id="resolution-type" value={type} onChange={event => setType(event.target.value as GuideItemType)}
+                                    <select id="resolution-type" value={type} onChange={event => setType(event.target.value)}
                                             className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-xs">
-                                        {GUIDE_ITEM_TYPES.map(option => <option key={option} value={option}>{t(`Guide.type.${option}`)}</option>)}
+                                        <CatalogOptions entries={catalogChoices(types, [suggestion.proposedType, draftItem?.type, suggestion.item?.type])}/>
                                     </select>
                                 </div>
                                 <div className="space-y-2">

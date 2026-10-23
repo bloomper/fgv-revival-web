@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {catalogId} from "@/lib/catalog/schema";
 
 // Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
 // (FR-009a, FR-014, data-model.md).
@@ -8,8 +9,6 @@ export const MAX_ITEM_TEXT = 5000;
 export const MAX_TITLE = 255;
 export const MAX_INTRODUCTION = 20000;
 export const MAX_REASON = 2000;
-
-export const GUIDE_ITEM_TYPES = ["TIP", "REQUIREMENT", "QUESTION", "TEXT"] as const;
 
 // The server labels a published version itself (v1, v2, …); the note says what changed.
 export const guidePublishSchema = z.object({
@@ -38,7 +37,7 @@ export const guideIntroductionSchema = z.object({
 });
 
 export const guideItemSchema = z.object({
-    type: z.enum(GUIDE_ITEM_TYPES),
+    type: catalogId,
     text: guideItemTextSchema,
 });
 
@@ -70,7 +69,7 @@ const optionalText = z.string().trim().max(MAX_ITEM_TEXT, "guideTextTooLong").op
 
 export const guideSuggestionSchema = z.object({
     kind: z.enum(SUGGESTION_KINDS),
-    proposedType: z.enum(GUIDE_ITEM_TYPES).optional().nullable(),
+    proposedType: catalogId.optional().nullable(),
     proposedTextSv: optionalText,
     proposedTextEn: optionalText,
     reason: z.string().trim().max(MAX_REASON, "reasonTooLong").optional().nullable(),
@@ -100,7 +99,7 @@ export const guideSuggestionCreateSchema = z.object({
 export const guideSuggestionAcceptSchema = z.object({
     id, version,
     note: z.string().trim().max(MAX_REASON, "reasonTooLong").optional().nullable(),
-    resolution: z.object({keep: z.boolean().optional(), type: z.enum(GUIDE_ITEM_TYPES).optional().nullable(), text: guideItemTextSchema.optional().nullable()}).optional().nullable(),
+    resolution: z.object({keep: z.boolean().optional(), type: catalogId.optional().nullable(), text: guideItemTextSchema.optional().nullable()}).optional().nullable(),
 });
 
 export const guideSuggestionRejectSchema = z.object({id, version, reason: z.string().trim().max(MAX_REASON, "reasonTooLong").optional().nullable()});

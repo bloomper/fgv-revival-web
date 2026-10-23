@@ -1,10 +1,5 @@
 import {Skeleton} from "@/components/ui/skeleton";
 
 export default function Loading() {
-    return (
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-            <Skeleton className="h-8 w-64"/>
-            <Skeleton className="h-64"/>
-        </div>
-    );
+    return <Skeleton className="hidden flex-1 lg:block"/>;
 }

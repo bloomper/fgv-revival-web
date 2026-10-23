@@ -8,6 +8,7 @@ import {createGuideState, guideResolvers, handleGuidePdf} from "./mock-guide.mjs
 import {createLogState, handleLogImport, logResolvers} from "./mock-log.mjs";
 import {createMeetingState, meetingResolvers} from "./mock-meeting.mjs";
 import {checklistResolvers, createChecklistState} from "./mock-checklist.mjs";
+import {catalogResolvers, createCatalogState, toObjects} from "./mock-catalog.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 4101);
 const ISSUER = `http://localhost:${PORT}/realms/fgv`;
@@ -46,6 +47,7 @@ function resetState(guideSeed = "none") {
         log: createLogState(),
         meeting: createMeetingState(),
         checklist: createChecklistState(),
+        catalog: createCatalogState(),
         nextId: 100,
         revivals: [
             {id: "1", spexId: "1", year: 2028, title: "Ali Baba 2028", premiereDate: null, showDates: [], venues: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
@@ -386,6 +388,28 @@ Object.assign(resolvers, guideResolvers({
     state: () => state, GraphQLError, forbidden, isSuperAdmin, seesEverything, roleIn, canSee, visibleRevival, nameOf: sub => bySub[sub]?.name ?? null,
 }));
 
+// What holds a catalog entry, so the mock refuses to delete it as the server does
+function usedCatalogIds(name) {
+    if (name === "capabilities") {
+        return new Set([
+            ...state.members.flatMap(member => member.capabilities),
+            ...state.checklist.items.map(item => item.defaultCapability),
+            ...state.checklist.templateItems.map(item => item.defaultCapability),
+        ].filter(Boolean));
+    }
+
+    const items = chapter => [...chapter.items, ...chapter.sections.flatMap(section => section.items)];
+
+    return new Set([
+        ...state.guide.versions.flatMap(version => version.chapters.flatMap(items)).map(item => item.type),
+        ...state.guide.suggestions.map(suggestion => suggestion.proposedType),
+    ].filter(Boolean));
+}
+
+Object.assign(resolvers, catalogResolvers({
+    state: () => state, GraphQLError, forbidden, isSuperAdmin, used: usedCatalogIds,
+}));
+
 function operationNameOf(query) {
     const match = /\b(query|mutation)\s+([A-Za-z0-9_]+)/.exec(query);
     return match ? match[2] : null;
@@ -418,7 +442,7 @@ function handleGraphql(req, body, res) {
     }
     try {
         const persona = requireUser(personaOf(req));
-        res.end(JSON.stringify({data: resolver(persona, payload.variables || {})}));
+        res.end(JSON.stringify({data: toObjects(state.catalog, resolver(persona, payload.variables || {}))}));
     } catch (error) {
         if (error instanceof GraphQLError) {
             res.end(JSON.stringify({data: null, errors: [{message: error.message, extensions: {classification: error.classification}}]}));
