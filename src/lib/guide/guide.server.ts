@@ -1,5 +1,6 @@
 import "server-only";
 
+import {cache} from "react";
 import {graphql} from "@/gql";
 import type {
     GuideChapterCreateInput,
@@ -20,6 +21,12 @@ import type {
     RevivalGuideVersionChangeInput,
 } from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
+
+const GuideReadableQuery = graphql(`
+    query GuideReadable {
+        guideReadable
+    }
+`);
 
 const GuideVersionsQuery = graphql(`
     query GuideVersions {
@@ -217,6 +224,19 @@ const GuideSearchQuery = graphql(`
         }
     }
 `);
+
+/**
+ * Whether the caller reads the guide, which the server decides from their roles in revivals. Shown as readable when
+ * the server cannot say, since the guide's pages tell those who may not read it why. Once per request: the layout and
+ * the home page both ask.
+ */
+export const getGuideReadable = cache(async () => {
+    try {
+        return (await runQuery(GuideReadableQuery, {}))?.guideReadable ?? true;
+    } catch {
+        return true;
+    }
+});
 
 export async function getGuideLatestVersion() {
     return (await runQuery(GuideLatestVersionQuery, {}))?.guideLatestVersion ?? null;

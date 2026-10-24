@@ -116,9 +116,6 @@ export function logResolvers(ctx) {
                     __typename: "Revival", id: revival.id, title: revival.title, year: revival.year, status: revival.status,
                     permissions: {
                         __typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival),
-                        canImportLog: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED"
-                            && entries.length === 0 && !log().imported?.[revival.id],
-                        canWaiveRequirement: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED",
                     },
                     ownerCandidates: candidates(revival),
                 },
@@ -126,23 +123,6 @@ export function logResolvers(ctx) {
                 logTags: [...new Set(entries.flatMap(entry => entry.tags))].sort(),
                 meetings: ctx.state().meeting.meetings.filter(meeting => meeting.revivalId === revival.id).reverse()
                     .map(meeting => ({__typename: "MeetingSummary", id: meeting.id, date: meeting.date, title: meeting.title, status: meeting.status})),
-            };
-        },
-        RevivalLogImport(persona, {id}) {
-            const revival = visibleRevival(persona, id);
-
-            return {
-                revival: {
-                    __typename: "Revival", id: revival.id, title: revival.title,
-                    permissions: {
-                        __typename: "RevivalPermissions",
-                        canImportLog: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED"
-                            && !log().entries.some(entry => entry.revivalId === revival.id) && !log().imported?.[revival.id],
-                        canWaiveRequirement: roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival) && revival.status !== "ARCHIVED",
-                    },
-                },
-                logImport: log().imported?.[revival.id] ? {__typename: "LogImport", fileName: "logg.xlsx", layout: "ALI_BABA", rowCount: 12,
-                    importedAt: new Date().toISOString(), importedBy: {__typename: "PersonRef", id: persona.sub, displayName: persona.name}} : null,
             };
         },
         LogEntryCreate(persona, {input}) {
@@ -208,62 +188,4 @@ export function logResolvers(ctx) {
             return {logEntryAnswer: {__typename: "LogEntryAnswerPayload", question: toEntry(question), decision: toEntry(decision)}};
         },
     };
-}
-
-/**
- * `POST /api/revivals/{id}/log/import[/preview]`. The mock cannot read Excel, so any upload is the fictitious 12-row
- * Ali Baba log of contracts/import.md; the owner choices are read from the `choices` part.
- */
-export function handleLogImport(ctx, persona, path, body, res) {
-    const {roleIn, canSee, personas} = ctx;
-    const [, revivalId, action] = /^\/api\/revivals\/([^/]+)\/log\/import(\/preview)?$/.exec(path) ?? [];
-    const revival = ctx.state().revivals.find(candidate => candidate.id === revivalId);
-    const send = (status, json) => res.writeHead(status, {"content-type": "application/json"}).end(JSON.stringify(json));
-
-    if (!persona || !revival || !canSee(persona, revival)) {
-        send(404, {code: "NOT_FOUND", message: "Nyuppsättningen finns inte."});
-        return;
-    }
-    if (roleIn(persona, revival) !== "DIRECTEUR" || revival.status === "ARCHIVED") {
-        send(403, {code: "FORBIDDEN", message: "Du har inte behörighet att göra det."});
-        return;
-    }
-
-    const log = ctx.state().log;
-
-    if (log.entries.some(entry => entry.revivalId === revival.id) || log.imported?.[revival.id]) {
-        send(409, {code: "CONFLICT", message: "Loggen har redan rader."});
-        return;
-    }
-
-    const members = ctx.state().members.filter(member => member.revivalId === revival.id && member.sub)
-        .map(member => ({id: member.sub, displayName: personas[member.sub]?.name ?? null}));
-
-    if (action === "/preview") {
-        send(200, {
-            fileName: "logg.xlsx", layout: "ALI_BABA", sheet: "Logg", ignoredSheets: ["Checklistor", "Så funkar det"], rowCount: 12,
-            byType: {DECISION: 7, TODO: 4, QUESTION: 1}, byStatus: {OPEN: 5, DONE: 7, WAITING: 0, CANCELLED: 0}, numbers: {first: 1, last: 12},
-            owners: [{name: "Dana", rows: 8, suggestedPersonId: null}, {name: "Robin", rows: 4, suggestedPersonId: null}],
-            members, warnings: [], guideRowsRenumbered: 0,
-        });
-        return;
-    }
-
-    const choices = JSON.parse(/name="choices"[^]*?\r\n\r\n([^]*?)\r\n--/.exec(body)?.[1] ?? "{}");
-    const types = ["DECISION", "DECISION", "DECISION", "TODO", "DECISION", "DECISION", "QUESTION", "DECISION", "TODO", "DECISION", "TODO", "TODO"];
-
-    for (let number = 1; number <= 12; number++) {
-        const name = number <= 8 ? "Dana" : "Robin";
-        const personId = choices.owners?.[name] ?? null;
-
-        log.entries.push({
-            id: String(log.nextId++), revivalId: revival.id, number, date: "2026-10-19", type: types[number - 1], text: `Rad ${number} i loggen`,
-            status: [1, 2, 3, 4, 6, 8, 10].includes(number) ? "DONE" : "OPEN", owner: personId ? {personId} : {name}, deadline: null,
-            comment: null, tags: [], guideItemKey: null, answersId: null, origin: "IMPORT", createdBy: persona.name, version: 0,
-        });
-    }
-    log.counters[revival.id] = 12;
-    log.imported = {...log.imported, [revival.id]: true};
-    send(201, {fileName: "logg.xlsx", layout: "ALI_BABA", rowCount: 12, warnings: [], importedBy: {id: persona.sub, displayName: persona.name},
-        importedAt: new Date().toISOString()});
 }

@@ -40,9 +40,11 @@ interface NavSecondaryItem extends Omit<NavItem, "icon"> {
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     roles: Role[];
     accountUrl: string;
+    /** The server decides who reads the guide (FR-001–FR-004). */
+    guideReadable: boolean;
 }
 
-export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
+export function AppSidebar({roles, accountUrl, guideReadable, ...props}: AppSidebarProps) {
     const pathname = usePathname();
     const t = useTranslations();
     const isClient = useIsClient();
@@ -71,14 +73,16 @@ export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
                     {title: t("Nav.manage"), url: "/revivals/manage"},
                 ] : undefined,
             },
-            // The server decides who reads the guide (FR-001–FR-004); the link is shown to everyone with access
-            {
+        ];
+
+        if (guideReadable) {
+            mainItems.push({
                 title: t("Nav.guide"),
                 url: "/guide",
                 icon: BookOpen,
                 isActive: pathname.startsWith("/guide"),
-            },
-        ];
+            });
+        }
 
         if (isSuperAdmin(roles)) {
             mainItems.push({
@@ -117,7 +121,7 @@ export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
                 },
             ]
         };
-    }, [roles, pathname, t]);
+    }, [roles, pathname, t, guideReadable]);
 
     return (
         <Sidebar collapsible="icon"

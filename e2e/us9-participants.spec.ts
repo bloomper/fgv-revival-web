@@ -225,6 +225,10 @@ test.describe("Participants, M6a: the steering group adds and invites, the parti
     test("the steering group's own pages stay closed to the participant", async ({page, loginAs, mock}) => {
         await mock.participants({people: true});
         await loginAs("deltagare");
+        await page.goto("/");
+        await expect(page.getByRole("link", {name: /Din medverkan/})).toBeVisible();
+        // Neither the home page nor the sidebar offers the guide, which participants do not read
+        await expect(page.getByRole("link", {name: /Guiden/})).toHaveCount(0);
         await page.goto("/revivals/1/participants");
         await expect(page.getByRole("heading", {name: "Sidan finns inte"})).toBeVisible();
     });

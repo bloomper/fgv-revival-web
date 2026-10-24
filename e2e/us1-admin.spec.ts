@@ -29,7 +29,7 @@ test.describe("User story 1: the super admin records and approves a revival", ()
         await page.getByRole("combobox", {name: "Ändra status"}).selectOption("APPROVED");
         await expect(page.locator('[data-slot="badge"]:visible', {hasText: "Godkänd"})).toBeVisible();
 
-        await page.getByRole("link", {name: "Styrgrupp", exact: true}).click();
+        await page.getByRole("link", {name: "Direktion", exact: true}).click();
         await page.getByRole("button", {name: "Utse directeur"}).click();
         await page.getByRole("dialog").getByRole("combobox", {name: /Utse directeur/}).fill("ny.directeur@example.org");
         await page.getByRole("dialog").getByRole("button", {name: "Bjud in"}).click();
@@ -129,8 +129,8 @@ test.describe("User story 1: the super admin records and approves a revival", ()
         await openRevival(page, "Ali Baba 2028");
 
         await expect(page.getByText("Stina Styrgrupp")).toBeVisible();
-        await page.getByRole("link", {name: "Visa styrgruppen"}).click();
+        await page.getByRole("link", {name: "Visa direktionen"}).click();
         await expect(page.getByRole("row").filter({hasText: "Stina Styrgrupp"})).toBeVisible();
-        await expect(page.getByRole("button", {name: "Lägg till i styrgruppen"})).toBeVisible();
+        await expect(page.getByRole("button", {name: "Lägg till i direktionen"})).toBeVisible();
     });
 });

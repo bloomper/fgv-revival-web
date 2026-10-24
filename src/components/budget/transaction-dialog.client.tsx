@@ -12,10 +12,11 @@ import {NativeSelect} from "@/components/ui/native-select";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {DateInput} from "@/components/date-input.client";
+import {FileInput} from "@/components/file-input.client";
 import {OwnerField, type OwnerMember} from "@/components/owner/owner-field.client";
 import {catalogName} from "@/components/catalog/catalog";
 import {type BudgetCategoryValue, CategorySelect} from "@/components/budget/budget-labels";
-import {uploadReceipt} from "@/components/budget/receipt";
+import {receiptUrl, uploadReceipt} from "@/components/budget/receipt";
 import {useReceiptFeedback} from "@/components/budget/use-receipt-feedback.client";
 import {createTransactionAction, updateTransactionAction} from "@/app/(app)/revivals/[id]/budget/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
@@ -34,6 +35,7 @@ export type EditableTransaction = {
     description: string;
     budgetLine?: { id: string; description: string } | null;
     paidBy?: { person?: { id: string; displayName?: string | null } | null; name?: string | null } | null;
+    receipt?: { filename: string } | null;
 };
 
 const today = () => new Date().toLocaleDateString("sv-SE", {timeZone: "Europe/Stockholm"});
@@ -160,13 +162,18 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                             )}
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-receipt`}>{t("Budget.receipt")}</Label>
-                                <Input id={`${id}-receipt`} type="file" accept={RECEIPT_TYPES.join(",")}
-                                       onChange={(change: React.ChangeEvent<HTMLInputElement>) => {
-                                           const chosen = change.target.files?.[0] ?? null;
-
-                                           setFile(chosen);
-                                           setFileError(chosen ? receiptProblem(chosen) : null);
-                                       }}/>
+                                <FileInput id={`${id}-receipt`} accept={RECEIPT_TYPES.join(",")}
+                                           chooseLabel={transaction?.receipt ? t("Budget.replaceReceiptChoose") : undefined}
+                                           current={transaction?.receipt && (
+                                               <a href={receiptUrl(transaction.id)} download className="underline underline-offset-4 hover:text-primary"
+                                                  aria-label={t("Budget.downloadReceipt", {filename: transaction.receipt.filename})}>
+                                                   {transaction.receipt.filename}
+                                               </a>
+                                           )}
+                                           onChange={(chosen) => {
+                                               setFile(chosen);
+                                               setFileError(chosen ? receiptProblem(chosen) : null);
+                                           }}/>
                                 <p className="text-xs text-muted-foreground">{t("Budget.receiptHelp")}</p>
                                 {error(fileError)}
                             </div>

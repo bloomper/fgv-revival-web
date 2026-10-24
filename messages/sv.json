@@ -4,7 +4,7 @@
   },
   "Meta": {
     "title": "Nyuppsättning",
-    "description": "Stöd för styrgrupper som sätter upp Chalmersspex igen"
+    "description": "Stöd för direktioner som sätter upp Chalmersspex igen"
   },
   "Common": {
     "login": "Logga in",
@@ -18,6 +18,8 @@
     "edit": "Redigera",
     "close": "Stäng",
     "reload": "Ladda om",
+    "chooseFile": "Välj fil…",
+    "noFileChosen": "Ingen fil vald",
     "confirm": "Bekräfta",
     "loading": "Laddar…",
     "saved": "Sparat",
@@ -72,7 +74,7 @@
     "title": "Nyuppsättning",
     "mustBeLoggedIn": "Du behöver vara inloggad för att använda Nyuppsättning.",
     "welcome": "Välkommen till Nyuppsättning",
-    "intro": "Nyuppsättning stöder styrgrupperna för nyuppsättningar av Chalmersspexet.",
+    "intro": "Den här applikationen stöder direktionerna för nyuppsättningar av Chalmersspexet.",
     "revivalsText": "Nyuppsättningarna du är med i.",
     "guideText": "Hur en nyuppsättning går till, från godkännande till avslut.",
     "myRevivals": "Mina nyuppsättningar",
@@ -113,7 +115,7 @@
   },
   "Role": {
     "DIRECTEUR": "Directeur",
-    "STEERING_GROUP": "Styrgrupp",
+    "STEERING_GROUP": "Direktion",
     "PARTICIPANT": "Deltagare",
     "HELPER": "Funktionär"
   },
@@ -129,7 +131,7 @@
     "premiereDate": "Premiär",
     "status": "Status",
     "directeurs": "Directeurer",
-    "steeringGroup": "Styrgrupp",
+    "steeringGroup": "Direktion",
     "statusHistory": "Statushistorik",
     "spexUnavailable": "Spexregistret är tillfälligt otillgängligt",
     "notSet": "Inte angivet",
@@ -144,7 +146,7 @@
     "open": "Öppna",
     "guide": "Guiden",
     "overview": "Översikt",
-    "members": "Styrgrupp",
+    "members": "Direktion",
     "sections": "Nyuppsättningens delar",
     "log": "Beslutslogg",
     "meetings": "Möten",
@@ -156,7 +158,7 @@
       "title": "Endast läsning",
       "archived": "Nyuppsättningen är arkiverad, så inget i den kan ändras.",
       "superAdmin": "Som superadministratör kan du läsa allt här. Bara nyuppsättningens directeurer och direktion lägger till och ändrar rader, möten, checklistpunkter och förslag till guiden.",
-      "join": "Lägg till dig själv i direktionen under Styrgrupp för att arbeta i den.",
+      "join": "Lägg till dig själv på fliken Direktion för att arbeta i nyuppsättningen.",
       "observer": "Som observatör kan du läsa allt här. Bara nyuppsättningens directeurer och direktion gör ändringar.",
       "other": "Du kan läsa det här, men bara nyuppsättningens directeurer och direktion gör ändringar."
     },
@@ -222,7 +224,7 @@
   "Members": {
     "email": "E-postadress",
     "addDirecteur": "Utse directeur",
-    "addMember": "Lägg till i styrgruppen",
+    "addMember": "Lägg till i direktionen",
     "added": "Tillagd",
     "removed": "Borttagen",
     "confirmRemoveTitle": "Ta bort {name}?",
@@ -230,7 +232,7 @@
     "capabilities": "Ansvarsområden",
     "capabilitiesSaved": "Ansvarsområdena sparades",
     "noDirecteurs": "Ingen directeur är utsedd.",
-    "noMembers": "Styrgruppen har inga medlemmar.",
+    "noMembers": "Direktionen har inga medlemmar.",
     "waitingPerson": "Väntande person",
     "allCapabilities": "Alla behörigheter",
     "search": "Namn eller e-post",
@@ -262,8 +264,8 @@
     "addDirecteurDescription": "Välj ett FGV-konto, eller skriv en e-postadress för att bjuda in någon. Lägg till en i taget; panelen är öppen tills du klickar Klar.",
     "addMemberDescription": "Välj ett FGV-konto, eller skriv en e-postadress för att bjuda in någon, och ange vilka områden hen ansvarar för. Lägg till en i taget; panelen är öppen tills du klickar Klar.",
     "empty": "Ingen är utsedd ännu",
-    "emptyHint": "Directeurer och styrgruppens medlemmar visas här.",
-    "showAll": "Visa styrgruppen"
+    "emptyHint": "Directeurer och direktionens medlemmar visas här.",
+    "showAll": "Visa direktionen"
   },
   "Errors": {
     "CONFLICT": "Någon annan har ändrat detta. Ladda om och försök igen.",
@@ -400,7 +402,7 @@
   "About": {
     "title": "Om",
     "heading": "Om Nyuppsättning",
-    "description": "Nyuppsättning tillhandahålls av FGV som stöd för styrgrupper som sätter upp ett Chalmersspex igen, från förslag till arkivering.",
+    "description": "Nyuppsättning tillhandahålls av FGV som stöd för direktioner som sätter upp ett Chalmersspex igen, från förslag till arkivering.",
     "behindTheScenes": "Bakom kulisserna",
     "feedback": "Tyck till",
     "feedbackDescription": "Vi värdesätter dina åsikter. Har du förslag på förbättringar eller har du hittat en bugg? Hör gärna av dig på {email}.",
@@ -438,7 +440,7 @@
       "noDraft": "Det finns inget utkast.",
       "noDraftHint": "Ändringar i guiden görs i ett utkast som sedan publiceras som en ny version.",
       "openSuggestions": "{count, plural, =0 {Inga öppna förslag.} one {# öppet förslag.} other {# öppna förslag.}}",
-      "suggestionsHint": "Styrgruppernas förslag godtas in i utkastet eller avslås.",
+      "suggestionsHint": "Direktionernas förslag godtas in i utkastet eller avslås.",
       "handleSuggestions": "Hantera förslag",
       "versionLabel": "Version",
       "publishedAt": "Publicerad",
@@ -482,7 +484,7 @@
     "versions": "Versioner",
     "chapters": "Kapitel",
     "introduction": "Inledning",
-    "refused": "Guiden visas för styrgrupper och directeurer i pågående nyuppsättningar, och för FGV/JK.",
+    "refused": "Guiden visas för direktioner och directeurer i pågående nyuppsättningar, och för FGV/JK.",
     "search": {
       "placeholder": "Sök i guiden",
       "results": "Sökträffar",
@@ -706,57 +708,11 @@
     "answeredByRow": "Besvarad i rad {number}",
     "fromMeeting": "Från mötet {date}",
     "empty": "Loggen är tom.",
-    "import": {
-      "back": "Beslutslogg",
-      "title": "Importera från Excel",
-      "description": "Importera nyuppsättningens befintliga beslutslogg en gång, innan någon rad har lagts in här. Filen sparas inte.",
-      "file": "Excel-fil (.xlsx, högst 10 MB)",
-      "preview": "Förhandsgranska",
-      "tooLarge": "Välj en Excel-fil på högst 10 MB.",
-      "layout": "Format",
-      "layouts": {
-        "ALI_BABA": "Ali Baba",
-        "NOBEL": "Nobel"
-      },
-      "sheet": "Blad",
-      "rows": "Rader",
-      "numbers": "nr {first}–{last}",
-      "ignored": "Ignorerade blad",
-      "counts": "Antal per typ och status",
-      "nobelType": "Typ för alla rader",
-      "owners": "Ansvariga",
-      "ownerName": "Namn i filen",
-      "matchTo": "Blir",
-      "matchOwner": "Vem är {name}?",
-      "keepName": "Behåll namnet (inte medlem)",
-      "warnings": "Varningar",
-      "noWarnings": "Inga varningar.",
-      "atRow": "Rad {row}: ",
-      "guideRows": "{count, plural, one {# fråga från guiden får} other {# frågor från guiden får}} nya nummer efter de importerade raderna.",
-      "confirm": "Importera {count} rader",
-      "done": "{count} rader är importerade",
-      "warning": {
-        "DATE_NOT_A_DATE": "Datum är inte ett datum, dagens datum används",
-        "DEADLINE_NOT_A_DATE": "Deadline är inte ett datum, texten läggs i kommentaren",
-        "UNKNOWN_TYPE": "Okänd typ, blir Att göra",
-        "UNKNOWN_STATUS": "Okänd status, blir Öppen",
-        "EMPTY_TEXT": "Ingen text",
-        "HEADER_REPEATED": "Upprepad rubrikrad, hoppas över",
-        "EXTRA_COLUMNS": "Kolumner utanför formatet ignoreras",
-        "TEXT_TRUNCATED": "Texten är kapad",
-        "COMMENT_TRUNCATED": "Kommentaren är kapad",
-        "OWNER_TRUNCATED": "Namnet på den ansvarige är kapat"
-      },
-      "cancel": "Avbryt",
-      "noFile": "Välj en Excel-fil (.xlsx) som inte är tom.",
-      "logNotEmpty": "Excel-importen är bara till för att starta loggen. Loggen har redan rader, så det går inte att importera längre.",
-      "alreadyImported": "Loggen importerades redan från {fileName} ({count} rader). En Excel-logg kan bara importeras en gång, till en tom logg."
-    },
     "rowMenu": "Åtgärder för rad {number}",
     "setStatus": "Ändra status",
     "statusChanged": "Rad {number} uppdaterades",
     "actions": "Åtgärder",
-    "emptyHint": "Lägg till den första raden med Ny rad, eller importera den befintliga loggen från Excel.",
+    "emptyHint": "Lägg till den första raden med Ny rad.",
     "emptyReadOnly": "Rader visas här när direktionen lägger till dem.",
     "dateLabel": "Noterad",
     "dateHint": "När raden kom in i loggen. Lämnas det tomt blir det i dag.",
@@ -1007,15 +963,15 @@
         "description": "Vanlig text, som visas utan etikett."
       }
     },
-    "role": "Roll i scenarier",
+    "role": "Roll i scenarion",
     "noRole": "Ingen roll",
-    "roleHelp": "Högst en aktiv kategori per roll. Scenarier räknar med kategorin som har rollen.",
+    "roleHelp": "Högst en aktiv kategori per roll. Scenarion räknar med kategorin som har rollen.",
     "editEntry": "Redigera {name}"
   },
   "CapabilityAdmin": {
     "title": "Ansvarsområden",
     "create": "Nytt ansvarsområde",
-    "description": "Områdena som styrgruppsmedlemmar kan ansvara för och som checklistmallar kan föreslå ägare efter. Ett avvecklat område erbjuds inte längre, men finns kvar hos medlemmar och punkter som redan har det. Bara ett område som inget använder kan raderas."
+    "description": "Områdena som direktionsmedlemmar kan ansvara för och som checklistmallar kan föreslå ägare efter. Ett avvecklat område erbjuds inte längre, men finns kvar hos medlemmar och punkter som redan har det. Bara ett område som inget använder kan raderas."
   },
   "GuideItemTypeAdmin": {
     "title": "Punkttyper i guiden",
@@ -1163,7 +1119,7 @@
     "overview": "Översikt",
     "lines": "Budgetrader",
     "transactions": "Transaktioner",
-    "scenarios": "Scenarier",
+    "scenarios": "Scenarion",
     "views": "Budgetens delar",
     "readOnly": {
       "superAdmin": "Som superadministratör kan du läsa budgeten. Bara directeuren och direktionsmedlemmar med ansvarsområdet ekonomi ändrar den.",
@@ -1205,7 +1161,7 @@
     "noCategories": "Budgeten har inga rader eller transaktioner än.",
     "settings": "Inställningar",
     "settingsTitle": "Budgetens inställningar",
-    "settingsDescription": "Antal deltagare och spexpengar används för rader per deltagare och i scenarier.",
+    "settingsDescription": "Antal deltagare och spexpengar används för rader per deltagare och i scenarion.",
     "editSettings": "Ändra",
     "participantsPlanned": "Planerat antal deltagare",
     "participationFee": "Spexpengar per deltagare",
@@ -1270,6 +1226,7 @@
     "noReceipt": "Saknas",
     "downloadReceipt": "Ladda ner kvittot {filename}",
     "replaceReceipt": "Byt kvitto",
+    "replaceReceiptChoose": "Byt kvitto…",
     "uploadReceipt": "Ladda upp kvitto",
     "removeReceipt": "Ta bort kvittot",
     "cancelTransaction": "Makulera",
@@ -1311,8 +1268,8 @@
     "updateScenario": "Uppdatera {name}",
     "scenarioResult": "Scenariots resultat",
     "budgetResult": "Budgetens resultat",
-    "savedScenarios": "Sparade scenarier",
-    "noScenarios": "Inga sparade scenarier än.",
+    "savedScenarios": "Sparade scenarion",
+    "noScenarios": "Inga sparade scenarion än.",
     "breakEvenShort": "{count, plural, one {# biljett} other {# biljetter}} för nollresultat",
     "loadScenario": "Öppna {name}",
     "load": "Öppna",
@@ -1324,7 +1281,7 @@
   },
   "BudgetCategoryAdmin": {
     "title": "Budgetkategorier",
-    "description": "Kategorierna som alla nyuppsättningars budgetar använder. En kategori är intäkt eller kostnad, vilket inte kan ändras. En roll talar om vad kategorin står för i scenarier.",
+    "description": "Kategorierna som alla nyuppsättningars budgetar använder. En kategori är intäkt eller kostnad, vilket inte kan ändras. En roll talar om vad kategorin står för i scenarion.",
     "create": "Ny budgetkategori",
     "kindHelp": {
       "INCOME": "Pengar som kommer in, t.ex. biljetter och sponsring.",
@@ -1622,7 +1579,7 @@
     "openShiftsTitle": "Lediga pass",
     "openShiftsDescription": "Pass som behöver fler. Ta ett pass som passar dig.",
     "materialsTitle": "Material",
-    "materialsDescription": "Manus, noter, inspelningar och annat som styrgruppen delar med dig. Länkarna öppnas i en ny flik."
+    "materialsDescription": "Manus, noter, inspelningar och annat som direktionen delar med dig. Länkarna öppnas i en ny flik."
   },
   "Availability": {
     "answers": {
@@ -1640,7 +1597,7 @@
     "noneMine": "Du har inga pass än.",
     "noneOpen": "Inga lediga pass just nu.",
     "openCount": "{count, plural, one {# plats kvar} other {# platser kvar}}",
-    "assignedByGroup": "Du fick passet av styrgruppen. Hör av dig till dem om du inte kan.",
+    "assignedByGroup": "Du fick passet av direktionen. Hör av dig till dem om du inte kan.",
     "signUpFor": "Ta passet {slot}",
     "signUp": "Ta passet",
     "signedUp": "Du har tagit passet",
@@ -1779,7 +1736,7 @@
     "audiences": {
       "PARTICIPANTS": "Deltagare (ja och kanske)",
       "CONFIRMED": "Bekräftade deltagare (ja)",
-      "STEERING_GROUP": "Direktion och styrgrupp",
+      "STEERING_GROUP": "Directeurer och direktion",
       "POSITION": "Deltagare med befattning",
       "EVENT_ATTENDEES": "De som kommer på en händelse",
       "HELPERS": "Funktionärer",
@@ -1788,7 +1745,7 @@
     "audienceHints": {
       "PARTICIPANTS": "Alla deltagare som svarat ja eller kanske.",
       "CONFIRMED": "Deltagare som svarat ja.",
-      "STEERING_GROUP": "Nyuppsättningens directeurer och styrgruppsmedlemmar.",
+      "STEERING_GROUP": "Nyuppsättningens directeurer och direktionsmedlemmar.",
       "POSITION": "Deltagare (ja eller kanske) med den befattningen.",
       "EVENT_ATTENDEES": "Deltagare och funktionärer som kan (ja eller kanske) någon dag av händelsen eller har ett pass i den.",
       "HELPERS": "Funktionärer som inte har tackat nej.",
@@ -1831,7 +1788,7 @@
     },
     "visibility": "Synlig för",
     "visibilities": {
-      "STEERING_GROUP": "Styrgruppen",
+      "STEERING_GROUP": "Direktionen",
       "PARTICIPANTS": "Alla deltagare",
       "POSITIONS": "Vissa befattningar"
     },
@@ -1865,7 +1822,7 @@
     "actions": "Åtgärder",
     "empty": "Inget material än",
     "emptyHint": "Lägg till länkar till manus, noter, inspelningar och bilder.",
-    "emptyReadOnly": "Styrgruppen har inte lagt till något material.",
+    "emptyReadOnly": "Direktionen har inte lagt till något material.",
     "filterPlaceholder": "Filtrera på titel, länk eller kommentar…",
     "showRemoved": "Visa borttagna",
     "mineNone": "Inget material till dig än."
@@ -1926,7 +1883,7 @@
     "actions": "Åtgärder",
     "empty": "Inga inventarier än",
     "emptyHint": "Lägg till det nyuppsättningen har eller behöver.",
-    "emptyReadOnly": "Styrgruppen har inte lagt till några inventarier.",
+    "emptyReadOnly": "Direktionen har inte lagt till några inventarier.",
     "filterPlaceholder": "Filtrera på namn, plats eller vem…",
     "showRemoved": "Visa borttagna",
     "needAction": "{count, plural, one {# sak behöver hittas, köpas eller byggas.} other {# saker behöver hittas, köpas eller byggas.}}"

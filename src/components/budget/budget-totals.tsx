@@ -16,11 +16,11 @@ export type BudgetTotalsValue = {
 
 function Row({label, budgeted, actual}: { label: string; budgeted: string; actual: string }) {
     return (
-        <div className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-4 text-sm">
+        <>
             <span className="text-muted-foreground">{label}</span>
             <AmountText value={budgeted} className="text-right"/>
             <AmountText value={actual} className="text-right"/>
-        </div>
+        </>
     );
 }
 
@@ -46,12 +46,11 @@ export function BudgetTotals({totals}: { totals: BudgetTotalsValue }) {
                 <CardHeader>
                     <CardDescription>{t("incomeAndCost")}</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-1">
-                    <div className="grid grid-cols-[1fr_auto_auto] gap-x-4 text-xs text-muted-foreground">
-                        <span/>
-                        <span className="text-right">{t("budgeted")}</span>
-                        <span className="text-right">{t("actual")}</span>
-                    </div>
+                {/* One grid for the header and both rows, so the amount columns share their widths. */}
+                <CardContent className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-4 gap-y-1 text-sm">
+                    <span/>
+                    <span className="text-right text-xs text-muted-foreground">{t("budgeted")}</span>
+                    <span className="text-right text-xs text-muted-foreground">{t("actual")}</span>
                     <Row label={t("kinds.INCOME")} budgeted={totals.budgetedIncome} actual={totals.actualIncome}/>
                     <Row label={t("kinds.COST")} budgeted={totals.budgetedCost} actual={totals.actualCost}/>
                 </CardContent>

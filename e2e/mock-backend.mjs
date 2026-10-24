@@ -5,7 +5,7 @@ import {createServer} from "node:http";
 import {randomUUID} from "node:crypto";
 import {exportJWK, generateKeyPair, SignJWT} from "jose";
 import {createGuideState, guideResolvers, handleGuidePdf} from "./mock-guide.mjs";
-import {createLogState, handleLogImport, logResolvers} from "./mock-log.mjs";
+import {createLogState, logResolvers} from "./mock-log.mjs";
 import {createMeetingState, meetingResolvers} from "./mock-meeting.mjs";
 import {checklistResolvers, createChecklistState} from "./mock-checklist.mjs";
 import {catalogResolvers, createCatalogState, toObjects} from "./mock-catalog.mjs";
@@ -726,8 +726,6 @@ const server = createServer((req, res) => {
             } else {
                 res.writeHead(204).end();
             }
-        } else if (req.method === "POST" && /^\/api\/revivals\/[^/]+\/log\/import/.test(path)) {
-            handleLogImport({state: () => state, roleIn, canSee, personas: bySub}, personaOf(req), path, body, res);
         } else if (req.method === "POST" && path === "/__persona") {
             currentPersona = JSON.parse(body).persona;
             res.writeHead(204).end();

@@ -204,7 +204,7 @@ changing routing or data fetching; this area differs sharply from older Next.
   behaviour and styling (`GuideTypeBadge`, hiding `TEXT`); branch on `type.kind`, never on a type's id. Retired entries
   stay on rows that hold them; pickers offer `catalogChoices(active, held)`. Pages with a picker fetch the active list
   and wrap it in `CatalogProvider`.
-- The server's plain HTTP endpoints (guide PDF, log import, spex poster, budget export, receipts, Swish QR) go through
+- The server's plain HTTP endpoints (guide PDF, spex poster, budget export, receipts, Swish QR) go through
   `apiFetch` in `src/lib/api.server.ts`, which adds the token on the server. The browser reaches the PDF only through the route
   handler `/api/guide-pdf`, and a revival's poster only through `/api/revival-poster/[id]` (rendered by
   `RevivalPoster`, which falls back to a placeholder; never `next/image`, whose optimizer has no session).

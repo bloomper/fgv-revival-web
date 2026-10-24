@@ -3,6 +3,7 @@ import {BookOpen, type LucideIcon, Theater, UserRound} from "lucide-react";
 import {getTranslations} from "next-intl/server";
 import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {GraphQLRequestError} from "@/lib/graphql.server";
+import {getGuideReadable} from "@/lib/guide/guide.server";
 import {getMe} from "@/lib/revival/revival.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
@@ -38,7 +39,7 @@ async function loadMe() {
  */
 export default async function HomePage() {
     return withPolicyPage(Policies.app.requireAccess, async () => {
-        const [t, me] = await Promise.all([getTranslations(), loadMe()]);
+        const [t, me, guideReadable] = await Promise.all([getTranslations(), loadMe(), getGuideReadable()]);
         const participations = (me?.revivalRoles ?? []).filter(assignment => assignment.role === "PARTICIPANT" || assignment.role === "HELPER");
 
         return (
@@ -53,7 +54,7 @@ export default async function HomePage() {
                                   title={`${t("Home.participationTitle")}: ${revival.title}`} text={t("Home.participationText", {title: revival.title})}/>
                     ))}
                     <Shortcut href="/revivals" icon={Theater} title={t("Nav.revivals")} text={t("Home.revivalsText")}/>
-                    <Shortcut href="/guide" icon={BookOpen} title={t("Nav.guide")} text={t("Home.guideText")}/>
+                    {guideReadable && <Shortcut href="/guide" icon={BookOpen} title={t("Nav.guide")} text={t("Home.guideText")}/>}
                 </div>
             </div>
         );

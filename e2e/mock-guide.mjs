@@ -208,6 +208,9 @@ export function guideResolvers(ctx) {
             });
             return {guideVersionDelete: null};
         },
+        GuideReadable(persona) {
+            return {guideReadable: canRead(persona)};
+        },
         GuideLatestVersion(persona) {
             requireRead(persona);
             const latest = published(guide())[0];

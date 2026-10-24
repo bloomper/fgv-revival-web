@@ -57,9 +57,6 @@ const nextConfig: NextConfig = {
             validationLevel: "manual-warning",
         },
         proxyClientMaxBodySize: "11mb",
-        serverActions: {
-            bodySizeLimit: "11mb",
-        },
     },
 };
 

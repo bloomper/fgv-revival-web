@@ -20,10 +20,10 @@ vi.mock("@/components/nav-user.client", () => ({
     NavUser: () => null,
 }));
 
-const sidebar = (roles: Role[]) => render(
+const sidebar = (roles: Role[], guideReadable = true) => render(
     <TooltipProvider>
         <SidebarProvider>
-            <AppSidebar roles={roles} accountUrl="https://auth.example.org/account"/>
+            <AppSidebar roles={roles} accountUrl="https://auth.example.org/account" guideReadable={guideReadable}/>
         </SidebarProvider>
     </TooltipProvider>,
 );
@@ -55,7 +55,13 @@ describe("AppSidebar", () => {
         expect(screen.queryByRole("button", {name: /Common.toggle/})).not.toBeInTheDocument();
     });
 
-    it("links the guide for every user, and administration for super admins", () => {
+    it("offers no guide entry to those who may not read the guide", () => {
+        sidebar(["USER"], false);
+
+        expect(screen.queryByRole("link", {name: "Nav.guide"})).not.toBeInTheDocument();
+    });
+
+    it("links the guide for its readers, and administration for super admins", () => {
         pathname = "/admin/guide";
         sidebar(["USER", "SUPER_ADMIN"]);
 

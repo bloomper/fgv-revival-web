@@ -15,8 +15,8 @@ test("User story 3: the observer sees every revival and no edit controls", async
     await expect(page.getByRole("button", {name: "Redigera uppgifter"})).toHaveCount(0);
     await expect(page.getByText("stina@example.org")).toHaveCount(0);
 
-    await page.getByRole("link", {name: "Styrgrupp", exact: true}).click();
+    await page.getByRole("link", {name: "Direktion", exact: true}).click();
     await expect(page.getByRole("row").filter({hasText: "Stina Styrgrupp"})).toBeVisible();
-    await expect(page.getByRole("button", {name: /Utse directeur|Lägg till i styrgruppen|Åtgärder för/})).toHaveCount(0);
+    await expect(page.getByRole("button", {name: /Utse directeur|Lägg till i direktionen|Åtgärder för/})).toHaveCount(0);
     await expect(page.getByText("stina@example.org")).toHaveCount(0);
 });

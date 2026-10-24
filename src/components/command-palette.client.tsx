@@ -42,7 +42,7 @@ type PaletteEntry = {
 
 const normalize = (value: string) => value.trim().toLowerCase();
 
-export function CommandPalette() {
+export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
     const t = useTranslations();
     const router = useRouter();
     const roles = useRoles();
@@ -73,7 +73,9 @@ export function CommandPalette() {
             navigationEntries.push({id: "revival-timeline", label: t("Nav.revivalTimeline"), href: "/revivals/manage?view=timeline", icon: CalendarRange});
         }
 
-        navigationEntries.push({id: "guide", label: t("Nav.guide"), href: "/guide", icon: BookOpen});
+        if (guideReadable) {
+            navigationEntries.push({id: "guide", label: t("Nav.guide"), href: "/guide", icon: BookOpen});
+        }
 
         if (isSuperAdmin(roles)) {
             navigationEntries.push({id: "admin-guide", label: t("Nav.adminGuide"), href: "/admin/guide", icon: BookOpenCheck});
@@ -100,7 +102,7 @@ export function CommandPalette() {
         }
 
         return {navigation: navigationEntries, actions: actionEntries};
-    }, [roles, t]);
+    }, [roles, t, guideReadable]);
 
     const term = normalize(query);
     const matching = useCallback(

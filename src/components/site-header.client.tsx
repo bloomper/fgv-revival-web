@@ -10,7 +10,7 @@ import {LanguageToggle} from "@/components/language-toggle.client";
 import {useIsClient} from "@/hooks/use-is-client.client";
 import {CommandPalette} from "@/components/command-palette.client";
 
-export function SiteHeader() {
+export function SiteHeader({guideReadable}: { guideReadable: boolean }) {
     const {toggleSidebar} = useSidebar();
     const isClient = useIsClient();
     const t = useTranslations();
@@ -36,7 +36,7 @@ export function SiteHeader() {
                 <div className="flex shrink-0 items-center gap-1 sm:gap-2">
                     {isClient ? (
                         <>
-                            <CommandPalette/>
+                            <CommandPalette guideReadable={guideReadable}/>
                             <LanguageToggle/>
                             <ModeToggle/>
                         </>

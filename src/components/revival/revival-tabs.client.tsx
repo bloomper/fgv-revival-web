@@ -127,25 +127,25 @@ export function RevivalTabs({
 
     const tabs: Tab[] = [
         {segment: null, title: t("overview"), icon: LayoutDashboard},
+        {segment: "members", title: t("members"), icon: Users},
         {segment: "events", title: t("events"), icon: CalendarDays},
+        {segment: "meetings", title: t("meetings"), icon: CalendarCheck},
         {
             segment: "log", title: t("log"), icon: ListChecks,
             count: work && <WorkCount open={work.openEntries} overdue={work.overdueEntries}
                                       label={t("openOverdue", {open: work.openEntries, overdue: work.overdueEntries})}/>,
         },
-        {segment: "meetings", title: t("meetings"), icon: CalendarCheck},
         {
             segment: "checklists", title: t("checklists"), icon: ClipboardCheck,
             count: work && <WorkCount open={work.openRequiredItems} overdue={work.overdueChecklistItems}
                                       label={t("requirementsOverdue", {open: work.openRequiredItems, overdue: work.overdueChecklistItems})}/>,
         },
+        {segment: "guide", title: t("guide"), icon: BookOpen},
         ...(canReadBudget ? [{segment: "budget", title: t("budget"), icon: Wallet}] : []),
         ...(canReadParticipants ? [{segment: "participants", title: t("participants"), icon: UserRound}] : []),
         ...(canReadStaffing ? [{segment: "staffing", title: t("staffing"), icon: CalendarClock}] : []),
         ...(canReadMailings ? [{segment: "mailings", title: t("mailings"), icon: Mail}] : []),
         ...(canReadMaterials ? [{segment: "materials", title: t("materials"), icon: FolderOpen}] : []),
-        {segment: "guide", title: t("guide"), icon: BookOpen},
-        {segment: "members", title: t("members"), icon: Users},
         {
             segment: "closing", title: t("closing"), icon: Flag,
             count: closingProminent && <span className="size-2 rounded-full bg-primary" title={t("closingNow")} aria-hidden/>,

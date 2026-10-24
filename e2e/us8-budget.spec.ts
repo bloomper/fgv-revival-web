@@ -71,6 +71,13 @@ test.describe("Budget, M5: lines from proposals, transactions with receipts, sce
             expect(download.headers()["content-security-policy"]).toContain("sandbox");
             expect(await download.text()).toBe("%PDF-1.4 kvitto");
 
+            await page.getByRole("button", {name: "Åtgärder för Storhandling"}).click();
+            await page.getByRole("menuitem", {name: "Ändra"}).click();
+            await expect(dialog.getByRole("link", {name: "Ladda ner kvittot kvitto.pdf"})).toBeVisible();
+            await expect(dialog.getByRole("button", {name: "Byt kvitto…"})).toBeVisible();
+            await dialog.getByRole("button", {name: "Avbryt"}).click();
+            await expect(dialog).toBeHidden();
+
             await page.getByRole("button", {name: "Ej tillbakabetalda"}).click();
             await expect(page.getByRole("row").filter({hasText: "Storhandling"})).toBeVisible();
             await transaction.getByRole("switch", {name: "Tillbakabetald: Storhandling"}).click();
@@ -83,7 +90,7 @@ test.describe("Budget, M5: lines from proposals, transactions with receipts, sce
             await expect(page.getByRole("region", {name: "Att betala tillbaka"})).toContainText("Inga utlägg väntar");
             await expect(page.getByRole("region", {name: "Resultat"})).toContainText("16 400 kr");
 
-            await budgetNav(page).getByRole("link", {name: "Scenarier"}).click();
+            await budgetNav(page).getByRole("link", {name: "Scenarion"}).click();
             await expect(page.getByLabel("Sålda biljetter föreställning")).toHaveAttribute("placeholder", "400");
             await page.getByLabel("Sålda biljetter föreställning").fill("300");
             await page.getByRole("button", {name: "Räkna"}).click();
@@ -93,7 +100,7 @@ test.describe("Budget, M5: lines from proposals, transactions with receipts, sce
             await expect(result).toContainText("291");
             await page.getByLabel("Namn på scenariot").fill("Färre biljetter");
             await page.getByRole("button", {name: "Spara som scenario"}).click();
-            await expect(page.getByRole("region", {name: "Sparade scenarier"}).getByRole("listitem").filter({hasText: "Färre biljetter"}))
+            await expect(page.getByRole("region", {name: "Sparade scenarion"}).getByRole("listitem").filter({hasText: "Färre biljetter"}))
                 .toContainText("1 400 kr");
 
             await budgetNav(page).getByRole("link", {name: "Översikt"}).click();

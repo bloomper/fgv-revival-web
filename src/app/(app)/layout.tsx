@@ -11,6 +11,7 @@ import {LogoText} from "@/components/logo-text";
 import {LogoHome} from "@/components/logo-home";
 import {ModeToggle} from "@/components/mode-toggle.client";
 import {LanguageToggle} from "@/components/language-toggle.client";
+import {getGuideReadable} from "@/lib/guide/guide.server";
 import {requireUser} from "@/utils/auth.server";
 import {hasAccess} from "@/utils/auth";
 
@@ -80,15 +81,16 @@ export default async function AppLayout({children}: { children: React.ReactNode 
         redirect("/no-access");
     }
 
+    const guideReadable = await getGuideReadable();
     const accountUrl = `${(process.env.KEYCLOAK_ISSUER ?? "").replace(/\/$/, "")}/account`;
 
     return (
         <div className="[--header-height:calc(--spacing(14))]">
             <RolesProvider roles={roles}>
                 <SidebarProvider className="flex flex-col">
-                    <SiteHeader/>
+                    <SiteHeader guideReadable={guideReadable}/>
                     <div className="flex flex-1">
-                        <AppSidebar roles={roles} accountUrl={accountUrl}/>
+                        <AppSidebar roles={roles} accountUrl={accountUrl} guideReadable={guideReadable}/>
                         <SidebarInset className="min-w-0">
                             {children}
                         </SidebarInset>

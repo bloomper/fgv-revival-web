@@ -5,11 +5,11 @@ test.describe("User story 4: the directeur builds the steering group", () => {
         await loginAs("directeur");
         await page.goto("/revivals");
         await openRevival(page, "Ali Baba 2028");
-        await page.getByRole("link", {name: "Styrgrupp", exact: true}).click();
-        await page.getByRole("button", {name: "Lägg till i styrgruppen"}).click();
+        await page.getByRole("link", {name: "Direktion", exact: true}).click();
+        await page.getByRole("button", {name: "Lägg till i direktionen"}).click();
 
         const form = page.getByRole("dialog");
-        const search = form.getByRole("combobox", {name: /^Lägg till i styrgruppen/});
+        const search = form.getByRole("combobox", {name: /^Lägg till i direktionen/});
 
         await search.fill("ny.medlem@example.org");
         await expect(form.getByText(/Inget FGV-konto använder ny.medlem@example.org/)).toBeVisible();
@@ -29,14 +29,14 @@ test.describe("User story 4: the directeur builds the steering group", () => {
         await loginAs("directeur");
         await page.goto("/revivals");
         await openRevival(page, "Ali Baba 2028");
-        await page.getByRole("link", {name: "Styrgrupp", exact: true}).click();
-        await page.getByRole("button", {name: "Lägg till i styrgruppen"}).click();
+        await page.getByRole("link", {name: "Direktion", exact: true}).click();
+        await page.getByRole("button", {name: "Lägg till i direktionen"}).click();
 
         const dialog = page.getByRole("dialog");
 
-        await dialog.getByRole("combobox", {name: /^Lägg till i styrgruppen/}).fill("Olle");
+        await dialog.getByRole("combobox", {name: /^Lägg till i direktionen/}).fill("Olle");
         await dialog.getByRole("option").filter({hasText: "Olle Observatör"}).getByRole("button").click();
-        await dialog.getByRole("button", {name: "Lägg till i styrgruppen"}).click();
+        await dialog.getByRole("button", {name: "Lägg till i direktionen"}).click();
         await expect(dialog.getByRole("list", {name: "Tillagda (1)"})).toContainText("Olle Observatör");
         await dialog.getByRole("button", {name: "Klar"}).click();
 
@@ -54,9 +54,9 @@ test.describe("User story 4: the directeur builds the steering group", () => {
         await expect(page.getByText("Dana Directeur")).toBeVisible();
         await expect(page.getByRole("button", {name: "Redigera uppgifter"})).toHaveCount(0);
         await expect(page.getByRole("combobox", {name: "Ändra status"})).toHaveCount(0);
-        await page.getByRole("link", {name: "Styrgrupp", exact: true}).click();
+        await page.getByRole("link", {name: "Direktion", exact: true}).click();
         await expect(page.getByRole("row").filter({hasText: "Dana Directeur"})).toBeVisible();
-        await expect(page.getByRole("button", {name: "Lägg till i styrgruppen"})).toHaveCount(0);
+        await expect(page.getByRole("button", {name: "Lägg till i direktionen"})).toHaveCount(0);
 
         await mock.setStatus("1", "SETTLING");
         await page.goto("/revivals");

@@ -67,10 +67,13 @@ describe("RevivalTabs", () => {
         expect(screen.getByRole("link", {name: "materials"})).toHaveAttribute("href", "/revivals/7/materials");
     });
 
-    it("places the events right after the overview", () => {
-        render(<RevivalTabs revivalId="7" work={null}/>);
+    it("orders the tabs: the steering group, its work, the budget, the ensemble and the closing", () => {
+        render(<RevivalTabs revivalId="7" work={null} canReadBudget canReadParticipants canReadStaffing canReadMailings canReadMaterials/>);
 
-        expect(screen.getAllByRole("link").slice(0, 2).map(link => link.textContent)).toEqual(["overview", "events"]);
+        expect(screen.getAllByRole("link").map(link => link.textContent)).toEqual([
+            "overview", "members", "events", "meetings", "log", "checklists", "guide",
+            "budget", "participants", "staffing", "mailings", "materials", "closing",
+        ]);
     });
 
     it("marks the overview current on the revival itself", () => {
@@ -101,12 +104,11 @@ describe("RevivalTabs", () => {
         expect(screen.getByRole("link", {name: "guide"})).toHaveAttribute("href", "/revivals/7/guide");
     });
 
-    it("links Closing last, after the steering group, marked from CLOSING onwards", () => {
+    it("links Closing last, marked from CLOSING onwards", () => {
         const {unmount} = render(<RevivalTabs revivalId="7" work={null}/>);
         const links = screen.getAllByRole("link");
 
         expect(links.at(-1)).toHaveAttribute("href", "/revivals/7/closing");
-        expect(links.at(-2)).toHaveAttribute("href", "/revivals/7/members");
         expect(screen.queryByTitle("closingNow")).not.toBeInTheDocument();
         unmount();
         render(<RevivalTabs revivalId="7" work={null} closingProminent/>);

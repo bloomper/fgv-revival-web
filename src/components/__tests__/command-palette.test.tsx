@@ -28,7 +28,7 @@ beforeEach(() => {
 
 describe("CommandPalette", () => {
     it("renders a trigger button and opens the dialog on click", async () => {
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
         expect(screen.queryByText("Nav.revivals")).not.toBeInTheDocument();
 
         await openPalette();
@@ -38,8 +38,21 @@ describe("CommandPalette", () => {
         expect(screen.getByText("About.title")).toBeInTheDocument();
     });
 
+    it("offers the guide only to those who may read it", async () => {
+        const {unmount} = render(<CommandPalette guideReadable/>);
+
+        await openPalette();
+        expect(await screen.findByText("Nav.guide")).toBeInTheDocument();
+        unmount();
+
+        render(<CommandPalette guideReadable={false}/>);
+        await openPalette();
+        expect(await screen.findByText("Nav.revivals")).toBeInTheDocument();
+        expect(screen.queryByText("Nav.guide")).not.toBeInTheDocument();
+    });
+
     it("opens on Ctrl/Cmd+K", async () => {
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
 
         await userEvent.keyboard("{Control>}k{/Control}");
 
@@ -47,7 +60,7 @@ describe("CommandPalette", () => {
     });
 
     it("navigates to the selected entry and closes", async () => {
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
         const user = await openPalette();
 
         await user.click(await screen.findByText("Support.title"));
@@ -57,7 +70,7 @@ describe("CommandPalette", () => {
     });
 
     it("filters entries against the typed query", async () => {
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
         const user = await openPalette();
 
         await user.type(screen.getByPlaceholderText("CommandPalette.placeholder"), "About.");
@@ -67,7 +80,7 @@ describe("CommandPalette", () => {
     });
 
     it("shows an empty state when nothing matches", async () => {
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
         const user = await openPalette();
 
         await user.type(screen.getByPlaceholderText("CommandPalette.placeholder"), "z");
@@ -76,7 +89,7 @@ describe("CommandPalette", () => {
     });
 
     it("offers creating a revival to a super admin and opens the dialog on the admin page", async () => {
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
         const user = await openPalette();
 
         await user.click(await screen.findByText("Admin.create"));
@@ -86,7 +99,7 @@ describe("CommandPalette", () => {
 
     it("shows all revivals but no create action to an observer", async () => {
         roles = ["USER", "OBSERVER"];
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
         await openPalette();
 
         expect(await screen.findByText("Nav.allRevivals")).toBeInTheDocument();
@@ -95,7 +108,7 @@ describe("CommandPalette", () => {
 
     it("hides all revivals and the create action from a plain user", async () => {
         roles = ["USER"];
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
         await openPalette();
 
         expect(await screen.findByText("Nav.revivals")).toBeInTheDocument();
@@ -104,7 +117,7 @@ describe("CommandPalette", () => {
     });
 
     it("offers the guide to every user and managing it to super admins only", async () => {
-        const {unmount} = render(<CommandPalette/>);
+        const {unmount} = render(<CommandPalette guideReadable/>);
         const user = await openPalette();
 
         expect(await screen.findByText("Nav.adminChecklistTemplates")).toBeInTheDocument();
@@ -119,7 +132,7 @@ describe("CommandPalette", () => {
         unmount();
 
         roles = ["USER"];
-        render(<CommandPalette/>);
+        render(<CommandPalette guideReadable/>);
         const plain = await openPalette();
 
         expect(screen.queryByText("Nav.adminGuide")).not.toBeInTheDocument();

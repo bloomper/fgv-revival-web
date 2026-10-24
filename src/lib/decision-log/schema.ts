@@ -115,10 +115,3 @@ export function logFilterQuery(filter: LogFilterValues): string {
     }
     return params.toString();
 }
-
-export const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
-
-export const logImportChoicesSchema = z.object({
-    owners: z.record(z.string(), id.nullable()),
-    nobelType: z.enum(LOG_ENTRY_TYPES).optional(),
-});

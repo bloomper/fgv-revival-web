@@ -1,8 +1,5 @@
-import Link from "next/link";
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
-import {FileUp} from "lucide-react";
-import {buttonVariants} from "@/components/ui/button";
 import {LogFilters} from "@/components/decision-log/log-filters.client";
 import {ReadOnlyNotice} from "@/components/revival/read-only-notice";
 import {LogTable} from "@/components/decision-log/log-table.client";
@@ -49,13 +46,7 @@ export default async function RevivalLogPage({params, searchParams}: {
                 <ReadOnlyNotice revivalId={revival.id} status={revival.status} canWrite={revival.permissions.canWriteLog} roles={roles}/>
                 <LogTable revivalId={revival.id} entries={entries} members={revival.ownerCandidates} tags={tags}
                           canWrite={revival.permissions.canWriteLog} filtered={isLogFiltered(filter)} initialSorting={[{id: "number", desc: true}]}
-                          toolbar={<LogFilters key={JSON.stringify(filter)} filter={filter} tags={tags} meetings={meetings}/>}
-                          actions={(revival.permissions.canImportLog || revival.permissions.canWaiveRequirement) && (
-                              <Link href={`/revivals/${revival.id}/log/import`} className={buttonVariants({variant: "outline"})}>
-                                  <FileUp/>
-                                  {t("import.title")}
-                              </Link>
-                          )}/>
+                          toolbar={<LogFilters key={JSON.stringify(filter)} filter={filter} tags={tags} meetings={meetings}/>}/>
             </div>
         );
     });

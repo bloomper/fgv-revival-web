@@ -68,7 +68,7 @@ test("a steering group member whose revival is not visible is refused the guide"
     await loginAs("styrgrupp");
     await page.goto("/guide");
 
-    await expect(page.getByText(/Guiden visas för styrgrupper/)).toBeVisible();
+    await expect(page.getByText(/Guiden visas för direktioner/)).toBeVisible();
     await expect(page.getByRole("region", {name: "Kapitel"})).toHaveCount(0);
 });
 
