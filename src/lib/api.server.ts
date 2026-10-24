@@ -24,3 +24,11 @@ export async function apiFetch(path: string, init: RequestInit = {}): Promise<Re
     headers.set("Accept-Language", await getLocale());
     return fetch(apiUrl(path), {...init, headers, cache: "no-store"});
 }
+
+/**
+ * Calls a public endpoint of the server without the user's token, for requests that carry no session, such as a
+ * calendar app fetching a feed by its secret link.
+ */
+export async function apiFetchPublic(path: string, init: RequestInit = {}): Promise<Response> {
+    return fetch(apiUrl(path), {...init, cache: "no-store"});
+}

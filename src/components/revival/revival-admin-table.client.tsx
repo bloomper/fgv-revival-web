@@ -7,6 +7,7 @@ import {useTranslations} from "next-intl";
 import {MoreHorizontal, Pencil, Trash2} from "lucide-react";
 import type {RevivalSummaryFragment} from "@/gql/graphql";
 import {DataTable, type DataTableColumnDef, selectColumn, SortableHeader} from "@/components/data-table.client";
+import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {
     AlertDialog,
@@ -26,6 +27,7 @@ import {REVIVAL_STATUSES, RevivalFilterBar, useRevivalFilter} from "@/components
 import {RevivalFormSheet} from "@/components/revival/revival-form-sheet.client";
 import {deleteRevivalsAction} from "@/app/(app)/revivals/manage/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
+import {formatInstant} from "@/utils/format";
 
 type Revival = RevivalSummaryFragment;
 
@@ -64,7 +66,12 @@ function useColumns(onEdit: (revival: Revival) => void, onDelete: (revivals: Rev
             accessorFn: revival => REVIVAL_STATUSES.indexOf(revival.status),
             sortFn: "basic",
             header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Revival.status")}/>,
-            cell: ({row}) => <StatusBadge status={row.original.status}/>,
+            cell: ({row}) => (
+                <span className="flex flex-wrap items-center gap-1">
+                    <StatusBadge status={row.original.status}/>
+                    {row.original.anonymizedAt && <Badge variant="outline" title={formatInstant(row.original.anonymizedAt) ?? undefined}>{t("Revival.anonymizedBadge")}</Badge>}
+                </span>
+            ),
         },
         {
             id: "actions",

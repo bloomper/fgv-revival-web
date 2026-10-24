@@ -19,9 +19,10 @@ export const RevivalSummary = graphql(`
         premiereDate
         status
         version
+        anonymizedAt
         spex { id title year available }
         members { id role state displayName email invitedAt }
-        permissions { canEditCore canEditDetails allowedStatuses canManageDirecteurs canManageSteeringGroup canDelete }
+        permissions { canEditCore canEditDetails allowedStatuses canManageDirecteurs canManageSteeringGroup canDelete canReadBudget canWriteBudget }
     }
 `);
 
@@ -46,7 +47,7 @@ const MeQuery = graphql(`
             displayName
             email
             globalRoles
-            revivalRoles { role capabilities { id } revival { id } }
+            revivalRoles { role capabilities { id } revival { id title } }
         }
     }
 `);
@@ -63,11 +64,32 @@ const RevivalQuery = graphql(`
     }
 `);
 
+// What the revival's layout needs to decide what to show: participants and helpers get their own page, not the tabs
+const RevivalShellQuery = graphql(`
+    query RevivalShell($id: ID!) {
+        revival(id: $id) {
+            id
+            title
+            status
+            myRole
+            anonymizedAt
+            permissions { isParticipant canReadWork canReadParticipants canReadBudget canReadStaffing canReadMailings canReadMaterials }
+        }
+    }
+`);
+
 const RevivalWorkSummaryQuery = graphql(`
     query RevivalWorkSummary($id: ID!) {
         revival(id: $id) {
             id
-            workSummary { openEntries overdueEntries overdueChecklistItems openRequiredItems meetingInProgress { id title date } }
+            workSummary {
+                openEntries
+                overdueEntries
+                overdueChecklistItems
+                openRequiredItems
+                meetingInProgress { id title date }
+                upcomingEvents { id title startDate endDate startTime endTime }
+            }
         }
     }
 `);
@@ -98,6 +120,10 @@ const RevivalDeleteMutation = graphql(`
 
 export async function getMe() {
     return (await runQuery(MeQuery, {}))?.me;
+}
+
+export async function getRevivalShell(id: string) {
+    return (await runQuery(RevivalShellQuery, {id}))?.revival ?? null;
 }
 
 export async function getRevivalWorkSummary(id: string) {

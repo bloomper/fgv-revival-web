@@ -45,6 +45,7 @@ const ChecklistQuery = graphql(`
             cancelled
             version
             template { id name { sv en } }
+            event { id title }
             templatesAvailable { id kind chapterKey chapterTitle { sv en } name { sv en } }
             tips { ...GuideItemFields }
             items { ...ChecklistItemFields }

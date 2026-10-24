@@ -19,12 +19,15 @@ function nextSaturday(today = new Date()) {
 
 /**
  * A template item's deadline relative to the checklist's date (FR-031), with a live example so the rule can be checked
- * while it is written.
+ * while it is written. A mailing template's due date (M6b) uses it too, with a label of its own and no "none".
  */
-export function RelativeDeadlineField({value, onChange, exampleDate}: {
+export function RelativeDeadlineField({value, onChange, exampleDate, label, required = false}: {
     value: RelativeDeadlineValue | null;
     onChange: (value: RelativeDeadlineValue | null) => void;
     exampleDate?: string;
+    label?: string;
+    /** Whether a rule must be chosen: "none" is not offered. */
+    required?: boolean;
 }) {
     const t = useTranslations("ChecklistTemplate.deadline");
     const format = useFormatter();
@@ -38,11 +41,11 @@ export function RelativeDeadlineField({value, onChange, exampleDate}: {
 
     return (
         <fieldset className="space-y-2">
-            <legend className="text-sm font-medium">{t("label")}</legend>
+            <legend className="text-sm font-medium">{label ?? t("label")}</legend>
             <div className="flex flex-wrap items-center gap-2">
                 <NativeSelect aria-label={t("kind")} value={value?.kind ?? NONE}
                         onChange={event => changeKind(event.target.value as RelativeDeadlineKind | typeof NONE)}>
-                    <option value={NONE}>{t("none")}</option>
+                    {!required && <option value={NONE}>{t("none")}</option>}
                     <option value="DAYS">{t("DAYS")}</option>
                     <option value="WORKING_DAYS">{t("WORKING_DAYS")}</option>
                     <option value="WEEKDAY_WEEK_BEFORE">{t("WEEKDAY_WEEK_BEFORE")}</option>

@@ -10,6 +10,8 @@ const scalars = {
     Email: "string",
     Year: "number",
     Void: "null",
+    // Kronor as a plain decimal string ("1200", "1200.50"), never a float (M5)
+    Amount: "string",
 };
 
 const config: CodegenConfig = {

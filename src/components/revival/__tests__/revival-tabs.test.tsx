@@ -22,10 +22,55 @@ describe("RevivalTabs", () => {
         render(<RevivalTabs revivalId="7" work={null}/>);
 
         expect(screen.getByRole("link", {name: "overview"})).toHaveAttribute("href", "/revivals/7");
+        expect(screen.getByRole("link", {name: "events"})).toHaveAttribute("href", "/revivals/7/events");
         expect(screen.getByRole("link", {name: "log"})).toHaveAttribute("href", "/revivals/7/log");
         expect(screen.getByRole("link", {name: "meetings"})).toHaveAttribute("href", "/revivals/7/meetings");
         expect(screen.getByRole("link", {name: "checklists"})).toHaveAttribute("href", "/revivals/7/checklists");
         expect(screen.getByRole("link", {name: "guide"})).toHaveAttribute("href", "/revivals/7/guide");
+    });
+
+    it("links the budget only for those who may read it", () => {
+        const {unmount} = render(<RevivalTabs revivalId="7" work={null}/>);
+
+        expect(screen.queryByRole("link", {name: "budget"})).not.toBeInTheDocument();
+        unmount();
+        render(<RevivalTabs revivalId="7" work={null} canReadBudget/>);
+        expect(screen.getByRole("link", {name: "budget"})).toHaveAttribute("href", "/revivals/7/budget");
+    });
+
+    it("links the participants only for those who may read them", () => {
+        const {unmount} = render(<RevivalTabs revivalId="7" work={null}/>);
+
+        expect(screen.queryByRole("link", {name: "participants"})).not.toBeInTheDocument();
+        unmount();
+        render(<RevivalTabs revivalId="7" work={null} canReadParticipants/>);
+        expect(screen.getByRole("link", {name: "participants"})).toHaveAttribute("href", "/revivals/7/participants");
+    });
+
+    it("links staffing and mailings only for those who may read them", () => {
+        const {unmount} = render(<RevivalTabs revivalId="7" work={null}/>);
+
+        expect(screen.queryByRole("link", {name: "staffing"})).not.toBeInTheDocument();
+        expect(screen.queryByRole("link", {name: "mailings"})).not.toBeInTheDocument();
+        unmount();
+        render(<RevivalTabs revivalId="7" work={null} canReadStaffing canReadMailings/>);
+        expect(screen.getByRole("link", {name: "staffing"})).toHaveAttribute("href", "/revivals/7/staffing");
+        expect(screen.getByRole("link", {name: "mailings"})).toHaveAttribute("href", "/revivals/7/mailings");
+    });
+
+    it("links the materials only for those who may read them", () => {
+        const {unmount} = render(<RevivalTabs revivalId="7" work={null}/>);
+
+        expect(screen.queryByRole("link", {name: "materials"})).not.toBeInTheDocument();
+        unmount();
+        render(<RevivalTabs revivalId="7" work={null} canReadMaterials/>);
+        expect(screen.getByRole("link", {name: "materials"})).toHaveAttribute("href", "/revivals/7/materials");
+    });
+
+    it("places the events right after the overview", () => {
+        render(<RevivalTabs revivalId="7" work={null}/>);
+
+        expect(screen.getAllByRole("link").slice(0, 2).map(link => link.textContent)).toEqual(["overview", "events"]);
     });
 
     it("marks the overview current on the revival itself", () => {
@@ -54,5 +99,17 @@ describe("RevivalTabs", () => {
         render(<RevivalTabs revivalId="7" work={null}/>);
 
         expect(screen.getByRole("link", {name: "guide"})).toHaveAttribute("href", "/revivals/7/guide");
+    });
+
+    it("links Closing last, after the steering group, marked from CLOSING onwards", () => {
+        const {unmount} = render(<RevivalTabs revivalId="7" work={null}/>);
+        const links = screen.getAllByRole("link");
+
+        expect(links.at(-1)).toHaveAttribute("href", "/revivals/7/closing");
+        expect(links.at(-2)).toHaveAttribute("href", "/revivals/7/members");
+        expect(screen.queryByTitle("closingNow")).not.toBeInTheDocument();
+        unmount();
+        render(<RevivalTabs revivalId="7" work={null} closingProminent/>);
+        expect(screen.getByTitle("closingNow")).toBeInTheDocument();
     });
 });

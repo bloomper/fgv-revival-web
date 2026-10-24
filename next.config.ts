@@ -31,6 +31,18 @@ const nextConfig: NextConfig = {
                     {key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()"},
                 ],
             },
+            {
+                source: "/api/receipts/:transactionId",
+                headers: [{key: "Content-Security-Policy", value: "default-src 'none'; sandbox"}],
+            },
+            {
+                source: "/api/revival-poster/:id",
+                headers: [{key: "Content-Security-Policy", value: "default-src 'none'; style-src 'unsafe-inline'; sandbox"}],
+            },
+            {
+                source: "/api/swish-qr/:revivalId",
+                headers: [{key: "Content-Security-Policy", value: "default-src 'none'; style-src 'unsafe-inline'; sandbox"}],
+            },
         ];
     },
     turbopack: {
@@ -44,8 +56,8 @@ const nextConfig: NextConfig = {
         instantInsights: {
             validationLevel: "manual-warning",
         },
+        proxyClientMaxBodySize: "11mb",
         serverActions: {
-            // The decision log's Excel import is up to 10 MB
             bodySizeLimit: "11mb",
         },
     },

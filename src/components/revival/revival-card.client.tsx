@@ -11,14 +11,21 @@ import {SpexTitle} from "@/components/revival/spex-title";
 import {RevivalPoster} from "@/components/revival/revival-poster.client";
 import {formatDate} from "@/utils/format";
 
+const STEERING_ROLES: RevivalRole[] = ["DIRECTEUR", "STEERING_GROUP"];
+
+/**
+ * A revival as a card linking to it. Participants and helpers go straight to their own page (M6a), and do not see the
+ * steering group's size.
+ */
 export function RevivalCard({revival, role}: { revival: RevivalSummaryFragment; role: RevivalRole | null }) {
     const t = useTranslations();
     const premiere = formatDate(revival.premiereDate);
-    const members = revival.members.filter(member => member.state === "ACTIVE").length;
+    const participant = role === "PARTICIPANT" || role === "HELPER";
+    const members = revival.members.filter(member => member.state === "ACTIVE" && STEERING_ROLES.includes(member.role)).length;
     const originalYear = revival.spex.year ? ` (${revival.spex.year})` : "";
 
     return (
-        <Link href={`/revivals/${revival.id}`} className="block rounded-xl focus-visible:outline-2 focus-visible:outline-ring">
+        <Link href={participant ? `/revivals/${revival.id}/me` : `/revivals/${revival.id}`} className="block rounded-xl focus-visible:outline-2 focus-visible:outline-ring">
             <Card className="h-full flex-row gap-0 overflow-hidden py-0 transition-colors hover:bg-accent/40">
                 <RevivalPoster revivalId={revival.id} className="min-h-32 w-24 shrink-0 self-stretch border-r"/>
                 <div className="flex min-w-0 flex-1 flex-col gap-4 py-4">
@@ -39,8 +46,12 @@ export function RevivalCard({revival, role}: { revival: RevivalSummaryFragment; 
                                 : <span className="text-muted-foreground">{t("Revival.notSet")}</span>}
                         </div>
                         <div className="flex flex-wrap items-center gap-2 text-muted-foreground">
-                            <Users className="size-4" aria-hidden/>
-                            <span>{t("Revival.memberCount", {count: members})}</span>
+                            {!participant && (
+                                <>
+                                    <Users className="size-4" aria-hidden/>
+                                    <span>{t("Revival.memberCount", {count: members})}</span>
+                                </>
+                            )}
                             {role && <Badge variant="outline">{t(`Role.${role}`)}</Badge>}
                         </div>
                     </CardContent>

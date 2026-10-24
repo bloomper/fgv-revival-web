@@ -16,7 +16,11 @@ import {formatDate, formatInstant} from "@/utils/format";
  * A revival's details, and its current status above the history of changes, with the control to change it in the
  * status card's header. Edit controls show only when `permissions.canEditDetails` is set.
  */
-export function RevivalDetails({revival}: { revival: RevivalDetailFragment }) {
+export function RevivalDetails({revival, syncIncomplete = false}: {
+    revival: RevivalDetailFragment;
+    /** Archiving warns when the participation sync never completed or has failures (M7-FR-14). */
+    syncIncomplete?: boolean;
+}) {
     const t = useTranslations();
     const [editing, setEditing] = useState(false);
 
@@ -65,7 +69,8 @@ export function RevivalDetails({revival}: { revival: RevivalDetailFragment }) {
                     <CardTitle>{t("Revival.status")}</CardTitle>
                     {revival.permissions.allowedStatuses.length > 0 && (
                         <CardAction>
-                            <RevivalStatusSelect revivalId={revival.id} status={revival.status} allowedStatuses={revival.permissions.allowedStatuses}/>
+                            <RevivalStatusSelect revivalId={revival.id} status={revival.status} allowedStatuses={revival.permissions.allowedStatuses}
+                                                 syncIncomplete={syncIncomplete}/>
                         </CardAction>
                     )}
                 </CardHeader>

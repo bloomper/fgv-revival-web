@@ -59,6 +59,11 @@ export default async function ChecklistPage({params}: { params: Promise<{ id: st
                         {checklist.date && <span className="font-normal text-muted-foreground tabular-nums">{formatDate(checklist.date)}</span>}
                         {checklist.cancelled && <Badge variant="outline">{t("cancelled")}</Badge>}
                     </h3>
+                    {checklist.event && (
+                        <Link href={`/revivals/${revival.id}/events`} className="block text-sm text-muted-foreground hover:underline">
+                            {t("forEvent", {title: checklist.event.title})}
+                        </Link>
+                    )}
                     {checklist.template && (
                         <Link href={`/admin/checklist-templates/${checklist.template.id}`} className="text-sm text-muted-foreground hover:underline">
                             {t("fromTemplate", {name: checklist.template.name ? pickText(checklist.template.name, locale).text : ""})}

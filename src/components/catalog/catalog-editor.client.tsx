@@ -6,7 +6,6 @@ import {useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Archive, ArchiveRestore, ArrowDown, ArrowUp, Pencil, Plus, Trash2} from "lucide-react";
-import type {GuideItemKind} from "@/gql/graphql";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -22,6 +21,7 @@ import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
+import {NativeSelect} from "@/components/ui/native-select";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import type {CatalogEntryValue} from "@/components/catalog/catalog";
@@ -29,28 +29,51 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
 import type {ActionResult} from "@/lib/graphql.server";
 import {catalogNameSchema, type CatalogNameValues, GUIDE_ITEM_KINDS, MAX_CATALOG_NAME} from "@/lib/catalog/schema";
 
-export type CatalogRow = CatalogEntryValue & { position: number; inUse: boolean; version: number; kind?: GuideItemKind };
+export type CatalogRow = CatalogEntryValue & { position: number; inUse: boolean; version: number; kind?: string; role?: string | null };
 
 type Transition = { id: string; version: number };
 
-export type CatalogActions = {
-    create: (input: { name: CatalogNameValues; kind?: GuideItemKind }) => Promise<ActionResult<null>>;
-    update: (input: Transition & { name: CatalogNameValues }) => Promise<ActionResult<null>>;
-    move: (input: Transition & { position: number }) => Promise<ActionResult<null>>;
-    retire: (input: Transition) => Promise<ActionResult<null>>;
-    restore: (input: Transition) => Promise<ActionResult<null>>;
-    remove: (input: Transition) => Promise<ActionResult<null>>;
+/** A choice of kind or role, with its name and, for kinds, what it means. */
+export type CatalogOption = { value: string; name: string; description?: string };
+
+/** What the sheet says about a list's kinds: the field's legend, and the hints when choosing and once fixed. */
+export type CatalogKindTexts = { label: string; choose: string; fixed: string };
+
+/**
+ * What a list's entries hold beyond their names, e.g. a link service's hosts: the sheet shows its fields below the names
+ * and sends the value with {@code extra}; the list shows {@code summary} under each entry.
+ */
+export type CatalogExtra<R extends CatalogRow, V> = {
+    initial(entry: R | null): V;
+    render(props: { id: string; value: V; onChange: (value: V) => void; error: string | null }): React.ReactNode;
+    /** A key under "Validation" when the value cannot be saved. */
+    validate?(value: V): string | null;
+    summary?(entry: R): React.ReactNode;
+};
+
+// Method syntax, so each list's actions may take its own narrower kinds, roles and extra values
+export type CatalogActions<V = never> = {
+    create(input: { name: CatalogNameValues; kind?: string; role?: string; extra?: V }): Promise<ActionResult<null>>;
+    update(input: Transition & { name: CatalogNameValues; role?: string; extra?: V }): Promise<ActionResult<null>>;
+    move(input: Transition & { position: number }): Promise<ActionResult<null>>;
+    retire(input: Transition): Promise<ActionResult<null>>;
+    restore(input: Transition): Promise<ActionResult<null>>;
+    remove(input: Transition): Promise<ActionResult<null>>;
 };
 
 /**
- * Creating or renaming an entry: its Swedish and English names and, for a new guide item type, its kind, which is
- * fixed from then on.
+ * Creating or renaming an entry: its Swedish and English names and, for a new guide item type or budget category, its
+ * kind, which is fixed from then on. A list with roles picks one, or none, on create and edit.
  */
-function EntrySheet({entry, withKind, createLabel, actions, open, onOpenChange}: {
-    entry: CatalogRow | null;
-    withKind: boolean;
+function EntrySheet<R extends CatalogRow, V>({entry, kinds, kindTexts, roles, extra, createLabel, editLabel, actions, open, onOpenChange}: {
+    entry: R | null;
+    kinds: CatalogOption[] | null;
+    kindTexts?: CatalogKindTexts;
+    roles: CatalogOption[] | null;
+    extra?: CatalogExtra<R, V>;
     createLabel: string;
-    actions: CatalogActions;
+    editLabel?: string;
+    actions: CatalogActions<V>;
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }) {
@@ -58,7 +81,11 @@ function EntrySheet({entry, withKind, createLabel, actions, open, onOpenChange}:
     const id = useId();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
-    const [kind, setKind] = useState<GuideItemKind>("TIP");
+    const [kind, setKind] = useState(kinds?.[0]?.value ?? "");
+    const [role, setRole] = useState(entry?.role ?? "");
+    const [extraValue, setExtraValue] = useState<V | undefined>(() => extra?.initial(entry));
+    const [extraError, setExtraError] = useState<string | null>(null);
+    const withKind = kinds !== null;
     const form = useForm<CatalogNameValues>({
         resolver: zodResolver(catalogNameSchema),
         defaultValues: {sv: entry?.name.sv ?? "", en: entry?.name.en ?? ""},
@@ -69,13 +96,26 @@ function EntrySheet({entry, withKind, createLabel, actions, open, onOpenChange}:
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
                 <SheetHeader className="p-6 pb-4 shrink-0">
-                    <SheetTitle>{entry ? t("Catalog.editTitle") : createLabel}</SheetTitle>
-                    {withKind && <SheetDescription>{entry ? t("Catalog.kindFixed") : t("Catalog.kindDescription")}</SheetDescription>}
+                    <SheetTitle>{entry ? editLabel ?? t("Catalog.editTitle") : createLabel}</SheetTitle>
+                    {withKind && (
+                        <SheetDescription>
+                            {entry ? kindTexts?.fixed ?? t("Catalog.kindFixed") : kindTexts?.choose ?? t("Catalog.kindDescription")}
+                        </SheetDescription>
+                    )}
                 </SheetHeader>
                 <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(name => startTransition(async () => {
+                    const invalid = extra?.validate?.(extraValue as V) ?? null;
+
+                    setExtraError(invalid);
+                    if (invalid) {
+                        return;
+                    }
+
+                    const withRole = roles ? {role} : {};
+                    const withExtra = extra ? {extra: extraValue as V} : {};
                     const result = entry
-                        ? await actions.update({id: entry.id, version: entry.version, name})
-                        : await actions.create({name, kind: withKind ? kind : undefined});
+                        ? await actions.update({id: entry.id, version: entry.version, name, ...withRole, ...withExtra})
+                        : await actions.create({name, kind: withKind ? kind : undefined, ...withRole, ...withExtra});
 
                     if (feedback(result, t("Common.saved"))) {
                         onOpenChange(false);
@@ -92,21 +132,40 @@ function EntrySheet({entry, withKind, createLabel, actions, open, onOpenChange}:
                                 <Label htmlFor={`${id}-en`}>{t("Catalog.nameEn")}</Label>
                                 <Input id={`${id}-en`} maxLength={MAX_CATALOG_NAME} {...form.register("en")}/>
                             </div>
-                            {withKind && !entry && (
+                            {kinds && !entry && (
                                 <fieldset className="space-y-2">
-                                    <legend className="text-sm font-medium">{t("Catalog.kind")}</legend>
-                                    {GUIDE_ITEM_KINDS.map(option => (
-                                        <label key={option} className="flex items-start gap-2 rounded-md border p-3 text-sm">
-                                            <input type="radio" name={`${id}-kind`} className="mt-0.5" value={option} checked={kind === option}
-                                                   onChange={() => setKind(option)}/>
+                                    <legend className="text-sm font-medium">{kindTexts?.label ?? t("Catalog.kind")}</legend>
+                                    {kinds.map(option => (
+                                        <label key={option.value} className="flex items-start gap-2 rounded-md border p-3 text-sm">
+                                            <input type="radio" name={`${id}-kind`} className="mt-0.5" value={option.value} checked={kind === option.value}
+                                                   onChange={() => setKind(option.value)}/>
                                             <span>
-                                                <span className="block font-medium">{t(`Catalog.kinds.${option}.name`)}</span>
-                                                <span className="block text-muted-foreground">{t(`Catalog.kinds.${option}.description`)}</span>
+                                                <span className="block font-medium">{option.name}</span>
+                                                {option.description && <span className="block text-muted-foreground">{option.description}</span>}
                                             </span>
                                         </label>
                                     ))}
                                 </fieldset>
                             )}
+                            {roles && (
+                                <div className="space-y-2">
+                                    <Label htmlFor={`${id}-role`}>{t("Catalog.role")}</Label>
+                                    <NativeSelect className="w-full" id={`${id}-role`} value={role} onChange={change => setRole(change.target.value)}>
+                                        <option value="">{t("Catalog.noRole")}</option>
+                                        {roles.map(option => <option key={option.value} value={option.value}>{option.name}</option>)}
+                                    </NativeSelect>
+                                    <p className="text-xs text-muted-foreground">{t("Catalog.roleHelp")}</p>
+                                </div>
+                            )}
+                            {extra?.render({
+                                id: `${id}-extra`,
+                                value: extraValue as V,
+                                onChange: value => {
+                                    setExtraValue(value);
+                                    setExtraError(null);
+                                },
+                                error: extraError,
+                            })}
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
@@ -121,19 +180,32 @@ function EntrySheet({entry, withKind, createLabel, actions, open, onOpenChange}:
 
 /**
  * A list the super admin keeps, in the order pickers show it: added, renamed, moved, retired and restored. Only an
- * entry nothing uses can be deleted; one in use is retired, so rows that hold it keep it.
+ * entry nothing uses can be deleted; one in use is retired, so rows that hold it keep it. {@code withKind} offers the
+ * guide item kinds, {@code kindOptions} another list's kinds, {@code roleOptions} a role per entry and {@code extra}
+ * fields of the list's own, e.g. a link service's hosts.
  */
-export function CatalogEditor({entries, actions, label, createLabel, withKind = false}: {
-    entries: CatalogRow[];
+export function CatalogEditor<R extends CatalogRow, V = never>({entries, actions, label, createLabel, editLabel, withKind = false, kindOptions, kindTexts, roleOptions, extra}: {
+    entries: R[];
     label: string;
-    actions: CatalogActions;
+    actions: CatalogActions<V>;
     createLabel: string;
+    /** The sheet's title when changing an entry; "Rename" by default. */
+    editLabel?: string;
     withKind?: boolean;
+    kindOptions?: CatalogOption[];
+    kindTexts?: CatalogKindTexts;
+    roleOptions?: CatalogOption[];
+    extra?: CatalogExtra<R, V>;
 }) {
     const t = useTranslations();
+    const kinds = kindOptions ?? (withKind
+        ? GUIDE_ITEM_KINDS.map(kind => ({value: kind, name: t(`Catalog.kinds.${kind}.name`), description: t(`Catalog.kinds.${kind}.description`)}))
+        : null);
+    const nameOf = (options: CatalogOption[] | null | undefined, value: string | null | undefined) =>
+        options?.find(option => option.value === value)?.name ?? value;
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
-    const [editing, setEditing] = useState<CatalogRow | null>(null);
+    const [editing, setEditing] = useState<R | null>(null);
     const [adding, setAdding] = useState(false);
     const run = (work: () => Promise<ActionResult<null>>, success?: string) => startTransition(async () => {
         feedback(await work(), success);
@@ -158,17 +230,19 @@ export function CatalogEditor({entries, actions, label, createLabel, withKind = 
                                     <p className={entry.retired ? "text-muted-foreground" : undefined}>{name}</p>
                                     {entry.name.en && <p className="text-sm text-muted-foreground">{entry.name.en}</p>}
                                     <div className="flex flex-wrap gap-2 text-sm">
-                                        {entry.kind && <Badge variant="secondary">{t(`Catalog.kinds.${entry.kind}.name`)}</Badge>}
+                                        {entry.kind && <Badge variant="secondary">{nameOf(kinds, entry.kind)}</Badge>}
+                                        {entry.role && <Badge variant="secondary">{nameOf(roleOptions, entry.role)}</Badge>}
                                         {entry.retired && <Badge variant="outline">{t("Catalog.retired")}</Badge>}
                                         {entry.inUse && <Badge variant="outline">{t("Catalog.inUse")}</Badge>}
                                     </div>
+                                    {extra?.summary?.(entry)}
                                 </div>
                                 <div className="flex shrink-0 flex-wrap items-start justify-end gap-1">
                                     <Button size="icon" variant="ghost" aria-label={t("Catalog.moveUp", {name})} disabled={pending || !above}
                                             onClick={() => above && run(() => actions.move({id: entry.id, version: entry.version, position: above.position}))}><ArrowUp/></Button>
                                     <Button size="icon" variant="ghost" aria-label={t("Catalog.moveDown", {name})} disabled={pending || !below}
                                             onClick={() => below && run(() => actions.move({id: entry.id, version: entry.version, position: below.position}))}><ArrowDown/></Button>
-                                    <Button size="icon" variant="ghost" aria-label={t("Catalog.edit", {name})} onClick={() => setEditing(entry)}><Pencil/></Button>
+                                    <Button size="icon" variant="ghost" aria-label={extra ? t("Catalog.editEntry", {name}) : t("Catalog.edit", {name})} onClick={() => setEditing(entry)}><Pencil/></Button>
                                     {entry.retired ? (
                                         <Button size="icon" variant="ghost" aria-label={t("Catalog.restore", {name})} disabled={pending}
                                                 onClick={() => run(() => actions.restore({id: entry.id, version: entry.version}), t("Catalog.restored", {name}))}><ArchiveRestore/></Button>
@@ -203,7 +277,8 @@ export function CatalogEditor({entries, actions, label, createLabel, withKind = 
                 </ol>
             )}
             {(adding || editing) && (
-                <EntrySheet key={editing?.id ?? "new"} entry={editing} withKind={withKind} createLabel={createLabel} actions={actions} open
+                <EntrySheet key={editing?.id ?? "new"} entry={editing} kinds={kinds} kindTexts={kindTexts} roles={roleOptions ?? null} extra={extra}
+                            createLabel={createLabel} editLabel={editLabel} actions={actions} open
                             onOpenChange={open => {
                                 if (!open) {
                                     setAdding(false);

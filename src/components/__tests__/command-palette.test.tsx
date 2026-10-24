@@ -108,6 +108,12 @@ describe("CommandPalette", () => {
         const user = await openPalette();
 
         expect(await screen.findByText("Nav.adminChecklistTemplates")).toBeInTheDocument();
+        expect(screen.getByText("Nav.adminEventTypes")).toBeInTheDocument();
+        expect(screen.getByText("Nav.adminMailingTemplates")).toBeInTheDocument();
+        expect(screen.getByText("Nav.adminBudgetCategories")).toBeInTheDocument();
+        expect(screen.getByText("Nav.adminLinkServices")).toBeInTheDocument();
+        expect(screen.getByText("Nav.adminReferenceFigures")).toBeInTheDocument();
+        expect(screen.getByText("Nav.adminSpexCalendar")).toBeInTheDocument();
         await user.click(await screen.findByText("Nav.adminGuide"));
         expect(push).toHaveBeenCalledWith("/admin/guide");
         unmount();
@@ -118,6 +124,10 @@ describe("CommandPalette", () => {
 
         expect(screen.queryByText("Nav.adminGuide")).not.toBeInTheDocument();
         expect(screen.queryByText("Nav.adminChecklistTemplates")).not.toBeInTheDocument();
+        expect(screen.queryByText("Nav.adminEventTypes")).not.toBeInTheDocument();
+        expect(screen.queryByText("Nav.adminBudgetCategories")).not.toBeInTheDocument();
+        expect(screen.queryByText("Nav.adminLinkServices")).not.toBeInTheDocument();
+        expect(screen.queryByText("Nav.revivalTimeline")).not.toBeInTheDocument();
         await plain.click(await screen.findByText("Nav.guide"));
         expect(push).toHaveBeenCalledWith("/guide");
     });

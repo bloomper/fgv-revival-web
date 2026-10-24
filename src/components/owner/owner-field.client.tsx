@@ -18,12 +18,16 @@ const NAME_MAX_LENGTH = 100;
  * nobody (M3 FR-009). Produces the server's `OwnerInput`. A current owner who has left the steering group stays a choice,
  * so the row keeps them until someone picks another owner.
  */
-export function OwnerField({members, value, onChange, disabled, current}: {
+export function OwnerField({members, value, onChange, disabled, current, label, noneLabel}: {
     members: OwnerMember[];
     value: OwnerFieldValue;
     onChange: (value: OwnerFieldValue) => void;
     disabled?: boolean;
     current?: OwnerMember | null;
+    /** The field's label, when it is not the owner, e.g. who paid a cost. */
+    label?: string;
+    /** What choosing nobody means there, e.g. paid from the revival's account. */
+    noneLabel?: string;
 }) {
     const t = useTranslations("Owner");
     const id = useId();
@@ -32,7 +36,7 @@ export function OwnerField({members, value, onChange, disabled, current}: {
 
     return (
         <div className="flex flex-col gap-2">
-            <label htmlFor={id} className="text-sm font-medium">{t("label")}</label>
+            <label htmlFor={id} className="text-sm font-medium">{label ?? t("label")}</label>
             <NativeSelect
                 id={id}
                 value={selected}
@@ -50,7 +54,7 @@ export function OwnerField({members, value, onChange, disabled, current}: {
                     }
                 }}
             >
-                <option value={NONE}>{t("none")}</option>
+                <option value={NONE}>{noneLabel ?? t("none")}</option>
                 {current && !members.some(member => member.id === current.id) && (
                     <option value={current.id}>{current.displayName ?? current.id} ({t("formerMember")})</option>
                 )}

@@ -19,26 +19,28 @@ import {createLogEntryAction, updateLogEntryAction} from "@/app/(app)/revivals/[
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {LOG_ENTRY_STATUSES, LOG_ENTRY_TYPES, type LogEntryValues, logEntryValuesSchema, MAX_LOG_TEXT} from "@/lib/decision-log/schema";
 
-function valuesOf(entry: LogEntryFieldsFragment | null): LogEntryValues {
+function valuesOf(entry: LogEntryFieldsFragment | null, initial?: Partial<LogEntryValues>): LogEntryValues {
     return {
-        type: entry?.type ?? "TODO",
-        text: entry?.text ?? "",
+        type: entry?.type ?? initial?.type ?? "TODO",
+        text: entry?.text ?? initial?.text ?? "",
         status: entry?.status ?? "OPEN",
         owner: entry?.owner?.person ? {personId: entry.owner.person.id} : entry?.owner?.name ? {name: entry.owner.name} : null,
         deadline: entry?.deadline ?? null,
         date: entry?.date,
         comment: entry?.comment ?? "",
-        tags: entry?.tags ?? [],
+        tags: entry?.tags ?? initial?.tags ?? [],
     };
 }
 
 /**
  * Adds or edits a decision log row (M3 FR-008–FR-014). There is no delete: a row is closed or cancelled instead.
- * With a meeting in progress, the change is recorded as made in it (FR-018).
+ * With a meeting in progress, the change is recorded as made in it (FR-018). A new row can start from `initial`, e.g.
+ * the closing page's surplus decision: a DECISION tagged "överskott" (M7-FR-9).
  */
-export function LogEntryDialog({revivalId, entry, members, tags, meetingId, open, onOpenChange}: {
+export function LogEntryDialog({revivalId, entry, initial, members, tags, meetingId, open, onOpenChange}: {
     revivalId: string;
     entry: LogEntryFieldsFragment | null;
+    initial?: Partial<LogEntryValues>;
     members: OwnerMember[];
     tags: string[];
     meetingId?: string | null;
@@ -49,7 +51,7 @@ export function LogEntryDialog({revivalId, entry, members, tags, meetingId, open
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
     const [tagText, setTagText] = useState("");
-    const form = useForm<LogEntryValues>({resolver: zodResolver(logEntryValuesSchema), values: valuesOf(entry)});
+    const form = useForm<LogEntryValues>({resolver: zodResolver(logEntryValuesSchema), values: valuesOf(entry, initial)});
     const {errors} = form.formState;
     const error = (message?: string) => message && <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
 

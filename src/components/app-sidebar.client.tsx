@@ -90,8 +90,14 @@ export function AppSidebar({roles, accountUrl, ...props}: AppSidebarProps) {
                     // Under "Administration" the short name suffices; the command palette keeps "Nav.adminGuide"
                     {title: t("Nav.adminGuideShort"), url: "/admin/guide"},
                     {title: t("Nav.adminChecklistTemplates"), url: "/admin/checklist-templates"},
+                    {title: t("Nav.adminEventTypes"), url: "/admin/event-types"},
+                    {title: t("Nav.adminMailingTemplates"), url: "/admin/mailing-templates"},
                     {title: t("Nav.adminGuideItemTypes"), url: "/admin/guide-item-types"},
                     {title: t("Nav.adminCapabilities"), url: "/admin/capabilities"},
+                    {title: t("Nav.adminBudgetCategories"), url: "/admin/budget-categories"},
+                    {title: t("Nav.adminLinkServices"), url: "/admin/link-services"},
+                    {title: t("Nav.adminReferenceFigures"), url: "/admin/reference-figures"},
+                    {title: t("Nav.adminSpexCalendar"), url: "/admin/spex-calendar"},
                 ],
             });
         }

@@ -63,6 +63,12 @@ describe("AppSidebar", () => {
         expect(screen.getByRole("link", {name: "Nav.admin"})).toHaveAttribute("href", "/admin/guide");
         expect(screen.getByRole("link", {name: "Nav.adminGuideShort"})).toHaveAttribute("href", "/admin/guide");
         expect(screen.getByRole("link", {name: "Nav.adminChecklistTemplates"})).toHaveAttribute("href", "/admin/checklist-templates");
+        expect(screen.getByRole("link", {name: "Nav.adminEventTypes"})).toHaveAttribute("href", "/admin/event-types");
+        expect(screen.getByRole("link", {name: "Nav.adminMailingTemplates"})).toHaveAttribute("href", "/admin/mailing-templates");
+        expect(screen.getByRole("link", {name: "Nav.adminBudgetCategories"})).toHaveAttribute("href", "/admin/budget-categories");
+        expect(screen.getByRole("link", {name: "Nav.adminLinkServices"})).toHaveAttribute("href", "/admin/link-services");
+        expect(screen.getByRole("link", {name: "Nav.adminReferenceFigures"})).toHaveAttribute("href", "/admin/reference-figures");
+        expect(screen.getByRole("link", {name: "Nav.adminSpexCalendar"})).toHaveAttribute("href", "/admin/spex-calendar");
     });
 
     it("keeps the guide administration entry highlighted on the pages beneath it", () => {

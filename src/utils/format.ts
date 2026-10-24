@@ -35,3 +35,29 @@ export function formatInstant(value: string | Date | null | undefined): string |
 
     return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}`;
 }
+
+const NBSP = " ";
+
+/**
+ * Formats kronor the Swedish way in every language, as dates are: "12 345,50 kr", whole kronor without decimals
+ * ("1 200 kr") and a minus sign for negative amounts. The value is the server's decimal string ("12345.5"), read as text
+ * so no öre is lost to floating point. Anything else is shown as it is.
+ */
+export function formatAmount(value: string | number | null | undefined): string | null {
+    if (value === null || value === undefined || value === "") {
+        return null;
+    }
+
+    const match = /^(-?)(\d+)(?:\.(\d{1,2})\d*)?$/.exec(String(value).trim());
+
+    if (!match) {
+        return String(value);
+    }
+
+    const [, sign, whole, fraction = ""] = match;
+    const integer = whole.replace(/^0+(?=\d)/, "").replace(/\B(?=(\d{3})+(?!\d))/g, NBSP);
+    const decimals = fraction.padEnd(2, "0");
+    const negative = sign === "-" && /[1-9]/.test(whole + decimals);
+
+    return `${negative ? "−" : ""}${integer}${decimals === "00" ? "" : `,${decimals}`}${NBSP}kr`;
+}

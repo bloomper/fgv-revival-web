@@ -24,7 +24,8 @@ test.describe("Decision log, user story 3: the steering group runs a meeting fro
 
         await expect(page.getByRole("heading", {level: 3, name: "Direktionsmöte 4"})).toBeVisible();
         await expect(page.getByRole("table").getByText("Boka RunAn")).toBeVisible();
-        await expect(page.getByText("Budget")).toBeVisible();
+        // The agenda point, not the revival's Budget tab
+        await expect(page.getByRole("listitem").filter({hasText: /^Budget$/, hasNot: page.getByRole("link")})).toBeVisible();
 
         await page.getByRole("button", {name: "Starta mötet"}).click();
         await expect(page.getByText("Protokollförare: Stina Styrgrupp")).toBeVisible();

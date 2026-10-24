@@ -17,4 +17,19 @@ describe("RevivalCard", () => {
 
         expect(screen.getByText("Revival.notSet")).toBeInTheDocument();
     });
+
+    it("links the steering group to the revival and counts only its active members", () => {
+        render(<RevivalCard revival={revivalDetail()} role="STEERING_GROUP"/>);
+
+        expect(screen.getByRole("link")).toHaveAttribute("href", "/revivals/1");
+        expect(screen.getByText(/Revival.memberCount/)).toBeInTheDocument();
+    });
+
+    it.each(["PARTICIPANT", "HELPER"] as const)("links a %s straight to their own page, without the member count", role => {
+        render(<RevivalCard revival={revivalDetail()} role={role}/>);
+
+        expect(screen.getByRole("link")).toHaveAttribute("href", "/revivals/1/me");
+        expect(screen.queryByText(/Revival.memberCount/)).not.toBeInTheDocument();
+        expect(screen.getByText(`Role.${role}`)).toBeInTheDocument();
+    });
 });

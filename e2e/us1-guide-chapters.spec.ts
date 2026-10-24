@@ -22,7 +22,7 @@ test.describe("Guide, user story 1: the super admin writes the first version cha
         await page.getByTestId(/draft-chapter-/).filter({hasText: "Godkännande"}).getByRole("button", {name: "Flytta upp"}).click();
         await expect(page.getByTestId(/draft-chapter-/).first()).toContainText(/1\.\s*Godkännande/);
 
-        await page.getByRole("link", {name: /Budget/}).click();
+        await page.getByRole("link", {name: /\d+\. Budget/}).click();
         await expect(page.getByRole("heading", {name: "2. Budget"})).toBeVisible();
         await page.getByRole("button", {name: "Lägg till punkt"}).click();
         await page.getByLabel("Typ").selectOption("REQUIREMENT");

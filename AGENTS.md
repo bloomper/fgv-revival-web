@@ -60,7 +60,8 @@ changing routing or data fetching; this area differs sharply from older Next.
   `export const instant = false`, which also opts the whole `(app)` tree out of static-shell
   validation (the highest `instant` in a tree wins for that check).
 - **A new route that fetches data at the top of the page needs a `loading.tsx` beside it**, or it
-  can't prerender a shell. Reuse `DataTableSkeleton`; see `src/app/(app)/revivals/manage/loading.tsx`.
+  can't prerender a shell. Build it from `Skeleton` (`src/components/ui/skeleton.tsx`); see
+  `src/app/(app)/revivals/manage/loading.tsx`.
 - The root layout's metadata must stay a **static** `export const metadata`. `/_not-found` inherits
   it, so a `generateMetadata()` that reads cookies (e.g. `getTranslations()`) blocks metadata on
   every route. The locale-correct title is applied client-side in `src/app/provider.client.tsx`.
@@ -105,12 +106,19 @@ changing routing or data fetching; this area differs sharply from older Next.
   suggestions), `ReadOnlyNotice` (`src/components/revival/read-only-notice.tsx`) says why instead of hiding the
   controls silently.
 - **Revival permissions are never computed in the web.** Each `Revival` carries a `permissions` object
-  (`canEditCore`, `canEditDetails`, `allowedStatuses`, `canManageDirecteurs`, `canManageSteeringGroup`)
-  computed by the server's `AccessPolicy`. Show or hide controls from it; the server enforces every rule
+  (`canEditCore`, `canEditDetails`, `allowedStatuses`, `canManageDirecteurs`, `canManageSteeringGroup`,
+  `canReadBudget`, `canWriteBudget`, …) computed by the server's `AccessPolicy`. Show or hide controls from it; the server enforces every rule
   anyway. Don't re-derive directeur or steering-group rules from the role and status.
 - Directeurs and steering group members are picked among the FGV realm's users (`revivalMemberCandidates`). An email
   that is no user's is invited: the server creates a Keycloak user without roles and Keycloak emails them; a super
   admin then grants `USER`. `DIRECTORY_UNAVAILABLE` means Keycloak cannot be searched; typing an address still works.
+- **Participants and helpers (M6a) log in with their FGV account too — there are no personal links.** Inviting them
+  (`participantsInvite`) gives them a `PARTICIPANT`/`HELPER` role waiting on their email address, claimed when they log
+  in with it, exactly as directeurs and steering group members are; a super admin grants `USER`. They see their revival
+  only while it is `OPEN`. `permissions.isParticipant` routes them: the revival layout (which reads only the light
+  `RevivalShell` query, since participants may not read `members`, `workSummary` and the like) shows neither tabs nor
+  title, `/revivals/[id]` redirects to `/revivals/[id]/me`, and revival cards and the home page link them straight
+  there. `canReadWork` gates the steering group's work; `canReadParticipants` (not observers) the Participants tab.
 - Client side: `src/lib/auth-client.ts` (`useSession`, `signOut`); no session provider is needed.
   Logout uses `signOut({disableRedirect: true})` and appends `ui_locales`/`theme` to the returned
   Keycloak `end_session` URL via `appendLogoutParams` (`src/utils/auth.ts`).
@@ -130,7 +138,65 @@ changing routing or data fetching; this area differs sharply from older Next.
 - Each area has a small lib with explicit GraphQL documents: `src/lib/revival/revival.server.ts`,
   `src/lib/member/member.server.ts`, `src/lib/spex/spex.server.ts`, `src/lib/guide/guide.server.ts`,
   `src/lib/decision-log/log.server.ts`, `src/lib/meeting/meeting.server.ts`, `src/lib/checklist/checklist.server.ts`,
-  `src/lib/checklist/template.server.ts` and `src/lib/catalog/catalog.server.ts`.
+  `src/lib/checklist/template.server.ts`, `src/lib/catalog/catalog.server.ts`, `src/lib/event/event.server.ts`
+  (events, event types and calendar links), `src/lib/budget/budget.server.ts` (a revival's budget),
+  `src/lib/budget/reference.server.ts` (budget categories, reference figures, event type budget lines) and
+  `src/lib/spex-calendar/spex-calendar.server.ts` (the Chalmersspex dates and the cross-revival timeline) and
+  `src/lib/participant/participant.server.ts` (participants, invitations, referrals and the participant's own page;
+  `contact.ts` beside it builds `wa.me` links and names) and `src/lib/material/material.server.ts` (materials, the
+  inventory and link services) and `src/lib/closing/closing.server.ts` (closing signals, membership, the sync to
+  Spexregister and anonymization).
+- **Events (M4)** live on the revival's Events tab (`/revivals/[id]/events`, `?view=timeline` for the timeline of
+  events, shows and meetings, `?cancelled=1` for cancelled ones); event types are a super admin list
+  (`/admin/event-types`) that is retired, never deleted. Proposals (`Revival.eventProposals`) and the distance from the
+  premiere (`Event.daysFromPremiere`) come from the server; an event's checklist is made and kept in step by the server.
+- **The budget (M5)** is the revival's Budget tab (`/revivals/[id]/budget`, with `lines`, `transactions` and
+  `scenarios` routes), shown only when `permissions.canReadBudget`; `Revival.budget` is null for anyone else. Only the
+  directeur and steering group members with `FINANCE` write it (`canWriteBudget`); `BudgetReadOnlyNotice` says so to
+  the others. Totals, category summaries, proposals from event types and scenario results all come from the server;
+  the web only adds up what it shows (in öre, `src/lib/budget/amount.ts`). Lines are removed and transactions
+  cancelled, never deleted. Budget categories (`/admin/budget-categories`, a catalog with a kind fixed on create and
+  a role), reference figures (`/admin/reference-figures`) and the Chalmersspex dates (`/admin/spex-calendar`, which
+  the timeline at `/revivals/manage?view=timeline` checks for clashing show weeks) are super admin lists.
+- **Participants (M6a)** are the revival's Participants tab (`/revivals/[id]/participants`, `?removed=1` for removed
+  ones), shown when `permissions.canReadParticipants`; contact details and dietary needs come back null for those who
+  may not read them, and fees are marked paid by budget writers (`canWriteBudget`). Names and contact details live in
+  Spexregister, so the list, the candidates and the positions are fetched apart and `SPEXREGISTER_UNAVAILABLE` leaves
+  the counts and settings working. The participant's own page (`/revivals/[id]/me`) is phone-first and WCAG 2.2 AA:
+  44px targets (`TOUCH_FIELD`), every error tied to its field (`describedBy`, `FieldErrorText` in
+  `src/components/participation/participation-section.tsx`), and one `ParticipationSection` per part so later
+  milestones add theirs without touching the others. Under the React Compiler, a form that stays open after saving
+  resets with `form.reset(values, {keepFieldsRef: true})`: a plain reset drops the registered inputs for good.
+- **Staffing and mailings (M6b)** are the Staffing tab (`/revivals/[id]/staffing`, `?event=` and `?view=matrix`;
+  `canReadStaffing`, writes `canWriteStaffing`: the directeur or `STAFFING`) and the Mailings tab
+  (`/revivals/[id]/mailings`, `new?template=&event=` drafts from a plan entry, `[mailingId]` edits, sends and retries;
+  `canReadMailings`, `canDraftMailings`, `canSendMailings`: the directeur or `COMMS`), libs
+  `src/lib/staffing/staffing.server.ts` and `src/lib/mailing/mailing.server.ts`. The plan and audiences are computed by
+  the server; the web prefills a draft from the template in the reader's language and shows `mailingAudiencePreview`
+  live and again in the send confirmation. Mailing bodies render through `GuideMarkdown`, as the email does.
+  Prints are pages (`/revivals/[id]/staffing/print?event=` or `?person=`) with print CSS (`print:hidden`, and the
+  sidebar hidden in `globals.css`), never a server PDF. The participant page adds Schedule, Availability, My shifts and
+  Open shifts. The mailing plan's templates are a super admin list (`/admin/mailing-templates`) with the due rule as a
+  `RelativeDeadlineField`.
+- **Materials and inventory (M8)** are the Materials tab (`/revivals/[id]/materials` and `/materials/inventory`,
+  `?removed=1` for writers), shown when `permissions.canReadMaterials` (not observers), written with `canWriteMaterials`. Materials
+  are **links only** — nothing is uploaded — rendered with `rel="noopener noreferrer" target="_blank"`. The server
+  recognises a link's service from its host (`LinkService.hosts`, kept under `/admin/link-services`: the catalog
+  editor with its `extra` fields); `src/lib/material/hosts.ts` mirrors the rule only for the hint shown while typing,
+  and `Material.serviceChosen` says whether a saved service was picked or recognised.
+  Participants see theirs (for all participants, or for their position) as a section on `/me`.
+- **Closing (M7)** is the revival's Closing tab (`/revivals/[id]/closing`, readers of the work; always last, marked from
+  `CLOSING` on), lib `src/lib/closing/closing.server.ts`. `Revival.closing` gives the signals (result, loan, the surplus
+  decision — a DECISION tagged "överskott"/"surplus", which `LogEntryDialog`'s `initial` prefills — suggestions, the
+  last sync). FGV membership is `membershipSet` (`canSetMembership`), replacing every mark at once. The sync to
+  Spexregister (`canSync`) shows `syncPreview`, starts with its `hash` (CONFLICT when the preview changed) and polls
+  `syncRun` every 2 s through a server action while `RUNNING`; a failed run is resumed by starting again, which writes
+  only what is missing. Archiving a revival whose sync never completed warns first (`RevivalStatusSelect`).
+- **Anonymization (M7, section 7)** removes the people from a revival for good: `revivalAnonymize` (`canAnonymize`,
+  the revival's title typed as confirmation, or its id while Spexregister is down). Login data is kept until the
+  revival is deleted or anonymized; archived and rejected revivals are anonymized automatically 36 months after that
+  status was set (`closing.autoAnonymizeOn`). `Revival.anonymizedAt` puts a banner on every revival page and a badge on
+  `/revivals/manage`; the page then hides membership and sync.
 - **Areas of responsibility (`Capability`) and guide item types are lists the super admin keeps** under Administration
   (`/admin/capabilities`, `/admin/guide-item-types`), not enums. Rows hold an entry's id (the four original ones keep
   `FINANCE`… and `TIP`…; new ones get a UUID) and GraphQL returns the entry, so show `name` with `catalogName` and
@@ -138,10 +204,19 @@ changing routing or data fetching; this area differs sharply from older Next.
   behaviour and styling (`GuideTypeBadge`, hiding `TEXT`); branch on `type.kind`, never on a type's id. Retired entries
   stay on rows that hold them; pickers offer `catalogChoices(active, held)`. Pages with a picker fetch the active list
   and wrap it in `CatalogProvider`.
-- The server's plain HTTP endpoints (guide PDF, log import, spex poster) go through `apiFetch` in
-  `src/lib/api.server.ts`, which adds the token on the server. The browser reaches the PDF only through the route
+- The server's plain HTTP endpoints (guide PDF, log import, spex poster, budget export, receipts, Swish QR) go through
+  `apiFetch` in `src/lib/api.server.ts`, which adds the token on the server. The browser reaches the PDF only through the route
   handler `/api/guide-pdf`, and a revival's poster only through `/api/revival-poster/[id]` (rendered by
   `RevivalPoster`, which falls back to a placeholder; never `next/image`, whose optimizer has no session).
+  The budget's Excel export goes through `/api/budget-export/[id]` (language from the locale cookie), and receipts
+  through `/api/receipts/[transactionId]`: GET downloads as a sandboxed attachment, POST checks the browser's
+  multipart `file` (type and 10 MB, `receiptProblem`) and forwards it, DELETE removes it. A receipt chosen in the
+  transaction dialog is uploaded right after the transaction is saved. `next.config.ts` sets the sandboxing CSP for
+  the receipt, poster and Swish QR (`/api/swish-qr/[revivalId]`, an SVG) routes after the page policy, since the last matching header wins over the route's own, and
+  raises `proxyClientMaxBodySize` because `proxy.ts` buffers request bodies.
+- Calendar feeds are the exception: calendar apps have no session, so `/api/calendar/[file]` forwards
+  `<token>.ics` (and `?lang=`) to the server with `apiFetchPublic`, without a token. The secret link is the credential;
+  the web never stores it and shows it only once, right after `calendarFeedCreate`.
 - **Guide chapters are free-form.** A version has any number of chapters, each with a `key` that stays the same
   across versions, ordered by place and numbered from 1 in the UI; there is no `Phase` enum any more. Reading is one
   chapter per page (`[chapterKey]` routes) with `GuideChapterNav` (a bar and bottom sheet on phones, a list beside the
@@ -157,7 +232,7 @@ changing routing or data fetching; this area differs sharply from older Next.
 - Free text the steering group writes (log rows, comments, meeting notes, checklist items, owner names) is rendered
   only through `src/components/plain-text.tsx`: plain text with line breaks and linkified http(s) URLs, never Markdown
   or HTML.
-- Mutations invalidate by cache tag (`config.cacheTag` + `revalidateTag`). Server actions live in
+- Mutations invalidate with `revalidatePath` (the revival's layout, or `/` for super admin lists). Server actions live in
   `src/app/(app)/<entity>/actions.server.ts` and validate input with the entity's Zod schema
   (`src/lib/<entity>/schema.ts`) before calling the lib.
 - Codegen has two targets (`codegen.ts`): `src/gql/schema.ts` for domain types/enums, and the
@@ -192,6 +267,11 @@ Dates and times are always shown as `yyyy-mm-dd` and `yyyy-mm-dd hh:mm` (Swedish
 Spexregister: use `formatDate` / `formatInstant` from `src/utils/format.ts`, never `Intl` date styles. Date fields use
 `DateInput` (`src/components/date-input.client.tsx`), not `<input type="date">`, whose format follows the browser.
 
+Amounts are the server's `Amount` scalar, a decimal string ("1200", "1200.50"), never a float. Show them with
+`formatAmount` (`src/utils/format.ts`): Swedish style in both languages, "12 345,50 kr", whole kronor without
+decimals. Amount fields are text inputs read by `parseAmount` (`src/lib/budget/amount.ts`) through the budget schemas,
+which accept "1 200,50" as well as "1200.50"; fill them back with `amountInputValue`.
+
 ## Consent and visitor statistics
 
 The cookie banner is c15t (`src/components/consent-manager.client.tsx`) in offline mode with only the `necessary`
@@ -208,7 +288,13 @@ Custom events go through `track()` (`src/utils/umami.ts`), a no-op when the trac
 page path with every event, so don't repeat it. Event data is enum values, counts and booleans only — never names,
 emails, revival or member ids or typed text; Umami cannot remove a single field afterwards. Events: `revival-create`,
 `revival-status` (`from`, `to`), `revival-details-save`, `member-add` (`role`, `capabilities` count),
-`member-capabilities` (`count`), `member-remove`, `command-palette`, `language-change` and `theme-change`.
+`member-capabilities` (`count`), `member-remove`, `event-create` (`typed`), `calendar-link`, `budget-export`,
+`transaction-create` (`receipt`), `participant-add` (`count`, `pending`), `participants-invite` (`count`),
+`participation-respond` (`response`), `referral-create`, `availability-set` (`days` count), `shift-sign-up`,
+`shift-assign` (`answer`), `mailing-draft` (`audience`), `mailing-send` (`audience`, `count`), `material-create`
+(`category`, `recognised`), `inventory-create` (`kind`), `membership-set` (`count`), `sync-start` (`participants`),
+`revival-anonymize`, `command-palette`,
+`language-change` and `theme-change`.
 
 ## Testing
 
@@ -219,6 +305,8 @@ emails, revival or member ids or typed text; Umami cannot remove a single field 
   token, JWKS, userinfo, logout), and `e2e/auth.setup.ts` signs in through a real OIDC
   authorization-code round-trip before saving `storageState`. Better Auth's cookies are encrypted
   blobs with no public minting API, so this is the supported way — don't try to forge them.
+- Cache Components keeps recently visited routes mounted but hidden (React `<Activity>`), so after a navigation
+  `getByLabel` can find a field twice; role queries skip hidden elements.
 - All test data is fictitious.
 
 ## Dependency notes

@@ -9,6 +9,12 @@ import {createLogState, handleLogImport, logResolvers} from "./mock-log.mjs";
 import {createMeetingState, meetingResolvers} from "./mock-meeting.mjs";
 import {checklistResolvers, createChecklistState} from "./mock-checklist.mjs";
 import {catalogResolvers, createCatalogState, toObjects} from "./mock-catalog.mjs";
+import {createEventState, eventResolvers} from "./mock-event.mjs";
+import {budgetResolvers, createBudgetState} from "./mock-budget.mjs";
+import {createParticipantState, participantResolvers, POSITIONS} from "./mock-participant.mjs";
+import {createStaffingState, staffingResolvers} from "./mock-staffing.mjs";
+import {createMaterialState, materialResolvers} from "./mock-material.mjs";
+import {closingResolvers, createClosingState} from "./mock-closing.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 4101);
 const ISSUER = `http://localhost:${PORT}/realms/fgv`;
@@ -22,6 +28,8 @@ const PERSONAS = {
     directeur: {sub: "p-directeur", name: "Dana Directeur", email: "dana@example.org", roles: ["USER"]},
     styrgrupp: {sub: "p-styrgrupp", name: "Stina Styrgrupp", email: "stina@example.org", roles: ["USER"]},
     noaccess: {sub: "p-noaccess", name: "Nils Nekad", email: "nils@example.org", roles: []},
+    // A participant (M6a): holds no role until invited by this address
+    deltagare: {sub: "p-deltagare", name: "Disa Deltagare", email: "disa@example.org", roles: ["USER"]},
 };
 const bySub = Object.fromEntries(Object.values(PERSONAS).map(persona => [persona.sub, persona]));
 
@@ -30,6 +38,8 @@ const DIRECTEUR_STEPS = ["APPROVED", "ORGANISING", "OPEN", "CLOSING", "SETTLING"
 const VISIBLE = {
     DIRECTEUR: ["APPROVED", "ORGANISING", "OPEN", "CLOSING", "SETTLING"],
     STEERING_GROUP: ["ORGANISING", "OPEN", "CLOSING"],
+    PARTICIPANT: ["OPEN"],
+    HELPER: ["OPEN"],
 };
 const SPEX = [
     {id: "1", title: "Ali Baba", year: 1956},
@@ -48,6 +58,12 @@ function resetState(guideSeed = "none") {
         meeting: createMeetingState(),
         checklist: createChecklistState(),
         catalog: createCatalogState(),
+        event: createEventState(),
+        budget: createBudgetState(),
+        participant: createParticipantState(),
+        staffing: createStaffingState(),
+        material: createMaterialState(),
+        closing: createClosingState(),
         nextId: 100,
         revivals: [
             {id: "1", spexId: "1", year: 2028, title: "Ali Baba 2028", premiereDate: null, shows: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
@@ -131,6 +147,12 @@ function permissions(persona, revival) {
         canManageSteeringGroup: (isSuperAdmin(persona) || isVisibleDirecteur(persona, revival)) && notArchived(revival),
         canWriteLog: ["DIRECTEUR", "STEERING_GROUP"].includes(roleIn(persona, revival)) && canSee(persona, revival) && notArchived(revival),
         canWaiveRequirement: isVisibleDirecteur(persona, revival) && notArchived(revival),
+        canSubscribeCalendar: !!roleIn(persona, revival) && canSee(persona, revival),
+        ...budget.permissions(persona, revival),
+        ...participants.permissions(persona, revival),
+        ...staffing.permissions(persona, revival),
+        ...material.permissions(persona, revival),
+        ...closing.permissions(persona, revival),
     };
 }
 
@@ -155,6 +177,8 @@ function visibleRevival(persona, id) {
 function toRevival(persona, revival) {
     const spex = SPEX.find(candidate => candidate.id === revival.spexId);
     const showEmails = isSuperAdmin(persona) || isVisibleDirecteur(persona, revival);
+    // Participants see the steering group through their own page only (M6a)
+    const participantOnly = participants.isParticipant(persona, revival);
 
     return {
         __typename: "Revival",
@@ -165,6 +189,7 @@ function toRevival(persona, revival) {
         shows: revival.shows.map(show => ({__typename: "RevivalShow", ...show})),
         status: revival.status,
         version: revival.version,
+        anonymizedAt: revival.anonymizedAt ?? null,
         createdBy: "Sara Admin",
         createdAt: "2026-10-20T10:00:00Z",
         lastModifiedBy: null,
@@ -176,7 +201,8 @@ function toRevival(persona, revival) {
             year: state.spexregisterUp ? spex?.year ?? null : null,
             available: state.spexregisterUp,
         },
-        members: state.members.filter(member => member.revivalId === revival.id).map(member => ({
+        myRole: roleIn(persona, revival),
+        members: participantOnly ? [] : state.members.filter(member => member.revivalId === revival.id).map(member => ({
             __typename: "RevivalMember",
             id: member.id,
             role: member.role,
@@ -219,7 +245,7 @@ const resolvers = {
                     __typename: "RevivalRoleAssignment",
                     role: roleIn(persona, revival),
                     capabilities: [],
-                    revival: {__typename: "Revival", id: revival.id},
+                    revival: {__typename: "Revival", id: revival.id, title: revival.title},
                 })),
             },
         };
@@ -232,6 +258,9 @@ const resolvers = {
         };
     },
     Revival(persona, {id}) {
+        return {revival: toRevival(persona, visibleRevival(persona, id))};
+    },
+    RevivalShell(persona, {id}) {
         return {revival: toRevival(persona, visibleRevival(persona, id))};
     },
     RevivalWorkSummary(persona, {id}) {
@@ -250,6 +279,7 @@ const resolvers = {
                     overdueChecklistItems: items.filter(item => item.deadline && item.deadline < today).length,
                     openRequiredItems: items.filter(item => item.required).length,
                     meetingInProgress: meeting ? {__typename: "MeetingSummary", id: meeting.id, title: meeting.title, date: meeting.date} : null,
+                    upcomingEvents: events.upcomingEvents(revival),
                 },
             },
         };
@@ -407,6 +437,67 @@ Object.assign(resolvers, guideResolvers({
     state: () => state, GraphQLError, forbidden, isSuperAdmin, seesEverything, roleIn, canSee, visibleRevival, nameOf: sub => bySub[sub]?.name ?? null,
 }));
 
+const {upcomingEvents, eventOfChecklist, seed: seedEvents, feed: calendarFeed, ...eventOperations} = eventResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, resolvers,
+});
+const events = {upcomingEvents, eventOfChecklist};
+
+Object.assign(resolvers, eventOperations);
+
+// A checklist links to the event it belongs to (M4-FR-4)
+const checklistResolver = resolvers.Checklist;
+
+resolvers.Checklist = (persona, variables) => {
+    const result = checklistResolver(persona, variables);
+
+    return result.checklist ? {...result, checklist: {...result.checklist, event: eventOfChecklist(result.checklist.id)}} : result;
+};
+
+// The budget (M5); an event type carries the budget lines it proposes
+const budget = budgetResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, seesEverything, log: logExports,
+});
+
+Object.assign(resolvers, budget.resolvers);
+
+// Participants, invitations and the participant's own page (M6a)
+const participants = participantResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, seesEverything, personas: bySub,
+});
+
+Object.assign(resolvers, participants.resolvers);
+
+// Availability, staffing and mailings (M6b); it adds the participant page's events, availability and shifts
+const staffing = staffingResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, personas: bySub, participants, resolvers,
+});
+
+Object.assign(resolvers, staffing.resolvers);
+
+// Materials, the inventory and the link services (M8); it adds the participant page's materials
+const material = materialResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, participants, positions: POSITIONS, log: logExports,
+    resolvers, permissions,
+});
+
+Object.assign(resolvers, material.resolvers);
+
+// Closing: membership marks, the sync to Spexregister and anonymization (M7)
+const closing = closingResolvers({
+    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, participants, positions: POSITIONS, log: logExports,
+    resolvers, permissions,
+});
+
+Object.assign(resolvers, closing.resolvers);
+
+const eventTypesResolver = resolvers.EventTypes;
+
+resolvers.EventTypes = (persona, variables) => {
+    const result = eventTypesResolver(persona, variables);
+
+    return {eventTypes: result.eventTypes.map(eventType => ({...eventType, budgetLines: budget.typeLinesOf(eventType.id)}))};
+};
+
 // What holds a catalog entry, so the mock refuses to delete it as the server does
 function usedCatalogIds(name) {
     if (name === "capabilities") {
@@ -550,7 +641,8 @@ const server = createServer((req, res) => {
     req.on("end", async () => {
         const url = new URL(req.url || "", `http://localhost:${PORT}`);
         const path = url.pathname;
-        const body = Buffer.concat(chunks).toString("utf8");
+        const rawBody = Buffer.concat(chunks);
+        const body = rawBody.toString("utf8");
 
         if (path.endsWith("/.well-known/openid-configuration")) {
             res.writeHead(200, {"content-type": "application/json"}).end(JSON.stringify(oidcConfig));
@@ -589,6 +681,36 @@ const server = createServer((req, res) => {
         } else if (req.method === "POST" && path === "/__templates") {
             seedTemplates();
             res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__events") {
+            seedEvents();
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__budget") {
+            budget.seed(JSON.parse(body || "{}"));
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__participants") {
+            participants.seed(JSON.parse(body || "{}"));
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__staffing") {
+            staffing.seed(JSON.parse(body || "{}"));
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__closing") {
+            closing.seed(JSON.parse(body || "{}"));
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__materials") {
+            material.seed(JSON.parse(body || "{}"));
+            res.writeHead(204).end();
+        } else if (path.startsWith("/api/") && participants.handleHttp(personaOf(req), req, path, res)) {
+            // The participant's Swish QR code
+        } else if (path.startsWith("/api/") && budget.handleHttp(personaOf(req), req, path, url, rawBody, res)) {
+            // A receipt or the budget's Excel export
+        } else if (req.method === "GET" && /^\/api\/calendar\/[^/]+\.ics$/.test(path)) {
+            // No token: the link is the credential (M4-FR-6)
+            const ics = calendarFeed(path.slice("/api/calendar/".length, -".ics".length), url.searchParams.get("lang"), sub => bySub[sub]);
+            if (ics) {
+                res.writeHead(200, {"Content-Type": "text/calendar; charset=utf-8", "Cache-Control": "private, max-age=900"}).end(ics);
+            } else {
+                res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({code: "NOT_FOUND", message: "Not found"}));
+            }
         } else if (req.method === "POST" && path === "/__guide") {
             seedGuide(JSON.parse(body).seed);
             res.writeHead(204).end();
