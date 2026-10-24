@@ -5,7 +5,12 @@ import type {RevivalRole, RevivalStatus} from "@/gql/graphql";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
 import {changeStatus, updateRevival} from "@/lib/revival/revival.server";
 import {addMember, removeMember, searchMemberCandidates, setCapabilities} from "@/lib/member/member.server";
-import {memberAddSchema, memberCapabilitiesSchema, MIN_MEMBER_QUERY, revivalStatusChangeSchema} from "@/lib/revival/schema";
+import {
+    memberAddSchema,
+    memberCapabilitiesSchema,
+    MIN_MEMBER_QUERY,
+    revivalStatusChangeSchema
+} from "@/lib/revival/schema";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
 
@@ -23,7 +28,11 @@ export async function updateDetailsAction(input: {
             version: input.version,
             premiereDate: input.premiereDate || null,
             clearPremiereDate: !input.premiereDate,
-            shows: input.shows.map(show => ({date: show.date, time: show.time.trim() || null, venue: show.venue.trim() || null})),
+            shows: input.shows.map(show => ({
+                date: show.date,
+                time: show.time.trim() || null,
+                venue: show.venue.trim() || null
+            })),
         });
 
         revalidatePath(`/revivals/${input.id}`);
@@ -31,7 +40,11 @@ export async function updateDetailsAction(input: {
     }));
 }
 
-export async function changeStatusAction(input: { id: string; from: RevivalStatus; to: RevivalStatus }): Promise<ActionResult<{ status: RevivalStatus }>> {
+export async function changeStatusAction(input: {
+    id: string;
+    from: RevivalStatus;
+    to: RevivalStatus
+}): Promise<ActionResult<{ status: RevivalStatus }>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const parsed = revivalStatusChangeSchema.parse(input);
         const changed = await changeStatus(parsed);
@@ -52,7 +65,11 @@ export async function addMemberAction(input: {
 }): Promise<ActionResult<{ id: string; invited: boolean }>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const parsed = memberAddSchema.parse(input);
-        const added = await addMember({...parsed, firstName: parsed.firstName || null, lastName: parsed.lastName || null});
+        const added = await addMember({
+            ...parsed,
+            firstName: parsed.firstName || null,
+            lastName: parsed.lastName || null
+        });
 
         revalidatePath("/", "layout");
         return {id: added?.id ?? "", invited: !!added?.invitedAt};
@@ -71,11 +88,19 @@ export async function searchMemberCandidatesAction(revivalId: string, query: str
             return [];
         }
         return (await searchMemberCandidates(revivalId, trimmed))
-            .map(candidate => ({email: candidate.email, displayName: candidate.displayName ?? null, hasAccess: candidate.hasAccess}));
+            .map(candidate => ({
+                email: candidate.email,
+                displayName: candidate.displayName ?? null,
+                hasAccess: candidate.hasAccess
+            }));
     }));
 }
 
-export async function setCapabilitiesAction(input: { id: string; version: number; capabilities: string[] }): Promise<ActionResult<{ version: number }>> {
+export async function setCapabilitiesAction(input: {
+    id: string;
+    version: number;
+    capabilities: string[]
+}): Promise<ActionResult<{ version: number }>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const parsed = memberCapabilitiesSchema.parse(input);
         const updated = await setCapabilities(parsed);

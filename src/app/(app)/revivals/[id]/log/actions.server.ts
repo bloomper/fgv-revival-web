@@ -5,7 +5,12 @@ import type {z} from "zod";
 import type {LogEntryUpdateInput, OwnerInput} from "@/gql/graphql";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
 import {answerLogEntry, createLogEntry, updateLogEntry} from "@/lib/decision-log/log.server";
-import {logEntryAnswerSchema, logEntryCreateSchema, logEntryUpdateSchema, type ownerSchema} from "@/lib/decision-log/schema";
+import {
+    logEntryAnswerSchema,
+    logEntryCreateSchema,
+    logEntryUpdateSchema,
+    type ownerSchema
+} from "@/lib/decision-log/schema";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
 
@@ -23,7 +28,9 @@ function revalidate(revivalId: string) {
     revalidatePath(`/revivals/${revivalId}`, "layout");
 }
 
-export async function createLogEntryAction(input: z.input<typeof logEntryCreateSchema>): Promise<ActionResult<{ number: number }>> {
+export async function createLogEntryAction(input: z.input<typeof logEntryCreateSchema>): Promise<ActionResult<{
+    number: number
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, meetingId, values} = logEntryCreateSchema.parse(input);
         const created = await createLogEntry({

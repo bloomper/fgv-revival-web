@@ -6,7 +6,10 @@ const FILE = /^([A-Za-z0-9_-]{16,128})\.ics$/;
 const LANGUAGES = new Set(["sv", "en"]);
 
 function notFound() {
-    return new NextResponse("Not found", {status: 404, headers: {"Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store"}});
+    return new NextResponse("Not found", {
+        status: 404,
+        headers: {"Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store"}
+    });
 }
 
 /**
@@ -29,7 +32,10 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ fi
         return notFound();
     }
     if (!response.ok) {
-        return new NextResponse("Unavailable", {status: response.status, headers: {"Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store"}});
+        return new NextResponse("Unavailable", {
+            status: response.status,
+            headers: {"Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store"}
+        });
     }
     return new NextResponse(await response.text(), {
         status: response.status,

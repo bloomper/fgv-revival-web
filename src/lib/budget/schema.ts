@@ -89,7 +89,11 @@ export const budgetLineValuesSchema = z.object({
 
 export type BudgetLineValues = z.infer<typeof budgetLineValuesSchema>;
 
-export const budgetLineCreateSchema = z.object({revivalId: id, eventTypeLineId: z.string().optional(), values: budgetLineValuesSchema});
+export const budgetLineCreateSchema = z.object({
+    revivalId: id,
+    eventTypeLineId: z.string().optional(),
+    values: budgetLineValuesSchema
+});
 export const budgetLineUpdateSchema = z.object({revivalId: id, id, version, values: budgetLineValuesSchema});
 export const budgetTransitionSchema = z.object({revivalId: id, id, version});
 
@@ -107,7 +111,13 @@ export const transactionValuesSchema = z.object({
 export type TransactionValues = z.infer<typeof transactionValuesSchema>;
 
 export const transactionCreateSchema = z.object({revivalId: id, cost: z.boolean(), values: transactionValuesSchema});
-export const transactionUpdateSchema = z.object({revivalId: id, id, version, cost: z.boolean(), values: transactionValuesSchema});
+export const transactionUpdateSchema = z.object({
+    revivalId: id,
+    id,
+    version,
+    cost: z.boolean(),
+    values: transactionValuesSchema
+});
 export const transactionReimbursedSchema = budgetTransitionSchema.extend({reimbursed: z.boolean()});
 
 const RECEIPT_EXTENSIONS = /\.(pdf|jpe?g|png|heic|webp)$/i;
@@ -116,7 +126,11 @@ const RECEIPT_EXTENSIONS = /\.(pdf|jpe?g|png|heic|webp)$/i;
  * Whether a file may be sent as a receipt: one of the types the server takes and at most 10 MB. Browsers often give a
  * HEIC photo no type, so the extension decides then. The server sniffs the content as well.
  */
-export function receiptProblem(file: { type: string; size: number; name?: string }): "receiptTooLarge" | "receiptType" | null {
+export function receiptProblem(file: {
+    type: string;
+    size: number;
+    name?: string
+}): "receiptTooLarge" | "receiptType" | null {
     if (file.size > MAX_RECEIPT_BYTES) {
         return "receiptTooLarge";
     }
@@ -179,7 +193,10 @@ export function toScenarioInput(values: ScenarioValues) {
 export const budgetCategoryRole = z.union([z.literal(""), z.enum(BUDGET_CATEGORY_ROLES)]);
 
 export const budgetCategoryCreateSchema = z.object({
-    name: z.object({sv: z.string().trim().min(1, "catalogNameRequired").max(100, "catalogNameTooLong"), en: z.string().trim().max(100, "catalogNameTooLong").optional().nullable()}),
+    name: z.object({
+        sv: z.string().trim().min(1, "catalogNameRequired").max(100, "catalogNameTooLong"),
+        en: z.string().trim().max(100, "catalogNameTooLong").optional().nullable()
+    }),
     kind: z.enum(BUDGET_CATEGORY_KINDS),
     role: budgetCategoryRole,
 });
@@ -222,7 +239,11 @@ export function toReferenceRevivalInput(values: ReferenceRevivalValues) {
         comment: values.comment || null,
         figures: values.figures
             .filter(figure => figure.budgeted || figure.actual)
-            .map(figure => ({categoryId: figure.categoryId, budgeted: toAmount(figure.budgeted), actual: toAmount(figure.actual)})),
+            .map(figure => ({
+                categoryId: figure.categoryId,
+                budgeted: toAmount(figure.budgeted),
+                actual: toAmount(figure.actual)
+            })),
     };
 }
 

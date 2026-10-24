@@ -14,15 +14,40 @@ vi.mock("@/app/(app)/revivals/[id]/actions.server", () => ({
 vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn()})}));
 
 const members: Member[] = [
-    {id: "1", role: "DIRECTEUR", capabilities: [], state: "ACTIVE", displayName: "Dana Directeur", email: null, version: 0},
-    {id: "2", role: "STEERING_GROUP", capabilities: [CAPABILITIES.FINANCE], state: "ACTIVE", displayName: "Stina Styrgrupp", email: null, version: 0},
-    {id: "3", role: "STEERING_GROUP", capabilities: [CAPABILITIES.COMMS], state: "WAITING", displayName: null, email: null, version: 0},
+    {
+        id: "1",
+        role: "DIRECTEUR",
+        capabilities: [],
+        state: "ACTIVE",
+        displayName: "Dana Directeur",
+        email: null,
+        version: 0
+    },
+    {
+        id: "2",
+        role: "STEERING_GROUP",
+        capabilities: [CAPABILITIES.FINANCE],
+        state: "ACTIVE",
+        displayName: "Stina Styrgrupp",
+        email: null,
+        version: 0
+    },
+    {
+        id: "3",
+        role: "STEERING_GROUP",
+        capabilities: [CAPABILITIES.COMMS],
+        state: "WAITING",
+        displayName: null,
+        email: null,
+        version: 0
+    },
 ];
 
 function renderTable(overrides: Partial<Parameters<typeof MemberTable>[0]> = {}) {
     return render(
         <CatalogProvider capabilities={[CAPABILITIES.FINANCE, CAPABILITIES.COMMS]}>
-            <MemberTable revivalId="1" members={members} canManageDirecteurs={false} canManageSteeringGroup={false} {...overrides}/>
+            <MemberTable revivalId="1" members={members} canManageDirecteurs={false}
+                         canManageSteeringGroup={false} {...overrides}/>
         </CatalogProvider>,
     );
 }
@@ -58,7 +83,15 @@ describe("MemberTable", () => {
 
         renderTable({
             canManageSteeringGroup: true,
-            members: [{id: "2", role: "STEERING_GROUP", capabilities: [CAPABILITIES.FINANCE, retired], state: "ACTIVE", displayName: "Stina Styrgrupp", email: null, version: 0}],
+            members: [{
+                id: "2",
+                role: "STEERING_GROUP",
+                capabilities: [CAPABILITIES.FINANCE, retired],
+                state: "ACTIVE",
+                displayName: "Stina Styrgrupp",
+                email: null,
+                version: 0
+            }],
         });
         fireEvent.click(screen.getByRole("button", {name: /Members.openMenu/}));
         fireEvent.click(await screen.findByRole("menuitem", {name: /Members.editCapabilities/}));
@@ -72,7 +105,15 @@ describe("MemberTable", () => {
     it("shows email addresses when the server sends them", () => {
         renderTable({
             canManageDirecteurs: true,
-            members: [{id: "4", role: "DIRECTEUR", capabilities: [], state: "WAITING", displayName: null, email: "ny@example.org", version: 0}],
+            members: [{
+                id: "4",
+                role: "DIRECTEUR",
+                capabilities: [],
+                state: "WAITING",
+                displayName: null,
+                email: "ny@example.org",
+                version: 0
+            }],
         });
 
         expect(screen.getAllByText("ny@example.org").length).toBeGreaterThan(0);

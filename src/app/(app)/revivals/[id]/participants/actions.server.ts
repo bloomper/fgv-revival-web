@@ -51,7 +51,9 @@ export async function spexareSearchAction(input: z.input<typeof spexareSearchSch
     }));
 }
 
-export async function addSpexareParticipantsAction(input: z.input<typeof participantAddSpexareSchema>): Promise<ActionResult<{ count: number }>> {
+export async function addSpexareParticipantsAction(input: z.input<typeof participantAddSpexareSchema>): Promise<ActionResult<{
+    count: number
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, spexareIds} = participantAddSpexareSchema.parse(input);
         const added = await addSpexareParticipants(revivalId, spexareIds);
@@ -137,7 +139,14 @@ export async function removeParticipantAction(input: z.input<typeof participantT
 
 export type InviteOutcome = {
     invited: number;
-    skipped: { id: string; firstName: string; lastName: string; nickName?: string | null; removed: boolean; reason: string }[];
+    skipped: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        nickName?: string | null;
+        removed: boolean;
+        reason: string
+    }[];
 };
 
 export async function inviteParticipantsAction(input: z.input<typeof participantsInviteSchema>): Promise<ActionResult<InviteOutcome>> {

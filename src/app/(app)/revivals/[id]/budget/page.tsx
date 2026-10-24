@@ -51,7 +51,8 @@ export default async function BudgetOverviewPage({params}: { params: Promise<{ i
                         <BudgetCategoryTable categories={budget.categories}/>
                     </section>
                     <div>
-                        <BudgetSettingsCard revivalId={revival.id} settings={budget.settings} canWrite={revival.permissions.canWriteBudget}/>
+                        <BudgetSettingsCard revivalId={revival.id} settings={budget.settings}
+                                            canWrite={revival.permissions.canWriteBudget}/>
                     </div>
                 </div>
             </div>

@@ -61,24 +61,35 @@ export default async function ParticipantsPage({params, searchParams}: {
             notFound();
         }
 
-        const [{participants, unavailable}, {positions, vocalParts}] = await Promise.all([loadParticipants(revival.id, showRemoved), loadPositions()]);
+        const [{participants, unavailable}, {
+            positions,
+            vocalParts
+        }] = await Promise.all([loadParticipants(revival.id, showRemoved), loadPositions()]);
         const t = await getTranslations("Participants");
         const {permissions} = revival;
-        const settings = revival.participationSettings ?? {swishNumber: null, whatsappLink: null, terms: null, version: 0};
+        const settings = revival.participationSettings ?? {
+            swishNumber: null,
+            whatsappLink: null,
+            terms: null,
+            version: 0
+        };
 
         return (
             <div className="flex flex-1 flex-col gap-6">
                 <h3 className="sr-only">{t("title")}</h3>
                 {revival.participantCounts && <ParticipantDashboard counts={revival.participantCounts}/>}
-                <ReferralPanel revivalId={revival.id} referrals={revival.referrals} canWrite={permissions.canWriteParticipants}/>
+                <ReferralPanel revivalId={revival.id} referrals={revival.referrals}
+                               canWrite={permissions.canWriteParticipants}/>
                 {unavailable ? (
                     <Alert>
                         <AlertTitle>{t("unavailableTitle")}</AlertTitle>
                         <AlertDescription>{t("unavailable")}</AlertDescription>
                     </Alert>
                 ) : (
-                    <ParticipantTable revivalId={revival.id} participants={participants} positions={positions} vocalParts={vocalParts} settings={settings}
-                                      canWrite={permissions.canWriteParticipants} canWriteBudget={permissions.canWriteBudget}
+                    <ParticipantTable revivalId={revival.id} participants={participants} positions={positions}
+                                      vocalParts={vocalParts} settings={settings}
+                                      canWrite={permissions.canWriteParticipants}
+                                      canWriteBudget={permissions.canWriteBudget}
                                       canReadDietary={permissions.canReadDietary} showRemoved={showRemoved}/>
                 )}
             </div>

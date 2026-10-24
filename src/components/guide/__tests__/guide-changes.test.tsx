@@ -15,17 +15,68 @@ describe("GuideChanges", () => {
             to: {id: "2", label: "v2", publishedAt: null},
             introductionChanged: ["sv"],
             chapters: [
-                {key: "B", kind: "CHANGED", renamed: ["en"], moved: true, before: {sv: "Lokaler", en: "Venues"}, after: {sv: "Lokaler", en: "Rooms"}},
+                {
+                    key: "B",
+                    kind: "CHANGED",
+                    renamed: ["en"],
+                    moved: true,
+                    before: {sv: "Lokaler", en: "Venues"},
+                    after: {sv: "Lokaler", en: "Rooms"}
+                },
                 {key: "X", kind: "REMOVED", renamed: [], moved: false, before: {sv: "Turné", en: null}, after: null},
             ],
             sections: [
-                {key: "s1", kind: "ADDED", chapterBefore: null, chapterAfter: chapter("B"), renamed: [], moved: false, reordered: false, before: null, after: {sv: "Nytt", en: null}},
-                {key: "s2", kind: "CHANGED", chapterBefore: chapter("B"), chapterAfter: chapter("B"), renamed: [], moved: false, reordered: true, before: {sv: "Kalas", en: null}, after: {sv: "Kalas", en: null}},
+                {
+                    key: "s1",
+                    kind: "ADDED",
+                    chapterBefore: null,
+                    chapterAfter: chapter("B"),
+                    renamed: [],
+                    moved: false,
+                    reordered: false,
+                    before: null,
+                    after: {sv: "Nytt", en: null}
+                },
+                {
+                    key: "s2",
+                    kind: "CHANGED",
+                    chapterBefore: chapter("B"),
+                    chapterAfter: chapter("B"),
+                    renamed: [],
+                    moved: false,
+                    reordered: true,
+                    before: {sv: "Kalas", en: null},
+                    after: {sv: "Kalas", en: null}
+                },
             ],
             items: [
-                {key: "i1", kind: "ADDED", reworded: [], retyped: false, moved: false, before: null, after: snapshot("B", "Nytt tips.")},
-                {key: "i2", kind: "REMOVED", reworded: [], retyped: false, moved: false, before: snapshot("B", "Gammalt."), after: null},
-                {key: "i3", kind: "CHANGED", reworded: ["sv"], retyped: true, moved: true, before: snapshot("B", "Före."), after: snapshot("C", "Efter.", "REQUIREMENT")},
+                {
+                    key: "i1",
+                    kind: "ADDED",
+                    reworded: [],
+                    retyped: false,
+                    moved: false,
+                    before: null,
+                    after: snapshot("B", "Nytt tips.")
+                },
+                {
+                    key: "i2",
+                    kind: "REMOVED",
+                    reworded: [],
+                    retyped: false,
+                    moved: false,
+                    before: snapshot("B", "Gammalt."),
+                    after: null
+                },
+                {
+                    key: "i3",
+                    kind: "CHANGED",
+                    reworded: ["sv"],
+                    retyped: true,
+                    moved: true,
+                    before: snapshot("B", "Före."),
+                    after: snapshot("C", "Efter.", "REQUIREMENT")
+                },
             ],
         }}/>);
 

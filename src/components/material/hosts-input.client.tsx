@@ -64,8 +64,10 @@ export function HostsInput({id, value, onChange, error}: {
                         <li key={host}>
                             <Badge variant="secondary" className="gap-1 py-1 pr-1 font-mono">
                                 {host}
-                                <button type="button" className="rounded-full p-0.5 hover:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                                        aria-label={t("LinkServiceAdmin.removeHost", {host})} onClick={() => onChange(value.filter(other => other !== host))}>
+                                <button type="button"
+                                        className="rounded-full p-0.5 hover:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                                        aria-label={t("LinkServiceAdmin.removeHost", {host})}
+                                        onClick={() => onChange(value.filter(other => other !== host))}>
                                     <X className="size-3"/>
                                 </button>
                             </Badge>
@@ -74,8 +76,10 @@ export function HostsInput({id, value, onChange, error}: {
                 </ul>
             )}
             <div className="flex gap-2">
-                <Input id={id} value={text} disabled={full} placeholder={t("LinkServiceAdmin.hostPlaceholder")} autoComplete="off" spellCheck={false}
-                       inputMode="url" aria-invalid={message ? true : undefined} aria-describedby={`${id}-help${message ? ` ${id}-error` : ""}`}
+                <Input id={id} value={text} disabled={full} placeholder={t("LinkServiceAdmin.hostPlaceholder")}
+                       autoComplete="off" spellCheck={false}
+                       inputMode="url" aria-invalid={message ? true : undefined}
+                       aria-describedby={`${id}-help${message ? ` ${id}-error` : ""}`}
                        onChange={change => {
                            setText(change.target.value);
                            setProblem(null);
@@ -86,10 +90,13 @@ export function HostsInput({id, value, onChange, error}: {
                                add();
                            }
                        }}/>
-                <Button type="button" variant="outline" disabled={full || !text.trim()} onClick={add}><Plus/>{t("LinkServiceAdmin.addHost")}</Button>
+                <Button type="button" variant="outline" disabled={full || !text.trim()}
+                        onClick={add}><Plus/>{t("LinkServiceAdmin.addHost")}</Button>
             </div>
-            <p id={`${id}-help`} className="text-xs text-muted-foreground">{t("LinkServiceAdmin.hostsHelp", {max: MAX_HOSTS})}</p>
-            {message && <p id={`${id}-error`} role="alert" className="text-sm text-destructive">{t(`Validation.${message}`)}</p>}
+            <p id={`${id}-help`}
+               className="text-xs text-muted-foreground">{t("LinkServiceAdmin.hostsHelp", {max: MAX_HOSTS})}</p>
+            {message && <p id={`${id}-error`} role="alert"
+                           className="text-sm text-destructive">{t(`Validation.${message}`)}</p>}
         </div>
     );
 }

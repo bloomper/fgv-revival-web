@@ -1,7 +1,7 @@
 import {describe, expect, it, vi} from "vitest";
 import {render, screen, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {ResponseForm, responseDefaults} from "@/components/participation/response-form.client";
+import {responseDefaults, ResponseForm} from "@/components/participation/response-form.client";
 
 const respondAction = vi.hoisted(() => vi.fn());
 
@@ -13,16 +13,35 @@ const pending = {response: "PENDING" as const};
 
 describe("responseDefaults", () => {
     it("starts unanswered for a pending participant, and from the earlier answer otherwise", () => {
-        expect(responseDefaults(pending)).toEqual({response: "", preferredPositionId: "", comment: "", termsAccepted: false, registerConsent: ""});
-        expect(responseDefaults({response: "YES", termsAcceptedAt: "2026-10-01T10:00:00Z", registerConsent: false, preferredPosition: {id: "T1"}, comment: "Hej"}))
-            .toEqual({response: "YES", preferredPositionId: "T1", comment: "Hej", termsAccepted: true, registerConsent: "no"});
+        expect(responseDefaults(pending)).toEqual({
+            response: "",
+            preferredPositionId: "",
+            comment: "",
+            termsAccepted: false,
+            registerConsent: ""
+        });
+        expect(responseDefaults({
+            response: "YES",
+            termsAcceptedAt: "2026-10-01T10:00:00Z",
+            registerConsent: false,
+            preferredPosition: {id: "T1"},
+            comment: "Hej"
+        }))
+            .toEqual({
+                response: "YES",
+                preferredPositionId: "T1",
+                comment: "Hej",
+                termsAccepted: true,
+                registerConsent: "no"
+            });
     });
 });
 
 describe("ResponseForm", () => {
     it("refuses yes without the terms, saying so by the checkbox, and sends once they are accepted", async () => {
         respondAction.mockResolvedValue({ok: true, data: null});
-        render(<ResponseForm revivalId="1" participant={pending} terms={["Avgiften är 800 kr."]} positions={[]} isHelper={false}/>);
+        render(<ResponseForm revivalId="1" participant={pending} terms={["Avgiften är 800 kr."]} positions={[]}
+                             isHelper={false}/>);
 
         expect(screen.getByText("Avgiften är 800 kr.")).toBeInTheDocument();
         await userEvent.click(screen.getByRole("radio", {name: "Participation.answers.YES"}));
@@ -39,7 +58,13 @@ describe("ResponseForm", () => {
         await userEvent.click(screen.getByRole("button", {name: "Participation.sendAnswer"}));
         await waitFor(() => expect(respondAction).toHaveBeenCalledWith({
             revivalId: "1",
-            values: {response: "YES", preferredPositionId: "", comment: "", termsAccepted: true, registerConsent: "yes"},
+            values: {
+                response: "YES",
+                preferredPositionId: "",
+                comment: "",
+                termsAccepted: true,
+                registerConsent: "yes"
+            },
         }));
     });
 

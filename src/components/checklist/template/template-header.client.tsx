@@ -7,7 +7,11 @@ import {Archive, ArchiveRestore} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {renameTemplateAction, restoreTemplateAction, retireTemplateAction} from "@/app/(app)/admin/checklist-templates/actions.server";
+import {
+    renameTemplateAction,
+    restoreTemplateAction,
+    retireTemplateAction
+} from "@/app/(app)/admin/checklist-templates/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {MAX_TEMPLATE_NAME} from "@/lib/checklist/schema";
 
@@ -27,16 +31,21 @@ export function TemplateNameForm({template}: { template: Template }) {
         <form className="flex flex-col gap-2 sm:flex-row sm:items-end" onSubmit={event => {
             event.preventDefault();
             startTransition(async () => {
-                feedback(await renameTemplateAction({id: template.id, version: template.version, ...name}), t("Common.saved"));
+                feedback(await renameTemplateAction({
+                    id: template.id,
+                    version: template.version, ...name
+                }), t("Common.saved"));
             });
         }}>
             <div className="flex-1 space-y-2">
                 <Label htmlFor={`${id}-sv`}>{t("ChecklistTemplate.nameSv")}</Label>
-                <Input id={`${id}-sv`} required maxLength={MAX_TEMPLATE_NAME} value={name.sv} onChange={event => setName({...name, sv: event.target.value})}/>
+                <Input id={`${id}-sv`} required maxLength={MAX_TEMPLATE_NAME} value={name.sv}
+                       onChange={event => setName({...name, sv: event.target.value})}/>
             </div>
             <div className="flex-1 space-y-2">
                 <Label htmlFor={`${id}-en`}>{t("ChecklistTemplate.nameEn")}</Label>
-                <Input id={`${id}-en`} maxLength={MAX_TEMPLATE_NAME} value={name.en} onChange={event => setName({...name, en: event.target.value})}/>
+                <Input id={`${id}-en`} maxLength={MAX_TEMPLATE_NAME} value={name.en}
+                       onChange={event => setName({...name, en: event.target.value})}/>
             </div>
             <Button type="submit" variant="outline" disabled={pending}>{t("Common.save")}</Button>
         </form>

@@ -76,9 +76,13 @@ export function InventoryDialog({revivalId, members, materials, item, onOpenChan
     const id = useId();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
-    const form = useForm<InventoryValues>({resolver: zodResolver(inventoryValuesSchema), defaultValues: initialValues(item)});
+    const form = useForm<InventoryValues>({
+        resolver: zodResolver(inventoryValuesSchema),
+        defaultValues: initialValues(item)
+    });
     const {errors} = form.formState;
-    const error = (fieldId: string, message?: string) => message && <p id={`${fieldId}-error`} className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const error = (fieldId: string, message?: string) => message &&
+        <p id={`${fieldId}-error`} className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
     const held = item?.material;
     const materialChoices = held && !materials.some(material => material.id === held.id) ? [...materials, held] : materials;
 
@@ -89,21 +93,31 @@ export function InventoryDialog({revivalId, members, materials, item, onOpenChan
                     <SheetTitle>{item ? t("Inventory.editTitle") : t("Inventory.newTitle")}</SheetTitle>
                     <SheetDescription>{t("Inventory.dialogDescription")}</SheetDescription>
                 </SheetHeader>
-                <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(values => startTransition(async () => {
-                    if (item) {
-                        if (feedback(await updateInventoryItemAction({id: item.id, version: item.version, revivalId, values}), t("Common.saved"))) {
-                            onOpenChange(false);
-                        }
-                    } else if (feedback(await createInventoryItemAction({revivalId, values}), t("Inventory.created"))) {
-                        track("inventory-create", {kind: values.kind});
-                        onOpenChange(false);
-                    }
-                }))}>
+                <form className="flex min-h-0 flex-1 flex-col overflow-hidden"
+                      onSubmit={form.handleSubmit(values => startTransition(async () => {
+                          if (item) {
+                              if (feedback(await updateInventoryItemAction({
+                                  id: item.id,
+                                  version: item.version,
+                                  revivalId,
+                                  values
+                              }), t("Common.saved"))) {
+                                  onOpenChange(false);
+                              }
+                          } else if (feedback(await createInventoryItemAction({
+                              revivalId,
+                              values
+                          }), t("Inventory.created"))) {
+                              track("inventory-create", {kind: values.kind});
+                              onOpenChange(false);
+                          }
+                      }))}>
                     <ScrollArea className="min-h-0 flex-1 border-t">
                         <div className="space-y-4 px-6 py-6 pb-12">
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-name`}>{t("Inventory.name")}</Label>
-                                <Input id={`${id}-name`} maxLength={MAX_INVENTORY_NAME} aria-invalid={errors.name ? true : undefined}
+                                <Input id={`${id}-name`} maxLength={MAX_INVENTORY_NAME}
+                                       aria-invalid={errors.name ? true : undefined}
                                        aria-describedby={errors.name ? `${id}-name-error` : undefined} {...form.register("name")}/>
                                 {error(`${id}-name`, errors.name?.message)}
                             </div>
@@ -111,12 +125,14 @@ export function InventoryDialog({revivalId, members, materials, item, onOpenChan
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-kind`}>{t("Inventory.kind")}</Label>
                                     <NativeSelect className="w-full" id={`${id}-kind`} {...form.register("kind")}>
-                                        {INVENTORY_KINDS.map(kind => <option key={kind} value={kind}>{t(`Inventory.kinds.${kind}`)}</option>)}
+                                        {INVENTORY_KINDS.map(kind => <option key={kind}
+                                                                             value={kind}>{t(`Inventory.kinds.${kind}`)}</option>)}
                                     </NativeSelect>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-quantity`}>{t("Inventory.quantity")}</Label>
-                                    <Input id={`${id}-quantity`} className="w-24 tabular-nums" inputMode="numeric" autoComplete="off"
+                                    <Input id={`${id}-quantity`} className="w-24 tabular-nums" inputMode="numeric"
+                                           autoComplete="off"
                                            aria-invalid={errors.quantity ? true : undefined}
                                            aria-describedby={errors.quantity ? `${id}-quantity-error` : undefined} {...form.register("quantity")}/>
                                 </div>
@@ -125,27 +141,32 @@ export function InventoryDialog({revivalId, members, materials, item, onOpenChan
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-status`}>{t("Inventory.status")}</Label>
                                 <NativeSelect className="w-full" id={`${id}-status`} {...form.register("status")}>
-                                    {INVENTORY_STATUSES.map(status => <option key={status} value={status}>{t(`Inventory.statuses.${status}`)}</option>)}
+                                    {INVENTORY_STATUSES.map(status => <option key={status}
+                                                                              value={status}>{t(`Inventory.statuses.${status}`)}</option>)}
                                 </NativeSelect>
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-location`}>{t("Inventory.location")}</Label>
-                                    <NativeSelect className="w-full" id={`${id}-location`} {...form.register("location")}>
+                                    <NativeSelect className="w-full"
+                                                  id={`${id}-location`} {...form.register("location")}>
                                         <option value="">{t("Inventory.noLocation")}</option>
-                                        {INVENTORY_LOCATIONS.map(location => <option key={location} value={location}>{t(`Inventory.locations.${location}`)}</option>)}
+                                        {INVENTORY_LOCATIONS.map(location => <option key={location}
+                                                                                     value={location}>{t(`Inventory.locations.${location}`)}</option>)}
                                     </NativeSelect>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-note`}>{t("Inventory.locationNote")}</Label>
-                                    <Input id={`${id}-note`} maxLength={MAX_LOCATION_NOTE} placeholder={t("Inventory.locationNotePlaceholder")}
+                                    <Input id={`${id}-note`} maxLength={MAX_LOCATION_NOTE}
+                                           placeholder={t("Inventory.locationNotePlaceholder")}
                                            {...form.register("locationNote")}/>
                                     {error(`${id}-note`, errors.locationNote?.message)}
                                 </div>
                             </div>
                             <Controller control={form.control} name="owner" render={({field}) => (
                                 <div className="space-y-1">
-                                    <OwnerField members={members} value={field.value ?? null} onChange={field.onChange} current={item?.owner?.person}
+                                    <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}
+                                                current={item?.owner?.person}
                                                 label={t("Inventory.owner")} noneLabel={t("Inventory.noOwner")}/>
                                     {error(`${id}-owner`, errors.owner?.name?.message)}
                                 </div>
@@ -164,13 +185,15 @@ export function InventoryDialog({revivalId, members, materials, item, onOpenChan
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-comment`}>{t("Inventory.comment")}</Label>
-                                <Textarea id={`${id}-comment`} rows={3} maxLength={MAX_MATERIAL_COMMENT} {...form.register("comment")}/>
+                                <Textarea id={`${id}-comment`} rows={3}
+                                          maxLength={MAX_MATERIAL_COMMENT} {...form.register("comment")}/>
                                 {error(`${id}-comment`, errors.comment?.message)}
                             </div>
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </SheetFooter>
                 </form>

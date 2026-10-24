@@ -6,7 +6,10 @@ test.describe("Events, M4: the timeline, proposals from the premiere and calenda
         await mock.events();
     });
 
-    test("the steering group adds a proposed event with its checklist, edits, cancels and subscribes to the calendar", async ({page, loginAs}) => {
+    test("the steering group adds a proposed event with its checklist, edits, cancels and subscribes to the calendar", async ({
+                                                                                                                                  page,
+                                                                                                                                  loginAs
+                                                                                                                              }) => {
         await loginAs("styrgrupp");
         await page.goto("/revivals/1");
         await page.getByRole("link", {name: "Händelser", exact: true}).click();

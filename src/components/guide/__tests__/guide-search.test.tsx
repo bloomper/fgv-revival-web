@@ -9,8 +9,15 @@ const searchGuideAction = vi.hoisted(() => vi.fn());
 vi.mock("@/app/(app)/guide/actions.server", () => ({searchGuideAction}));
 
 const hit: GuideSearchHit = {
-    kind: "ITEM", chapterKey: "B", chapterTitle: {sv: "Boka lokaler", en: null}, sectionKey: "s-kalas", sectionTitle: {sv: "Kalaslokal", en: null},
-    itemKey: "k-tip", itemType: ITEM_TYPES.TIP, snippet: "Kontrollera sprittillstånd i vald lokal.", matchedLanguage: "sv",
+    kind: "ITEM",
+    chapterKey: "B",
+    chapterTitle: {sv: "Boka lokaler", en: null},
+    sectionKey: "s-kalas",
+    sectionTitle: {sv: "Kalaslokal", en: null},
+    itemKey: "k-tip",
+    itemType: ITEM_TYPES.TIP,
+    snippet: "Kontrollera sprittillstånd i vald lokal.",
+    matchedLanguage: "sv",
 };
 
 describe("GuideSearch", () => {
@@ -43,9 +50,24 @@ describe("GuideSearch", () => {
     });
 
     it("links each kind of hit to its place", () => {
-        expect(hrefOf({...hit, kind: "INTRODUCTION", chapterKey: null, sectionKey: null, itemKey: null}, "/revivals/7/guide")).toBe("/revivals/7/guide");
-        expect(hrefOf({...hit, kind: "CHAPTER_TITLE", sectionKey: null, itemKey: null}, "/revivals/7/guide")).toBe("/revivals/7/guide/B");
-        expect(hrefOf({...hit, kind: "SECTION_TITLE", itemKey: null}, "/revivals/7/guide")).toBe("/revivals/7/guide/B#section-s-kalas");
+        expect(hrefOf({
+            ...hit,
+            kind: "INTRODUCTION",
+            chapterKey: null,
+            sectionKey: null,
+            itemKey: null
+        }, "/revivals/7/guide")).toBe("/revivals/7/guide");
+        expect(hrefOf({
+            ...hit,
+            kind: "CHAPTER_TITLE",
+            sectionKey: null,
+            itemKey: null
+        }, "/revivals/7/guide")).toBe("/revivals/7/guide/B");
+        expect(hrefOf({
+            ...hit,
+            kind: "SECTION_TITLE",
+            itemKey: null
+        }, "/revivals/7/guide")).toBe("/revivals/7/guide/B#section-s-kalas");
     });
 
     it("says so when nothing matches", async () => {

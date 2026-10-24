@@ -33,7 +33,11 @@ const FIELDS = [
  * The participant's contact details. A spexare's are kept in Spexregister, and only with their consent: without it the
  * details are shown but cannot be changed here, and the text says why. Null contact means Spexregister is unavailable.
  */
-export function ContactForm({revivalId, contact, editable}: { revivalId: string; contact: ContactValue | null; editable: boolean }) {
+export function ContactForm({revivalId, contact, editable}: {
+    revivalId: string;
+    contact: ContactValue | null;
+    editable: boolean
+}) {
     const t = useTranslations();
     const id = useId();
     const feedback = useActionFeedback();
@@ -52,30 +56,35 @@ export function ContactForm({revivalId, contact, editable}: { revivalId: string;
     }
 
     return (
-        <form className="flex flex-col gap-4" noValidate onSubmit={form.handleSubmit(values => startTransition(async () => {
-            feedback(await updateContactAction({revivalId, values}), t("Participation.contactSaved"));
-        }))}>
+        <form className="flex flex-col gap-4" noValidate
+              onSubmit={form.handleSubmit(values => startTransition(async () => {
+                  feedback(await updateContactAction({revivalId, values}), t("Participation.contactSaved"));
+              }))}>
             {!editable && (
                 <Alert>
                     <AlertDescription id={`${id}-noconsent`}>{t("Participation.contactNoConsent")}</AlertDescription>
                 </Alert>
             )}
-            <fieldset disabled={!editable} className="grid gap-4 sm:grid-cols-2" aria-describedby={editable ? undefined : `${id}-noconsent`}>
+            <fieldset disabled={!editable} className="grid gap-4 sm:grid-cols-2"
+                      aria-describedby={editable ? undefined : `${id}-noconsent`}>
                 <legend className="sr-only">{t("Participation.contactTitle")}</legend>
                 {FIELDS.map(({name, ...input}) => {
                     const fieldId = `${id}-${name}`;
                     const error = errors[name]?.message;
 
                     return (
-                        <div key={name} className={name === "streetAddress" ? "flex flex-col gap-2 sm:col-span-2" : "flex flex-col gap-2"}>
+                        <div key={name}
+                             className={name === "streetAddress" ? "flex flex-col gap-2 sm:col-span-2" : "flex flex-col gap-2"}>
                             <Label htmlFor={fieldId}>{t(`Participation.contactFields.${name}`)}</Label>
-                            <Input id={fieldId} className={TOUCH_FIELD} {...input} {...describedBy(fieldId, {error})} {...form.register(name)}/>
+                            <Input id={fieldId}
+                                   className={TOUCH_FIELD} {...input} {...describedBy(fieldId, {error})} {...form.register(name)}/>
                             <FieldErrorText fieldId={fieldId} message={error ? t(`Validation.${error}`) : null}/>
                         </div>
                     );
                 })}
             </fieldset>
-            {editable && <Button type="submit" size="lg" className="h-11 w-full sm:w-auto sm:self-start" disabled={pending}>{t("Participation.saveContact")}</Button>}
+            {editable && <Button type="submit" size="lg" className="h-11 w-full sm:w-auto sm:self-start"
+                                 disabled={pending}>{t("Participation.saveContact")}</Button>}
         </form>
     );
 }

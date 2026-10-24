@@ -8,11 +8,34 @@ vi.mock("@/app/(app)/revivals/[id]/guide/actions.server", () => ({withdrawSugges
 vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn()})}));
 
 const suggestion = (overrides: Partial<GuideSuggestionFieldsFragment> = {}): GuideSuggestionFieldsFragment => ({
-    id: "1", kind: "CHANGE", status: "OPEN", version: 0, mine: true, author: "Stina Styrgrupp", chapterKey: "B", chapterTitle: {sv: "Lokaler", en: null}, sectionKey: null, itemKey: "k",
-    reason: "Inaktuellt", decidedBy: null, decidedAt: null, decisionReason: null, reopenedAt: null, createdAt: "2026-11-02T10:00:00Z",
-    proposedType: null, proposedText: {sv: "Nytt tips.", en: null},
-    revival: {id: "1", title: "Ali Baba 2028", year: 2028}, madeOn: {id: "1", label: "v1"}, publishedIn: null,
-    item: {chapter: {key: "B", title: {sv: "Lokaler", en: null}}, sectionKey: null, sectionTitle: null, type: ITEM_TYPES.TIP, text: {sv: "Gammalt tips.", en: null}},
+    id: "1",
+    kind: "CHANGE",
+    status: "OPEN",
+    version: 0,
+    mine: true,
+    author: "Stina Styrgrupp",
+    chapterKey: "B",
+    chapterTitle: {sv: "Lokaler", en: null},
+    sectionKey: null,
+    itemKey: "k",
+    reason: "Inaktuellt",
+    decidedBy: null,
+    decidedAt: null,
+    decisionReason: null,
+    reopenedAt: null,
+    createdAt: "2026-11-02T10:00:00Z",
+    proposedType: null,
+    proposedText: {sv: "Nytt tips.", en: null},
+    revival: {id: "1", title: "Ali Baba 2028", year: 2028},
+    madeOn: {id: "1", label: "v1"},
+    publishedIn: null,
+    item: {
+        chapter: {key: "B", title: {sv: "Lokaler", en: null}},
+        sectionKey: null,
+        sectionTitle: null,
+        type: ITEM_TYPES.TIP,
+        text: {sv: "Gammalt tips.", en: null}
+    },
     ...overrides,
 });
 
@@ -33,7 +56,12 @@ describe("SuggestionList", () => {
     });
 
     it("offers no withdrawal on someone else's or a decided suggestion", () => {
-        render(<SuggestionList suggestions={[suggestion({mine: false}), suggestion({id: "2", status: "REJECTED", decisionReason: "Står i D.", decidedBy: "Sara Admin"})]}/>);
+        render(<SuggestionList suggestions={[suggestion({mine: false}), suggestion({
+            id: "2",
+            status: "REJECTED",
+            decisionReason: "Står i D.",
+            decidedBy: "Sara Admin"
+        })]}/>);
 
         expect(screen.queryByRole("button", {name: "withdraw"})).not.toBeInTheDocument();
         expect(screen.getByText("Står i D.")).toBeInTheDocument();

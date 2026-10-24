@@ -12,11 +12,34 @@ vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn()})}));
 vi.mock("@/app/(app)/revivals/[id]/me/actions.server", () => ({signUpForShiftAction, withdrawFromShiftAction}));
 vi.mock("@/hooks/use-action-feedback", () => ({useActionFeedback: () => () => true}));
 
-const event = {id: "7", title: "Föreställningshelg", startDate: "2028-03-04", endDate: "2028-03-05", location: "Kårhuset"};
+const event = {
+    id: "7",
+    title: "Föreställningshelg",
+    startDate: "2028-03-04",
+    endDate: "2028-03-05",
+    location: "Kårhuset"
+};
 const slot = (id: string, values: Partial<ShiftSlotFieldsFragment> = {}): ShiftSlotFieldsFragment => ({
-    id, event, date: "2028-03-04", startTime: "18:00", endTime: "19:30", task: "Biljettkontroll", needed: 2, comment: null, assigned: [], open: 2, version: 0, ...values,
+    id,
+    event,
+    date: "2028-03-04",
+    startTime: "18:00",
+    endTime: "19:30",
+    task: "Biljettkontroll",
+    needed: 2,
+    comment: null,
+    assigned: [],
+    open: 2,
+    version: 0, ...values,
 });
-const me = (selfSignedUp: boolean) => ({participant: {id: "p1", displayName: "Disa Deltagare", kind: "PARTICIPANT" as const, position: null}, selfSignedUp});
+const me = (selfSignedUp: boolean) => ({
+    participant: {
+        id: "p1",
+        displayName: "Disa Deltagare",
+        kind: "PARTICIPANT" as const,
+        position: null
+    }, selfSignedUp
+});
 
 describe("ShiftList", () => {
     it("signs up for an open shift with a large, named button", async () => {
@@ -32,7 +55,12 @@ describe("ShiftList", () => {
 
     it("offers to leave only the shifts one took oneself", () => {
         render(<ShiftList revivalId="1" participantId="p1" mode="mine"
-                          slots={[slot("own", {assigned: [me(true)]}), slot("given", {startTime: "20:00", endTime: "21:00", task: "Bar", assigned: [me(false)]})]}/>);
+                          slots={[slot("own", {assigned: [me(true)]}), slot("given", {
+                              startTime: "20:00",
+                              endTime: "21:00",
+                              task: "Bar",
+                              assigned: [me(false)]
+                          })]}/>);
 
         const [own, given] = screen.getAllByRole("listitem");
 

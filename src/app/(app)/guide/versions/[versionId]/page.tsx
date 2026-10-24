@@ -8,5 +8,6 @@ import {withPolicyPage} from "@/utils/route.server";
 export default async function GuideVersionPage({params}: { params: Promise<{ versionId: string }> }) {
     const {versionId} = await params;
 
-    return withPolicyPage(Policies.app.requireAccess, async () => <GuideStart version={decodeURIComponent(versionId)}/>);
+    return withPolicyPage(Policies.app.requireAccess, async () => <GuideStart
+        version={decodeURIComponent(versionId)}/>);
 }

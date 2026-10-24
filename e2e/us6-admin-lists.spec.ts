@@ -1,7 +1,11 @@
 import {expect, test} from "./fixtures";
 
 test.describe("Administration: the areas of responsibility and guide item types the super admin keeps", () => {
-    test("a new area is offered to the steering group, an unused one is deleted and one in use only retired", async ({page, mock, loginAs}) => {
+    test("a new area is offered to the steering group, an unused one is deleted and one in use only retired", async ({
+                                                                                                                         page,
+                                                                                                                         mock,
+                                                                                                                         loginAs
+                                                                                                                     }) => {
         await mock.setStatus("1", "ORGANISING");
         await loginAs("superadmin");
         await page.goto("/admin/capabilities");
@@ -38,7 +42,11 @@ test.describe("Administration: the areas of responsibility and guide item types 
         await expect(row("Bemanning")).not.toContainText("Avvecklad");
     });
 
-    test("a new item type of the requirement kind is offered in the draft and labels its items", async ({page, mock, loginAs}) => {
+    test("a new item type of the requirement kind is offered in the draft and labels its items", async ({
+                                                                                                            page,
+                                                                                                            mock,
+                                                                                                            loginAs
+                                                                                                        }) => {
         await mock.guide("draft");
         await loginAs("superadmin");
         await page.goto("/admin/guide-item-types");

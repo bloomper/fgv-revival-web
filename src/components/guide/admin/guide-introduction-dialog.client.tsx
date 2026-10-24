@@ -27,7 +27,10 @@ export function GuideIntroductionDialog({trigger, children, versionId, version, 
     const feedback = useActionFeedback();
     const [open, setOpen] = useState(false);
     const [pending, startTransition] = useTransition();
-    const form = useForm<Values>({resolver: zodResolver(guideIntroductionSchema), values: {sv: initial.sv, en: initial.en ?? ""}});
+    const form = useForm<Values>({
+        resolver: zodResolver(guideIntroductionSchema),
+        values: {sv: initial.sv, en: initial.en ?? ""}
+    });
     // The sheet stays mounted, so drop edits left over from a cancelled opening.
     const change = (next: boolean) => {
         if (next) {
@@ -46,7 +49,11 @@ export function GuideIntroductionDialog({trigger, children, versionId, version, 
                 <form
                     className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
-                        if (feedback(await updateIntroductionAction({versionId, version, introduction: values}), t("Guide.editor.saved"))) {
+                        if (feedback(await updateIntroductionAction({
+                            versionId,
+                            version,
+                            introduction: values
+                        }), t("Guide.editor.saved"))) {
                             setOpen(false);
                         }
                     }))}
@@ -55,11 +62,13 @@ export function GuideIntroductionDialog({trigger, children, versionId, version, 
                         <div className="space-y-4 px-6 py-6 pb-12">
                             <div className="space-y-2">
                                 <Label htmlFor="guide-intro-sv">{t("Guide.editor.swedish")}</Label>
-                                <Textarea id="guide-intro-sv" rows={10} maxLength={MAX_INTRODUCTION} {...form.register("sv")}/>
+                                <Textarea id="guide-intro-sv" rows={10}
+                                          maxLength={MAX_INTRODUCTION} {...form.register("sv")}/>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="guide-intro-en">{t("Guide.editor.english")}</Label>
-                                <Textarea id="guide-intro-en" rows={10} maxLength={MAX_INTRODUCTION} {...form.register("en")}/>
+                                <Textarea id="guide-intro-en" rows={10}
+                                          maxLength={MAX_INTRODUCTION} {...form.register("en")}/>
                             </div>
                         </div>
                     </ScrollArea>

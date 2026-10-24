@@ -19,12 +19,20 @@ export function fixtureVersion(id, {status = "PUBLISHED", label = "v1", publishe
     const item = (type, sv, en = null) => ({id: String(itemId++), key: key("item"), type, text: {sv, en}, version: 0});
 
     return {
-        id: String(id), status, label: status === "PUBLISHED" ? label : null, note: null,
-        publishedAt: status === "PUBLISHED" ? publishedAt : null, publishedBy: status === "PUBLISHED" ? "Sara Admin" : null,
-        basedOnId: null, version: 0,
+        id: String(id),
+        status,
+        label: status === "PUBLISHED" ? label : null,
+        note: null,
+        publishedAt: status === "PUBLISHED" ? publishedAt : null,
+        publishedBy: status === "PUBLISHED" ? "Sara Admin" : null,
+        basedOnId: null,
+        version: 0,
         introduction: {sv: "Ni funderar alltså över en nyuppsättning? **Grattis!**", en: null},
         chapters: KEYS.map((chapterKey, index) => ({
-            id: `${id}-${chapterKey}`, key: chapterKey, title: {sv: TITLES[chapterKey], en: chapterKey === "A" ? "First: approval and timing" : null}, version: 0,
+            id: `${id}-${chapterKey}`,
+            key: chapterKey,
+            title: {sv: TITLES[chapterKey], en: chapterKey === "A" ? "First: approval and timing" : null},
+            version: 0,
             items: chapterKey === "A"
                 ? [item("TEXT", "Innan något annat görs behöver ni klartecken."), item("REQUIREMENT", "Nyuppsättningen ska godkännas av JK och FGV.", "The revival must be approved by JK and FGV.")]
                 : [item("TEXT", `Inledning till kapitlet ${TITLES[chapterKey]}.`)],
@@ -37,7 +45,13 @@ export function fixtureVersion(id, {status = "PUBLISHED", label = "v1", publishe
                     ],
                 }]
                 : index === 9
-                    ? [{id: `${id}-J-1`, key: "sec-ekonomi", title: {sv: "Ekonomi", en: null}, version: 0, items: [item("REQUIREMENT", "Ett eventuellt lån ska återbetalas.")]}]
+                    ? [{
+                        id: `${id}-J-1`,
+                        key: "sec-ekonomi",
+                        title: {sv: "Ekonomi", en: null},
+                        version: 0,
+                        items: [item("REQUIREMENT", "Ett eventuellt lån ska återbetalas.")]
+                    }]
                     : [],
         })),
     };
@@ -57,21 +71,32 @@ export function createGuideState(seed = "none") {
         v2.chapters.forEach(chapter => {
             chapter.id = `2-${chapter.key}`;
         });
-        v2.chapters[1].sections[0].items[0].text = {sv: "Kontrollera sprittillstånd och ljudtillstånd i vald lokal.", en: null};
+        v2.chapters[1].sections[0].items[0].text = {
+            sv: "Kontrollera sprittillstånd och ljudtillstånd i vald lokal.",
+            en: null
+        };
         versions.push(v2);
     }
     return {versions, nextVersionId: 20, suggestions: [], nextSuggestionId: 1};
 }
 
 const summary = version => version ? {
-    __typename: "GuideVersionSummary", id: version.id, label: version.label, note: version.note, publishedAt: version.publishedAt,
-    publishedBy: version.publishedBy, version: version.version,
+    __typename: "GuideVersionSummary",
+    id: version.id,
+    label: version.label,
+    note: version.note,
+    publishedAt: version.publishedAt,
+    publishedBy: version.publishedBy,
+    version: version.version,
 } : null;
 const published = guide => guide.versions.filter(version => version.status === "PUBLISHED")
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
 function toVersion(version) {
-    const items = list => list.map(entry => ({__typename: "GuideItem", ...entry, text: {__typename: "LocalizedText", ...entry.text}}));
+    const items = list => list.map(entry => ({
+        __typename: "GuideItem", ...entry,
+        text: {__typename: "LocalizedText", ...entry.text}
+    }));
 
     return {
         __typename: "GuideVersion",
@@ -79,8 +104,14 @@ function toVersion(version) {
         introduction: {__typename: "LocalizedText", ...version.introduction},
         basedOn: null,
         chapters: version.chapters.map(chapter => ({
-            __typename: "GuideChapter", ...chapter, title: {__typename: "LocalizedText", ...chapter.title}, items: items(chapter.items),
-            sections: chapter.sections.map(section => ({__typename: "GuideSection", ...section, title: {__typename: "LocalizedText", ...section.title}, items: items(section.items)})),
+            __typename: "GuideChapter", ...chapter,
+            title: {__typename: "LocalizedText", ...chapter.title},
+            items: items(chapter.items),
+            sections: chapter.sections.map(section => ({
+                __typename: "GuideSection", ...section,
+                title: {__typename: "LocalizedText", ...section.title},
+                items: items(section.items)
+            })),
         })),
     };
 }
@@ -96,7 +127,10 @@ const untranslated = version => (version.introduction.en ? 0 : 1)
 export function guideResolvers(ctx) {
     const {GraphQLError, forbidden, isSuperAdmin, seesEverything, roleIn, canSee, visibleRevival} = ctx;
     const guide = () => ctx.state().guide;
-    const withBase = version => ({...toVersion(version), basedOn: summary(guide().versions.find(candidate => candidate.id === version.basedOnId))});
+    const withBase = version => ({
+        ...toVersion(version),
+        basedOn: summary(guide().versions.find(candidate => candidate.id === version.basedOnId))
+    });
 
     const canRead = persona => seesEverything(persona) || ctx.state().revivals.some(revival =>
         ["DIRECTEUR", "STEERING_GROUP"].includes(roleIn(persona, revival)) && canSee(persona, revival));
@@ -146,16 +180,33 @@ export function guideResolvers(ctx) {
         }
         const latest = published(guide())[0];
         const id = String(guide().nextVersionId++);
-        const copy = latest ? JSON.parse(JSON.stringify(latest)) : {...fixtureVersion(id, {status: "DRAFT"}), introduction: {sv: "", en: null}, chapters: []};
+        const copy = latest ? JSON.parse(JSON.stringify(latest)) : {
+            ...fixtureVersion(id, {status: "DRAFT"}),
+            introduction: {sv: "", en: null},
+            chapters: []
+        };
 
-        Object.assign(copy, {id, status: "DRAFT", label: null, note: null, publishedAt: null, publishedBy: null, basedOnId: latest?.id ?? null, version: 0});
+        Object.assign(copy, {
+            id,
+            status: "DRAFT",
+            label: null,
+            note: null,
+            publishedAt: null,
+            publishedBy: null,
+            basedOnId: latest?.id ?? null,
+            version: 0
+        });
         let nextItemId = Number(id) * 1000;
         copy.chapters.forEach(chapter => {
             chapter.id = `${id}-${chapter.key}`;
-            chapter.items.forEach(entry => { entry.id = String(nextItemId++); });
+            chapter.items.forEach(entry => {
+                entry.id = String(nextItemId++);
+            });
             chapter.sections.forEach((section, index) => {
                 section.id = `${id}-${chapter.key}-${index}`;
-                section.items.forEach(entry => { entry.id = String(nextItemId++); });
+                section.items.forEach(entry => {
+                    entry.id = String(nextItemId++);
+                });
             });
         });
         guide().versions.push(copy);
@@ -174,7 +225,12 @@ export function guideResolvers(ctx) {
                     const revivalCount = ctx.state().revivals.filter(revival => revival.guideVersionId === version.id).length;
                     const suggestionCount = guide().suggestions.filter(suggestion => suggestion.versionId === version.id).length;
 
-                    return {...summary(version), revivalCount, suggestionCount, deletable: revivalCount === 0 && suggestionCount === 0};
+                    return {
+                        ...summary(version),
+                        revivalCount,
+                        suggestionCount,
+                        deletable: revivalCount === 0 && suggestionCount === 0
+                    };
                 }),
             };
         },
@@ -227,7 +283,11 @@ export function guideResolvers(ctx) {
 
             return {
                 revival: {
-                    __typename: "Revival", id: revival.id, title: revival.title, year: revival.year, status: revival.status,
+                    __typename: "Revival",
+                    id: revival.id,
+                    title: revival.title,
+                    year: revival.year,
+                    status: revival.status,
                     guideVersion: summary(pinned),
                     newerGuideVersion: latest && pinned && latest.publishedAt > pinned.publishedAt ? summary(latest) : null,
                     guideVersionHistory: [...(revival.guideHistory ?? [])].reverse(),
@@ -251,7 +311,11 @@ export function guideResolvers(ctx) {
                 throw forbidden();
             }
             revival.guideHistory = [...(revival.guideHistory ?? []), {
-                __typename: "RevivalGuideVersionChange", fromLabel: pinned?.label ?? null, toLabel: target.label, changedBy: persona.name, changedAt: new Date().toISOString(),
+                __typename: "RevivalGuideVersionChange",
+                fromLabel: pinned?.label ?? null,
+                toLabel: target.label,
+                changedBy: persona.name,
+                changedAt: new Date().toISOString(),
             }];
             revival.guideVersionId = target.id;
             return {revivalGuideVersionChange: {__typename: "Revival", id: revival.id, guideVersion: summary(target)}};
@@ -261,8 +325,20 @@ export function guideResolvers(ctx) {
             const to = readable(persona, toId);
             const ref = chapter => ({key: chapter.key, title: chapter.title});
             const snapshots = version => new Map(version.chapters.flatMap(chapter => [
-                ...chapter.items.map(entry => [entry.key, {chapter: ref(chapter), sectionKey: null, sectionTitle: null, type: entry.type, text: entry.text}]),
-                ...chapter.sections.flatMap(section => section.items.map(entry => [entry.key, {chapter: ref(chapter), sectionKey: section.key, sectionTitle: section.title, type: entry.type, text: entry.text}])),
+                ...chapter.items.map(entry => [entry.key, {
+                    chapter: ref(chapter),
+                    sectionKey: null,
+                    sectionTitle: null,
+                    type: entry.type,
+                    text: entry.text
+                }]),
+                ...chapter.sections.flatMap(section => section.items.map(entry => [entry.key, {
+                    chapter: ref(chapter),
+                    sectionKey: section.key,
+                    sectionTitle: section.title,
+                    type: entry.type,
+                    text: entry.text
+                }])),
             ]));
             const before = snapshots(from);
             const after = snapshots(to);
@@ -272,7 +348,15 @@ export function guideResolvers(ctx) {
             for (const [key, current] of after) {
                 const old = before.get(key);
                 if (!old) {
-                    items.push({key, kind: "ADDED", reworded: [], retyped: false, moved: false, before: null, after: current});
+                    items.push({
+                        key,
+                        kind: "ADDED",
+                        reworded: [],
+                        retyped: false,
+                        moved: false,
+                        before: null,
+                        after: current
+                    });
                     continue;
                 }
                 const reworded = languages(old.text, current.text);
@@ -284,7 +368,15 @@ export function guideResolvers(ctx) {
             }
             for (const [key, old] of before) {
                 if (!after.has(key)) {
-                    items.push({key, kind: "REMOVED", reworded: [], retyped: false, moved: false, before: old, after: null});
+                    items.push({
+                        key,
+                        kind: "REMOVED",
+                        reworded: [],
+                        retyped: false,
+                        moved: false,
+                        before: old,
+                        after: null
+                    });
                 }
             }
             return {
@@ -298,12 +390,32 @@ export function guideResolvers(ctx) {
                                 .map(candidate => candidate.key);
 
                             return old
-                                ? {key: chapter.key, kind: "CHANGED", renamed: languages(old.title, chapter.title),
-                                    moved: shared(from).indexOf(chapter.key) !== shared(to).indexOf(chapter.key), before: old.title, after: chapter.title}
-                                : {key: chapter.key, kind: "ADDED", renamed: [], moved: false, before: null, after: chapter.title};
+                                ? {
+                                    key: chapter.key,
+                                    kind: "CHANGED",
+                                    renamed: languages(old.title, chapter.title),
+                                    moved: shared(from).indexOf(chapter.key) !== shared(to).indexOf(chapter.key),
+                                    before: old.title,
+                                    after: chapter.title
+                                }
+                                : {
+                                    key: chapter.key,
+                                    kind: "ADDED",
+                                    renamed: [],
+                                    moved: false,
+                                    before: null,
+                                    after: chapter.title
+                                };
                         }).filter(change => change.kind === "ADDED" || change.renamed.length || change.moved),
                         ...from.chapters.filter(chapter => !to.chapters.some(candidate => candidate.key === chapter.key))
-                            .map(chapter => ({key: chapter.key, kind: "REMOVED", renamed: [], moved: false, before: chapter.title, after: null})),
+                            .map(chapter => ({
+                                key: chapter.key,
+                                kind: "REMOVED",
+                                renamed: [],
+                                moved: false,
+                                before: chapter.title,
+                                after: null
+                            })),
                     ],
                     sections: [],
                     items,
@@ -325,16 +437,44 @@ export function guideResolvers(ctx) {
                 throw forbidden();
             }
             const version = readable(persona, input.versionId);
-            const item = input.itemKey ? version.chapters.flatMap(chapter => [...chapter.items.map(entry => ({entry, chapter})),
-                ...chapter.sections.flatMap(section => section.items.map(entry => ({entry, chapter})))]).find(found => found.entry.key === input.itemKey) : null;
+            const item = input.itemKey ? version.chapters.flatMap(chapter => [...chapter.items.map(entry => ({
+                entry,
+                chapter
+            })),
+                ...chapter.sections.flatMap(section => section.items.map(entry => ({
+                    entry,
+                    chapter
+                })))]).find(found => found.entry.key === input.itemKey) : null;
             const chapter = item?.chapter ?? version.chapters.find(candidate => candidate.key === input.chapterKey);
             const suggestion = {
-                id: String(guide().nextSuggestionId++), revivalId: revival.id, authorSub: persona.sub, versionId: version.id, kind: input.kind,
-                itemKey: input.itemKey ?? null, chapterKey: chapter.key, chapterTitle: chapter.title, sectionKey: input.sectionKey ?? null,
-                item: item ? {chapter: {key: chapter.key, title: chapter.title}, sectionKey: null, sectionTitle: null, type: item.entry.type, text: item.entry.text} : null,
+                id: String(guide().nextSuggestionId++),
+                revivalId: revival.id,
+                authorSub: persona.sub,
+                versionId: version.id,
+                kind: input.kind,
+                itemKey: input.itemKey ?? null,
+                chapterKey: chapter.key,
+                chapterTitle: chapter.title,
+                sectionKey: input.sectionKey ?? null,
+                item: item ? {
+                    chapter: {key: chapter.key, title: chapter.title},
+                    sectionKey: null,
+                    sectionTitle: null,
+                    type: item.entry.type,
+                    text: item.entry.text
+                } : null,
                 proposedType: input.proposedType ?? null,
-                proposedText: input.proposedTextSv || input.proposedTextEn ? {sv: input.proposedTextSv ?? "", en: input.proposedTextEn ?? null} : null,
-                reason: input.reason ?? null, status: "OPEN", version: 0, decidedBy: null, decisionReason: null, acceptedInto: null, reopenedAt: null,
+                proposedText: input.proposedTextSv || input.proposedTextEn ? {
+                    sv: input.proposedTextSv ?? "",
+                    en: input.proposedTextEn ?? null
+                } : null,
+                reason: input.reason ?? null,
+                status: "OPEN",
+                version: 0,
+                decidedBy: null,
+                decisionReason: null,
+                acceptedInto: null,
+                reopenedAt: null,
                 createdAt: new Date().toISOString(),
             };
             guide().suggestions.push(suggestion);
@@ -353,7 +493,13 @@ export function guideResolvers(ctx) {
                 if (!chapter) {
                     throw new GraphQLError("CONFLICT", "Kapitlet har tagits bort ur utkastet.");
                 }
-                chapter.items.push({id: String(Date.now()), key: key("item"), type: suggestion.proposedType, text: {sv: suggestion.proposedText.sv, en: suggestion.proposedText.en}, version: 0});
+                chapter.items.push({
+                    id: String(Date.now()),
+                    key: key("item"),
+                    type: suggestion.proposedType,
+                    text: {sv: suggestion.proposedText.sv, en: suggestion.proposedText.en},
+                    version: 0
+                });
             } else {
                 for (const chapter of current.chapters) {
                     for (const list of [chapter.items, ...chapter.sections.map(section => section.items)]) {
@@ -362,20 +508,46 @@ export function guideResolvers(ctx) {
                             if (suggestion.kind === "REMOVE") {
                                 list.splice(index, 1);
                             } else {
-                                Object.assign(list[index], {type: suggestion.proposedType ?? list[index].type, text: suggestion.proposedText ?? list[index].text});
+                                Object.assign(list[index], {
+                                    type: suggestion.proposedType ?? list[index].type,
+                                    text: suggestion.proposedText ?? list[index].text
+                                });
                             }
                         }
                     }
                 }
             }
-            Object.assign(suggestion, {status: "ACCEPTED", decidedBy: persona.name, decisionReason: input.note ?? null, acceptedInto: current.id, version: suggestion.version + 1});
-            return {guideSuggestionAccept: {__typename: "GuideSuggestion", id: suggestion.id, status: suggestion.status}};
+            Object.assign(suggestion, {
+                status: "ACCEPTED",
+                decidedBy: persona.name,
+                decisionReason: input.note ?? null,
+                acceptedInto: current.id,
+                version: suggestion.version + 1
+            });
+            return {
+                guideSuggestionAccept: {
+                    __typename: "GuideSuggestion",
+                    id: suggestion.id,
+                    status: suggestion.status
+                }
+            };
         },
         GuideSuggestionReject(persona, {input}) {
             requireManage(persona);
             const suggestion = guide().suggestions.find(candidate => candidate.id === input.id);
-            Object.assign(suggestion, {status: "REJECTED", decidedBy: persona.name, decisionReason: input.reason ?? null, version: suggestion.version + 1});
-            return {guideSuggestionReject: {__typename: "GuideSuggestion", id: suggestion.id, status: suggestion.status}};
+            Object.assign(suggestion, {
+                status: "REJECTED",
+                decidedBy: persona.name,
+                decisionReason: input.reason ?? null,
+                version: suggestion.version + 1
+            });
+            return {
+                guideSuggestionReject: {
+                    __typename: "GuideSuggestion",
+                    id: suggestion.id,
+                    status: suggestion.status
+                }
+            };
         },
         GuideSuggestionWithdraw(persona, {id}) {
             const suggestion = guide().suggestions.find(candidate => candidate.id === id);
@@ -383,7 +555,13 @@ export function guideResolvers(ctx) {
                 throw forbidden();
             }
             Object.assign(suggestion, {status: "WITHDRAWN", version: suggestion.version + 1});
-            return {guideSuggestionWithdraw: {__typename: "GuideSuggestion", id: suggestion.id, status: suggestion.status}};
+            return {
+                guideSuggestionWithdraw: {
+                    __typename: "GuideSuggestion",
+                    id: suggestion.id,
+                    status: suggestion.status
+                }
+            };
         },
         GuideDraftStart(persona) {
             return {guideDraftStart: this_start(persona)};
@@ -398,7 +576,14 @@ export function guideResolvers(ctx) {
         GuideChapterCreate(persona, {input}) {
             requireManage(persona);
             const current = draft();
-            const chapter = {id: `${current.id}-c${nextKey}`, key: key("chapter"), title: {sv: input.title.sv, en: input.title.en || null}, version: 0, items: [], sections: []};
+            const chapter = {
+                id: `${current.id}-c${nextKey}`,
+                key: key("chapter"),
+                title: {sv: input.title.sv, en: input.title.en || null},
+                version: 0,
+                items: [],
+                sections: []
+            };
 
             current.chapters.splice(input.position ?? current.chapters.length, 0, chapter);
             return {guideChapterCreate: {__typename: "GuideChapter", id: chapter.id, key: chapter.key}};
@@ -430,7 +615,13 @@ export function guideResolvers(ctx) {
         GuideSectionCreate(persona, {input}) {
             requireManage(persona);
             const chapter = draft().chapters.find(candidate => candidate.id === input.chapterId);
-            const section = {id: `${chapter.id}-s${nextKey}`, key: key("sec"), title: {sv: input.title.sv, en: input.title.en || null}, version: 0, items: []};
+            const section = {
+                id: `${chapter.id}-s${nextKey}`,
+                key: key("sec"),
+                title: {sv: input.title.sv, en: input.title.en || null},
+                version: 0,
+                items: []
+            };
             chapter.sections.push(section);
             return {guideSectionCreate: {__typename: "GuideSection", id: section.id, key: section.key}};
         },
@@ -438,7 +629,13 @@ export function guideResolvers(ctx) {
             requireManage(persona);
             const chapter = draft().chapters.find(candidate => candidate.id === input.chapterId);
             const list = input.sectionId ? chapter.sections.find(section => section.id === input.sectionId).items : chapter.items;
-            const entry = {id: String(Date.now()), key: key("item"), type: input.type, text: {sv: input.text.sv, en: input.text.en || null}, version: 0};
+            const entry = {
+                id: String(Date.now()),
+                key: key("item"),
+                type: input.type,
+                text: {sv: input.text.sv, en: input.text.en || null},
+                version: 0
+            };
             list.splice(input.position ?? list.length, 0, entry);
             return {guideItemCreate: {__typename: "GuideItem", id: entry.id, key: entry.key}};
         },
@@ -448,7 +645,11 @@ export function guideResolvers(ctx) {
             if (entry.version !== input.version) {
                 throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
             }
-            Object.assign(entry, {type: input.type, text: {sv: input.text.sv, en: input.text.en || null}, version: entry.version + 1});
+            Object.assign(entry, {
+                type: input.type,
+                text: {sv: input.text.sv, en: input.text.en || null},
+                version: entry.version + 1
+            });
             return {guideItemUpdate: {__typename: "GuideItem", id: entry.id, version: entry.version}};
         },
         GuideItemMove(persona, {input}) {
@@ -467,7 +668,9 @@ export function guideResolvers(ctx) {
             requireManage(persona);
             draft().chapters.forEach(chapter => {
                 chapter.items = chapter.items.filter(entry => entry.id !== id);
-                chapter.sections.forEach(section => { section.items = section.items.filter(entry => entry.id !== id); });
+                chapter.sections.forEach(section => {
+                    section.items = section.items.filter(entry => entry.id !== id);
+                });
             });
             return {guideItemRemove: null};
         },
@@ -491,9 +694,16 @@ export function guideResolvers(ctx) {
                     const en = !sv && (entry.text.en ?? "").toLowerCase().indexOf(needle) >= 0;
                     if (sv || en) {
                         hits.push({
-                            __typename: "GuideSearchHit", kind: "ITEM", chapterKey: chapter.key, chapterTitle: title(chapter.title),
-                            sectionKey: section?.key ?? null, sectionTitle: section ? title(section.title) : null, itemKey: entry.key,
-                            itemType: entry.type, snippet: sv ? entry.text.sv : entry.text.en, matchedLanguage: sv ? "sv" : "en",
+                            __typename: "GuideSearchHit",
+                            kind: "ITEM",
+                            chapterKey: chapter.key,
+                            chapterTitle: title(chapter.title),
+                            sectionKey: section?.key ?? null,
+                            sectionTitle: section ? title(section.title) : null,
+                            itemKey: entry.key,
+                            itemType: entry.type,
+                            snippet: sv ? entry.text.sv : entry.text.en,
+                            matchedLanguage: sv ? "sv" : "en",
                         });
                     }
                 };
@@ -526,7 +736,14 @@ export function guideResolvers(ctx) {
                 throw new GraphQLError("BAD_REQUEST", "Utkastet är inte klart: det saknar kapitel, eller har en tom titel eller punkt.");
             }
             const label = `v${Math.max(0, ...guide().versions.map(version => /^v\d+$/.test(version.label ?? "") ? Number(version.label.slice(1)) : 0)) + 1}`;
-            Object.assign(current, {status: "PUBLISHED", label, note: input.note?.trim() || null, publishedAt: new Date().toISOString(), publishedBy: persona.name, version: current.version + 1});
+            Object.assign(current, {
+                status: "PUBLISHED",
+                label,
+                note: input.note?.trim() || null,
+                publishedAt: new Date().toISOString(),
+                publishedBy: persona.name,
+                version: current.version + 1
+            });
             ctx.state().checklist.templates.filter(template => template.kind === "CHAPTER" && !template.retired
                 && !current.chapters.some(chapter => chapter.key === template.chapterKey)).forEach(template => {
                 template.retired = true;
@@ -547,7 +764,13 @@ export function guideResolvers(ctx) {
             }
             guide().versions = guide().versions.filter(candidate => candidate !== current);
             guide().suggestions.filter(suggestion => suggestion.acceptedInto === current.id).forEach(suggestion => {
-                Object.assign(suggestion, {status: "OPEN", acceptedInto: null, decidedBy: null, decisionReason: null, reopenedAt: new Date().toISOString()});
+                Object.assign(suggestion, {
+                    status: "OPEN",
+                    acceptedInto: null,
+                    decidedBy: null,
+                    decisionReason: null,
+                    reopenedAt: new Date().toISOString()
+                });
             });
             return {guideDraftDiscard: null};
         },
@@ -560,7 +783,10 @@ export function guideResolvers(ctx) {
 export function handleGuidePdf(ctx, persona, path, url, res) {
     const guide = ctx.state().guide;
     const lang = url.searchParams.get("lang") ?? "sv";
-    const notFound = () => res.writeHead(404, {"content-type": "application/json"}).end(JSON.stringify({code: "NOT_FOUND", message: "Finns inte."}));
+    const notFound = () => res.writeHead(404, {"content-type": "application/json"}).end(JSON.stringify({
+        code: "NOT_FOUND",
+        message: "Finns inte."
+    }));
     const canRead = persona && (ctx.seesEverything(persona) || ctx.state().revivals.some(revival =>
         ["DIRECTEUR", "STEERING_GROUP"].includes(ctx.roleIn(persona, revival)) && ctx.canSee(persona, revival)));
     let version;

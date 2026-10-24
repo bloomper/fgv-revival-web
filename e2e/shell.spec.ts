@@ -9,7 +9,10 @@ test.describe("The application shell", () => {
         await expect(sidebar.locator('a[href="https://www.fgv.nu"]')).toBeVisible();
         await expect(sidebar.getByRole("link", {name: "Hem"})).toHaveAttribute("href", "/");
         await expect(sidebar.getByRole("link", {name: "Nyuppsättningar"})).toHaveAttribute("href", "/revivals");
-        await expect(sidebar.getByRole("link", {name: "Hantera", exact: true})).toHaveAttribute("href", "/revivals/manage");
+        await expect(sidebar.getByRole("link", {
+            name: "Hantera",
+            exact: true
+        })).toHaveAttribute("href", "/revivals/manage");
         await expect(sidebar.getByRole("link", {name: "Administration"})).toBeVisible();
         await expect(sidebar.getByRole("link", {name: "Support"})).toBeVisible();
         await expect(sidebar.getByRole("link", {name: "Om"})).toBeVisible();

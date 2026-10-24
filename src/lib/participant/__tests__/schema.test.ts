@@ -35,12 +35,23 @@ describe("respondValuesSchema", () => {
     });
 
     it("limits the comment to 1000 characters", () => {
-        expect(messages(answer({response: "NO", comment: "x".repeat(1001)}))).toEqual(["comment:participantCommentTooLong"]);
+        expect(messages(answer({
+            response: "NO",
+            comment: "x".repeat(1001)
+        }))).toEqual(["comment:participantCommentTooLong"]);
     });
 });
 
 describe("pendingPersonValuesSchema", () => {
-    const person = {kind: "PARTICIPANT" as const, firstName: "Disa", lastName: "Deltagare", email: "", phone: "", positionId: "", compensationPerShift: ""};
+    const person = {
+        kind: "PARTICIPANT" as const,
+        firstName: "Disa",
+        lastName: "Deltagare",
+        email: "",
+        phone: "",
+        positionId: "",
+        compensationPerShift: ""
+    };
 
     it("requires an email address for a participant", () => {
         expect(messages(pendingPersonValuesSchema.safeParse(person))).toEqual(["email:participantEmailRequired"]);
@@ -48,14 +59,26 @@ describe("pendingPersonValuesSchema", () => {
     });
 
     it("takes email or phone for a helper", () => {
-        expect(messages(pendingPersonValuesSchema.safeParse({...person, kind: "HELPER"}))).toEqual(["phone:helperContactRequired"]);
-        expect(messages(pendingPersonValuesSchema.safeParse({...person, kind: "HELPER", phone: "070-123 45 67"}))).toEqual([]);
+        expect(messages(pendingPersonValuesSchema.safeParse({
+            ...person,
+            kind: "HELPER"
+        }))).toEqual(["phone:helperContactRequired"]);
+        expect(messages(pendingPersonValuesSchema.safeParse({
+            ...person,
+            kind: "HELPER",
+            phone: "070-123 45 67"
+        }))).toEqual([]);
     });
 
     it("checks names, the email address and the compensation", () => {
         expect(messages(pendingPersonValuesSchema.safeParse({...person, firstName: " ", email: "nope"})))
             .toEqual(["firstName:firstNameRequired", "email:emailInvalid"]);
-        expect(messages(pendingPersonValuesSchema.safeParse({...person, kind: "HELPER", phone: "0701234567", compensationPerShift: "150 000"})))
+        expect(messages(pendingPersonValuesSchema.safeParse({
+            ...person,
+            kind: "HELPER",
+            phone: "0701234567",
+            compensationPerShift: "150 000"
+        })))
             .toEqual(["compensationPerShift:amountOutOfRange"]);
     });
 });
@@ -64,13 +87,25 @@ describe("participationSettingsValuesSchema", () => {
     const settings = {swishNumber: "", whatsappLink: "", terms: ""};
 
     it("takes ten digits as the Swish number, with spaces and dashes", () => {
-        expect(messages(participationSettingsValuesSchema.safeParse({...settings, swishNumber: "123 456-78 90"}))).toEqual([]);
-        expect(messages(participationSettingsValuesSchema.safeParse({...settings, swishNumber: "12345"}))).toEqual(["swishNumber:swishNumberInvalid"]);
+        expect(messages(participationSettingsValuesSchema.safeParse({
+            ...settings,
+            swishNumber: "123 456-78 90"
+        }))).toEqual([]);
+        expect(messages(participationSettingsValuesSchema.safeParse({
+            ...settings,
+            swishNumber: "12345"
+        }))).toEqual(["swishNumber:swishNumberInvalid"]);
     });
 
     it("takes only WhatsApp group invite links", () => {
-        expect(messages(participationSettingsValuesSchema.safeParse({...settings, whatsappLink: "https://chat.whatsapp.com/AbC123"}))).toEqual([]);
-        expect(messages(participationSettingsValuesSchema.safeParse({...settings, whatsappLink: "https://example.org/group"})))
+        expect(messages(participationSettingsValuesSchema.safeParse({
+            ...settings,
+            whatsappLink: "https://chat.whatsapp.com/AbC123"
+        }))).toEqual([]);
+        expect(messages(participationSettingsValuesSchema.safeParse({
+            ...settings,
+            whatsappLink: "https://example.org/group"
+        })))
             .toEqual(["whatsappLink:whatsappLinkInvalid"]);
     });
 });
@@ -82,17 +117,43 @@ describe("participantEditSchemaFor", () => {
     };
 
     it("lets a pending person's email or phone be cleared while the contact rule holds", () => {
-        expect(messages(participantEditSchemaFor("PARTICIPANT", true).safeParse({...values, email: ""}))).toEqual(["email:participantEmailRequired"]);
-        expect(messages(participantEditSchemaFor("HELPER", true).safeParse({...values, email: "", phone: "070-123 45 67"}))).toEqual([]);
-        expect(messages(participantEditSchemaFor("HELPER", true).safeParse({...values, email: "", phone: ""}))).toEqual(["phone:helperContactRequired"]);
+        expect(messages(participantEditSchemaFor("PARTICIPANT", true).safeParse({
+            ...values,
+            email: ""
+        }))).toEqual(["email:participantEmailRequired"]);
+        expect(messages(participantEditSchemaFor("HELPER", true).safeParse({
+            ...values,
+            email: "",
+            phone: "070-123 45 67"
+        }))).toEqual([]);
+        expect(messages(participantEditSchemaFor("HELPER", true).safeParse({
+            ...values,
+            email: "",
+            phone: ""
+        }))).toEqual(["phone:helperContactRequired"]);
         // A spexare's contact details are not edited here
-        expect(messages(participantEditSchemaFor("PARTICIPANT", false).safeParse({...values, firstName: "", lastName: "", email: ""}))).toEqual([]);
+        expect(messages(participantEditSchemaFor("PARTICIPANT", false).safeParse({
+            ...values,
+            firstName: "",
+            lastName: "",
+            email: ""
+        }))).toEqual([]);
     });
 
     it("checks the same on the server side", () => {
-        const input = {revivalId: "1", id: "p1", version: 0, pending: true, kind: "PARTICIPANT" as const, hasRole: false};
+        const input = {
+            revivalId: "1",
+            id: "p1",
+            version: 0,
+            pending: true,
+            kind: "PARTICIPANT" as const,
+            hasRole: false
+        };
 
-        expect(participantUpdateSchema.safeParse({...input, values: {...values, email: ""}}).error?.issues.map(issue => issue.path.join(".")))
+        expect(participantUpdateSchema.safeParse({
+            ...input,
+            values: {...values, email: ""}
+        }).error?.issues.map(issue => issue.path.join(".")))
             .toEqual(["values.email"]);
         expect(participantUpdateSchema.safeParse({...input, values}).success).toBe(true);
     });

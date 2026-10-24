@@ -6,7 +6,13 @@ import {useTranslations} from "next-intl";
 import {MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import {Input} from "@/components/ui/input";
 import {DataEmpty} from "@/components/data-empty";
 import {DataFilter} from "@/components/data-filter";
@@ -15,9 +21,16 @@ import {PlainText} from "@/components/plain-text";
 import {UrlSwitch} from "@/components/budget/url-switch.client";
 import {OwnerLabel} from "@/components/owner/owner-label";
 import type {OwnerMember} from "@/components/owner/owner-field.client";
-import {type EditableInventoryItem, InventoryDialog, type MaterialOption} from "@/components/material/inventory-dialog.client";
+import {
+    type EditableInventoryItem,
+    InventoryDialog,
+    type MaterialOption
+} from "@/components/material/inventory-dialog.client";
 import {InventoryStatusBadge, LocationLabel, MaterialLink} from "@/components/material/material-labels";
-import {removeInventoryItemAction, restoreInventoryItemAction} from "@/app/(app)/revivals/[id]/materials/actions.server";
+import {
+    removeInventoryItemAction,
+    restoreInventoryItemAction
+} from "@/app/(app)/revivals/[id]/materials/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {ACTION_STATUSES, INVENTORY_KINDS, INVENTORY_LOCATIONS, INVENTORY_STATUSES} from "@/lib/material/schema";
 
@@ -46,7 +59,11 @@ export function filterInventory(items: InventoryRow[], query: string, filters: I
     });
 }
 
-function RowActions({item, revivalId, onEdit}: { item: InventoryRow; revivalId: string; onEdit: (item: InventoryRow) => void }) {
+function RowActions({item, revivalId, onEdit}: {
+    item: InventoryRow;
+    revivalId: string;
+    onEdit: (item: InventoryRow) => void
+}) {
     const t = useTranslations("Inventory");
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
@@ -54,11 +71,13 @@ function RowActions({item, revivalId, onEdit}: { item: InventoryRow; revivalId: 
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" disabled={pending} aria-label={t("rowMenu", {name: item.name})}/>}>
+            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" disabled={pending}
+                                                 aria-label={t("rowMenu", {name: item.name})}/>}>
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {!item.removed && <DropdownMenuItem onClick={() => onEdit(item)}><Pencil/>{t("edit")}</DropdownMenuItem>}
+                {!item.removed &&
+                    <DropdownMenuItem onClick={() => onEdit(item)}><Pencil/>{t("edit")}</DropdownMenuItem>}
                 {!item.removed && <DropdownMenuSeparator/>}
                 {item.removed ? (
                     <DropdownMenuItem onClick={() => startTransition(async () => {
@@ -143,7 +162,8 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (item: Invento
             id: "material",
             header: () => t("material"),
             cell: ({row}) => row.original.material
-                ? <MaterialLink title={row.original.material.title} url={row.original.material.url} onClick={click => click.stopPropagation()}/>
+                ? <MaterialLink title={row.original.material.title} url={row.original.material.url}
+                                onClick={click => click.stopPropagation()}/>
                 : "—",
             meta: {className: "hidden lg:table-cell"},
         },
@@ -192,35 +212,54 @@ export function InventoryTable({revivalId, items, members, materials, canWrite, 
     const active = query.trim() !== "" || filters.kinds.size > 0 || filters.statuses.size > 0 || filters.locations.size > 0;
     const columns = useColumns(revivalId, canWrite, setEditing);
     const needAction = items.filter(item => !item.removed && ACTION_STATUSES.has(item.status)).length;
-    const set = (key: keyof InventoryFilters) => (values: Set<string>) => setFilters(current => ({...current, [key]: values}));
+    const set = (key: keyof InventoryFilters) => (values: Set<string>) => setFilters(current => ({
+        ...current,
+        [key]: values
+    }));
 
     return (
         <div className="flex flex-col gap-4">
-            {needAction > 0 && <p className="text-sm text-muted-foreground" role="status">{t("Inventory.needAction", {count: needAction})}</p>}
+            {needAction > 0 && <p className="text-sm text-muted-foreground"
+                                  role="status">{t("Inventory.needAction", {count: needAction})}</p>}
             <DataTable columns={columns} data={filtered} filtered={active} initialSorting={[{id: "name", desc: false}]}
                        onRowClick={canWrite ? (item => !item.removed && setEditing(item)) : undefined}
                        rowClassName={item => item.removed && "text-muted-foreground"}
-                       empty={<DataEmpty title={t("Inventory.empty")} description={canWrite ? t("Inventory.emptyHint") : t("Inventory.emptyReadOnly")}/>}>
+                       empty={<DataEmpty title={t("Inventory.empty")}
+                                         description={canWrite ? t("Inventory.emptyHint") : t("Inventory.emptyReadOnly")}/>}>
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-wrap items-center gap-2">
                         <div className="relative w-full sm:w-75">
-                            <Input placeholder={t("Inventory.filterPlaceholder")} value={query} onChange={change => setQuery(change.target.value)}
+                            <Input placeholder={t("Inventory.filterPlaceholder")} value={query}
+                                   onChange={change => setQuery(change.target.value)}
                                    aria-label={t("Common.search")} className="h-8 pr-8"/>
                             {query && (
-                                <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                                <Button variant="ghost" size="icon"
+                                        className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
                                         aria-label={t("Common.clearSearch")} onClick={() => setQuery("")}>
                                     <X className="h-3 w-3"/>
                                 </Button>
                             )}
                         </div>
-                        <DataFilter title={t("Inventory.kind")} selectedValues={filters.kinds} onSelect={set("kinds")} onClear={() => set("kinds")(new Set())}
-                                    options={INVENTORY_KINDS.map(kind => ({label: t(`Inventory.kinds.${kind}`), value: kind}))}/>
-                        <DataFilter title={t("Inventory.status")} selectedValues={filters.statuses} onSelect={set("statuses")} onClear={() => set("statuses")(new Set())}
-                                    options={INVENTORY_STATUSES.map(status => ({label: t(`Inventory.statuses.${status}`), value: status}))}/>
-                        <DataFilter title={t("Inventory.location")} selectedValues={filters.locations} onSelect={set("locations")}
+                        <DataFilter title={t("Inventory.kind")} selectedValues={filters.kinds} onSelect={set("kinds")}
+                                    onClear={() => set("kinds")(new Set())}
+                                    options={INVENTORY_KINDS.map(kind => ({
+                                        label: t(`Inventory.kinds.${kind}`),
+                                        value: kind
+                                    }))}/>
+                        <DataFilter title={t("Inventory.status")} selectedValues={filters.statuses}
+                                    onSelect={set("statuses")} onClear={() => set("statuses")(new Set())}
+                                    options={INVENTORY_STATUSES.map(status => ({
+                                        label: t(`Inventory.statuses.${status}`),
+                                        value: status
+                                    }))}/>
+                        <DataFilter title={t("Inventory.location")} selectedValues={filters.locations}
+                                    onSelect={set("locations")}
                                     onClear={() => set("locations")(new Set())}
                                     options={[
-                                        ...INVENTORY_LOCATIONS.map(location => ({label: t(`Inventory.locations.${location}`), value: location})),
+                                        ...INVENTORY_LOCATIONS.map(location => ({
+                                            label: t(`Inventory.locations.${location}`),
+                                            value: location
+                                        })),
                                         {label: t("Inventory.noLocation"), value: NO_LOCATION, sortKey: "￿"},
                                     ]}/>
                         {active && (
@@ -232,7 +271,8 @@ export function InventoryTable({revivalId, items, members, materials, canWrite, 
                                 {t("Common.reset")}
                             </Button>
                         )}
-                        {canWrite && <UrlSwitch param="removed" shown={showRemoved} label={t("Inventory.showRemoved")}/>}
+                        {canWrite &&
+                            <UrlSwitch param="removed" shown={showRemoved} label={t("Inventory.showRemoved")}/>}
                     </div>
                     {canWrite && (
                         <div className="flex flex-wrap items-center gap-2">
@@ -242,7 +282,8 @@ export function InventoryTable({revivalId, items, members, materials, canWrite, 
                 </div>
             </DataTable>
             {(adding || editing) && (
-                <InventoryDialog key={editing?.id ?? "new"} revivalId={revivalId} members={members} materials={materials} item={editing}
+                <InventoryDialog key={editing?.id ?? "new"} revivalId={revivalId} members={members}
+                                 materials={materials} item={editing}
                                  onOpenChange={open => {
                                      if (!open) {
                                          setAdding(false);

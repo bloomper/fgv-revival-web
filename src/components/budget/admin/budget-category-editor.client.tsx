@@ -17,7 +17,11 @@ type Kind = typeof BUDGET_CATEGORY_KINDS[number];
 
 const ACTIONS = {
     create: (input: { name: { sv: string; en?: string | null }; kind?: string; role?: string }) =>
-        createBudgetCategoryAction({name: input.name, kind: (input.kind ?? "COST") as Kind, role: (input.role ?? "") as Role | ""}),
+        createBudgetCategoryAction({
+            name: input.name,
+            kind: (input.kind ?? "COST") as Kind,
+            role: (input.role ?? "") as Role | ""
+        }),
     update: (input: { id: string; version: number; name: { sv: string; en?: string | null }; role?: string }) =>
         updateBudgetCategoryAction({...input, role: (input.role ?? "") as Role | ""}),
     move: moveBudgetCategoryAction,
@@ -34,9 +38,21 @@ export function BudgetCategoryEditor({entries}: { entries: CatalogRow[] }) {
     const t = useTranslations();
 
     return (
-        <CatalogEditor entries={entries} actions={ACTIONS} label={t("BudgetCategoryAdmin.title")} createLabel={t("BudgetCategoryAdmin.create")}
-                       kindOptions={BUDGET_CATEGORY_KINDS.map(kind => ({value: kind, name: t(`Budget.kinds.${kind}`), description: t(`BudgetCategoryAdmin.kindHelp.${kind}`)}))}
-                       kindTexts={{label: t("BudgetCategoryAdmin.kind"), choose: t("BudgetCategoryAdmin.kindChoose"), fixed: t("BudgetCategoryAdmin.kindFixed")}}
-                       roleOptions={BUDGET_CATEGORY_ROLES.map(role => ({value: role, name: t(`Budget.roles.${role}`)}))}/>
+        <CatalogEditor entries={entries} actions={ACTIONS} label={t("BudgetCategoryAdmin.title")}
+                       createLabel={t("BudgetCategoryAdmin.create")}
+                       kindOptions={BUDGET_CATEGORY_KINDS.map(kind => ({
+                           value: kind,
+                           name: t(`Budget.kinds.${kind}`),
+                           description: t(`BudgetCategoryAdmin.kindHelp.${kind}`)
+                       }))}
+                       kindTexts={{
+                           label: t("BudgetCategoryAdmin.kind"),
+                           choose: t("BudgetCategoryAdmin.kindChoose"),
+                           fixed: t("BudgetCategoryAdmin.kindFixed")
+                       }}
+                       roleOptions={BUDGET_CATEGORY_ROLES.map(role => ({
+                           value: role,
+                           name: t(`Budget.roles.${role}`)
+                       }))}/>
     );
 }

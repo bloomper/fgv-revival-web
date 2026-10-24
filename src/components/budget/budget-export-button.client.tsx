@@ -12,7 +12,8 @@ export function BudgetExportButton({revivalId}: { revivalId: string }) {
     const t = useTranslations("Budget");
 
     return (
-        <a href={`/api/budget-export/${encodeURIComponent(revivalId)}`} download className={buttonVariants({variant: "outline"})}
+        <a href={`/api/budget-export/${encodeURIComponent(revivalId)}`} download
+           className={buttonVariants({variant: "outline"})}
            onClick={() => track("budget-export")}>
             <FileSpreadsheet/>
             {t("export")}

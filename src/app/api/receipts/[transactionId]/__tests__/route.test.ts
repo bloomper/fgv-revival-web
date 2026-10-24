@@ -31,7 +31,8 @@ describe("/api/receipts/[transactionId]", () => {
 
     it("downloads the receipt as a sandboxed attachment", async () => {
         apiFetch.mockResolvedValue(new Response(new Uint8Array([37, 80, 68, 70]), {
-            status: 200, headers: {"content-type": "application/pdf", "content-disposition": "attachment; filename=\"kvitto.pdf\""},
+            status: 200,
+            headers: {"content-type": "application/pdf", "content-disposition": "attachment; filename=\"kvitto.pdf\""},
         }));
 
         const response = await GET(new NextRequest(url("7")), context("7"));
@@ -54,7 +55,12 @@ describe("/api/receipts/[transactionId]", () => {
     });
 
     it("forwards an uploaded receipt as multipart and returns its metadata", async () => {
-        const metadata = {filename: "kvitto.pdf", contentType: "application/pdf", size: 4, uploadedAt: "2027-11-02T10:00:00Z"};
+        const metadata = {
+            filename: "kvitto.pdf",
+            contentType: "application/pdf",
+            size: 4,
+            uploadedAt: "2027-11-02T10:00:00Z"
+        };
 
         apiFetch.mockResolvedValue(Response.json(metadata));
 

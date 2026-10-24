@@ -9,7 +9,11 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
  * Says why the budget is read-only: only the directeur and steering group members with the finance area change it
  * (M5-FR-6). Renders nothing when the caller may write.
  */
-export async function BudgetReadOnlyNotice({status, canWrite, roles}: { status: RevivalStatus; canWrite: boolean; roles: Role[] }) {
+export async function BudgetReadOnlyNotice({status, canWrite, roles}: {
+    status: RevivalStatus;
+    canWrite: boolean;
+    roles: Role[]
+}) {
     if (canWrite) {
         return null;
     }

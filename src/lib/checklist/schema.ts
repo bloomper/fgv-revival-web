@@ -9,7 +9,10 @@ export const MAX_ITEM_COMMENT = 2000;
 export const MAX_REASON = 1000;
 
 const id = z.string().min(1);
-const owner = z.object({personId: id.nullable().optional(), name: z.string().trim().min(1, "ownerNameRequired").max(100, "ownerNameTooLong").nullable().optional()}).nullable();
+const owner = z.object({
+    personId: id.nullable().optional(),
+    name: z.string().trim().min(1, "ownerNameRequired").max(100, "ownerNameTooLong").nullable().optional()
+}).nullable();
 
 export const checklistItemValuesSchema = z.object({
     text: z.string().trim().max(MAX_ITEM_TEXT, "itemTextTooLong").optional(),
@@ -25,7 +28,12 @@ export const checklistItemCreateSchema = z.object({
     revivalId: id,
     values: checklistItemValuesSchema.extend({text: z.string().trim().min(1, "itemTextRequired").max(MAX_ITEM_TEXT, "itemTextTooLong")}),
 });
-export const checklistItemUpdateSchema = z.object({id, version: z.number().int(), revivalId: id, values: checklistItemValuesSchema});
+export const checklistItemUpdateSchema = z.object({
+    id,
+    version: z.number().int(),
+    revivalId: id,
+    values: checklistItemValuesSchema
+});
 export const checklistItemStateSchema = z.object({
     id,
     version: z.number().int(),
@@ -71,7 +79,10 @@ const localized = (max: number, required: string, tooLong: string) => z.object({
 
 export const templateCreateSchema = z.discriminatedUnion("kind", [
     z.object({kind: z.literal("CHAPTER"), chapterKey: z.string().min(1)}),
-    z.object({kind: z.literal("EVENT"), name: localized(MAX_TEMPLATE_NAME, "templateNameRequired", "templateNameTooLong")}),
+    z.object({
+        kind: z.literal("EVENT"),
+        name: localized(MAX_TEMPLATE_NAME, "templateNameRequired", "templateNameTooLong")
+    }),
 ]);
 
 const relativeDeadline = z.object({
@@ -95,7 +106,12 @@ export const templateItemSaveSchema = z.object({
     values: templateItemValuesSchema,
 });
 
-export const templateItemTransitionSchema = z.object({templateId: id, id, version: z.number().int(), position: z.number().int().min(0).optional()});
+export const templateItemTransitionSchema = z.object({
+    templateId: id,
+    id,
+    version: z.number().int(),
+    position: z.number().int().min(0).optional()
+});
 
 export const eventChecklistValuesSchema = z.object({
     name: z.string().trim().min(1, "checklistNameRequired").max(MAX_TEMPLATE_NAME, "checklistNameTooLong"),
@@ -111,4 +127,9 @@ export const eventChecklistSaveSchema = z.object({
     values: eventChecklistValuesSchema,
 });
 
-export const checklistTransitionSchema = z.object({revivalId: id, id, version: z.number().int(), templateId: z.string().nullable().optional()});
+export const checklistTransitionSchema = z.object({
+    revivalId: id,
+    id,
+    version: z.number().int(),
+    templateId: z.string().nullable().optional()
+});

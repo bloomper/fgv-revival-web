@@ -35,7 +35,10 @@ function revalidate(revivalId: string) {
 /**
  * Adds a material. {@code recognised} says whether the server found the service from the link's host, for statistics.
  */
-export async function createMaterialAction(input: z.input<typeof materialCreateSchema>): Promise<ActionResult<{ id: string; recognised: boolean }>> {
+export async function createMaterialAction(input: z.input<typeof materialCreateSchema>): Promise<ActionResult<{
+    id: string;
+    recognised: boolean
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, values} = materialCreateSchema.parse(input);
         const created = await createMaterial({...toMaterialInput(values), revivalId});
@@ -75,7 +78,9 @@ export async function restoreMaterialAction(input: z.input<typeof materialTransi
     return transition(materialTransitionSchema, input, restoreMaterial);
 }
 
-export async function createInventoryItemAction(input: z.input<typeof inventoryCreateSchema>): Promise<ActionResult<{ id: string }>> {
+export async function createInventoryItemAction(input: z.input<typeof inventoryCreateSchema>): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, values} = inventoryCreateSchema.parse(input);
         const created = await createInventoryItem({...toInventoryItemInput(values), revivalId});

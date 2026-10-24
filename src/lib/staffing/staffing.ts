@@ -4,7 +4,12 @@ import {addDays, daysBetween} from "@/lib/event/dates";
 // Pure helpers for availability and staffing (M6b), shared by the participant's page, the staffing tab and its prints.
 
 export type EventSpan = { startDate: string; endDate: string };
-export type AvailabilityDayValue = { eventId: string; date: string; answer: AvailabilityAnswer; comment?: string | null };
+export type AvailabilityDayValue = {
+    eventId: string;
+    date: string;
+    answer: AvailabilityAnswer;
+    comment?: string | null
+};
 export type SlotTime = { date: string; startTime: string; endTime: string };
 
 /** Every day of an event, first to last; an event lasts at most 32 days (M4). */

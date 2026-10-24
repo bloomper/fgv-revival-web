@@ -3,7 +3,7 @@
 import {useTranslations} from "next-intl";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {type CatalogExtra, CatalogEditor, type CatalogRow} from "@/components/catalog/catalog-editor.client";
+import {CatalogEditor, type CatalogExtra, type CatalogRow} from "@/components/catalog/catalog-editor.client";
 import {HostsInput} from "@/components/material/hosts-input.client";
 import {
     createLinkServiceAction,
@@ -23,8 +23,18 @@ const EMPTY: LinkServiceDetails = {hosts: [], homeUrl: ""};
 const ACTIONS = {
     create: (input: { name: { sv: string; en?: string | null }; extra?: LinkServiceDetails }) =>
         createLinkServiceAction({name: input.name, details: input.extra ?? EMPTY}),
-    update: (input: { id: string; version: number; name: { sv: string; en?: string | null }; extra?: LinkServiceDetails }) =>
-        updateLinkServiceAction({id: input.id, version: input.version, name: input.name, details: input.extra ?? EMPTY}),
+    update: (input: {
+        id: string;
+        version: number;
+        name: { sv: string; en?: string | null };
+        extra?: LinkServiceDetails
+    }) =>
+        updateLinkServiceAction({
+            id: input.id,
+            version: input.version,
+            name: input.name,
+            details: input.extra ?? EMPTY
+        }),
     move: moveLinkServiceAction,
     retire: retireLinkServiceAction,
     restore: restoreLinkServiceAction,
@@ -50,10 +60,12 @@ export function LinkServiceEditor({entries}: { entries: LinkServiceRow[] }) {
                             error={error && error !== "urlHttpsRequired" && error !== "urlTooLong" ? error : null}/>
                 <div className="space-y-2">
                     <Label htmlFor={`${id}-home`}>{t("LinkServiceAdmin.homeUrl")}</Label>
-                    <Input id={`${id}-home`} type="url" inputMode="url" maxLength={MAX_URL} placeholder="https://" value={value.homeUrl}
+                    <Input id={`${id}-home`} type="url" inputMode="url" maxLength={MAX_URL} placeholder="https://"
+                           value={value.homeUrl}
                            aria-invalid={error === "urlHttpsRequired" || error === "urlTooLong" ? true : undefined}
                            onChange={change => onChange({...value, homeUrl: change.target.value})}/>
-                    {(error === "urlHttpsRequired" || error === "urlTooLong") && <p className="text-sm text-destructive">{t(`Validation.${error}`)}</p>}
+                    {(error === "urlHttpsRequired" || error === "urlTooLong") &&
+                        <p className="text-sm text-destructive">{t(`Validation.${error}`)}</p>}
                 </div>
             </>
         ),
@@ -66,6 +78,7 @@ export function LinkServiceEditor({entries}: { entries: LinkServiceRow[] }) {
         ),
     };
 
-    return <CatalogEditor entries={entries} actions={ACTIONS} label={t("LinkServiceAdmin.title")} createLabel={t("LinkServiceAdmin.create")}
+    return <CatalogEditor entries={entries} actions={ACTIONS} label={t("LinkServiceAdmin.title")}
+                          createLabel={t("LinkServiceAdmin.create")}
                           editLabel={t("LinkServiceAdmin.editTitle")} extra={extra}/>;
 }

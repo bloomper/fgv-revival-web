@@ -36,7 +36,10 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
     const types = useGuideItemTypes();
     const form = useForm<GuideItemValues>({
         resolver: zodResolver(guideItemSchema),
-        values: {type: initial?.type.id ?? defaultItemType(types), text: {sv: initial?.text.sv ?? "", en: initial?.text.en ?? ""}},
+        values: {
+            type: initial?.type.id ?? defaultItemType(types),
+            text: {sv: initial?.text.sv ?? "", en: initial?.text.en ?? ""}
+        },
     });
     const {errors} = form.formState;
     const sv = useWatch({control: form.control, name: "text.sv"});
@@ -60,7 +63,10 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
                 <form
                     className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
-                        if (feedback(await onSave({...values, text: {sv: values.text.sv, en: values.text.en || null}}), t("Guide.editor.saved"))) {
+                        if (feedback(await onSave({
+                            ...values,
+                            text: {sv: values.text.sv, en: values.text.en || null}
+                        }), t("Guide.editor.saved"))) {
                             setOpen(false);
                         }
                     }))}
@@ -70,32 +76,40 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
                             <div className="space-y-2">
                                 <Label htmlFor="guide-item-type">{t("Guide.editor.type")}</Label>
                                 <NativeSelect className="w-full" id="guide-item-type"
-                                        {...form.register("type")}>
+                                              {...form.register("type")}>
                                     <CatalogOptions entries={catalogChoices(types, [initial?.type])}/>
                                 </NativeSelect>
                             </div>
                             <div className="flex gap-2" role="tablist">
-                                <Button type="button" role="tab" aria-selected={!preview} variant={preview ? "ghost" : "secondary"} size="sm"
+                                <Button type="button" role="tab" aria-selected={!preview}
+                                        variant={preview ? "ghost" : "secondary"} size="sm"
                                         onClick={() => setPreview(false)}>{t("Guide.editor.write")}</Button>
-                                <Button type="button" role="tab" aria-selected={preview} variant={preview ? "secondary" : "ghost"} size="sm"
+                                <Button type="button" role="tab" aria-selected={preview}
+                                        variant={preview ? "secondary" : "ghost"} size="sm"
                                         onClick={() => setPreview(true)}>{t("Guide.editor.preview")}</Button>
                             </div>
                             {preview ? (
                                 <div className="space-y-3" data-testid="guide-item-preview">
-                                    <div className="rounded-md border p-3"><GuideMarkdown>{sv || ""}</GuideMarkdown></div>
-                                    {en && <div className="rounded-md border p-3"><GuideMarkdown>{en}</GuideMarkdown></div>}
+                                    <div className="rounded-md border p-3"><GuideMarkdown>{sv || ""}</GuideMarkdown>
+                                    </div>
+                                    {en && <div className="rounded-md border p-3"><GuideMarkdown>{en}</GuideMarkdown>
+                                    </div>}
                                 </div>
                             ) : (
                                 <>
                                     <div className="space-y-2">
                                         <Label htmlFor="guide-item-sv">{t("Guide.editor.swedish")}</Label>
-                                        <Textarea id="guide-item-sv" rows={6} maxLength={MAX_ITEM_TEXT} {...form.register("text.sv")}/>
-                                        {errors.text?.sv && <p className="text-sm text-destructive">{t(`Validation.${errors.text.sv.message}`)}</p>}
+                                        <Textarea id="guide-item-sv" rows={6}
+                                                  maxLength={MAX_ITEM_TEXT} {...form.register("text.sv")}/>
+                                        {errors.text?.sv &&
+                                            <p className="text-sm text-destructive">{t(`Validation.${errors.text.sv.message}`)}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="guide-item-en">{t("Guide.editor.english")}</Label>
-                                        <Textarea id="guide-item-en" rows={6} maxLength={MAX_ITEM_TEXT} {...form.register("text.en")}/>
-                                        {errors.text?.en && <p className="text-sm text-destructive">{t(`Validation.${errors.text.en.message}`)}</p>}
+                                        <Textarea id="guide-item-en" rows={6}
+                                                  maxLength={MAX_ITEM_TEXT} {...form.register("text.en")}/>
+                                        {errors.text?.en &&
+                                            <p className="text-sm text-destructive">{t(`Validation.${errors.text.en.message}`)}</p>}
                                     </div>
                                     <p className="text-xs text-muted-foreground">{t("Guide.editor.markdownHelp")}</p>
                                 </>

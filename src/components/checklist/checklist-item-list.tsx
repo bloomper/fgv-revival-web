@@ -22,7 +22,8 @@ export function ChecklistItemList({revivalId, items}: { revivalId: string; items
         <ul className="space-y-2" aria-label={t("matches")}>
             {items.map(item => (
                 <li key={item.id} className="space-y-2 rounded-lg border p-3">
-                    <Link href={`/revivals/${revivalId}/checklists/${item.checklist.id}`} className="block w-fit text-xs text-muted-foreground hover:underline">
+                    <Link href={`/revivals/${revivalId}/checklists/${item.checklist.id}`}
+                          className="block w-fit text-xs text-muted-foreground hover:underline">
                         {item.checklist.kind === "CHAPTER"
                             ? item.checklist.chapterTitle ? pickText(item.checklist.chapterTitle, locale).text : item.checklist.chapterKey
                             : item.checklist.name}
@@ -32,7 +33,8 @@ export function ChecklistItemList({revivalId, items}: { revivalId: string; items
                         {item.required && <Badge>{t("required")}</Badge>}
                         {item.state !== "OPEN" && <Badge variant="outline">{t(`state.${item.state}`)}</Badge>}
                         {item.overdue && <OverdueBadge/>}
-                        <span className="text-muted-foreground">{t("owner")}: <span className="text-foreground"><OwnerLabel owner={item.owner}/></span></span>
+                        <span className="text-muted-foreground">{t("owner")}: <span
+                            className="text-foreground"><OwnerLabel owner={item.owner}/></span></span>
                         {item.deadline && <Badge variant="outline">{t("deadline")}: {formatDate(item.deadline)}</Badge>}
                     </div>
                 </li>

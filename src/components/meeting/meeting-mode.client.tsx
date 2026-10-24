@@ -16,7 +16,8 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
 export function MeetingStatusBadge({status}: { status: MeetingStatus }) {
     const t = useTranslations("Meeting.status");
 
-    return <Badge variant={status === "IN_PROGRESS" ? "default" : status === "PLANNED" ? "secondary" : "outline"}>{t(status)}</Badge>;
+    return <Badge
+        variant={status === "IN_PROGRESS" ? "default" : status === "PLANNED" ? "secondary" : "outline"}>{t(status)}</Badge>;
 }
 
 /**
@@ -47,17 +48,28 @@ export function MeetingMode({revivalId, meeting, openEntries, members, tags, can
                     {meeting.status === "PLANNED" && (
                         <>
                             <Button disabled={pending} onClick={() => startTransition(async () => {
-                                feedback(await startMeetingAction({id: meeting.id, version: meeting.version, revivalId}), t("Meeting.started"));
+                                feedback(await startMeetingAction({
+                                    id: meeting.id,
+                                    version: meeting.version,
+                                    revivalId
+                                }), t("Meeting.started"));
                             })}><Play/>{t("Meeting.start")}</Button>
-                            <Button variant="outline" className="text-destructive hover:text-destructive" disabled={pending} onClick={() => startTransition(async () => {
-                                feedback(await cancelMeetingAction({id: meeting.id, version: meeting.version, revivalId}), t("Meeting.cancelled"));
+                            <Button variant="outline" className="text-destructive hover:text-destructive"
+                                    disabled={pending} onClick={() => startTransition(async () => {
+                                feedback(await cancelMeetingAction({
+                                    id: meeting.id,
+                                    version: meeting.version,
+                                    revivalId
+                                }), t("Meeting.cancelled"));
                             })}>{t("Meeting.cancel")}</Button>
                         </>
                     )}
-                    {inProgress && <MeetingCloseDialog revivalId={revivalId} meeting={meeting} blocking={blocking} onOpenRow={setEditingRow}/>}
+                    {inProgress && <MeetingCloseDialog revivalId={revivalId} meeting={meeting} blocking={blocking}
+                                                       onOpenRow={setEditingRow}/>}
                 </div>
             )}
-            {meeting.recorder?.displayName && <p className="text-sm">{t("Meeting.recorder")}: {meeting.recorder.displayName}</p>}
+            {meeting.recorder?.displayName &&
+                <p className="text-sm">{t("Meeting.recorder")}: {meeting.recorder.displayName}</p>}
             <section className="space-y-2">
                 <h3 className="font-medium">{t("Meeting.openRows")}</h3>
                 <LogTable revivalId={revivalId} entries={openEntries} members={members} tags={tags} canWrite={canWrite}
@@ -69,10 +81,12 @@ export function MeetingMode({revivalId, meeting, openEntries, members, tags, can
                 {meeting.agendaPoints.length === 0 ? (
                     <p className="text-sm text-muted-foreground">{t("Meeting.noAgendaPoints")}</p>
                 ) : (
-                    <ol className="list-decimal space-y-1 pl-5 text-sm">{meeting.agendaPoints.map((point, index) => <li key={index}>{point}</li>)}</ol>
+                    <ol className="list-decimal space-y-1 pl-5 text-sm">{meeting.agendaPoints.map((point, index) => <li
+                        key={index}>{point}</li>)}</ol>
                 )}
             </section>
-            {editing && <MeetingDialog revivalId={revivalId} meeting={meeting} members={members} open onOpenChange={setEditing}/>}
+            {editing && <MeetingDialog revivalId={revivalId} meeting={meeting} members={members} open
+                                       onOpenChange={setEditing}/>}
         </div>
     );
 }

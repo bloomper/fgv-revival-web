@@ -6,9 +6,20 @@ import {useLocale, useTranslations} from "next-intl";
 import {toast} from "sonner";
 import {Mail} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 import {NativeSelect} from "@/components/ui/native-select";
-import {type MinutesEmailResult, retryMinutesAction, sendMinutesAction} from "@/app/(app)/revivals/[id]/meetings/actions.server";
+import {
+    type MinutesEmailResult,
+    retryMinutesAction,
+    sendMinutesAction
+} from "@/app/(app)/revivals/[id]/meetings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 
 /**
@@ -50,7 +61,8 @@ export function MinutesEmailDialog({revivalId, meetingId}: { revivalId: string; 
                             {result.failed.length > 0 && (
                                 <>
                                     <p className="text-destructive">{t("emailFailed")}</p>
-                                    <ul className="list-disc pl-5">{result.failed.map(name => <li key={name}>{name}</li>)}</ul>
+                                    <ul className="list-disc pl-5">{result.failed.map(name => <li
+                                        key={name}>{name}</li>)}</ul>
                                 </>
                             )}
                         </div>
@@ -58,7 +70,7 @@ export function MinutesEmailDialog({revivalId, meetingId}: { revivalId: string; 
                         <label className="flex items-center gap-2 text-sm">
                             {t("language")}
                             <NativeSelect size="sm" value={language}
-                                    onChange={event => setLanguage(event.target.value as "sv" | "en")}>
+                                          onChange={event => setLanguage(event.target.value as "sv" | "en")}>
                                 <option value="sv">Svenska</option>
                                 <option value="en">English</option>
                             </NativeSelect>

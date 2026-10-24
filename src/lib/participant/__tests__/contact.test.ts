@@ -20,7 +20,11 @@ describe("whatsAppUrl", () => {
 
 describe("participantName", () => {
     it("puts the nickname in quotes between first and last name", () => {
-        expect(participantName({firstName: "Anna", lastName: "Andersson", nickName: "Spexis"})).toBe("Anna \"Spexis\" Andersson");
+        expect(participantName({
+            firstName: "Anna",
+            lastName: "Andersson",
+            nickName: "Spexis"
+        })).toBe("Anna \"Spexis\" Andersson");
     });
 
     it("leaves out a missing nickname, and is empty for a removed pending person", () => {

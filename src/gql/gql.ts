@@ -1,6 +1,6 @@
 /* eslint-disable */
 import * as types from './graphql';
-import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+import type {TypedDocumentNode as DocumentNode} from '@graphql-typed-document-node/core';
 
 /**
  * Map of all GraphQL operations in the project.
@@ -1534,7 +1534,7 @@ export function graphql(source: "\n    mutation ShiftWithdraw($slotId: ID!) {\n 
 export function graphql(source: "\n    mutation AvailabilitySet($input: AvailabilityInput!) {\n        availabilitySet(input: $input) { participant { id } }\n    }\n"): (typeof documents)["\n    mutation AvailabilitySet($input: AvailabilityInput!) {\n        availabilitySet(input: $input) { participant { id } }\n    }\n"];
 
 export function graphql(source: string) {
-  return (documents as any)[source] ?? {};
+    return (documents as any)[source] ?? {};
 }
 
-export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<infer TType, any> ? TType : never;

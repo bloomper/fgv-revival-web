@@ -12,15 +12,23 @@ const material = {
     visibility: "PARTICIPANTS" as const, positionIds: [], comment: "",
 };
 
-const messages = (result: { success: boolean; error?: { issues: { message: string }[] } }) => result.error?.issues.map(issue => issue.message) ?? [];
+const messages = (result: {
+    success: boolean;
+    error?: { issues: { message: string }[] }
+}) => result.error?.issues.map(issue => issue.message) ?? [];
 
 describe("materialValuesSchema", () => {
     it("accepts an https link and sends a blank service as recognised by the server", () => {
         const values = materialValuesSchema.parse(material);
 
         expect(toMaterialInput(values)).toEqual({
-            title: "Manus 2028", url: "https://drive.google.com/file/d/1", serviceId: null, category: "SCRIPT", visibility: "PARTICIPANTS",
-            positionIds: [], comment: null,
+            title: "Manus 2028",
+            url: "https://drive.google.com/file/d/1",
+            serviceId: null,
+            category: "SCRIPT",
+            visibility: "PARTICIPANTS",
+            positionIds: [],
+            comment: null,
         });
     });
 
@@ -29,21 +37,45 @@ describe("materialValuesSchema", () => {
     });
 
     it("needs a position for POSITIONS, and sends positions only then", () => {
-        expect(messages(materialValuesSchema.safeParse({...material, visibility: "POSITIONS"}))).toEqual(["materialPositionsRequired"]);
-        expect(toMaterialInput(materialValuesSchema.parse({...material, visibility: "POSITIONS", positionIds: ["T-ENS"]})).positionIds).toEqual(["T-ENS"]);
-        expect(toMaterialInput(materialValuesSchema.parse({...material, positionIds: ["T-ENS"]})).positionIds).toEqual([]);
+        expect(messages(materialValuesSchema.safeParse({
+            ...material,
+            visibility: "POSITIONS"
+        }))).toEqual(["materialPositionsRequired"]);
+        expect(toMaterialInput(materialValuesSchema.parse({
+            ...material,
+            visibility: "POSITIONS",
+            positionIds: ["T-ENS"]
+        })).positionIds).toEqual(["T-ENS"]);
+        expect(toMaterialInput(materialValuesSchema.parse({
+            ...material,
+            positionIds: ["T-ENS"]
+        })).positionIds).toEqual([]);
     });
 });
 
 describe("inventoryValuesSchema", () => {
     const item = {
-        name: "Lampa", kind: "PROPS" as const, quantity: "2", status: "BUY" as const, location: "" as const, locationNote: "", owner: {name: "Sam"},
-        comment: "", materialId: "",
+        name: "Lampa",
+        kind: "PROPS" as const,
+        quantity: "2",
+        status: "BUY" as const,
+        location: "" as const,
+        locationNote: "",
+        owner: {name: "Sam"},
+        comment: "",
+        materialId: "",
     };
 
     it("turns the dialog into the input, clearing blank fields", () => {
         expect(toInventoryItemInput(inventoryValuesSchema.parse(item))).toEqual({
-            name: "Lampa", kind: "PROPS", quantity: 2, status: "BUY", location: null, locationNote: null, owner: {name: "Sam"}, comment: null,
+            name: "Lampa",
+            kind: "PROPS",
+            quantity: 2,
+            status: "BUY",
+            location: null,
+            locationNote: null,
+            owner: {name: "Sam"},
+            comment: null,
             materialId: null,
         });
     });
@@ -60,10 +92,22 @@ describe("linkServiceDetailsSchema", () => {
     });
 
     it("refuses bad, repeated or too many hosts and an http start page", () => {
-        expect(messages(linkServiceDetailsSchema.safeParse({hosts: ["Bad Host"], homeUrl: ""}))).toContain("hostInvalid");
-        expect(messages(linkServiceDetailsSchema.safeParse({hosts: ["a.se", "a.se"], homeUrl: ""}))).toContain("hostDuplicate");
-        expect(messages(linkServiceDetailsSchema.safeParse({hosts: Array.from({length: 11}, (_, index) => `h${index}.se`), homeUrl: ""})))
+        expect(messages(linkServiceDetailsSchema.safeParse({
+            hosts: ["Bad Host"],
+            homeUrl: ""
+        }))).toContain("hostInvalid");
+        expect(messages(linkServiceDetailsSchema.safeParse({
+            hosts: ["a.se", "a.se"],
+            homeUrl: ""
+        }))).toContain("hostDuplicate");
+        expect(messages(linkServiceDetailsSchema.safeParse({
+            hosts: Array.from({length: 11}, (_, index) => `h${index}.se`),
+            homeUrl: ""
+        })))
             .toContain("hostsTooMany");
-        expect(messages(linkServiceDetailsSchema.safeParse({hosts: [], homeUrl: "http://example.org"}))).toContain("urlHttpsRequired");
+        expect(messages(linkServiceDetailsSchema.safeParse({
+            hosts: [],
+            homeUrl: "http://example.org"
+        }))).toContain("urlHttpsRequired");
     });
 });

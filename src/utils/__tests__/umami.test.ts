@@ -20,9 +20,11 @@ describe("track", () => {
     });
 
     it("swallows tracker errors", () => {
-        window.umami = {track: () => {
-            throw new Error("blocked");
-        }};
+        window.umami = {
+            track: () => {
+                throw new Error("blocked");
+            }
+        };
 
         expect(() => track("restore")).not.toThrow();
     });

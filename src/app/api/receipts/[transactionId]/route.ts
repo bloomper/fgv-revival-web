@@ -72,7 +72,10 @@ export async function POST(request: NextRequest, context: Params) {
     const problem = receiptProblem(file);
 
     if (problem) {
-        return NextResponse.json({code: "BAD_REQUEST", message: problem}, {status: problem === "receiptTooLarge" ? 413 : 400});
+        return NextResponse.json({
+            code: "BAD_REQUEST",
+            message: problem
+        }, {status: problem === "receiptTooLarge" ? 413 : 400});
     }
 
     const body = new FormData();

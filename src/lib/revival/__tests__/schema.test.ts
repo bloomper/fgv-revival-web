@@ -1,5 +1,11 @@
 import {describe, expect, it} from "vitest";
-import {memberAddSchema, revivalCreateSchema, revivalDetailsSchema, revivalStatusChangeSchema, revivalYears} from "@/lib/revival/schema";
+import {
+    memberAddSchema,
+    revivalCreateSchema,
+    revivalDetailsSchema,
+    revivalStatusChangeSchema,
+    revivalYears
+} from "@/lib/revival/schema";
 
 const messages = (result: { success: boolean; error?: { issues: { message: string }[] } }) =>
     result.success ? [] : result.error!.issues.map(issue => issue.message);
@@ -10,7 +16,10 @@ describe("revivalCreateSchema", () => {
     });
 
     it("refuses a missing spex and a year out of range", () => {
-        expect(messages(revivalCreateSchema.safeParse({spexId: "", year: 1947}))).toEqual(["spexRequired", "yearRange"]);
+        expect(messages(revivalCreateSchema.safeParse({
+            spexId: "",
+            year: 1947
+        }))).toEqual(["spexRequired", "yearRange"]);
         expect(messages(revivalCreateSchema.safeParse({spexId: "1", year: 2101}))).toEqual(["yearRange"]);
     });
 });
@@ -37,7 +46,10 @@ describe("revivalDetailsSchema", () => {
     const show = (date: string, venue = "", time = "") => ({date, time, venue});
 
     it("accepts shows on or after the premiere, with or without a venue", () => {
-        expect(schema.safeParse({premiereDate: "2028-02-10", shows: [show("2028-02-10", "Kårhuset"), show("2028-02-12")]}).success).toBe(true);
+        expect(schema.safeParse({
+            premiereDate: "2028-02-10",
+            shows: [show("2028-02-10", "Kårhuset"), show("2028-02-12")]
+        }).success).toBe(true);
         expect(schema.safeParse({premiereDate: "", shows: []}).success).toBe(true);
     });
 
@@ -46,23 +58,47 @@ describe("revivalDetailsSchema", () => {
     });
 
     it("refuses shows before the premiere, without one, or twice", () => {
-        expect(messages(schema.safeParse({premiereDate: "2028-02-10", shows: [show("2028-02-09")]}))).toEqual(["showDateBeforePremiere"]);
-        expect(messages(schema.safeParse({premiereDate: "", shows: [show("2028-02-09")]}))).toEqual(["showDateWithoutPremiere"]);
-        expect(messages(schema.safeParse({premiereDate: "2028-02-10", shows: [show("2028-02-10", "Scen"), show("2028-02-10", " scen ")]})))
+        expect(messages(schema.safeParse({
+            premiereDate: "2028-02-10",
+            shows: [show("2028-02-09")]
+        }))).toEqual(["showDateBeforePremiere"]);
+        expect(messages(schema.safeParse({
+            premiereDate: "",
+            shows: [show("2028-02-09")]
+        }))).toEqual(["showDateWithoutPremiere"]);
+        expect(messages(schema.safeParse({
+            premiereDate: "2028-02-10",
+            shows: [show("2028-02-10", "Scen"), show("2028-02-10", " scen ")]
+        })))
             .toEqual(["showDuplicate"]);
     });
 
     it("takes an optional start time, so a matinée and an evening show are two shows", () => {
-        expect(schema.safeParse({premiereDate: "2028-02-10", shows: [show("2028-02-11", "Scen", "14:00"), show("2028-02-11", "Scen", "19:00")]}).success)
+        expect(schema.safeParse({
+            premiereDate: "2028-02-10",
+            shows: [show("2028-02-11", "Scen", "14:00"), show("2028-02-11", "Scen", "19:00")]
+        }).success)
             .toBe(true);
-        expect(messages(schema.safeParse({premiereDate: "2028-02-10", shows: [show("2028-02-11", "Scen", "19.00")]}))).toEqual(["timeInvalid"]);
-        expect(messages(schema.safeParse({premiereDate: "2028-02-10", shows: [show("2028-02-11", "Scen", "24:00")]}))).toEqual(["timeInvalid"]);
+        expect(messages(schema.safeParse({
+            premiereDate: "2028-02-10",
+            shows: [show("2028-02-11", "Scen", "19.00")]
+        }))).toEqual(["timeInvalid"]);
+        expect(messages(schema.safeParse({
+            premiereDate: "2028-02-10",
+            shows: [show("2028-02-11", "Scen", "24:00")]
+        }))).toEqual(["timeInvalid"]);
     });
 
     it("refuses invalid dates, long venues and more than 50 shows", () => {
         expect(messages(schema.safeParse({premiereDate: "2028-13-45", shows: []}))).toContain("dateInvalid");
-        expect(messages(schema.safeParse({premiereDate: "2028-02-10", shows: [show("2028-02-10", "x".repeat(256))]}))).toEqual(["venueTooLong"]);
-        expect(messages(schema.safeParse({premiereDate: "2028-02-10", shows: Array.from({length: 51}, (_, day) => show("2028-03-01", `Scen ${day}`))})))
+        expect(messages(schema.safeParse({
+            premiereDate: "2028-02-10",
+            shows: [show("2028-02-10", "x".repeat(256))]
+        }))).toEqual(["venueTooLong"]);
+        expect(messages(schema.safeParse({
+            premiereDate: "2028-02-10",
+            shows: Array.from({length: 51}, (_, day) => show("2028-03-01", `Scen ${day}`))
+        })))
             .toEqual(["showsTooMany"]);
     });
 });
@@ -71,8 +107,20 @@ describe("other schemas", () => {
     it("validates status changes and members", () => {
         expect(revivalStatusChangeSchema.safeParse({id: "1", from: "APPROVED", to: "ORGANISING"}).success).toBe(true);
         expect(revivalStatusChangeSchema.safeParse({id: "1", from: "APPROVED", to: "DONE"}).success).toBe(false);
-        expect(memberAddSchema.parse({revivalId: "1", email: "kim@example.org", role: "STEERING_GROUP"}).capabilities).toEqual([]);
-        expect(messages(memberAddSchema.safeParse({revivalId: "1", email: "kim", role: "DIRECTEUR"}))).toEqual(["emailInvalid"]);
-        expect(memberAddSchema.safeParse({revivalId: "1", email: "kim@example.org", role: "PARTICIPANT"}).success).toBe(false);
+        expect(memberAddSchema.parse({
+            revivalId: "1",
+            email: "kim@example.org",
+            role: "STEERING_GROUP"
+        }).capabilities).toEqual([]);
+        expect(messages(memberAddSchema.safeParse({
+            revivalId: "1",
+            email: "kim",
+            role: "DIRECTEUR"
+        }))).toEqual(["emailInvalid"]);
+        expect(memberAddSchema.safeParse({
+            revivalId: "1",
+            email: "kim@example.org",
+            role: "PARTICIPANT"
+        }).success).toBe(false);
     });
 });

@@ -85,18 +85,25 @@ export function AnonymizeCard({revival, anonymizedAt, autoAnonymizeOn, canAnonym
                         </AlertDialogHeader>
                         <div className="space-y-2">
                             <Label htmlFor={`${id}-confirm`}>{t("type", {title: revival.title})}</Label>
-                            <Input id={`${id}-confirm`} value={typed} autoComplete="off" onChange={event => setTyped(event.target.value)}/>
+                            <Input id={`${id}-confirm`} value={typed} autoComplete="off"
+                                   onChange={event => setTyped(event.target.value)}/>
                         </div>
                         <AlertDialogFooter>
                             <AlertDialogCancel>{tc("cancel")}</AlertDialogCancel>
-                            <AlertDialogAction variant="destructive" disabled={pending || !confirmsRevival(typed, revival)} onClick={() => startTransition(async () => {
-                                const result = await anonymizeRevivalAction({id: revival.id, version: revival.version, confirmation: typed.trim()});
+                            <AlertDialogAction variant="destructive"
+                                               disabled={pending || !confirmsRevival(typed, revival)}
+                                               onClick={() => startTransition(async () => {
+                                                   const result = await anonymizeRevivalAction({
+                                                       id: revival.id,
+                                                       version: revival.version,
+                                                       confirmation: typed.trim()
+                                                   });
 
-                                if (feedback(result, t("anonymized"))) {
-                                    track("revival-anonymize");
-                                    setOpen(false);
-                                }
-                            })}>
+                                                   if (feedback(result, t("anonymized"))) {
+                                                       track("revival-anonymize");
+                                                       setOpen(false);
+                                                   }
+                                               })}>
                                 {t("action")}
                             </AlertDialogAction>
                         </AlertDialogFooter>

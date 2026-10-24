@@ -2,9 +2,12 @@
 
 import {createContext, type ReactNode, useContext} from "react";
 import {useLocale, useTranslations} from "next-intl";
-import {catalogName, type CatalogEntryValue, type GuideItemTypeValue} from "@/components/catalog/catalog";
+import {type CatalogEntryValue, catalogName, type GuideItemTypeValue} from "@/components/catalog/catalog";
 
-const CatalogContext = createContext<{ capabilities: CatalogEntryValue[]; itemTypes: GuideItemTypeValue[] }>({capabilities: [], itemTypes: []});
+const CatalogContext = createContext<{
+    capabilities: CatalogEntryValue[];
+    itemTypes: GuideItemTypeValue[]
+}>({capabilities: [], itemTypes: []});
 
 /**
  * The active areas of responsibility and guide item types, for the pickers below it. Pages that offer a picker fetch

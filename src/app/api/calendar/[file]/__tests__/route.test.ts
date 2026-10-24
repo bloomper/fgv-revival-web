@@ -23,7 +23,10 @@ describe("GET /api/calendar/[file]", () => {
     });
 
     it("passes the feed through without a session, privately cached", async () => {
-        apiFetchPublic.mockResolvedValue(new Response(ICS, {status: 200, headers: {"content-type": "text/calendar; charset=utf-8"}}));
+        apiFetchPublic.mockResolvedValue(new Response(ICS, {
+            status: 200,
+            headers: {"content-type": "text/calendar; charset=utf-8"}
+        }));
 
         const response = await get(`${TOKEN}.ics`);
 

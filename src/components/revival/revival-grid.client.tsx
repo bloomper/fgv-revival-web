@@ -9,7 +9,11 @@ import {DataEmpty} from "@/components/data-empty";
 /**
  * The user's revivals as cards under a heading and filters, as on Spexregister's card pages.
  */
-export function RevivalGrid({title, revivals, roles}: { title: string; revivals: RevivalSummaryFragment[]; roles: Record<string, RevivalRole> }) {
+export function RevivalGrid({title, revivals, roles}: {
+    title: string;
+    revivals: RevivalSummaryFragment[];
+    roles: Record<string, RevivalRole>
+}) {
     const t = useTranslations("Common");
     const filter = useRevivalFilter(revivals);
 
@@ -21,7 +25,8 @@ export function RevivalGrid({title, revivals, roles}: { title: string; revivals:
             </div>
             {filter.filtered.length === 0
                 ? <DataEmpty title={t("noFilterMatchHeading")} description={t("noFilterMatchDescription")}/>
-                : filter.filtered.map(revival => <RevivalCard key={revival.id} revival={revival} role={roles[revival.id] ?? null}/>)}
+                : filter.filtered.map(revival => <RevivalCard key={revival.id} revival={revival}
+                                                              role={roles[revival.id] ?? null}/>)}
         </div>
     );
 }

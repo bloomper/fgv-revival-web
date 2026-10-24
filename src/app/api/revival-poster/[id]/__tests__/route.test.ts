@@ -21,7 +21,10 @@ describe("GET /api/revival-poster/[id]", () => {
     });
 
     it("passes the poster through, sandboxed", async () => {
-        apiFetch.mockResolvedValue(new Response(new Uint8Array([137, 80, 78, 71]), {status: 200, headers: {"content-type": "image/png"}}));
+        apiFetch.mockResolvedValue(new Response(new Uint8Array([137, 80, 78, 71]), {
+            status: 200,
+            headers: {"content-type": "image/png"}
+        }));
 
         const response = await get("3");
 

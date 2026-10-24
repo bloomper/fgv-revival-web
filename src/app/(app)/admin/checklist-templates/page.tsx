@@ -11,7 +11,8 @@ export default async function ChecklistTemplatesPage() {
         const t = await getTranslations("ChecklistTemplate");
 
         return (
-            <div className="hidden flex-1 items-center justify-center rounded-lg border border-dashed p-8 text-sm text-muted-foreground lg:flex">
+            <div
+                className="hidden flex-1 items-center justify-center rounded-lg border border-dashed p-8 text-sm text-muted-foreground lg:flex">
                 {t("choose")}
             </div>
         );

@@ -30,7 +30,11 @@ export type BudgetCategorySummary = {
  * The difference between what came in or went out and what was budgeted, signed so that a positive number is good for
  * the result: more income, or less cost, than budgeted.
  */
-export function categoryDifference({category, budgeted, actual}: Pick<BudgetCategorySummary, "category" | "budgeted" | "actual">): string | null {
+export function categoryDifference({
+                                       category,
+                                       budgeted,
+                                       actual
+                                   }: Pick<BudgetCategorySummary, "category" | "budgeted" | "actual">): string | null {
     return category.kind === "INCOME" ? subtractAmounts(actual, budgeted) : subtractAmounts(budgeted, actual);
 }
 
@@ -48,27 +52,28 @@ function References({references}: { references: ReferenceFigureView[] }) {
     return (
         <table className="w-full text-sm">
             <thead className="text-xs text-muted-foreground">
-                <tr>
-                    <th className="py-1 text-left font-normal">{t("reference")}</th>
-                    <th className="py-1 text-right font-normal">{t("budgeted")}</th>
-                    <th className="py-1 text-right font-normal">{t("actual")}</th>
-                    <th className="hidden py-1 text-right font-normal sm:table-cell">{t("perParticipant")}</th>
-                </tr>
+            <tr>
+                <th className="py-1 text-left font-normal">{t("reference")}</th>
+                <th className="py-1 text-right font-normal">{t("budgeted")}</th>
+                <th className="py-1 text-right font-normal">{t("actual")}</th>
+                <th className="hidden py-1 text-right font-normal sm:table-cell">{t("perParticipant")}</th>
+            </tr>
             </thead>
             <tbody>
-                {references.map(reference => (
-                    <tr key={`${reference.label}-${reference.year}`}>
-                        <td className="py-1">
-                            {reference.label}
-                            {reference.participants ? <span className="text-muted-foreground"> · {t("participantCount", {count: reference.participants})}</span> : null}
-                        </td>
-                        <td className="py-1 text-right"><AmountText value={reference.budgeted}/></td>
-                        <td className="py-1 text-right"><AmountText value={reference.actual}/></td>
-                        <td className="hidden py-1 text-right text-muted-foreground sm:table-cell">
-                            <AmountText value={reference.actualPerParticipant ?? reference.budgetedPerParticipant}/>
-                        </td>
-                    </tr>
-                ))}
+            {references.map(reference => (
+                <tr key={`${reference.label}-${reference.year}`}>
+                    <td className="py-1">
+                        {reference.label}
+                        {reference.participants ? <span
+                            className="text-muted-foreground"> · {t("participantCount", {count: reference.participants})}</span> : null}
+                    </td>
+                    <td className="py-1 text-right"><AmountText value={reference.budgeted}/></td>
+                    <td className="py-1 text-right"><AmountText value={reference.actual}/></td>
+                    <td className="hidden py-1 text-right text-muted-foreground sm:table-cell">
+                        <AmountText value={reference.actualPerParticipant ?? reference.budgetedPerParticipant}/>
+                    </td>
+                </tr>
+            ))}
             </tbody>
         </table>
     );
@@ -124,15 +129,21 @@ export function BudgetCategoryTable({categories}: { categories: BudgetCategorySu
                                     <Fragment key={row.category.id}>
                                         <TableRow>
                                             <TableCell>
-                                                <Button variant="ghost" size="sm" className="-ml-2 h-auto px-2 py-1 font-normal" aria-expanded={expanded}
-                                                        aria-label={t("showReferences", {name})} onClick={() => toggle(row.category.id)}>
+                                                <Button variant="ghost" size="sm"
+                                                        className="-ml-2 h-auto px-2 py-1 font-normal"
+                                                        aria-expanded={expanded}
+                                                        aria-label={t("showReferences", {name})}
+                                                        onClick={() => toggle(row.category.id)}>
                                                     {expanded ? <ChevronDown/> : <ChevronRight/>}
                                                     <span className="whitespace-normal text-left">{name}</span>
                                                 </Button>
                                             </TableCell>
-                                            <TableCell className="text-right"><AmountText value={row.budgeted}/></TableCell>
-                                            <TableCell className="text-right"><AmountText value={row.actual}/></TableCell>
-                                            <TableCell className="hidden text-right sm:table-cell"><AmountText value={categoryDifference(row)} signed/></TableCell>
+                                            <TableCell className="text-right"><AmountText
+                                                value={row.budgeted}/></TableCell>
+                                            <TableCell className="text-right"><AmountText
+                                                value={row.actual}/></TableCell>
+                                            <TableCell className="hidden text-right sm:table-cell"><AmountText
+                                                value={categoryDifference(row)} signed/></TableCell>
                                         </TableRow>
                                         {expanded && (
                                             <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -145,8 +156,10 @@ export function BudgetCategoryTable({categories}: { categories: BudgetCategorySu
                                 );
                             })}
                             <TableRow className="font-medium hover:bg-transparent">
-                                <TableCell><span className="flex items-center gap-2">{t("subtotal")} <KindBadge kind={kind}/></span></TableCell>
-                                <TableCell className="text-right"><AmountText value={sum(rows, "budgeted")}/></TableCell>
+                                <TableCell><span className="flex items-center gap-2">{t("subtotal")} <KindBadge
+                                    kind={kind}/></span></TableCell>
+                                <TableCell className="text-right"><AmountText
+                                    value={sum(rows, "budgeted")}/></TableCell>
                                 <TableCell className="text-right"><AmountText value={sum(rows, "actual")}/></TableCell>
                                 <TableCell className="hidden sm:table-cell"/>
                             </TableRow>

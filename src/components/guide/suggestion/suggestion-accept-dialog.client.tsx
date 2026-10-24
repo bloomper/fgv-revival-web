@@ -22,7 +22,10 @@ type DraftItem = { type: GuideItemTypeValue; text: { sv: string; en?: string | n
  * Accepts a suggestion into the draft. When the item has changed in the draft since, the server answers CONFLICT and
  * the super admin chooses what the draft gets (FR-033).
  */
-export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: GuideSuggestionFieldsFragment; draftItem: DraftItem }) {
+export function SuggestionAcceptDialog({suggestion, draftItem}: {
+    suggestion: GuideSuggestionFieldsFragment;
+    draftItem: DraftItem
+}) {
     const t = useTranslations();
     const locale = useLocale();
     const feedback = useActionFeedback();
@@ -34,7 +37,11 @@ export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: Gu
     const [text, setText] = useState(suggestion.proposedText?.sv || draftItem?.text.sv || suggestion.item?.text.sv || "");
     const [pending, startTransition] = useTransition();
 
-    const accept = (resolution: { keep?: boolean; type?: string; text?: { sv: string } } | null) => startTransition(async () => {
+    const accept = (resolution: {
+        keep?: boolean;
+        type?: string;
+        text?: { sv: string }
+    } | null) => startTransition(async () => {
         const result = await acceptSuggestionAction({id: suggestion.id, version: suggestion.version, note, resolution});
 
         if (!result.ok && result.code === "CONFLICT" && !resolution) {
@@ -63,7 +70,8 @@ export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: Gu
                         <div className="grid gap-2 md:grid-cols-2">
                             <div className="rounded-md border p-2 text-sm">
                                 <span className="text-xs text-muted-foreground">{t("Guide.suggestions.inDraft")}</span>
-                                {draftItem ? <GuideMarkdown>{pickText(draftItem.text, locale).text}</GuideMarkdown> : <p>{t("Guide.suggestions.goneFromDraft")}</p>}
+                                {draftItem ? <GuideMarkdown>{pickText(draftItem.text, locale).text}</GuideMarkdown> :
+                                    <p>{t("Guide.suggestions.goneFromDraft")}</p>}
                             </div>
                             <div className="rounded-md border p-2 text-sm">
                                 <span className="text-xs text-muted-foreground">{t("Guide.suggestions.proposed")}</span>
@@ -72,23 +80,31 @@ export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: Gu
                         </div>
                         {suggestion.kind === "REMOVE" ? (
                             <DialogFooter>
-                                <Button variant="outline" disabled={pending} onClick={() => accept({keep: true})}>{t("Guide.suggestions.keep")}</Button>
-                                <Button variant="destructive" disabled={pending} onClick={() => accept({keep: false})}>{t("Guide.suggestions.removeAnyway")}</Button>
+                                <Button variant="outline" disabled={pending}
+                                        onClick={() => accept({keep: true})}>{t("Guide.suggestions.keep")}</Button>
+                                <Button variant="destructive" disabled={pending}
+                                        onClick={() => accept({keep: false})}>{t("Guide.suggestions.removeAnyway")}</Button>
                             </DialogFooter>
                         ) : (
                             <>
                                 <div className="space-y-2">
                                     <Label htmlFor="resolution-type">{t("Guide.editor.type")}</Label>
-                                    <NativeSelect className="w-full" id="resolution-type" value={type} onChange={event => setType(event.target.value)}>
-                                        <CatalogOptions entries={catalogChoices(types, [suggestion.proposedType, draftItem?.type, suggestion.item?.type])}/>
+                                    <NativeSelect className="w-full" id="resolution-type" value={type}
+                                                  onChange={event => setType(event.target.value)}>
+                                        <CatalogOptions
+                                            entries={catalogChoices(types, [suggestion.proposedType, draftItem?.type, suggestion.item?.type])}/>
                                     </NativeSelect>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="resolution-text">{t("Guide.suggestions.draftGets")}</Label>
-                                    <Textarea id="resolution-text" rows={5} value={text} onChange={event => setText(event.target.value)}/>
+                                    <Textarea id="resolution-text" rows={5} value={text}
+                                              onChange={event => setText(event.target.value)}/>
                                 </div>
                                 <DialogFooter>
-                                    <Button disabled={pending || !text.trim()} onClick={() => accept({type, text: {sv: text}})}>{t("Guide.suggestions.accept")}</Button>
+                                    <Button disabled={pending || !text.trim()} onClick={() => accept({
+                                        type,
+                                        text: {sv: text}
+                                    })}>{t("Guide.suggestions.accept")}</Button>
                                 </DialogFooter>
                             </>
                         )}
@@ -97,10 +113,12 @@ export function SuggestionAcceptDialog({suggestion, draftItem}: { suggestion: Gu
                     <>
                         <div className="space-y-2">
                             <Label htmlFor="accept-note">{t("Guide.suggestions.note")}</Label>
-                            <Textarea id="accept-note" rows={2} value={note} onChange={event => setNote(event.target.value)}/>
+                            <Textarea id="accept-note" rows={2} value={note}
+                                      onChange={event => setNote(event.target.value)}/>
                         </div>
                         <DialogFooter>
-                            <Button disabled={pending} onClick={() => accept(null)}>{t("Guide.suggestions.accept")}</Button>
+                            <Button disabled={pending}
+                                    onClick={() => accept(null)}>{t("Guide.suggestions.accept")}</Button>
                         </DialogFooter>
                     </>
                 )}
@@ -128,11 +146,16 @@ export function SuggestionRejectDialog({suggestion}: { suggestion: GuideSuggesti
                 </DialogHeader>
                 <div className="space-y-2">
                     <Label htmlFor="reject-reason">{t("Guide.suggestions.rejectReason")}</Label>
-                    <Textarea id="reject-reason" rows={3} value={reason} onChange={event => setReason(event.target.value)}/>
+                    <Textarea id="reject-reason" rows={3} value={reason}
+                              onChange={event => setReason(event.target.value)}/>
                 </div>
                 <DialogFooter>
                     <Button disabled={pending} onClick={() => startTransition(async () => {
-                        if (feedback(await rejectSuggestionAction({id: suggestion.id, version: suggestion.version, reason}), t("Guide.suggestions.rejected"))) {
+                        if (feedback(await rejectSuggestionAction({
+                            id: suggestion.id,
+                            version: suggestion.version,
+                            reason
+                        }), t("Guide.suggestions.rejected"))) {
                             setOpen(false);
                         }
                     })}>

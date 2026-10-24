@@ -25,7 +25,10 @@ describe("GET /api/budget-export/[id]", () => {
     it("downloads the workbook in the locale cookie's language", async () => {
         apiFetch.mockResolvedValue(new Response(new Uint8Array([80, 75, 3, 4]), {
             status: 200,
-            headers: {"content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "content-disposition": "attachment; filename=\"budget-ali-baba-2028.xlsx\""},
+            headers: {
+                "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "content-disposition": "attachment; filename=\"budget-ali-baba-2028.xlsx\""
+            },
         }));
 
         const response = await get("3", "en");

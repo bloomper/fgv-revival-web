@@ -38,7 +38,12 @@ async function loadCandidates(id: string, fallback: Person[]): Promise<{ people:
                 .filter(participant => !participant.removed && (participant.kind === "HELPER"
                     ? participant.response !== "NO"
                     : participant.response === "YES" || participant.response === "MAYBE"))
-                .map(participant => ({id: participant.id, name: participantName(participant), kind: participant.kind, position: participant.position?.name ?? null})),
+                .map(participant => ({
+                    id: participant.id,
+                    name: participantName(participant),
+                    kind: participant.kind,
+                    position: participant.position?.name ?? null
+                })),
             unavailable: false,
         };
     } catch (error) {
@@ -73,9 +78,17 @@ export default async function StaffingPage({params, searchParams}: {
         const matrix = query.view === "matrix";
         const base = `/revivals/${revival.id}/staffing`;
         const href = (view: "slots" | "matrix") => `${base}?${new URLSearchParams({...(event ? {event: event.id} : {}), ...(view === "matrix" ? {view} : {})})}`;
-        const answered: Person[] = availability.map(row => ({id: row.participant.id, name: row.participant.displayName, kind: row.participant.kind,
-            position: row.participant.position?.name ?? null}));
-        const {people, unavailable} = revival.permissions.canWriteStaffing && !matrix ? await loadCandidates(revival.id, answered) : {people: [], unavailable: false};
+        const answered: Person[] = availability.map(row => ({
+            id: row.participant.id, name: row.participant.displayName, kind: row.participant.kind,
+            position: row.participant.position?.name ?? null
+        }));
+        const {
+            people,
+            unavailable
+        } = revival.permissions.canWriteStaffing && !matrix ? await loadCandidates(revival.id, answered) : {
+            people: [],
+            unavailable: false
+        };
 
         return (
             <div className="flex flex-1 flex-col gap-4">
@@ -85,16 +98,20 @@ export default async function StaffingPage({params, searchParams}: {
                 ) : (
                     <>
                         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                            <StaffingEventPicker events={events} selected={event?.id ?? ""} view={matrix ? "matrix" : null}/>
+                            <StaffingEventPicker events={events} selected={event?.id ?? ""}
+                                                 view={matrix ? "matrix" : null}/>
                             <nav aria-label={t("views")} className="flex w-fit gap-1 rounded-lg bg-muted p-1">
-                                <ViewLink href={href("slots")} active={!matrix} icon={CalendarClock}>{t("slotsView")}</ViewLink>
-                                <ViewLink href={href("matrix")} active={matrix} icon={Grid3x3}>{t("matrixView")}</ViewLink>
+                                <ViewLink href={href("slots")} active={!matrix}
+                                          icon={CalendarClock}>{t("slotsView")}</ViewLink>
+                                <ViewLink href={href("matrix")} active={matrix}
+                                          icon={Grid3x3}>{t("matrixView")}</ViewLink>
                             </nav>
                         </div>
                         {event && (matrix ? (
                             <AvailabilityMatrix event={event} availability={availability}/>
                         ) : (
-                            <StaffingBoard revivalId={revival.id} event={event} slots={slots.filter(slot => slot.event.id === event.id)}
+                            <StaffingBoard revivalId={revival.id} event={event}
+                                           slots={slots.filter(slot => slot.event.id === event.id)}
                                            availability={availability} people={people} peopleUnavailable={unavailable}
                                            canWrite={revival.permissions.canWriteStaffing}/>
                         ))}

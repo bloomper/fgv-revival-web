@@ -34,8 +34,12 @@ function Counts({summary}: { summary: ChecklistSummary }) {
 
     return (
         <span className="ml-auto flex shrink-0 items-baseline gap-1.5 text-xs tabular-nums">
-            {summary.overdueCount > 0 && <span className="text-destructive">{t("overdueCount", {count: summary.overdueCount})}</span>}
-            <span className="text-muted-foreground">{t("counts", {open: summary.openCount, total: summary.totalCount})}</span>
+            {summary.overdueCount > 0 &&
+                <span className="text-destructive">{t("overdueCount", {count: summary.overdueCount})}</span>}
+            <span className="text-muted-foreground">{t("counts", {
+                open: summary.openCount,
+                total: summary.totalCount
+            })}</span>
         </span>
     );
 }
@@ -100,7 +104,8 @@ export function ChecklistNav({revivalId, checklists, templates, canWrite}: {
                 <h4 className="px-2 text-sm font-medium text-muted-foreground">{t("find")}</h4>
                 <div className="flex flex-wrap gap-1 px-2" role="group" aria-label={t("filter.label")}>
                     {CHECKLIST_FILTERS.map(key => (
-                        <Link key={key} href={`${base}${checklistFilterQuery(filter, key)}`} aria-pressed={!!filter?.[key]}
+                        <Link key={key} href={`${base}${checklistFilterQuery(filter, key)}`}
+                              aria-pressed={!!filter?.[key]}
                               className={cn("rounded-full border px-2.5 py-0.5 text-xs hover:bg-accent",
                                   filter?.[key] && "border-primary bg-primary text-primary-foreground hover:bg-primary/90")}>
                             {t(`filter.${key}`)}
@@ -116,8 +121,10 @@ export function ChecklistNav({revivalId, checklists, templates, canWrite}: {
                         <li key={chapter.id}>
                             {link(chapter, (
                                 <>
-                                    <span className="w-5 shrink-0 text-right tabular-nums text-muted-foreground">{index + 1}.</span>{" "}
-                                    <span className="min-w-0">{chapter.chapterTitle ? pickText(chapter.chapterTitle, locale).text : chapter.chapterKey}</span>
+                                    <span
+                                        className="w-5 shrink-0 text-right tabular-nums text-muted-foreground">{index + 1}.</span>{" "}
+                                    <span
+                                        className="min-w-0">{chapter.chapterTitle ? pickText(chapter.chapterTitle, locale).text : chapter.chapterKey}</span>
                                     {" "}<Counts summary={chapter}/>
                                 </>
                             ))}
@@ -140,7 +147,8 @@ export function ChecklistNav({revivalId, checklists, templates, canWrite}: {
                                     <>
                                         <span className="min-w-0">
                                             {event.name}
-                                            {event.date && <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">{formatDate(event.date)}</span>}
+                                            {event.date && <span
+                                                className="ml-1.5 text-xs text-muted-foreground tabular-nums">{formatDate(event.date)}</span>}
                                         </span>
                                         {event.cancelled && <Badge variant="outline">{t("cancelled")}</Badge>}
                                         {" "}<Counts summary={event}/>

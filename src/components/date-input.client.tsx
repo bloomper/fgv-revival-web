@@ -33,7 +33,13 @@ function fromIso(value: string): Date | undefined {
  * It takes the props of an `<input>`, so `form.register()` works unchanged: picking a day sets the input's value and
  * fires an input event, as typing would.
  */
-export function DateInput({className, ref, disabled, "aria-label": ariaLabel, ...props}: React.ComponentProps<"input">) {
+export function DateInput({
+                              className,
+                              ref,
+                              disabled,
+                              "aria-label": ariaLabel,
+                              ...props
+                          }: React.ComponentProps<"input">) {
     const t = useTranslations("Common");
     const locale = useLocale();
     const input = useRef<HTMLInputElement | null>(null);
@@ -63,8 +69,10 @@ export function DateInput({className, ref, disabled, "aria-label": ariaLabel, ..
 
     return (
         <div className={cn("flex w-fit items-center gap-1", className)}>
-            <Input {...props} ref={setRef} type="text" inputMode="numeric" autoComplete="off" placeholder={t("datePlaceholder")}
-                   pattern="\d{4}-\d{2}-\d{2}" maxLength={10} className="w-32 tabular-nums" disabled={disabled} aria-label={ariaLabel}/>
+            <Input {...props} ref={setRef} type="text" inputMode="numeric" autoComplete="off"
+                   placeholder={t("datePlaceholder")}
+                   pattern="\d{4}-\d{2}-\d{2}" maxLength={10} className="w-32 tabular-nums" disabled={disabled}
+                   aria-label={ariaLabel}/>
             <Popover open={open} onOpenChange={(next) => {
                 if (next) {
                     setSelected(fromIso(input.current?.value ?? ""));

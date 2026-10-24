@@ -75,7 +75,8 @@ export default async function RevivalLayout({children, params}: {
                         <CalendarCheck/>
                         <AlertTitle>{t("meetingInProgress")}</AlertTitle>
                         <AlertDescription>
-                            <Link href={`/revivals/${revival.id}/meetings/${work.meetingInProgress.id}`} className="underline">
+                            <Link href={`/revivals/${revival.id}/meetings/${work.meetingInProgress.id}`}
+                                  className="underline">
                                 {work.meetingInProgress.title ?? work.meetingInProgress.date}
                             </Link>
                         </AlertDescription>
@@ -84,7 +85,8 @@ export default async function RevivalLayout({children, params}: {
 
                 <RevivalTabs revivalId={revival.id} work={work} canReadBudget={revival.permissions.canReadBudget}
                              canReadParticipants={revival.permissions.canReadParticipants}
-                             canReadStaffing={revival.permissions.canReadStaffing} canReadMailings={revival.permissions.canReadMailings}
+                             canReadStaffing={revival.permissions.canReadStaffing}
+                             canReadMailings={revival.permissions.canReadMailings}
                              canReadMaterials={revival.permissions.canReadMaterials}
                              closingProminent={["CLOSING", "SETTLING"].includes(revival.status)}/>
 

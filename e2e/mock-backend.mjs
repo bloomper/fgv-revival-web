@@ -23,7 +23,12 @@ const KID = "e2e-key";
 const TOKEN_TTL = 3600;
 
 const PERSONAS = {
-    superadmin: {sub: "p-superadmin", name: "Sara Admin", email: "sara.admin@example.org", roles: ["USER", "SUPER_ADMIN"]},
+    superadmin: {
+        sub: "p-superadmin",
+        name: "Sara Admin",
+        email: "sara.admin@example.org",
+        roles: ["USER", "SUPER_ADMIN"]
+    },
     observer: {sub: "p-observer", name: "Olle Observatör", email: "olle@example.org", roles: ["USER", "OBSERVER"]},
     directeur: {sub: "p-directeur", name: "Dana Directeur", email: "dana@example.org", roles: ["USER"]},
     styrgrupp: {sub: "p-styrgrupp", name: "Stina Styrgrupp", email: "stina@example.org", roles: ["USER"]},
@@ -66,13 +71,62 @@ function resetState(guideSeed = "none") {
         closing: createClosingState(),
         nextId: 100,
         revivals: [
-            {id: "1", spexId: "1", year: 2028, title: "Ali Baba 2028", premiereDate: null, shows: [], status: "APPROVED", version: 0, history: [], guideVersionId: null},
-            {id: "2", spexId: "2", year: 2030, title: "Nobel 2030", premiereDate: null, shows: [], status: "PROPOSED", version: 0, history: [], guideVersionId: null},
-            {id: "3", spexId: "3", year: 2027, title: "Snorre 2027", premiereDate: "2027-03-01", shows: [{date: "2027-03-01", time: "19:00", venue: "Kårhuset"}], status: "OPEN", version: 0, history: [], guideVersionId: null},
+            {
+                id: "1",
+                spexId: "1",
+                year: 2028,
+                title: "Ali Baba 2028",
+                premiereDate: null,
+                shows: [],
+                status: "APPROVED",
+                version: 0,
+                history: [],
+                guideVersionId: null
+            },
+            {
+                id: "2",
+                spexId: "2",
+                year: 2030,
+                title: "Nobel 2030",
+                premiereDate: null,
+                shows: [],
+                status: "PROPOSED",
+                version: 0,
+                history: [],
+                guideVersionId: null
+            },
+            {
+                id: "3",
+                spexId: "3",
+                year: 2027,
+                title: "Snorre 2027",
+                premiereDate: "2027-03-01",
+                shows: [{date: "2027-03-01", time: "19:00", venue: "Kårhuset"}],
+                status: "OPEN",
+                version: 0,
+                history: [],
+                guideVersionId: null
+            },
         ],
         members: [
-            {id: "m1", revivalId: "1", role: "DIRECTEUR", capabilities: [], email: "dana@example.org", sub: "p-directeur", version: 0},
-            {id: "m2", revivalId: "1", role: "STEERING_GROUP", capabilities: ["FINANCE"], email: "stina@example.org", sub: "p-styrgrupp", version: 0},
+            {
+                id: "m1",
+                revivalId: "1",
+                role: "DIRECTEUR",
+                capabilities: [],
+                email: "dana@example.org",
+                sub: "p-directeur",
+                version: 0
+            },
+            {
+                id: "m2",
+                revivalId: "1",
+                role: "STEERING_GROUP",
+                capabilities: ["FINANCE"],
+                email: "stina@example.org",
+                sub: "p-styrgrupp",
+                version: 0
+            },
         ],
     };
 }
@@ -215,7 +269,12 @@ function toRevival(persona, revival) {
         })),
         guideVersion: (() => {
             const pinned = state.guide.versions.find(version => version.id === revival.guideVersionId);
-            return pinned ? {__typename: "GuideVersionSummary", id: pinned.id, label: pinned.label, publishedAt: pinned.publishedAt} : null;
+            return pinned ? {
+                __typename: "GuideVersionSummary",
+                id: pinned.id,
+                label: pinned.label,
+                publishedAt: pinned.publishedAt
+            } : null;
         })(),
         statusHistory: [...revival.history].reverse().map(change => ({__typename: "RevivalStatusChange", ...change})),
         permissions: permissions(persona, revival),
@@ -275,10 +334,17 @@ const resolvers = {
             revival: {
                 __typename: "Revival", id: revival.id,
                 workSummary: {
-                    __typename: "RevivalWorkSummary", openEntries: open.length, overdueEntries: open.filter(entry => entry.deadline && entry.deadline < today).length,
+                    __typename: "RevivalWorkSummary",
+                    openEntries: open.length,
+                    overdueEntries: open.filter(entry => entry.deadline && entry.deadline < today).length,
                     overdueChecklistItems: items.filter(item => item.deadline && item.deadline < today).length,
                     openRequiredItems: items.filter(item => item.required).length,
-                    meetingInProgress: meeting ? {__typename: "MeetingSummary", id: meeting.id, title: meeting.title, date: meeting.date} : null,
+                    meetingInProgress: meeting ? {
+                        __typename: "MeetingSummary",
+                        id: meeting.id,
+                        title: meeting.title,
+                        date: meeting.date
+                    } : null,
                     upcomingEvents: events.upcomingEvents(revival),
                 },
             },
@@ -292,7 +358,12 @@ const resolvers = {
             throw new GraphQLError("SPEXREGISTER_UNAVAILABLE", "Spexregistret är inte tillgängligt just nu.");
         }
         const needle = (query ?? "").toLowerCase();
-        return {spexSearch: SPEX.filter(spex => spex.title.toLowerCase().includes(needle)).map(spex => ({__typename: "Spex", ...spex, available: true}))};
+        return {
+            spexSearch: SPEX.filter(spex => spex.title.toLowerCase().includes(needle)).map(spex => ({
+                __typename: "Spex", ...spex,
+                available: true
+            }))
+        };
     },
     RevivalCreate(persona, {input}) {
         if (!isSuperAdmin(persona)) {
@@ -305,8 +376,15 @@ const resolvers = {
             throw new GraphQLError("BAD_REQUEST", `Det finns redan en nyuppsättning av spexet ${input.year}.`);
         }
         const revival = {
-            id: String(state.nextId++), spexId: String(input.spexId), year: Number(input.year), title: titleOf(input.spexId, input.year),
-            premiereDate: null, shows: [], status: "PROPOSED", version: 0, history: [],
+            id: String(state.nextId++),
+            spexId: String(input.spexId),
+            year: Number(input.year),
+            title: titleOf(input.spexId, input.year),
+            premiereDate: null,
+            shows: [],
+            status: "PROPOSED",
+            version: 0,
+            history: [],
             guideVersionId: state.guide.versions.filter(version => version.status === "PUBLISHED").sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0]?.id ?? null,
         };
         state.revivals.push(revival);
@@ -328,7 +406,11 @@ const resolvers = {
             return {revivalUpdate: toRevival(persona, revival)};
         }
         const premiereDate = input.clearPremiereDate ? null : input.premiereDate ?? revival.premiereDate;
-        const shows = (input.shows ?? revival.shows).map(show => ({date: show.date, time: show.time?.trim() || null, venue: show.venue?.trim() || null}));
+        const shows = (input.shows ?? revival.shows).map(show => ({
+            date: show.date,
+            time: show.time?.trim() || null,
+            venue: show.venue?.trim() || null
+        }));
         if (premiereDate && Number(premiereDate.slice(0, 4)) !== revival.year) {
             throw new GraphQLError("BAD_REQUEST", `Premiären måste ligga år ${revival.year}, nyuppsättningens år.`);
         }
@@ -359,7 +441,12 @@ const resolvers = {
         if (!permissions(persona, revival).allowedStatuses.includes(input.to)) {
             throw forbidden();
         }
-        revival.history.push({from: revival.status, to: input.to, changedBy: persona.name, changedAt: new Date().toISOString()});
+        revival.history.push({
+            from: revival.status,
+            to: input.to,
+            changedBy: persona.name,
+            changedAt: new Date().toISOString()
+        });
         revival.status = input.to;
         revival.version += 1;
         return {revivalStatusChange: toRevival(persona, revival)};
@@ -376,8 +463,16 @@ const resolvers = {
             throw new GraphQLError("BAD_REQUEST", "Personen har redan en roll i nyuppsättningen.");
         }
         // An address that is no persona's stands for one with no Keycloak user: the server creates and invites it
-        const member = {id: `m${state.nextId++}`, revivalId: revival.id, role: input.role, capabilities: input.capabilities ?? [], email, sub: person?.sub ?? null,
-            invitedAt: person ? null : new Date().toISOString(), version: 0};
+        const member = {
+            id: `m${state.nextId++}`,
+            revivalId: revival.id,
+            role: input.role,
+            capabilities: input.capabilities ?? [],
+            email,
+            sub: person?.sub ?? null,
+            invitedAt: person ? null : new Date().toISOString(),
+            version: 0
+        };
         state.members.push(member);
         return {revivalMemberAdd: toRevival(persona, revival).members.find(candidate => candidate.id === member.id)};
     },
@@ -394,7 +489,12 @@ const resolvers = {
             revivalMemberCandidates: Object.values(PERSONAS)
                 .filter(candidate => `${candidate.name} ${candidate.email}`.toLowerCase().includes(words))
                 .slice(0, 10)
-                .map(candidate => ({__typename: "MemberCandidate", email: candidate.email, displayName: candidate.name, hasAccess: candidate.roles.includes("USER")})),
+                .map(candidate => ({
+                    __typename: "MemberCandidate",
+                    email: candidate.email,
+                    displayName: candidate.name,
+                    hasAccess: candidate.roles.includes("USER")
+                })),
         };
     },
     RevivalMemberCapabilitiesSet(persona, {input}) {
@@ -407,7 +507,14 @@ const resolvers = {
             throw new GraphQLError("CONFLICT", "Någon annan har ändrat detta.");
         }
         Object.assign(member, {capabilities: input.capabilities, version: member.version + 1});
-        return {revivalMemberCapabilitiesSet: {__typename: "RevivalMember", id: member.id, capabilities: member.capabilities, version: member.version}};
+        return {
+            revivalMemberCapabilitiesSet: {
+                __typename: "RevivalMember",
+                id: member.id,
+                capabilities: member.capabilities,
+                version: member.version
+            }
+        };
     },
     RevivalMemberRemove(persona, {id}) {
         const member = state.members.find(candidate => candidate.id === id);
@@ -430,11 +537,27 @@ Object.assign(resolvers, meetingResolvers({
     state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, personas: bySub, log: logExports,
 }));
 Object.assign(resolvers, checklistResolvers({
-    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, personas: bySub, log: logExports, isSuperAdmin,
+    state: () => state,
+    GraphQLError,
+    forbidden,
+    roleIn,
+    canSee,
+    visibleRevival,
+    personas: bySub,
+    log: logExports,
+    isSuperAdmin,
 }));
 
 Object.assign(resolvers, guideResolvers({
-    state: () => state, GraphQLError, forbidden, isSuperAdmin, seesEverything, roleIn, canSee, visibleRevival, nameOf: sub => bySub[sub]?.name ?? null,
+    state: () => state,
+    GraphQLError,
+    forbidden,
+    isSuperAdmin,
+    seesEverything,
+    roleIn,
+    canSee,
+    visibleRevival,
+    nameOf: sub => bySub[sub]?.name ?? null,
 }));
 
 const {upcomingEvents, eventOfChecklist, seed: seedEvents, feed: calendarFeed, ...eventOperations} = eventResolvers({
@@ -450,42 +573,90 @@ const checklistResolver = resolvers.Checklist;
 resolvers.Checklist = (persona, variables) => {
     const result = checklistResolver(persona, variables);
 
-    return result.checklist ? {...result, checklist: {...result.checklist, event: eventOfChecklist(result.checklist.id)}} : result;
+    return result.checklist ? {
+        ...result,
+        checklist: {...result.checklist, event: eventOfChecklist(result.checklist.id)}
+    } : result;
 };
 
 // The budget (M5); an event type carries the budget lines it proposes
 const budget = budgetResolvers({
-    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, seesEverything, log: logExports,
+    state: () => state,
+    GraphQLError,
+    forbidden,
+    roleIn,
+    canSee,
+    visibleRevival,
+    isSuperAdmin,
+    seesEverything,
+    log: logExports,
 });
 
 Object.assign(resolvers, budget.resolvers);
 
 // Participants, invitations and the participant's own page (M6a)
 const participants = participantResolvers({
-    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, seesEverything, personas: bySub,
+    state: () => state,
+    GraphQLError,
+    forbidden,
+    roleIn,
+    canSee,
+    visibleRevival,
+    isSuperAdmin,
+    seesEverything,
+    personas: bySub,
 });
 
 Object.assign(resolvers, participants.resolvers);
 
 // Availability, staffing and mailings (M6b); it adds the participant page's events, availability and shifts
 const staffing = staffingResolvers({
-    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, personas: bySub, participants, resolvers,
+    state: () => state,
+    GraphQLError,
+    forbidden,
+    roleIn,
+    canSee,
+    visibleRevival,
+    isSuperAdmin,
+    personas: bySub,
+    participants,
+    resolvers,
 });
 
 Object.assign(resolvers, staffing.resolvers);
 
 // Materials, the inventory and the link services (M8); it adds the participant page's materials
 const material = materialResolvers({
-    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, participants, positions: POSITIONS, log: logExports,
-    resolvers, permissions,
+    state: () => state,
+    GraphQLError,
+    forbidden,
+    roleIn,
+    canSee,
+    visibleRevival,
+    isSuperAdmin,
+    participants,
+    positions: POSITIONS,
+    log: logExports,
+    resolvers,
+    permissions,
 });
 
 Object.assign(resolvers, material.resolvers);
 
 // Closing: membership marks, the sync to Spexregister and anonymization (M7)
 const closing = closingResolvers({
-    state: () => state, GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, participants, positions: POSITIONS, log: logExports,
-    resolvers, permissions,
+    state: () => state,
+    GraphQLError,
+    forbidden,
+    roleIn,
+    canSee,
+    visibleRevival,
+    isSuperAdmin,
+    participants,
+    positions: POSITIONS,
+    log: logExports,
+    resolvers,
+    permissions,
 });
 
 Object.assign(resolvers, closing.resolvers);
@@ -495,7 +666,12 @@ const eventTypesResolver = resolvers.EventTypes;
 resolvers.EventTypes = (persona, variables) => {
     const result = eventTypesResolver(persona, variables);
 
-    return {eventTypes: result.eventTypes.map(eventType => ({...eventType, budgetLines: budget.typeLinesOf(eventType.id)}))};
+    return {
+        eventTypes: result.eventTypes.map(eventType => ({
+            ...eventType,
+            budgetLines: budget.typeLinesOf(eventType.id)
+        }))
+    };
 };
 
 // What holds a catalog entry, so the mock refuses to delete it as the server does
@@ -555,10 +731,16 @@ function handleGraphql(req, body, res) {
         res.end(JSON.stringify({data: toObjects(state.catalog, resolver(persona, payload.variables || {}))}));
     } catch (error) {
         if (error instanceof GraphQLError) {
-            res.end(JSON.stringify({data: null, errors: [{message: error.message, extensions: {classification: error.classification}}]}));
+            res.end(JSON.stringify({
+                data: null,
+                errors: [{message: error.message, extensions: {classification: error.classification}}]
+            }));
         } else {
             console.error(error);
-            res.end(JSON.stringify({data: null, errors: [{message: String(error), extensions: {classification: "INTERNAL_ERROR"}}]}));
+            res.end(JSON.stringify({
+                data: null,
+                errors: [{message: String(error), extensions: {classification: "INTERNAL_ERROR"}}]
+            }));
         }
     }
 }
@@ -581,7 +763,13 @@ const {privateKey, publicKey} = await generateKeyPair("RS256", {extractable: tru
 const publicJwk = {...(await exportJWK(publicKey)), kid: KID, alg: "RS256", use: "sig"};
 const pendingCodes = new Map();
 
-const userClaims = persona => ({sub: persona.sub, name: persona.name, email: persona.email, email_verified: true, preferred_username: persona.email});
+const userClaims = persona => ({
+    sub: persona.sub,
+    name: persona.name,
+    email: persona.email,
+    email_verified: true,
+    preferred_username: persona.email
+});
 
 const signJwt = (persona, claims, audience) =>
     new SignJWT(claims)
@@ -626,7 +814,12 @@ async function handleToken(body, res) {
     const {persona, nonce} = pending;
     res.writeHead(200, {"content-type": "application/json"});
     res.end(JSON.stringify({
-        access_token: await signJwt(persona, {...userClaims(persona), typ: "Bearer", azp: CLIENT_ID, resource_access: {[CLIENT_ID]: {roles: persona.roles}}}, "account"),
+        access_token: await signJwt(persona, {
+            ...userClaims(persona),
+            typ: "Bearer",
+            azp: CLIENT_ID,
+            resource_access: {[CLIENT_ID]: {roles: persona.roles}}
+        }, "account"),
         id_token: await signJwt(persona, {...userClaims(persona), ...(nonce ? {nonce} : {})}, CLIENT_ID),
         refresh_token: `refresh-${randomUUID()}`,
         token_type: "Bearer",
@@ -665,7 +858,13 @@ const server = createServer((req, res) => {
             const input = JSON.parse(body);
             const version = state.guide.versions.find(candidate => candidate.status === "PUBLISHED");
             const tip = version.chapters.flatMap(chapter => chapter.sections.flatMap(section => section.items)).find(entry => entry.type === "TIP");
-            resolvers.GuideSuggestionCreate(PERSONAS.styrgrupp, {input: {...input, versionId: version.id, itemKey: input.kind === "ADD" ? null : tip.key}});
+            resolvers.GuideSuggestionCreate(PERSONAS.styrgrupp, {
+                input: {
+                    ...input,
+                    versionId: version.id,
+                    itemKey: input.kind === "ADD" ? null : tip.key
+                }
+            });
             res.writeHead(204).end();
         } else if (req.method === "POST" && path === "/__log") {
             resolvers.LogEntryCreate(PERSONAS.styrgrupp, {input: JSON.parse(body)});
@@ -674,8 +873,15 @@ const server = createServer((req, res) => {
             const {failOnce, waiting} = JSON.parse(body);
             state.meeting.failOnce = failOnce ?? [];
             for (let index = 0; index < (waiting ?? 0); index++) {
-                state.members.push({id: `m${state.nextId++}`, revivalId: "1", role: "STEERING_GROUP", capabilities: [], email: `waiting${index}@example.org`,
-                    sub: null, version: 0});
+                state.members.push({
+                    id: `m${state.nextId++}`,
+                    revivalId: "1",
+                    role: "STEERING_GROUP",
+                    capabilities: [],
+                    email: `waiting${index}@example.org`,
+                    sub: null,
+                    version: 0
+                });
             }
             res.writeHead(204).end();
         } else if (req.method === "POST" && path === "/__templates") {
@@ -707,20 +913,35 @@ const server = createServer((req, res) => {
             // No token: the link is the credential (M4-FR-6)
             const ics = calendarFeed(path.slice("/api/calendar/".length, -".ics".length), url.searchParams.get("lang"), sub => bySub[sub]);
             if (ics) {
-                res.writeHead(200, {"Content-Type": "text/calendar; charset=utf-8", "Cache-Control": "private, max-age=900"}).end(ics);
+                res.writeHead(200, {
+                    "Content-Type": "text/calendar; charset=utf-8",
+                    "Cache-Control": "private, max-age=900"
+                }).end(ics);
             } else {
-                res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({code: "NOT_FOUND", message: "Not found"}));
+                res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({
+                    code: "NOT_FOUND",
+                    message: "Not found"
+                }));
             }
         } else if (req.method === "POST" && path === "/__guide") {
             seedGuide(JSON.parse(body).seed);
             res.writeHead(204).end();
         } else if (req.method === "GET" && path.endsWith("/pdf") && path.startsWith("/api/")) {
-            handleGuidePdf({state: () => state, isSuperAdmin, seesEverything, roleIn, canSee}, personaOf(req), path, url, res);
+            handleGuidePdf({
+                state: () => state,
+                isSuperAdmin,
+                seesEverything,
+                roleIn,
+                canSee
+            }, personaOf(req), path, url, res);
         } else if (req.method === "GET" && /^\/api\/revivals\/[^/]+\/poster$/.test(path)) {
             // Revival 1's spex has a poster (a 1×1 PNG); the others have none
             const revival = state.revivals.find(candidate => candidate.id === path.split("/")[3]);
             if (!revival || !canSee(personaOf(req), revival)) {
-                res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({code: "NOT_FOUND", message: "Not found"}));
+                res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({
+                    code: "NOT_FOUND",
+                    message: "Not found"
+                }));
             } else if (revival.id === "1") {
                 res.writeHead(200, {"Content-Type": "image/png"}).end(Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", "base64"));
             } else {
@@ -735,7 +956,12 @@ const server = createServer((req, res) => {
         } else if (req.method === "POST" && path === "/__status") {
             const {id, status} = JSON.parse(body);
             const revival = state.revivals.find(candidate => candidate.id === id);
-            revival.history.push({from: revival.status, to: status, changedBy: "Sara Admin", changedAt: new Date().toISOString()});
+            revival.history.push({
+                from: revival.status,
+                to: status,
+                changedBy: "Sara Admin",
+                changedAt: new Date().toISOString()
+            });
             revival.status = status;
             res.writeHead(204).end();
         } else if (req.method === "POST" && path.includes("/api/graphql")) {

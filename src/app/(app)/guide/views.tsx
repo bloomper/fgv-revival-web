@@ -55,7 +55,8 @@ export async function GuideStart({version}: { version?: string }) {
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
             <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-lg font-bold tracking-tight">{shown ? await title(shown) : t("title")}</h2>
-                {versions.length > 1 && shown?.status === "PUBLISHED" && <GuideVersionSelect versions={versions} current={shown.id}/>}
+                {versions.length > 1 && shown?.status === "PUBLISHED" &&
+                    <GuideVersionSelect versions={versions} current={shown.id}/>}
             </div>
             {shown ? (
                 <>
@@ -89,7 +90,8 @@ export async function GuideChapters({version, children}: { version?: string; chi
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h2 className="text-lg font-bold tracking-tight">{await title(shown)}</h2>
-                <Link href={basePath} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                <Link href={basePath}
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                     <ArrowLeft className="size-4"/>
                     {t("startPage")}
                 </Link>

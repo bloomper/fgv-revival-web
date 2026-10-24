@@ -9,7 +9,9 @@ import {withPolicyPage} from "@/utils/route.server";
 /**
  * What changed between two versions, {@code ?from=&to=} (FR-016).
  */
-export default async function GuideChangesPage({searchParams}: { searchParams: Promise<{ from?: string; to?: string }> }) {
+export default async function GuideChangesPage({searchParams}: {
+    searchParams: Promise<{ from?: string; to?: string }>
+}) {
     const {from, to} = await searchParams;
 
     return withPolicyPage(Policies.app.requireAccess, async () => {

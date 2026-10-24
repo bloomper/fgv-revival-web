@@ -11,7 +11,12 @@ import {
     retireCapability,
     updateCapability,
 } from "@/lib/catalog/catalog.server";
-import {catalogCreateSchema, catalogMoveSchema, catalogTransitionSchema, catalogUpdateSchema} from "@/lib/catalog/schema";
+import {
+    catalogCreateSchema,
+    catalogMoveSchema,
+    catalogTransitionSchema,
+    catalogUpdateSchema
+} from "@/lib/catalog/schema";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
 

@@ -14,7 +14,9 @@ describe("GuideItemDialog", () => {
     function open(onSave = vi.fn().mockResolvedValue({ok: true, data: null})) {
         render(
             <CatalogProvider itemTypes={types}>
-                <GuideItemDialog trigger={<Button/>} heading="Edit" initial={{type: ITEM_TYPES.TIP, text: {sv: "Ett **tips**.", en: null}}} onSave={onSave}>
+                <GuideItemDialog trigger={<Button/>} heading="Edit"
+                                 initial={{type: ITEM_TYPES.TIP, text: {sv: "Ett **tips**.", en: null}}}
+                                 onSave={onSave}>
                     Open
                 </GuideItemDialog>
             </CatalogProvider>,
@@ -39,12 +41,16 @@ describe("GuideItemDialog", () => {
         fireEvent.change(screen.getByLabelText("Guide.editor.type"), {target: {value: "REQUIREMENT"}});
         fireEvent.click(screen.getByRole("button", {name: "Common.save"}));
 
-        await waitFor(() => expect(onSave).toHaveBeenCalledWith({type: "REQUIREMENT", text: {sv: "Ett **tips**.", en: null}}));
+        await waitFor(() => expect(onSave).toHaveBeenCalledWith({
+            type: "REQUIREMENT",
+            text: {sv: "Ett **tips**.", en: null}
+        }));
     });
 
     it("opens blank again after adding an item", async () => {
         const onSave = vi.fn().mockResolvedValue({ok: true, data: null});
-        render(<CatalogProvider itemTypes={types}><GuideItemDialog trigger={<Button/>} heading="Add" onSave={onSave}>Open</GuideItemDialog></CatalogProvider>);
+        render(<CatalogProvider itemTypes={types}><GuideItemDialog trigger={<Button/>} heading="Add"
+                                                                   onSave={onSave}>Open</GuideItemDialog></CatalogProvider>);
 
         fireEvent.click(screen.getByRole("button", {name: "Open"}));
         fireEvent.change(screen.getByLabelText("Guide.editor.type"), {target: {value: "REQUIREMENT"}});
@@ -67,7 +73,9 @@ describe("GuideItemDialog", () => {
 
         render(
             <CatalogProvider itemTypes={types}>
-                <GuideItemDialog trigger={<Button/>} heading="Edit" initial={{type: retired, text: {sv: "Gammalt.", en: null}}} onSave={vi.fn()}>Open</GuideItemDialog>
+                <GuideItemDialog trigger={<Button/>} heading="Edit"
+                                 initial={{type: retired, text: {sv: "Gammalt.", en: null}}}
+                                 onSave={vi.fn()}>Open</GuideItemDialog>
             </CatalogProvider>,
         );
         fireEvent.click(screen.getByRole("button", {name: "Open"}));

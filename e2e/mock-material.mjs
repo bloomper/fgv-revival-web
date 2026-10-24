@@ -2,7 +2,15 @@
 // recognised by their host) and its inventory, with the server's rules (fgv-revival-server/src/main/resources/graphql/
 // material.graphqls). Materials and items are removed, never deleted. Test data is fictitious.
 
-const service = (id, sv, en, hosts, position) => ({id, name: {sv, en}, hosts, homeUrl: null, position, retired: false, version: 0});
+const service = (id, sv, en, hosts, position) => ({
+    id,
+    name: {sv, en},
+    hosts,
+    homeUrl: null,
+    position,
+    retired: false,
+    version: 0
+});
 
 export function createMaterialState() {
     return {
@@ -52,7 +60,11 @@ export function materialResolvers(ctx) {
     };
     const ordered = () => [...store().services].sort((a, b) => a.position - b.position);
     const used = () => new Set(store().materials.map(material => material.serviceId).filter(Boolean));
-    const toService = found => found && {__typename: "LinkService", ...found, name: {__typename: "LocalizedText", ...found.name}, inUse: used().has(found.id)};
+    const toService = found => found && {
+        __typename: "LinkService", ...found,
+        name: {__typename: "LocalizedText", ...found.name},
+        inUse: used().has(found.id)
+    };
     const toPosition = id => {
         const found = positions.find(candidate => candidate.id === id);
 
@@ -84,10 +96,19 @@ export function materialResolvers(ctx) {
         comment: material.comment, removed: !!material.removedAt, version: material.version,
     });
     const toItem = (revival, item) => ({
-        __typename: "InventoryItem", id: item.id, name: item.name, kind: item.kind, quantity: item.quantity, status: item.status,
-        location: item.location, locationNote: item.locationNote, owner: log.toOwner(revival, item.owner), comment: item.comment,
+        __typename: "InventoryItem",
+        id: item.id,
+        name: item.name,
+        kind: item.kind,
+        quantity: item.quantity,
+        status: item.status,
+        location: item.location,
+        locationNote: item.locationNote,
+        owner: log.toOwner(revival, item.owner),
+        comment: item.comment,
         material: item.materialId ? toMaterial(store().materials.find(material => material.id === item.materialId)) : null,
-        removed: !!item.removedAt, version: item.version,
+        removed: !!item.removedAt,
+        version: item.version,
     });
 
     const materialFields = (revival, input, existing) => {
@@ -109,8 +130,15 @@ export function materialResolvers(ctx) {
             throw badRequest("Tjänsten finns inte.");
         }
         return {
-            revivalId: revival.id, title, url: input.url.trim(), serviceId: input.serviceId ?? recognise(host)?.id ?? null, serviceChosen: !!input.serviceId, category: input.category,
-            visibility: input.visibility, positionIds, comment: input.comment?.trim() || null,
+            revivalId: revival.id,
+            title,
+            url: input.url.trim(),
+            serviceId: input.serviceId ?? recognise(host)?.id ?? null,
+            serviceChosen: !!input.serviceId,
+            category: input.category,
+            visibility: input.visibility,
+            positionIds,
+            comment: input.comment?.trim() || null,
         };
     };
     const itemFields = (revival, input) => {
@@ -126,8 +154,15 @@ export function materialResolvers(ctx) {
             throw badRequest("Materialet finns inte i nyuppsättningen.");
         }
         return {
-            revivalId: revival.id, name, kind: input.kind, quantity: input.quantity ?? 1, status: input.status, location: input.location ?? null,
-            locationNote: input.locationNote?.trim() || null, owner: log.owner(revival, input.owner), comment: input.comment?.trim() || null,
+            revivalId: revival.id,
+            name,
+            kind: input.kind,
+            quantity: input.quantity ?? 1,
+            status: input.status,
+            location: input.location ?? null,
+            locationNote: input.locationNote?.trim() || null,
+            owner: log.owner(revival, input.owner),
+            comment: input.comment?.trim() || null,
             materialId: input.materialId ?? null,
         };
     };
@@ -191,7 +226,12 @@ export function materialResolvers(ctx) {
         },
         LinkServiceCreate(persona, {input}) {
             manage(persona);
-            const created = {id: `ls-${store().nextId++}`, ...serviceInput(input), position: store().services.length, retired: false, version: 0};
+            const created = {
+                id: `ls-${store().nextId++}`, ...serviceInput(input),
+                position: store().services.length,
+                retired: false,
+                version: 0
+            };
 
             store().services.push(created);
             return {linkServiceCreate: toService(created)};
@@ -255,8 +295,10 @@ export function materialResolvers(ctx) {
             const removed = includeRemoved && canWrite(persona, revival);
 
             return {
-                revival: {__typename: "Revival", id: revival.id, status: revival.status,
-                    permissions: {__typename: "RevivalPermissions", canWriteMaterials: canWrite(persona, revival)}},
+                revival: {
+                    __typename: "Revival", id: revival.id, status: revival.status,
+                    permissions: {__typename: "RevivalPermissions", canWriteMaterials: canWrite(persona, revival)}
+                },
                 materials: store().materials.filter(material => material.revivalId === revival.id && (removed || !material.removedAt)).map(toMaterial),
                 linkServices: ordered().filter(found => !found.retired).map(toService),
             };
@@ -266,15 +308,24 @@ export function materialResolvers(ctx) {
             const removed = includeRemoved && canWrite(persona, revival);
 
             return {
-                revival: {__typename: "Revival", id: revival.id, status: revival.status,
-                    permissions: {__typename: "RevivalPermissions", canWriteMaterials: canWrite(persona, revival)}, ownerCandidates: log.candidates(revival)},
+                revival: {
+                    __typename: "Revival",
+                    id: revival.id,
+                    status: revival.status,
+                    permissions: {__typename: "RevivalPermissions", canWriteMaterials: canWrite(persona, revival)},
+                    ownerCandidates: log.candidates(revival)
+                },
                 inventory: store().items.filter(item => item.revivalId === revival.id && (removed || !item.removedAt)).map(item => toItem(revival, item)),
                 materials: store().materials.filter(material => material.revivalId === revival.id && !material.removedAt).map(toMaterial),
             };
         },
         MaterialCreate(persona, {input}) {
             const revival = writable(persona, input.revivalId);
-            const created = {id: `mat-${store().nextId++}`, ...materialFields(revival, input), removedAt: null, version: 0};
+            const created = {
+                id: `mat-${store().nextId++}`, ...materialFields(revival, input),
+                removedAt: null,
+                version: 0
+            };
 
             store().materials.push(created);
             return {materialCreate: toMaterial(created)};
@@ -338,7 +389,10 @@ export function materialResolvers(ctx) {
 
     return {
         resolvers,
-        permissions: (persona, revival) => ({canWriteMaterials: canWrite(persona, revival), canReadMaterials: canRead(persona, revival)}),
+        permissions: (persona, revival) => ({
+            canWriteMaterials: canWrite(persona, revival),
+            canReadMaterials: canRead(persona, revival)
+        }),
         /** Gives Disa Deltagare (the "deltagare" persona) a position, after {@code participants({people: true})}. */
         seed({disaPosition} = {}) {
             const disa = ctx.state().participant.participants.find(participant => participant.memberId === "m-disa");

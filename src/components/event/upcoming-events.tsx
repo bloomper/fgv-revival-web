@@ -8,7 +8,10 @@ import {type EventDates, formatEventDates} from "@/components/event/timeline";
 /**
  * The revival's next three events that have not ended, on its overview (M4-FR-8), with a link to all of them.
  */
-export function UpcomingEvents({revivalId, events}: { revivalId: string; events: (EventDates & { id: string; title: string })[] }) {
+export function UpcomingEvents({revivalId, events}: {
+    revivalId: string;
+    events: (EventDates & { id: string; title: string })[]
+}) {
     const t = useTranslations("Event");
 
     return (
@@ -16,7 +19,8 @@ export function UpcomingEvents({revivalId, events}: { revivalId: string; events:
             <CardHeader>
                 <CardTitle>{t("upcoming")}</CardTitle>
                 <CardAction>
-                    <Link href={`/revivals/${revivalId}/events`} className={buttonVariants({variant: "outline", size: "sm"})}>
+                    <Link href={`/revivals/${revivalId}/events`}
+                          className={buttonVariants({variant: "outline", size: "sm"})}>
                         {t("showAll")}
                         <ChevronRight/>
                     </Link>
@@ -29,7 +33,8 @@ export function UpcomingEvents({revivalId, events}: { revivalId: string; events:
                     <ul className="space-y-2 text-sm">
                         {events.map(event => (
                             <li key={event.id} className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">
-                                <span className="tabular-nums text-muted-foreground sm:w-56 sm:shrink-0">{formatEventDates(event)}</span>
+                                <span
+                                    className="tabular-nums text-muted-foreground sm:w-56 sm:shrink-0">{formatEventDates(event)}</span>
                                 <span>{event.title}</span>
                             </li>
                         ))}

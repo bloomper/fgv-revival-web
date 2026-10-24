@@ -23,7 +23,10 @@ describe("GET /api/guide-pdf", () => {
     it("fetches a version's PDF and passes its name through", async () => {
         apiFetch.mockResolvedValue(new Response(new Uint8Array([37, 80, 68, 70]), {
             status: 200,
-            headers: {"content-type": "application/pdf", "content-disposition": "attachment; filename=\"nyuppsattningsguide-v1-sv.pdf\""},
+            headers: {
+                "content-type": "application/pdf",
+                "content-disposition": "attachment; filename=\"nyuppsattningsguide-v1-sv.pdf\""
+            },
         }));
 
         const response = await GET(request("version=7&lang=sv"));

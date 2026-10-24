@@ -12,10 +12,24 @@ import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
-import {createRevivalAction, searchSpexAction, type SpexOption, updateRevivalAction} from "@/app/(app)/revivals/manage/actions.server";
+import {
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger
+} from "@/components/ui/sheet";
+import {
+    createRevivalAction,
+    searchSpexAction,
+    type SpexOption,
+    updateRevivalAction
+} from "@/app/(app)/revivals/manage/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {type RevivalCreateValues, revivalCreateSchema, revivalYears} from "@/lib/revival/schema";
+import {revivalCreateSchema, type RevivalCreateValues, revivalYears} from "@/lib/revival/schema";
 import {track} from "@/utils/umami";
 
 function SpexPicker({value, onChange}: { value: SpexOption | null; onChange: (spex: SpexOption | null) => void }) {
@@ -60,7 +74,8 @@ function SpexPicker({value, onChange}: { value: SpexOption | null; onChange: (sp
 
     return (
         <div className="space-y-2">
-            <Input value={query} onChange={event => setQuery(event.target.value)} placeholder={t("searchSpex")} aria-label={t("searchSpex")}/>
+            <Input value={query} onChange={event => setQuery(event.target.value)} placeholder={t("searchSpex")}
+                   aria-label={t("searchSpex")}/>
             {unavailable ? (
                 <p className="text-sm text-destructive" role="alert">{t("spexregisterUnavailable")}</p>
             ) : searched && results.length === 0 ? (
@@ -99,7 +114,11 @@ export function RevivalFormSheet({revival, open, onOpenChange, trigger}: {
     const t = useTranslations();
     const router = useRouter();
     const feedback = useActionFeedback();
-    const [spex, setSpex] = useState<SpexOption | null>(revival ? {id: revival.spex.id, title: revival.spex.title ?? null, year: revival.spex.year ?? null} : null);
+    const [spex, setSpex] = useState<SpexOption | null>(revival ? {
+        id: revival.spex.id,
+        title: revival.spex.title ?? null,
+        year: revival.spex.year ?? null
+    } : null);
     const [pending, startTransition] = useTransition();
     const form = useForm<RevivalCreateValues>({
         resolver: zodResolver(revivalCreateSchema),
@@ -120,7 +139,10 @@ export function RevivalFormSheet({revival, open, onOpenChange, trigger}: {
                     className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         if (revival) {
-                            if (feedback(await updateRevivalAction({id: revival.id, version: revival.version, ...values}), t("CreateDialog.saved"))) {
+                            if (feedback(await updateRevivalAction({
+                                id: revival.id,
+                                version: revival.version, ...values
+                            }), t("CreateDialog.saved"))) {
                                 onOpenChange(false);
                                 router.refresh();
                             }
@@ -149,27 +171,34 @@ export function RevivalFormSheet({revival, open, onOpenChange, trigger}: {
                                         form.resetField("year");
                                     }
                                 }}/>
-                                {errors.spexId && <p className="text-sm text-destructive">{t(`Validation.${errors.spexId.message}`)}</p>}
+                                {errors.spexId &&
+                                    <p className="text-sm text-destructive">{t(`Validation.${errors.spexId.message}`)}</p>}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="revival-year">{t("Revival.year")}</Label>
                                 <Controller control={form.control} name="year" render={({field}) => (
-                                    <Select value={field.value ? String(field.value) : null} onValueChange={value => field.onChange(Number(value))} disabled={!spex}>
+                                    <Select value={field.value ? String(field.value) : null}
+                                            onValueChange={value => field.onChange(Number(value))} disabled={!spex}>
                                         <SelectTrigger id="revival-year" className="w-full">
-                                            <SelectValue placeholder={spex ? t("CreateDialog.selectYear") : t("CreateDialog.selectSpexFirst")}/>
+                                            <SelectValue
+                                                placeholder={spex ? t("CreateDialog.selectYear") : t("CreateDialog.selectSpexFirst")}/>
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {years.map(year => <SelectItem key={year} value={String(year)}>{year}</SelectItem>)}
+                                            {years.map(year => <SelectItem key={year}
+                                                                           value={String(year)}>{year}</SelectItem>)}
                                         </SelectContent>
                                     </Select>
                                 )}/>
-                                {errors.year && <p className="text-sm text-destructive">{t(`Validation.${errors.year.message}`)}</p>}
+                                {errors.year &&
+                                    <p className="text-sm text-destructive">{t(`Validation.${errors.year.message}`)}</p>}
                             </div>
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <SheetClose render={<Button type="button" variant="outline" disabled={pending}/>}>{t("Common.cancel")}</SheetClose>
-                        <Button type="submit" disabled={pending}>{revival ? t("CreateDialog.save") : t("CreateDialog.submit")}</Button>
+                        <SheetClose render={<Button type="button" variant="outline"
+                                                    disabled={pending}/>}>{t("Common.cancel")}</SheetClose>
+                        <Button type="submit"
+                                disabled={pending}>{revival ? t("CreateDialog.save") : t("CreateDialog.submit")}</Button>
                     </SheetFooter>
                 </form>
             </SheetContent>

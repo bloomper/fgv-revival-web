@@ -38,7 +38,8 @@ export default async function RevivalGuideSuggestionsPage({params}: { params: Pr
 
         return (
             <div className="flex flex-1 flex-col gap-4">
-                <Link href={`/revivals/${id}/guide`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                <Link href={`/revivals/${id}/guide`}
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                     <ArrowLeft className="size-4"/>
                     {t("backToGuide")}
                 </Link>
@@ -46,8 +47,12 @@ export default async function RevivalGuideSuggestionsPage({params}: { params: Pr
                     <h3 className="text-base font-semibold tracking-tight">{t("revivalTitle", {revival: revival.title})}</h3>
                     {canSuggest && version && (
                         <CatalogProvider itemTypes={itemTypes}>
-                            <SuggestionDialog trigger={<Button/>} revivalId={revival.id} versionId={version.id} kind="ADD"
-                                              chapters={version.chapters.map(chapter => ({key: chapter.key, title: chapter.title}))}>
+                            <SuggestionDialog trigger={<Button/>} revivalId={revival.id} versionId={version.id}
+                                              kind="ADD"
+                                              chapters={version.chapters.map(chapter => ({
+                                                  key: chapter.key,
+                                                  title: chapter.title
+                                              }))}>
                                 <MessageSquarePlus/>
                                 {tGuide("suggest.add")}
                             </SuggestionDialog>

@@ -53,7 +53,10 @@ export function normalizeHost(text: string): string {
  * The first active service, in list order, one of whose hosts the link's host is or ends with "." + it; null when the
  * link is not valid or no service matches.
  */
-export function recogniseService<S extends { hosts: readonly string[]; retired?: boolean }>(url: string, services: readonly S[]): S | null {
+export function recogniseService<S extends {
+    hosts: readonly string[];
+    retired?: boolean
+}>(url: string, services: readonly S[]): S | null {
     const host = hostOf(url);
 
     if (!host) {

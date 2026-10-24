@@ -51,10 +51,12 @@ export default async function HomePage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                     {participations.map(({revival}) => (
                         <Shortcut key={revival.id} href={`/revivals/${revival.id}/me`} icon={UserRound}
-                                  title={`${t("Home.participationTitle")}: ${revival.title}`} text={t("Home.participationText", {title: revival.title})}/>
+                                  title={`${t("Home.participationTitle")}: ${revival.title}`}
+                                  text={t("Home.participationText", {title: revival.title})}/>
                     ))}
                     <Shortcut href="/revivals" icon={Theater} title={t("Nav.revivals")} text={t("Home.revivalsText")}/>
-                    {guideReadable && <Shortcut href="/guide" icon={BookOpen} title={t("Nav.guide")} text={t("Home.guideText")}/>}
+                    {guideReadable &&
+                        <Shortcut href="/guide" icon={BookOpen} title={t("Nav.guide")} text={t("Home.guideText")}/>}
                 </div>
             </div>
         );

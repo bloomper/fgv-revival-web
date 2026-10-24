@@ -32,7 +32,8 @@ export function RevivalDetails({revival, syncIncomplete = false}: {
                     <CardTitle>{t("Revival.details")}</CardTitle>
                     {revival.permissions.canEditDetails && !editing && (
                         <CardAction>
-                            <Button variant="outline" size="sm" onClick={() => setEditing(true)}>{t("Revival.editDetails")}</Button>
+                            <Button variant="outline" size="sm"
+                                    onClick={() => setEditing(true)}>{t("Revival.editDetails")}</Button>
                         </CardAction>
                     )}
                 </CardHeader>
@@ -53,8 +54,10 @@ export function RevivalDetails({revival, syncIncomplete = false}: {
                                     <ul className="space-y-0.5">
                                         {revival.shows.map((show, index) => (
                                             <li key={index}>
-                                                <span className="tabular-nums">{[formatDate(show.date), show.time].filter(Boolean).join(" ")}</span>{" "}
-                                                {show.venue ?? <span className="text-muted-foreground">({t("Revival.venueNotSet")})</span>}
+                                                <span
+                                                    className="tabular-nums">{[formatDate(show.date), show.time].filter(Boolean).join(" ")}</span>{" "}
+                                                {show.venue ?? <span
+                                                    className="text-muted-foreground">({t("Revival.venueNotSet")})</span>}
                                             </li>
                                         ))}
                                     </ul>
@@ -69,7 +72,8 @@ export function RevivalDetails({revival, syncIncomplete = false}: {
                     <CardTitle>{t("Revival.status")}</CardTitle>
                     {revival.permissions.allowedStatuses.length > 0 && (
                         <CardAction>
-                            <RevivalStatusSelect revivalId={revival.id} status={revival.status} allowedStatuses={revival.permissions.allowedStatuses}
+                            <RevivalStatusSelect revivalId={revival.id} status={revival.status}
+                                                 allowedStatuses={revival.permissions.allowedStatuses}
                                                  syncIncomplete={syncIncomplete}/>
                         </CardAction>
                     )}
@@ -82,18 +86,22 @@ export function RevivalDetails({revival, syncIncomplete = false}: {
                         <ol className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-2 text-sm">
                             {revival.statusHistory.map((change, index) => (
                                 <li key={index} className="col-span-2 grid grid-cols-subgrid">
-                                    <span className="text-muted-foreground tabular-nums">{formatInstant(change.changedAt)}</span>
+                                    <span
+                                        className="text-muted-foreground tabular-nums">{formatInstant(change.changedAt)}</span>
                                     <span>
                                         {t(`Status.${change.from}`)} → {t(`Status.${change.to}`)}
-                                        {change.changedBy && <span className="text-muted-foreground"> {t("Revival.changedBy", {name: change.changedBy})}</span>}
+                                        {change.changedBy && <span
+                                            className="text-muted-foreground"> {t("Revival.changedBy", {name: change.changedBy})}</span>}
                                     </span>
                                 </li>
                             ))}
                             <li className="col-span-2 grid grid-cols-subgrid">
-                                <span className="text-muted-foreground tabular-nums">{formatInstant(revival.createdAt)}</span>
+                                <span
+                                    className="text-muted-foreground tabular-nums">{formatInstant(revival.createdAt)}</span>
                                 <span>
                                     {t("Revival.created")}
-                                    {revival.createdBy && <span className="text-muted-foreground"> {t("Revival.changedBy", {name: revival.createdBy})}</span>}
+                                    {revival.createdBy && <span
+                                        className="text-muted-foreground"> {t("Revival.changedBy", {name: revival.createdBy})}</span>}
                                 </span>
                             </li>
                         </ol>

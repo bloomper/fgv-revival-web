@@ -28,7 +28,8 @@ describe("GuideChapterView", () => {
     });
 
     it("labels every item type except plain text", () => {
-        render(<><GuideChapterView chapter={chapter("A")} number={1}/><GuideChapterView chapter={chapter("B")} number={2}/></>);
+        render(<><GuideChapterView chapter={chapter("A")} number={1}/><GuideChapterView chapter={chapter("B")}
+                                                                                        number={2}/></>);
 
         expect(screen.getByText("Krav")).toBeInTheDocument();
         expect(screen.getByText("Praktiska tips")).toBeInTheDocument();
@@ -39,7 +40,8 @@ describe("GuideChapterView", () => {
     it("adds the given controls to items and places", () => {
         render(<GuideChapterView chapter={chapter("B")} number={2}
                                  itemActions={item => <button>suggest {item.key}</button>}
-                                 placeActions={place => <button>add to {place.chapterKey}{place.sectionKey ? ` ${place.sectionKey}` : ""}</button>}/>);
+                                 placeActions={place => <button>add
+                                     to {place.chapterKey}{place.sectionKey ? ` ${place.sectionKey}` : ""}</button>}/>);
 
         expect(screen.getByRole("button", {name: "suggest k-tip"})).toBeInTheDocument();
         expect(screen.getByRole("button", {name: "add to B s-kalas"})).toBeInTheDocument();
@@ -48,7 +50,8 @@ describe("GuideChapterView", () => {
 
     it("marks titles shown in Swedish to an English reader as not translated", () => {
         useLocale.mockReturnValue("en");
-        render(<><GuideChapterView chapter={chapter("A")} number={1}/><GuideChapterView chapter={chapter("B")} number={2}/></>);
+        render(<><GuideChapterView chapter={chapter("A")} number={1}/><GuideChapterView chapter={chapter("B")}
+                                                                                        number={2}/></>);
 
         expect(screen.getByRole("heading", {name: "1. Chapter A"}).parentElement).not.toHaveTextContent("notTranslated");
         expect(screen.getByRole("heading", {name: "2. Kapitel B"}).parentElement).toHaveTextContent("notTranslated");

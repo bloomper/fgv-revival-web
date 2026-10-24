@@ -42,7 +42,10 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
             getGuideSuggestions(null, revival.id),
             canSuggest && version ? getGuideItemTypes() : [],
         ]);
-        const counts = SUGGESTION_STATUSES.map(status => ({status, count: suggestions.filter(suggestion => suggestion.status === status).length}))
+        const counts = SUGGESTION_STATUSES.map(status => ({
+            status,
+            count: suggestions.filter(suggestion => suggestion.status === status).length
+        }))
             .filter(entry => entry.count > 0);
         const chapters = version?.chapters.map(chapter => ({key: chapter.key, title: chapter.title})) ?? [];
         const basePath = `/revivals/${revival.id}/guide`;
@@ -57,7 +60,10 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
                             <CardTitle>{t("tab.versionTitle")}</CardTitle>
                             <CardDescription>
                                 {revival.guideVersion
-                                    ? t("tab.follows", {label: revival.guideVersion.label ?? "", at: formatInstant(revival.guideVersion.publishedAt)?.slice(0, 10) ?? "–"})
+                                    ? t("tab.follows", {
+                                        label: revival.guideVersion.label ?? "",
+                                        at: formatInstant(revival.guideVersion.publishedAt)?.slice(0, 10) ?? "–"
+                                    })
                                     : t("notPublished")}
                             </CardDescription>
                         </CardHeader>
@@ -72,7 +78,9 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
                                         {revival.guideVersionHistory.map((change, index) => (
                                             <li key={index}>
                                                 {t("version.historyEntry", {
-                                                    from: change.fromLabel ?? "–", to: change.toLabel, name: change.changedBy ?? "",
+                                                    from: change.fromLabel ?? "–",
+                                                    to: change.toLabel,
+                                                    name: change.changedBy ?? "",
                                                     at: formatInstant(change.changedAt)?.slice(0, 10) ?? "",
                                                 })}
                                             </li>
@@ -97,7 +105,8 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
                             </CardHeader>
                             <CardFooter className="flex flex-wrap gap-2">
                                 {chapters[0] && (
-                                    <Link href={`${basePath}/${encodeURIComponent(chapters[0].key)}`} className={buttonVariants()}>
+                                    <Link href={`${basePath}/${encodeURIComponent(chapters[0].key)}`}
+                                          className={buttonVariants()}>
                                         <BookOpen/>
                                         {t("tab.open")}
                                     </Link>
@@ -119,7 +128,8 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
                                 <ul className="flex flex-wrap gap-2" aria-label={t("suggestions.title")}>
                                     {counts.map(({status, count}) => (
                                         <li key={status}>
-                                            <Badge variant={status === "OPEN" ? "default" : "secondary"}>{t(`suggestions.status.${status}`)}: {count}</Badge>
+                                            <Badge
+                                                variant={status === "OPEN" ? "default" : "secondary"}>{t(`suggestions.status.${status}`)}: {count}</Badge>
                                         </li>
                                     ))}
                                 </ul>
@@ -128,7 +138,8 @@ export default async function RevivalGuidePage({params}: { params: Promise<{ id:
                         <CardFooter className="flex flex-wrap gap-2">
                             {canSuggest && version && (
                                 <CatalogProvider itemTypes={itemTypes}>
-                                    <SuggestionDialog trigger={<Button/>} revivalId={revival.id} versionId={version.id} kind="ADD" chapters={chapters}>
+                                    <SuggestionDialog trigger={<Button/>} revivalId={revival.id} versionId={version.id}
+                                                      kind="ADD" chapters={chapters}>
                                         <MessageSquarePlus/>
                                         {t("suggest.add")}
                                     </SuggestionDialog>

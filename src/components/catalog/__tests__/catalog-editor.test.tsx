@@ -39,7 +39,8 @@ describe("CatalogEditor", () => {
     it("restores a retired entry", async () => {
         const calls = actions();
 
-        render(<CatalogEditor entries={[{...entries[0], retired: true}]} actions={calls} label="List" createLabel="New"/>);
+        render(<CatalogEditor entries={[{...entries[0], retired: true}]} actions={calls} label="List"
+                              createLabel="New"/>);
         fireEvent.click(screen.getByRole("button", {name: 'Catalog.restore:{"name":"Ekonomi"}'}));
 
         await waitFor(() => expect(calls.restore).toHaveBeenCalledWith({id: "FINANCE", version: 3}));
@@ -54,7 +55,10 @@ describe("CatalogEditor", () => {
         fireEvent.click(screen.getByRole("radio", {name: /Catalog.kinds.REQUIREMENT.name/}));
         fireEvent.click(screen.getByRole("button", {name: "Common.save"}));
 
-        await waitFor(() => expect(calls.create).toHaveBeenCalledWith({name: {sv: "Myndighetskrav", en: ""}, kind: "REQUIREMENT"}));
+        await waitFor(() => expect(calls.create).toHaveBeenCalledWith({
+            name: {sv: "Myndighetskrav", en: ""},
+            kind: "REQUIREMENT"
+        }));
     });
 
     it("refuses an empty Swedish name", async () => {

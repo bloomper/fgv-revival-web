@@ -24,7 +24,10 @@ async function load(id: string) {
  * super admins, directeurs and the steering group, not observers) find them;
  * participants see the materials meant for them on their own page.
  */
-export default async function MaterialsLayout({children, params}: { children: React.ReactNode; params: Promise<{ id: string }> }) {
+export default async function MaterialsLayout({children, params}: {
+    children: React.ReactNode;
+    params: Promise<{ id: string }>
+}) {
     const {id} = await params;
 
     return withPolicyPage(Policies.app.requireAccess, async ({roles}) => {
@@ -39,7 +42,8 @@ export default async function MaterialsLayout({children, params}: { children: Re
         return (
             <div className="flex flex-1 flex-col gap-4">
                 <h3 className="sr-only">{t("title")}</h3>
-                <ReadOnlyNotice revivalId={revival.id} status={revival.status} canWrite={revival.permissions.canWriteMaterials} roles={roles}/>
+                <ReadOnlyNotice revivalId={revival.id} status={revival.status}
+                                canWrite={revival.permissions.canWriteMaterials} roles={roles}/>
                 <MaterialNav revivalId={revival.id}/>
                 {children}
             </div>

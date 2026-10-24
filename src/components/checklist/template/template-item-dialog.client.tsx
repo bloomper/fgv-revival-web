@@ -48,7 +48,8 @@ export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}:
             deadline: item?.deadline ?? null,
         },
     });
-    const error = (key: string | undefined) => key && <p className="text-sm text-destructive">{t(`Validation.${key}`)}</p>;
+    const error = (key: string | undefined) => key &&
+        <p className="text-sm text-destructive">{t(`Validation.${key}`)}</p>;
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -57,23 +58,30 @@ export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}:
                     <SheetTitle>{item ? t("ChecklistTemplate.editItem") : t("ChecklistTemplate.addItem")}</SheetTitle>
                     <SheetDescription>{t("ChecklistTemplate.itemDescription")}</SheetDescription>
                 </SheetHeader>
-                <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(values => startTransition(async () => {
-                    const result = await saveTemplateItemAction({templateId, item: item ? {id: item.id, version: item.version} : null, values});
+                <form className="flex min-h-0 flex-1 flex-col overflow-hidden"
+                      onSubmit={form.handleSubmit(values => startTransition(async () => {
+                          const result = await saveTemplateItemAction({
+                              templateId,
+                              item: item ? {id: item.id, version: item.version} : null,
+                              values
+                          });
 
-                    if (feedback(result, t("Common.saved"))) {
-                        onOpenChange(false);
-                    }
-                }))}>
+                          if (feedback(result, t("Common.saved"))) {
+                              onOpenChange(false);
+                          }
+                      }))}>
                     <ScrollArea className="min-h-0 flex-1 border-t">
                         <div className="space-y-4 px-6 py-6 pb-12">
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-item-sv`}>{t("ChecklistTemplate.textSv")}</Label>
-                                <Textarea id={`${id}-item-sv`} rows={2} maxLength={MAX_ITEM_TEXT} {...form.register("text.sv")}/>
+                                <Textarea id={`${id}-item-sv`} rows={2}
+                                          maxLength={MAX_ITEM_TEXT} {...form.register("text.sv")}/>
                                 {error(form.formState.errors.text?.sv?.message)}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-item-en`}>{t("ChecklistTemplate.textEn")}</Label>
-                                <Textarea id={`${id}-item-en`} rows={2} maxLength={MAX_ITEM_TEXT} {...form.register("text.en")}/>
+                                <Textarea id={`${id}-item-en`} rows={2}
+                                          maxLength={MAX_ITEM_TEXT} {...form.register("text.en")}/>
                             </div>
                             <Controller control={form.control} name="guideItemKey" render={({field}) => (
                                 <GuideItemPicker value={field.value} label={guideLabel} onChange={(key, label) => {
@@ -82,9 +90,10 @@ export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}:
                                 }}/>
                             )}/>
                             <div className="space-y-2">
-                                <Label htmlFor={`${id}-item-capability`}>{t("ChecklistTemplate.defaultCapability")}</Label>
+                                <Label
+                                    htmlFor={`${id}-item-capability`}>{t("ChecklistTemplate.defaultCapability")}</Label>
                                 <NativeSelect className="w-full" id={`${id}-item-capability`}
-                                        {...form.register("defaultCapability", {setValueAs: value => value || null})}>
+                                              {...form.register("defaultCapability", {setValueAs: value => value || null})}>
                                     <option value="">{t("ChecklistTemplate.noCapability")}</option>
                                     <CatalogOptions entries={capabilities}/>
                                 </NativeSelect>
@@ -97,7 +106,8 @@ export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}:
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </SheetFooter>
                 </form>

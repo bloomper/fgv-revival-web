@@ -12,7 +12,12 @@ describe("isoWeek", () => {
 });
 
 describe("buildCrossTimeline", () => {
-    const aliBaba = {id: "1", title: "Ali Baba 2028", status: "OPEN", shows: [{date: "2028-03-04", time: "19:00", venue: "Kårhuset"}, {date: "2028-03-11"}]};
+    const aliBaba = {
+        id: "1",
+        title: "Ali Baba 2028",
+        status: "OPEN",
+        shows: [{date: "2028-03-04", time: "19:00", venue: "Kårhuset"}, {date: "2028-03-11"}]
+    };
     const snorre = {id: "3", title: "Snorre 2028", status: "ORGANISING", shows: [{date: "2028-03-05"}]};
     const nobel = {id: "2", title: "Nobel 2028", status: "REJECTED", shows: [{date: "2028-03-11"}]};
 
@@ -25,13 +30,21 @@ describe("buildCrossTimeline", () => {
     });
 
     it("flags a revival playing when the Chalmersspex does, not two shows of one revival", () => {
-        const {clashes} = buildCrossTimeline([aliBaba], [{id: "s1", date: "2028-03-10", label: "Chalmersspexet: premiär"}]);
+        const {clashes} = buildCrossTimeline([aliBaba], [{
+            id: "s1",
+            date: "2028-03-10",
+            label: "Chalmersspexet: premiär"
+        }]);
 
         expect(clashes).toEqual([{week: "2028-W10", revivals: ["Ali Baba 2028"], spex: ["Chalmersspexet: premiär"]}]);
     });
 
     it("leaves out rejected revivals and groups by month in date order", () => {
-        const {months, clashes} = buildCrossTimeline([nobel, aliBaba], [{id: "s2", date: "2028-02-20", label: "Chalmersspexet"}]);
+        const {months, clashes} = buildCrossTimeline([nobel, aliBaba], [{
+            id: "s2",
+            date: "2028-02-20",
+            label: "Chalmersspexet"
+        }]);
 
         expect(clashes).toEqual([]);
         expect(months.map(month => month.month)).toEqual(["2028-02", "2028-03"]);

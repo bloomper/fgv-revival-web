@@ -8,7 +8,9 @@ import {withPolicyPage} from "@/utils/route.server";
 /**
  * The areas of responsibility steering group members hold, for super admins. Retired ones only when asked for.
  */
-export default async function CapabilitiesPage({searchParams}: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+export default async function CapabilitiesPage({searchParams}: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
     const retired = (await searchParams).retired === "1";
 
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {

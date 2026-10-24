@@ -13,7 +13,8 @@ type Closing = NonNullable<NonNullable<RevivalClosingQuery["revival"]>["closing"
 
 function Check({done, label}: { done: boolean; label: string }) {
     return done
-        ? <CircleCheck className="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-label={label} role="img"/>
+        ?
+        <CircleCheck className="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-label={label} role="img"/>
         : <CircleAlert className="size-5 shrink-0 text-muted-foreground" aria-label={label} role="img"/>;
 }
 
@@ -68,14 +69,17 @@ export function ClosingSummary({revivalId, closing, canReadBudget, canWriteLog, 
     return (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <SummaryCard title={t("finances")} icon={Wallet} done={closing.loanRepaid}
-                         footer={canReadBudget && <OpenLink href={`/revivals/${revivalId}/budget`}>{t("openBudget")}</OpenLink>}>
+                         footer={canReadBudget &&
+                             <OpenLink href={`/revivals/${revivalId}/budget`}>{t("openBudget")}</OpenLink>}>
                 <dl className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1">
                     <dt className="text-muted-foreground">{t("actualResult")}</dt>
-                    <dd className="text-right font-medium">{closing.actualResult != null ? <AmountText value={closing.actualResult} signed/> : "–"}</dd>
+                    <dd className="text-right font-medium">{closing.actualResult != null ?
+                        <AmountText value={closing.actualResult} signed/> : "–"}</dd>
                     <dt className="text-muted-foreground">{t("loan")}</dt>
                     <dd className="text-right">
                         {closing.loanAmount != null
-                            ? <><AmountText value={closing.loanAmount}/>, {closing.loanRepaid ? t("loanRepaid") : t("loanNotRepaid")}</>
+                            ? <><AmountText
+                                value={closing.loanAmount}/>, {closing.loanRepaid ? t("loanRepaid") : t("loanNotRepaid")}</>
                             : t("noLoan")}
                     </dd>
                 </dl>
@@ -88,7 +92,8 @@ export function ClosingSummary({revivalId, closing, canReadBudget, canWriteLog, 
                 <CardDescription className="mt-1">{t("surplusHint")}</CardDescription>
             </SummaryCard>
             <SummaryCard title={t("lessons")} icon={Lightbulb} done={closing.suggestions > 0}
-                         footer={<OpenLink href={`/revivals/${revivalId}/guide/suggestions`}>{t("openSuggestions")}</OpenLink>}>
+                         footer={<OpenLink
+                             href={`/revivals/${revivalId}/guide/suggestions`}>{t("openSuggestions")}</OpenLink>}>
                 <p>{t("suggestions", {count: closing.suggestions})}</p>
                 <CardDescription className="mt-1">{t("lessonsHint")}</CardDescription>
             </SummaryCard>

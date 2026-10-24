@@ -3,7 +3,14 @@
 import {useId, useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {NativeSelect} from "@/components/ui/native-select";
@@ -39,7 +46,10 @@ export function InviteDialog({revivalId, participants, onOpenChange}: {
 
     const submit = () => startTransition(async () => {
         const result = await inviteParticipantsAction({
-            revivalId, participantIds: participants.map(participant => participant.id), email: askEmail ? email : "", language: language as "sv" | "en",
+            revivalId,
+            participantIds: participants.map(participant => participant.id),
+            email: askEmail ? email : "",
+            language: language as "sv" | "en",
         });
 
         if (feedback(result)) {
@@ -80,16 +90,20 @@ export function InviteDialog({revivalId, participants, onOpenChange}: {
                         </p>
                         <div className="space-y-2">
                             <Label htmlFor={`${id}-language`}>{t("Participants.inviteLanguage")}</Label>
-                            <NativeSelect id={`${id}-language`} className="w-full" value={language} onChange={change => setLanguage(change.target.value)}>
-                                {INVITATION_LANGUAGES.map(code => <option key={code} value={code}>{t(`Participants.languages.${code}`)}</option>)}
+                            <NativeSelect id={`${id}-language`} className="w-full" value={language}
+                                          onChange={change => setLanguage(change.target.value)}>
+                                {INVITATION_LANGUAGES.map(code => <option key={code}
+                                                                          value={code}>{t(`Participants.languages.${code}`)}</option>)}
                             </NativeSelect>
                         </div>
                         {askEmail && (
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-email`}>{t("Participants.inviteEmail")}</Label>
-                                <Input id={`${id}-email`} type="email" autoComplete="off" value={email} onChange={change => setEmail(change.target.value)}
+                                <Input id={`${id}-email`} type="email" autoComplete="off" value={email}
+                                       onChange={change => setEmail(change.target.value)}
                                        aria-describedby={`${id}-email-hint`}/>
-                                <p id={`${id}-email-hint`} className="text-xs text-muted-foreground">{t("Participants.inviteEmailHint")}</p>
+                                <p id={`${id}-email-hint`}
+                                   className="text-xs text-muted-foreground">{t("Participants.inviteEmailHint")}</p>
                             </div>
                         )}
                     </div>
@@ -99,8 +113,10 @@ export function InviteDialog({revivalId, participants, onOpenChange}: {
                         <Button type="button" onClick={() => onOpenChange(false)}>{t("Common.close")}</Button>
                     ) : (
                         <>
-                            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
-                            <Button type="button" disabled={pending} onClick={submit}>{t("Participants.sendInvitations")}</Button>
+                            <Button type="button" variant="outline"
+                                    onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                            <Button type="button" disabled={pending}
+                                    onClick={submit}>{t("Participants.sendInvitations")}</Button>
                         </>
                     )}
                 </DialogFooter>

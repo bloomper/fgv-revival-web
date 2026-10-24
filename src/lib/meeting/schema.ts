@@ -20,7 +20,12 @@ export const meetingValuesSchema = z.object({
 export type MeetingValues = z.infer<typeof meetingValuesSchema>;
 
 export const meetingCreateSchema = z.object({revivalId: id, values: meetingValuesSchema});
-export const meetingUpdateSchema = z.object({id, version: z.number().int(), revivalId: id, values: meetingValuesSchema});
+export const meetingUpdateSchema = z.object({
+    id,
+    version: z.number().int(),
+    revivalId: id,
+    values: meetingValuesSchema
+});
 export const meetingTransitionSchema = z.object({id, version: z.number().int(), revivalId: id});
 export const minutesEmailSchema = z.object({meetingId: id, revivalId: id, language: z.enum(["sv", "en"])});
 export const minutesRetrySchema = z.object({emailId: id, revivalId: id, meetingId: id});

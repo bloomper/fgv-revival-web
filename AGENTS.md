@@ -100,14 +100,16 @@ changing routing or data fetching; this area differs sharply from older Next.
   `withPolicyAction` / `withPolicyRoute` (`src/utils/route.server.ts`). Pages wrap their body in
   `withPolicyPage(Policies.<entity>.require<Op>, async (authz) => …)` — take roles from `authz`
   rather than calling the session again. Don't hand-roll role checks —
-  `requireUser` / `requireAnyRole` are in `src/utils/auth.server.ts`. Roles: `USER | SUPER_ADMIN | OBSERVER`. `USER` is required for
+  `requireUser` / `requireAnyRole` are in `src/utils/auth.server.ts`. Roles: `USER | SUPER_ADMIN | OBSERVER`. `USER` is
+  required for
   any access; without it the `(app)` layout redirects to `/no-access`.
 - Where the server refuses writes (super admins and observers only read a revival's log, meetings, checklists and
   suggestions), `ReadOnlyNotice` (`src/components/revival/read-only-notice.tsx`) says why instead of hiding the
   controls silently.
-- **Revival permissions are never computed in the web.** Each `Revival` carries a `permissions` object
-  (`canEditCore`, `canEditDetails`, `allowedStatuses`, `canManageDirecteurs`, `canManageSteeringGroup`,
-  `canReadBudget`, `canWriteBudget`, …) computed by the server's `AccessPolicy`. Show or hide controls from it; the server enforces every rule
+- **Revival permissions are never computed in the web.** Each `Revival` carries a `permissions` object (`canEditCore`,
+  `canEditDetails`, `allowedStatuses`, `canManageDirecteurs`, `canManageSteeringGroup`,
+  `canReadBudget`, `canWriteBudget`, …) computed by the server's `AccessPolicy`. Show or hide controls from it; the
+  server enforces every rule
   anyway. Don't re-derive directeur or steering-group rules from the role and status.
 - Directeurs and steering group members are picked among the FGV realm's users (`revivalMemberCandidates`). An email
   that is no user's is invited: the server creates a Keycloak user without roles and Keycloak emails them; a super
@@ -179,7 +181,8 @@ changing routing or data fetching; this area differs sharply from older Next.
   Open shifts. The mailing plan's templates are a super admin list (`/admin/mailing-templates`) with the due rule as a
   `RelativeDeadlineField`.
 - **Materials and inventory (M8)** are the Materials tab (`/revivals/[id]/materials` and `/materials/inventory`,
-  `?removed=1` for writers), shown when `permissions.canReadMaterials` (not observers), written with `canWriteMaterials`. Materials
+  `?removed=1` for writers), shown when `permissions.canReadMaterials` (not observers), written with
+  `canWriteMaterials`. Materials
   are **links only** — nothing is uploaded — rendered with `rel="noopener noreferrer" target="_blank"`. The server
   recognises a link's service from its host (`LinkService.hosts`, kept under `/admin/link-services`: the catalog
   editor with its `extra` fields); `src/lib/material/hosts.ts` mirrors the rule only for the hint shown while typing,
@@ -205,14 +208,16 @@ changing routing or data fetching; this area differs sharply from older Next.
   stay on rows that hold them; pickers offer `catalogChoices(active, held)`. Pages with a picker fetch the active list
   and wrap it in `CatalogProvider`.
 - The server's plain HTTP endpoints (guide PDF, spex poster, budget export, receipts, Swish QR) go through
-  `apiFetch` in `src/lib/api.server.ts`, which adds the token on the server. The browser reaches the PDF only through the route
+  `apiFetch` in `src/lib/api.server.ts`, which adds the token on the server. The browser reaches the PDF only through
+  the route
   handler `/api/guide-pdf`, and a revival's poster only through `/api/revival-poster/[id]` (rendered by
   `RevivalPoster`, which falls back to a placeholder; never `next/image`, whose optimizer has no session).
   The budget's Excel export goes through `/api/budget-export/[id]` (language from the locale cookie), and receipts
   through `/api/receipts/[transactionId]`: GET downloads as a sandboxed attachment, POST checks the browser's
   multipart `file` (type and 10 MB, `receiptProblem`) and forwards it, DELETE removes it. A receipt chosen in the
   transaction dialog is uploaded right after the transaction is saved. `next.config.ts` sets the sandboxing CSP for
-  the receipt, poster and Swish QR (`/api/swish-qr/[revivalId]`, an SVG) routes after the page policy, since the last matching header wins over the route's own, and
+  the receipt, poster and Swish QR (`/api/swish-qr/[revivalId]`, an SVG) routes after the page policy, since the last
+  matching header wins over the route's own, and
   raises `proxyClientMaxBodySize` because `proxy.ts` buffers request bodies.
 - Calendar feeds are the exception: calendar apps have no session, so `/api/calendar/[file]` forwards
   `<token>.ics` (and `?lang=`) to the server with `apiFetchPublic`, without a token. The secret link is the credential;
@@ -230,9 +235,10 @@ changing routing or data fetching; this area differs sharply from older Next.
   elements FR-010 allows, so raw HTML stays text and images are never loaded. Guide text has a Swedish and an optional
   English version; pick with `pickText` from `src/components/guide/localized.ts`.
 - Free text the steering group writes (log rows, comments, meeting notes, checklist items, owner names) is rendered
-  only through `src/components/plain-text.tsx`: plain text with line breaks and linkified http(s) URLs, never Markdown
+  only through `src/components/plain-text.tsx`: plain text with line breaks and linkified http (s) URLs, never Markdown
   or HTML.
-- Mutations invalidate with `revalidatePath` (the revival's layout, or `/` for super admin lists). Server actions live in
+- Mutations invalidate with `revalidatePath` (the revival's layout, or `/` for super admin lists). Server actions live
+  in
   `src/app/(app)/<entity>/actions.server.ts` and validate input with the entity's Zod schema
   (`src/lib/<entity>/schema.ts`) before calling the lib.
 - Codegen has two targets (`codegen.ts`): `src/gql/schema.ts` for domain types/enums, and the

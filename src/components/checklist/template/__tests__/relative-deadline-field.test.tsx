@@ -1,7 +1,11 @@
 import {describe, expect, it, vi} from "vitest";
 import {fireEvent, render, screen} from "@testing-library/react";
 import {RelativeDeadlineField} from "@/components/checklist/template/relative-deadline-field.client";
-import {applyRelativeDeadline, type RelativeDeadlineValue, validRelativeDeadline} from "@/lib/checklist/relative-deadline";
+import {
+    applyRelativeDeadline,
+    type RelativeDeadlineValue,
+    validRelativeDeadline
+} from "@/lib/checklist/relative-deadline";
 
 vi.mock("next-intl", () => ({
     useTranslations: () => (key: string, values?: Record<string, unknown>) => values ? `${key} ${JSON.stringify(values)}` : key,
@@ -30,7 +34,8 @@ describe("applyRelativeDeadline", () => {
 
 describe("RelativeDeadlineField", () => {
     it("shows a live example for the rule", () => {
-        render(<RelativeDeadlineField value={{kind: "WEEKDAY_WEEK_BEFORE", weekday: "MONDAY"}} onChange={() => undefined} exampleDate="2027-11-20"/>);
+        render(<RelativeDeadlineField value={{kind: "WEEKDAY_WEEK_BEFORE", weekday: "MONDAY"}}
+                                      onChange={() => undefined} exampleDate="2027-11-20"/>);
 
         expect(screen.getByText('example {"date":"2027-11-20 2027-11-20","deadline":"2027-11-08 2027-11-08"}')).toBeInTheDocument();
     });
@@ -38,7 +43,8 @@ describe("RelativeDeadlineField", () => {
     it("keeps the sign from before or after when the amount changes", () => {
         const onChange = vi.fn();
 
-        render(<RelativeDeadlineField value={{kind: "DAYS", amount: -3, weekday: null}} onChange={onChange} exampleDate="2027-11-20"/>);
+        render(<RelativeDeadlineField value={{kind: "DAYS", amount: -3, weekday: null}} onChange={onChange}
+                                      exampleDate="2027-11-20"/>);
         fireEvent.change(screen.getByLabelText("amount"), {target: {value: "14"}});
         expect(onChange).toHaveBeenLastCalledWith({kind: "DAYS", amount: -14, weekday: null});
 

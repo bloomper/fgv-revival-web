@@ -53,7 +53,11 @@ test.describe("Budget, M5: lines from proposals, transactions with receipts, sce
             await dialog.getByLabel("Beskrivning").fill("Storhandling");
             await dialog.getByLabel("Budgetrad").selectOption({label: "Mat och dryck: Mat under rephelgen"});
             await dialog.getByLabel("Utlägg av").selectOption({label: "Stina Styrgrupp"});
-            await dialog.getByLabel("Kvitto").setInputFiles({name: "kvitto.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4 kvitto")});
+            await dialog.getByLabel("Kvitto").setInputFiles({
+                name: "kvitto.pdf",
+                mimeType: "application/pdf",
+                buffer: Buffer.from("%PDF-1.4 kvitto")
+            });
             await dialog.getByRole("button", {name: "Spara"}).click();
             await expect(dialog).toBeHidden();
 
@@ -109,7 +113,11 @@ test.describe("Budget, M5: lines from proposals, transactions with receipts, sce
             expect(workbook.suggestedFilename()).toBe("budget-ali-baba-2028.xlsx");
         });
 
-    test("a steering group member without finance reads the budget without changing it", async ({page, loginAs, mock}) => {
+    test("a steering group member without finance reads the budget without changing it", async ({
+                                                                                                    page,
+                                                                                                    loginAs,
+                                                                                                    mock
+                                                                                                }) => {
         await mock.budget({finance: false});
         await loginAs("styrgrupp");
         await page.goto("/revivals/1/budget");
@@ -128,7 +136,11 @@ test.describe("Budget, M5: lines from proposals, transactions with receipts, sce
         await expect(page.getByRole("button", {name: "Ny transaktion"})).toHaveCount(0);
     });
 
-    test("the super admin keeps categories, reference figures and an event type's budget lines", async ({page, loginAs, mock}) => {
+    test("the super admin keeps categories, reference figures and an event type's budget lines", async ({
+                                                                                                            page,
+                                                                                                            loginAs,
+                                                                                                            mock
+                                                                                                        }) => {
         await mock.budget();
         await loginAs("superadmin");
 

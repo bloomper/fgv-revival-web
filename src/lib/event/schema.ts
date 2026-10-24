@@ -109,7 +109,11 @@ export const eventTypeValuesSchema = z.object({
 export type EventTypeValues = z.infer<typeof eventTypeValuesSchema>;
 
 export const eventTypeCreateSchema = z.object({values: eventTypeValuesSchema});
-export const eventTypeUpdateSchema = z.object({id, version: z.number().int().nonnegative(), values: eventTypeValuesSchema});
+export const eventTypeUpdateSchema = z.object({
+    id,
+    version: z.number().int().nonnegative(),
+    values: eventTypeValuesSchema
+});
 export const eventTypeTransitionSchema = z.object({id, version: z.number().int().nonnegative()});
 export const eventTypeMoveSchema = eventTypeTransitionSchema.extend({position: z.number().int().nonnegative()});
 

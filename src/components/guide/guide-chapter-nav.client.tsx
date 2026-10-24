@@ -74,7 +74,8 @@ function ChapterList({chapters, current, hrefOf, inView, onNavigate}: {
                     <li key={chapter.key}>
                         <Link href={hrefOf(chapter.key)} onClick={onNavigate} aria-current={active ? "page" : undefined}
                               className={cn("flex gap-2 rounded-md px-2 py-1.5 hover:bg-accent", active && "bg-accent font-medium")}>
-                            <span className="w-5 shrink-0 text-right tabular-nums text-muted-foreground">{index + 1}.</span>
+                            <span
+                                className="w-5 shrink-0 text-right tabular-nums text-muted-foreground">{index + 1}.</span>
                             <span>{pickText(chapter.title, locale).text}</span>
                         </Link>
                         {active && chapter.sections.length > 0 && (
@@ -124,7 +125,10 @@ export function GuideChapterNav({chapters, basePath}: { chapters: NavChapter[]; 
                 <Sheet open={open} onOpenChange={setOpen}>
                     <SheetTrigger render={<Button variant="outline" className="w-full justify-between"/>}>
                         <span className="truncate">
-                            <span className="text-muted-foreground">{t("chapterOf", {number: index + 1, count: chapters.length})} · </span>
+                            <span className="text-muted-foreground">{t("chapterOf", {
+                                number: index + 1,
+                                count: chapters.length
+                            })} · </span>
                             {pickText(chapter.title, locale).text}
                         </span>
                         <ChevronDown/>
@@ -135,13 +139,15 @@ export function GuideChapterNav({chapters, basePath}: { chapters: NavChapter[]; 
                         </SheetHeader>
                         <ScrollArea className="min-h-0 flex-1">
                             <nav aria-label={t("chapters")} className="p-2 pb-6">
-                                <ChapterList chapters={chapters} current={current} hrefOf={hrefOf} inView={inView} onNavigate={() => setOpen(false)}/>
+                                <ChapterList chapters={chapters} current={current} hrefOf={hrefOf} inView={inView}
+                                             onNavigate={() => setOpen(false)}/>
                             </nav>
                         </ScrollArea>
                     </SheetContent>
                 </Sheet>
             </div>
-            <nav aria-label={t("chapters")} className="sticky top-24 hidden h-fit max-h-[calc(100dvh-8rem)] w-64 shrink-0 overflow-y-auto lg:block">
+            <nav aria-label={t("chapters")}
+                 className="sticky top-24 hidden h-fit max-h-[calc(100dvh-8rem)] w-64 shrink-0 overflow-y-auto lg:block">
                 <ChapterList chapters={chapters} current={current} hrefOf={hrefOf} inView={inView}/>
             </nav>
         </>

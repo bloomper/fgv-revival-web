@@ -23,14 +23,26 @@ export function guideVersion(overrides: Partial<GuideVersionFieldsFragment> = {}
             title: {sv: `Kapitel ${key}`, en: key === "A" ? `Chapter ${key}` : null},
             version: 0,
             items: key === "A" ? [
-                {id: "i1", key: "k-req", type: ITEM_TYPES.REQUIREMENT, text: {sv: "Ett krav.", en: "A requirement."}, version: 0},
+                {
+                    id: "i1",
+                    key: "k-req",
+                    type: ITEM_TYPES.REQUIREMENT,
+                    text: {sv: "Ett krav.", en: "A requirement."},
+                    version: 0
+                },
                 {id: "i2", key: "k-text", type: ITEM_TYPES.TEXT, text: {sv: "Löptext.", en: null}, version: 0},
             ] : [],
             sections: key === "B" ? [{
                 id: "s1", key: "s-kalas", title: {sv: "Kalaslokal", en: null}, version: 0,
                 items: [
                     {id: "i3", key: "k-tip", type: ITEM_TYPES.TIP, text: {sv: "Ett tips.", en: null}, version: 0},
-                    {id: "i4", key: "k-question", type: ITEM_TYPES.QUESTION, text: {sv: "En fråga?", en: null}, version: 0},
+                    {
+                        id: "i4",
+                        key: "k-question",
+                        type: ITEM_TYPES.QUESTION,
+                        text: {sv: "En fråga?", en: null},
+                        version: 0
+                    },
                 ],
             }] : [],
         })),

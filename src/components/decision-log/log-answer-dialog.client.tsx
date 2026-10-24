@@ -67,24 +67,29 @@ export function LogAnswerDialog({revivalId, question, members, meetingId, open, 
                         <div className="space-y-4 px-6 py-6 pb-12">
                             <div className="space-y-2">
                                 <Label htmlFor="answer-text">{t("Log.decision")}</Label>
-                                <Textarea id="answer-text" rows={3} maxLength={MAX_LOG_TEXT} {...form.register("text")}/>
-                                {errors.text?.message && <p className="text-sm text-destructive">{t(`Validation.${errors.text.message}`)}</p>}
+                                <Textarea id="answer-text" rows={3}
+                                          maxLength={MAX_LOG_TEXT} {...form.register("text")}/>
+                                {errors.text?.message &&
+                                    <p className="text-sm text-destructive">{t(`Validation.${errors.text.message}`)}</p>}
                             </div>
                             <Controller control={form.control} name="owner" render={({field}) => (
                                 <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}/>
                             )}/>
                             <div className="space-y-2">
                                 <Label htmlFor="answer-deadline">{t("Log.deadline")}</Label>
-                                <DateInput id="answer-deadline" {...form.register("deadline", {setValueAs: value => value || null})}/>
+                                <DateInput
+                                    id="answer-deadline" {...form.register("deadline", {setValueAs: value => value || null})}/>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="answer-comment">{t("Log.comment")}</Label>
-                                <Textarea id="answer-comment" rows={2} maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
+                                <Textarea id="answer-comment" rows={2}
+                                          maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
                             </div>
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Log.answer")}</Button>
                     </SheetFooter>
                 </form>

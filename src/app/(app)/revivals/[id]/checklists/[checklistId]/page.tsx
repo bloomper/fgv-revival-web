@@ -56,27 +56,34 @@ export default async function ChecklistPage({params}: { params: Promise<{ id: st
                     </Link>
                     <h3 className="flex flex-wrap items-center gap-2 text-base font-semibold tracking-tight">
                         {title}
-                        {checklist.date && <span className="font-normal text-muted-foreground tabular-nums">{formatDate(checklist.date)}</span>}
+                        {checklist.date && <span
+                            className="font-normal text-muted-foreground tabular-nums">{formatDate(checklist.date)}</span>}
                         {checklist.cancelled && <Badge variant="outline">{t("cancelled")}</Badge>}
                     </h3>
                     {checklist.event && (
-                        <Link href={`/revivals/${revival.id}/events`} className="block text-sm text-muted-foreground hover:underline">
+                        <Link href={`/revivals/${revival.id}/events`}
+                              className="block text-sm text-muted-foreground hover:underline">
                             {t("forEvent", {title: checklist.event.title})}
                         </Link>
                     )}
                     {checklist.template && (
-                        <Link href={`/admin/checklist-templates/${checklist.template.id}`} className="text-sm text-muted-foreground hover:underline">
+                        <Link href={`/admin/checklist-templates/${checklist.template.id}`}
+                              className="text-sm text-muted-foreground hover:underline">
                             {t("fromTemplate", {name: checklist.template.name ? pickText(checklist.template.name, locale).text : ""})}
                         </Link>
                     )}
                 </div>
                 <ChecklistTips tips={checklist.tips}/>
-                <ChecklistView revivalId={revival.id} checklistId={checklist.id} items={checklist.items} members={revival.ownerCandidates}
-                               canWrite={revival.permissions.canWriteLog} canWaive={revival.permissions.canWaiveRequirement}
+                <ChecklistView revivalId={revival.id} checklistId={checklist.id} items={checklist.items}
+                               members={revival.ownerCandidates}
+                               canWrite={revival.permissions.canWriteLog}
+                               canWaive={revival.permissions.canWaiveRequirement}
                                cancelled={checklist.cancelled} actions={(
                     <>
-                        {checklist.kind === "EVENT" && <EventChecklistDialog revivalId={revival.id} templates={[]} checklist={checklist}/>}
-                        <ChecklistActions revivalId={revival.id} checklist={checklist} templates={checklist.templatesAvailable}/>
+                        {checklist.kind === "EVENT" &&
+                            <EventChecklistDialog revivalId={revival.id} templates={[]} checklist={checklist}/>}
+                        <ChecklistActions revivalId={revival.id} checklist={checklist}
+                                          templates={checklist.templatesAvailable}/>
                     </>
                 )}/>
             </div>

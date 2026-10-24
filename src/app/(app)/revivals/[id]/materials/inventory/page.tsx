@@ -40,8 +40,10 @@ export default async function InventoryPage({params, searchParams}: {
         return (
             <div className="flex flex-col gap-4">
                 <h4 className="sr-only">{t("title")}</h4>
-                <InventoryTable revivalId={loaded.revival.id} items={loaded.items} members={loaded.revival.ownerCandidates}
-                                materials={loaded.materials.filter(material => !material.removed)} canWrite={canWrite} showRemoved={showRemoved && canWrite}/>
+                <InventoryTable revivalId={loaded.revival.id} items={loaded.items}
+                                members={loaded.revival.ownerCandidates}
+                                materials={loaded.materials.filter(material => !material.removed)} canWrite={canWrite}
+                                showRemoved={showRemoved && canWrite}/>
             </div>
         );
     });

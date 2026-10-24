@@ -12,7 +12,12 @@ import {GuideTypeBadge} from "@/components/guide/guide-type-badge";
 import {pickText} from "@/components/guide/localized";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 
-const STATUS_VARIANTS = {OPEN: "default", ACCEPTED: "secondary", REJECTED: "destructive", WITHDRAWN: "outline"} as const;
+const STATUS_VARIANTS = {
+    OPEN: "default",
+    ACCEPTED: "secondary",
+    REJECTED: "destructive",
+    WITHDRAWN: "outline"
+} as const;
 
 /**
  * Suggestions with their outcome (FR-035). The author may withdraw their own open ones; {@code actions} adds the super
@@ -35,19 +40,28 @@ export function SuggestionList({suggestions, actions, showRevival = false}: {
     return (
         <ul className="space-y-3">
             {suggestions.map(suggestion => (
-                <li key={suggestion.id} className="space-y-2 rounded-md border p-3" data-testid={`suggestion-${suggestion.id}`}>
+                <li key={suggestion.id} className="space-y-2 rounded-md border p-3"
+                    data-testid={`suggestion-${suggestion.id}`}>
                     <div className="flex flex-wrap items-center gap-2 text-sm">
                         <Badge variant={STATUS_VARIANTS[suggestion.status]}>{t(`status.${suggestion.status}`)}</Badge>
                         <span className="font-medium">{t(`kind.${suggestion.kind}`)}</span>
                         <span className="text-muted-foreground">
-                            {t("where", {chapter: suggestion.chapterTitle ? pickText(suggestion.chapterTitle, locale).text : "–", version: suggestion.madeOn.label ?? ""})}
+                            {t("where", {
+                                chapter: suggestion.chapterTitle ? pickText(suggestion.chapterTitle, locale).text : "–",
+                                version: suggestion.madeOn.label ?? ""
+                            })}
                             {showRevival && ` · ${suggestion.revival.title}`}
                             {" · "}{suggestion.author}
                         </span>
                         <div className="ml-auto flex gap-1">
                             {suggestion.mine && suggestion.status === "OPEN" && (
-                                <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" disabled={pending} onClick={() => startTransition(async () => {
-                                    feedback(await withdrawSuggestionAction({id: suggestion.id, version: suggestion.version, revivalId: suggestion.revival.id}), t("withdrawn"));
+                                <Button variant="outline" size="sm" className="text-destructive hover:text-destructive"
+                                        disabled={pending} onClick={() => startTransition(async () => {
+                                    feedback(await withdrawSuggestionAction({
+                                        id: suggestion.id,
+                                        version: suggestion.version,
+                                        revivalId: suggestion.revival.id
+                                    }), t("withdrawn"));
                                 })}>
                                     {t("withdraw")}
                                 </Button>
@@ -67,15 +81,21 @@ export function SuggestionList({suggestions, actions, showRevival = false}: {
                                 {t("proposed")}
                                 {suggestion.proposedType && <GuideTypeBadge type={suggestion.proposedType}/>}
                             </span>
-                            {suggestion.proposedText && <GuideMarkdown>{pickText(suggestion.proposedText, locale).text}</GuideMarkdown>}
+                            {suggestion.proposedText &&
+                                <GuideMarkdown>{pickText(suggestion.proposedText, locale).text}</GuideMarkdown>}
                         </div>
                     )}
-                    {suggestion.reason && <p className="text-sm"><span className="text-muted-foreground">{t("reason")}:</span> {suggestion.reason}</p>}
+                    {suggestion.reason && <p className="text-sm"><span
+                        className="text-muted-foreground">{t("reason")}:</span> {suggestion.reason}</p>}
                     {suggestion.decisionReason && (
-                        <p className="text-sm"><span className="text-muted-foreground">{t("decision", {name: suggestion.decidedBy ?? ""})}:</span> {suggestion.decisionReason}</p>
+                        <p className="text-sm"><span
+                            className="text-muted-foreground">{t("decision", {name: suggestion.decidedBy ?? ""})}:</span> {suggestion.decisionReason}
+                        </p>
                     )}
-                    {suggestion.publishedIn && <p className="text-sm text-muted-foreground">{t("publishedIn", {label: suggestion.publishedIn.label ?? ""})}</p>}
-                    {suggestion.reopenedAt && suggestion.status === "OPEN" && <p className="text-sm text-muted-foreground">{t("reopened")}</p>}
+                    {suggestion.publishedIn &&
+                        <p className="text-sm text-muted-foreground">{t("publishedIn", {label: suggestion.publishedIn.label ?? ""})}</p>}
+                    {suggestion.reopenedAt && suggestion.status === "OPEN" &&
+                        <p className="text-sm text-muted-foreground">{t("reopened")}</p>}
                 </li>
             ))}
         </ul>

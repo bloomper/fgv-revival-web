@@ -52,7 +52,8 @@ export function RevivalFilterBar({filter}: { filter: ReturnType<typeof useReviva
     return (
         <div className="flex flex-wrap items-center gap-2">
             <div className="relative w-full sm:w-75">
-                <Input placeholder={t("Revival.filterPlaceholder")} value={filter.query} onChange={event => filter.setQuery(event.target.value)}
+                <Input placeholder={t("Revival.filterPlaceholder")} value={filter.query}
+                       onChange={event => filter.setQuery(event.target.value)}
                        aria-label={t("Common.search")} className="h-8 pr-8"/>
                 {filter.query && (
                     <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
@@ -62,7 +63,11 @@ export function RevivalFilterBar({filter}: { filter: ReturnType<typeof useReviva
                 )}
             </div>
             <DataFilter title={t("Revival.status")}
-                        options={REVIVAL_STATUSES.map((status, index) => ({label: t(`Status.${status}`), value: status, sortKey: String(index)}))}
+                        options={REVIVAL_STATUSES.map((status, index) => ({
+                            label: t(`Status.${status}`),
+                            value: status,
+                            sortKey: String(index)
+                        }))}
                         selectedValues={filter.statuses}
                         onSelect={values => filter.setStatuses(values as Set<RevivalStatus>)}
                         onClear={() => filter.setStatuses(new Set(REVIVAL_STATUSES))}/>

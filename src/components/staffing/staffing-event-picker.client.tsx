@@ -18,7 +18,11 @@ export function eventLabel(event: PickerEvent) {
 /**
  * The event whose staffing is shown, kept in the URL (`?event=`) so each event has its own link.
  */
-export function StaffingEventPicker({events, selected, view}: { events: PickerEvent[]; selected: string; view: string | null }) {
+export function StaffingEventPicker({events, selected, view}: {
+    events: PickerEvent[];
+    selected: string;
+    view: string | null
+}) {
     const t = useTranslations("Staffing");
     const id = useId();
     const router = useRouter();

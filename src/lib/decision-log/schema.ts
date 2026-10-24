@@ -31,7 +31,11 @@ export const logEntryValuesSchema = z.object({
 
 export type LogEntryValues = z.infer<typeof logEntryValuesSchema>;
 
-export const logEntryCreateSchema = z.object({revivalId: id, meetingId: id.nullable().optional(), values: logEntryValuesSchema});
+export const logEntryCreateSchema = z.object({
+    revivalId: id,
+    meetingId: id.nullable().optional(),
+    values: logEntryValuesSchema
+});
 
 export const logEntryUpdateSchema = z.object({
     id,

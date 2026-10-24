@@ -40,7 +40,11 @@ export function filterMeetings(meetings: MeetingRow[], query: string, statuses: 
  * A revival's meetings as the other tables are: search, a status filter, sortable columns and pages, newest first. A
  * row opens the meeting.
  */
-export function MeetingTable({revivalId, meetings, actions}: { revivalId: string; meetings: MeetingRow[]; actions?: React.ReactNode }) {
+export function MeetingTable({revivalId, meetings, actions}: {
+    revivalId: string;
+    meetings: MeetingRow[];
+    actions?: React.ReactNode
+}) {
     const t = useTranslations();
     const router = useRouter();
     const [query, setQuery] = useState("");
@@ -54,7 +58,8 @@ export function MeetingTable({revivalId, meetings, actions}: { revivalId: string
             id: "date",
             accessorFn: meeting => meeting.date,
             sortFn: "alphanumeric",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Meeting.date")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Meeting.date")}/>,
             cell: ({row}) => <span className="whitespace-nowrap font-medium">{formatDate(row.original.date)}</span>,
             meta: {className: "w-32"},
         },
@@ -62,13 +67,15 @@ export function MeetingTable({revivalId, meetings, actions}: { revivalId: string
             id: "title",
             accessorFn: meeting => meeting.title ?? untitled,
             sortFn: "alphanumeric",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Meeting.titleLabel")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Meeting.titleLabel")}/>,
         },
         {
             id: "status",
             accessorFn: meeting => MEETING_STATUSES.indexOf(meeting.status),
             sortFn: "basic",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Meeting.statusLabel")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Meeting.statusLabel")}/>,
             cell: ({row}) => <MeetingStatusBadge status={row.original.status}/>,
         },
     ];
@@ -80,17 +87,23 @@ export function MeetingTable({revivalId, meetings, actions}: { revivalId: string
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-wrap items-center gap-2">
                     <div className="relative w-full sm:w-75">
-                        <Input placeholder={t("Meeting.filterPlaceholder")} value={query} onChange={event => setQuery(event.target.value)}
+                        <Input placeholder={t("Meeting.filterPlaceholder")} value={query}
+                               onChange={event => setQuery(event.target.value)}
                                aria-label={t("Common.search")} className="h-8 pr-8"/>
                         {query && (
-                            <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                            <Button variant="ghost" size="icon"
+                                    className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
                                     aria-label={t("Common.clearSearch")} onClick={() => setQuery("")}>
                                 <X className="h-3 w-3"/>
                             </Button>
                         )}
                     </div>
                     <DataFilter title={t("Meeting.statusLabel")}
-                                options={MEETING_STATUSES.map((status, index) => ({label: t(`Meeting.status.${status}`), value: status, sortKey: String(index)}))}
+                                options={MEETING_STATUSES.map((status, index) => ({
+                                    label: t(`Meeting.status.${status}`),
+                                    value: status,
+                                    sortKey: String(index)
+                                }))}
                                 selectedValues={statuses}
                                 onSelect={values => setStatuses(values as Set<MeetingStatus>)}
                                 onClear={() => setStatuses(new Set(MEETING_STATUSES))}/>

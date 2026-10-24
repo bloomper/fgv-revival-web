@@ -9,7 +9,9 @@ import {withPolicyPage} from "@/utils/route.server";
  * The types a guide item can have, for super admins. Each type has one of the fixed kinds, which decides what its
  * items do. Retired types only when asked for.
  */
-export default async function GuideItemTypesPage({searchParams}: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+export default async function GuideItemTypesPage({searchParams}: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
     const retired = (await searchParams).retired === "1";
 
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {

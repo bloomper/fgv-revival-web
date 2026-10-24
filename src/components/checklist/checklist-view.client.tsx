@@ -43,13 +43,15 @@ export function ChecklistView({revivalId, checklistId, items, members, canWrite,
             ) : (
                 <ul className="space-y-2">
                     {items.map(item => (
-                        <ChecklistItemRow key={item.id} revivalId={revivalId} item={item} canWrite={writable} canWaive={canWaive}
+                        <ChecklistItemRow key={item.id} revivalId={revivalId} item={item} canWrite={writable}
+                                          canWaive={canWaive}
                                           onEdit={() => setEditing(item)} onNotApplicable={() => setWaiving(item)}/>
                     ))}
                 </ul>
             )}
             {(adding || editing) && (
-                <ChecklistItemDialog revivalId={revivalId} checklistId={checklistId} item={editing} members={members} open
+                <ChecklistItemDialog revivalId={revivalId} checklistId={checklistId} item={editing} members={members}
+                                     open
                                      onOpenChange={(open) => {
                                          if (!open) {
                                              setAdding(false);
@@ -57,7 +59,8 @@ export function ChecklistView({revivalId, checklistId, items, members, canWrite,
                                          }
                                      }}/>
             )}
-            {waiving && <ChecklistStateDialog revivalId={revivalId} item={waiving} open onOpenChange={(open) => !open && setWaiving(null)}/>}
+            {waiving && <ChecklistStateDialog revivalId={revivalId} item={waiving} open
+                                              onOpenChange={(open) => !open && setWaiving(null)}/>}
         </div>
     );
 }

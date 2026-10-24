@@ -119,7 +119,12 @@ export const linkServiceDetailsSchema = z.object({
 export type LinkServiceDetails = z.infer<typeof linkServiceDetailsSchema>;
 
 export const linkServiceCreateSchema = z.object({name: catalogNameSchema, details: linkServiceDetailsSchema});
-export const linkServiceUpdateSchema = z.object({id: catalogId, version, name: catalogNameSchema, details: linkServiceDetailsSchema});
+export const linkServiceUpdateSchema = z.object({
+    id: catalogId,
+    version,
+    name: catalogNameSchema,
+    details: linkServiceDetailsSchema
+});
 
 export function toLinkServiceInput(name: z.infer<typeof catalogNameSchema>, details: LinkServiceDetails): LinkServiceInput {
     return {name: {sv: name.sv, en: name.en || null}, hosts: details.hosts, homeUrl: details.homeUrl || null};

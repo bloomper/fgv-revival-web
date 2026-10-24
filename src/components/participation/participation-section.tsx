@@ -5,7 +5,12 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
  * One section of the participant's page: a card named by its heading, so each is a landmark a screen reader can jump
  * to. The page is built from these, so later milestones add sections without touching the others.
  */
-export function ParticipationSection({id, title, description, children}: { id: string; title: string; description?: ReactNode; children: ReactNode }) {
+export function ParticipationSection({id, title, description, children}: {
+    id: string;
+    title: string;
+    description?: ReactNode;
+    children: ReactNode
+}) {
     return (
         <Card role="region" aria-labelledby={`${id}-heading`}>
             <CardHeader>

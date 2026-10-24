@@ -4,7 +4,14 @@ import {revalidatePath} from "next/cache";
 import type {z} from "zod";
 import type {EventUpdateInput} from "@/gql/graphql";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
-import {cancelEvent, createCalendarFeed, createEvent, restoreEvent, revokeCalendarFeed, updateEvent} from "@/lib/event/event.server";
+import {
+    cancelEvent,
+    createCalendarFeed,
+    createEvent,
+    restoreEvent,
+    revokeCalendarFeed,
+    updateEvent
+} from "@/lib/event/event.server";
 import {calendarFeedSchema, eventCreateSchema, eventTransitionSchema, eventUpdateSchema} from "@/lib/event/schema";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
@@ -14,7 +21,9 @@ function revalidate(revivalId: string) {
     revalidatePath(`/revivals/${revivalId}`, "layout");
 }
 
-export async function createEventAction(input: z.input<typeof eventCreateSchema>): Promise<ActionResult<{ id: string }>> {
+export async function createEventAction(input: z.input<typeof eventCreateSchema>): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, values} = eventCreateSchema.parse(input);
         const created = await createEvent({
@@ -80,7 +89,10 @@ export async function restoreEventAction(input: z.input<typeof eventTransitionSc
 /**
  * A new calendar link for the caller. The URL holds the secret and is shown once, so it is only returned, never stored.
  */
-export async function createCalendarFeedAction(input: z.input<typeof calendarFeedSchema>): Promise<ActionResult<{ url: string; createdAt: string }>> {
+export async function createCalendarFeedAction(input: z.input<typeof calendarFeedSchema>): Promise<ActionResult<{
+    url: string;
+    createdAt: string
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId} = calendarFeedSchema.parse(input);
         const created = await createCalendarFeed(revivalId);

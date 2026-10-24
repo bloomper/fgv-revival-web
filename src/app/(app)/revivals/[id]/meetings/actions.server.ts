@@ -3,8 +3,22 @@
 import {revalidatePath} from "next/cache";
 import type {z} from "zod";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
-import {cancelMeeting, closeMeeting, createMeeting, retryMinutes, sendMinutes, startMeeting, updateMeeting} from "@/lib/meeting/meeting.server";
-import {meetingCreateSchema, meetingTransitionSchema, meetingUpdateSchema, minutesEmailSchema, minutesRetrySchema} from "@/lib/meeting/schema";
+import {
+    cancelMeeting,
+    closeMeeting,
+    createMeeting,
+    retryMinutes,
+    sendMinutes,
+    startMeeting,
+    updateMeeting
+} from "@/lib/meeting/meeting.server";
+import {
+    meetingCreateSchema,
+    meetingTransitionSchema,
+    meetingUpdateSchema,
+    minutesEmailSchema,
+    minutesRetrySchema
+} from "@/lib/meeting/schema";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
 
@@ -14,7 +28,9 @@ function revalidate(revivalId: string) {
 
 export type MinutesEmailResult = { id: string; waitingLeftOut: number; failed: string[]; sent: number };
 
-export async function createMeetingAction(input: z.input<typeof meetingCreateSchema>): Promise<ActionResult<{ id: string }>> {
+export async function createMeetingAction(input: z.input<typeof meetingCreateSchema>): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, values} = meetingCreateSchema.parse(input);
         const created = await createMeeting({
@@ -62,7 +78,11 @@ export async function cancelMeetingAction(input: z.input<typeof meetingTransitio
     return transition(input, cancelMeeting);
 }
 
-function result(email: { id: string; waitingLeftOut: number; recipients: { person: { displayName?: string | null }; status: string }[] } | undefined): MinutesEmailResult {
+function result(email: {
+    id: string;
+    waitingLeftOut: number;
+    recipients: { person: { displayName?: string | null }; status: string }[]
+} | undefined): MinutesEmailResult {
     return {
         id: email?.id ?? "",
         waitingLeftOut: email?.waitingLeftOut ?? 0,

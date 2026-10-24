@@ -10,7 +10,9 @@ import {withPolicyPage} from "@/utils/route.server";
  * The mailing plan for super admins (M6b, 5.8): the mailings every revival should send, each relative to an event
  * type's events or to the premiere, in order. Retired ones only when asked for.
  */
-export default async function MailingTemplatesPage({searchParams}: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+export default async function MailingTemplatesPage({searchParams}: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
     const retired = (await searchParams).retired === "1";
 
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {

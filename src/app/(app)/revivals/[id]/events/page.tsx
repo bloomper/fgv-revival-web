@@ -56,22 +56,29 @@ export default async function EventsPage({params, searchParams}: {
                 <h3 className="sr-only">{t("title")}</h3>
                 <ReadOnlyNotice revivalId={revival.id} status={revival.status} canWrite={canWrite} roles={roles}/>
                 <nav aria-label={t("views")} className="flex w-fit gap-1 rounded-lg bg-muted p-1">
-                    <ViewLink href={cancelledQuery ? `${base}?${cancelledQuery}` : base} active={!timeline} icon={List}>{t("list")}</ViewLink>
-                    <ViewLink href={`${base}?view=timeline${cancelledQuery ? `&${cancelledQuery}` : ""}`} active={timeline} icon={GanttChart}>
+                    <ViewLink href={cancelledQuery ? `${base}?${cancelledQuery}` : base} active={!timeline}
+                              icon={List}>{t("list")}</ViewLink>
+                    <ViewLink href={`${base}?view=timeline${cancelledQuery ? `&${cancelledQuery}` : ""}`}
+                              active={timeline} icon={GanttChart}>
                         {t("timeline")}
                     </ViewLink>
                 </nav>
                 {timeline ? (
                     <EventTimeline revivalId={revival.id} months={buildTimeline({
-                        events: events.map(event => ({...event, typeName: event.type ? catalogName(event.type, locale) : null})),
+                        events: events.map(event => ({
+                            ...event,
+                            typeName: event.type ? catalogName(event.type, locale) : null
+                        })),
                         shows: revival.shows,
                         meetings,
                         premiereDate: revival.premiereDate,
                     })}/>
                 ) : (
-                    <EventTable revivalId={revival.id} events={events} types={types} proposals={revival.eventProposals} canWrite={canWrite}
+                    <EventTable revivalId={revival.id} events={events} types={types} proposals={revival.eventProposals}
+                                canWrite={canWrite}
                                 showCancelled={showCancelled}
-                                actions={revival.permissions.canSubscribeCalendar && <CalendarLinkDialog revivalId={revival.id} feed={revival.calendarFeed ?? null}/>}/>
+                                actions={revival.permissions.canSubscribeCalendar &&
+                                    <CalendarLinkDialog revivalId={revival.id} feed={revival.calendarFeed ?? null}/>}/>
                 )}
             </div>
         );

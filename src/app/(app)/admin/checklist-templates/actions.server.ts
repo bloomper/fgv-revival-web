@@ -25,7 +25,9 @@ function revalidate() {
     revalidatePath(ADMIN_PATH, "layout");
 }
 
-export async function createTemplateAction(input: z.input<typeof templateCreateSchema>): Promise<ActionResult<{ id: string }>> {
+export async function createTemplateAction(input: z.input<typeof templateCreateSchema>): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
         const parsed = templateCreateSchema.parse(input);
         const created = await createChecklistTemplate(parsed.kind === "CHAPTER"
@@ -37,9 +39,18 @@ export async function createTemplateAction(input: z.input<typeof templateCreateS
     }));
 }
 
-export async function renameTemplateAction(input: { id: string; version: number; sv: string; en?: string }): Promise<ActionResult<null>> {
+export async function renameTemplateAction(input: {
+    id: string;
+    version: number;
+    sv: string;
+    en?: string
+}): Promise<ActionResult<null>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
-        await updateChecklistTemplate({id: input.id, version: input.version, name: {sv: input.sv, en: input.en || null}});
+        await updateChecklistTemplate({
+            id: input.id,
+            version: input.version,
+            name: {sv: input.sv, en: input.en || null}
+        });
         revalidate();
         return null;
     }));
@@ -87,7 +98,11 @@ export async function saveTemplateItemAction(input: z.input<typeof templateItemS
             await updateChecklistTemplateItem(update);
         } else {
             await createChecklistTemplateItem({
-                templateId, text, guideItemKey: values.guideItemKey, defaultCapability: values.defaultCapability, deadline: values.deadline,
+                templateId,
+                text,
+                guideItemKey: values.guideItemKey,
+                defaultCapability: values.defaultCapability,
+                deadline: values.deadline,
             });
         }
         revalidate();

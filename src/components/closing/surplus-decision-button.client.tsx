@@ -23,7 +23,8 @@ export function SurplusDecisionButton({revivalId, members}: { revivalId: string;
                 {t("recordSurplus")}
             </Button>
             {open && (
-                <LogEntryDialog revivalId={revivalId} entry={null} initial={{type: "DECISION", tags: [tag]}} members={members} tags={[tag]}
+                <LogEntryDialog revivalId={revivalId} entry={null} initial={{type: "DECISION", tags: [tag]}}
+                                members={members} tags={[tag]}
                                 open onOpenChange={setOpen}/>
             )}
         </>

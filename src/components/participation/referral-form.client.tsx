@@ -29,33 +29,41 @@ export function ReferralForm({revivalId}: { revivalId: string }) {
     const message = (key?: string) => key ? t(`Validation.${key}`) : null;
 
     return (
-        <form className="flex flex-col gap-4" noValidate onSubmit={form.handleSubmit(values => startTransition(async () => {
-            if (feedback(await createReferralAction({revivalId, values}), t("Participation.referralSent"))) {
-                track("referral-create");
-                // Keeps the registered inputs: the React Compiler does not register them again after a reset
-                form.reset(EMPTY, {keepFieldsRef: true});
-            }
-        }))}>
+        <form className="flex flex-col gap-4" noValidate
+              onSubmit={form.handleSubmit(values => startTransition(async () => {
+                  if (feedback(await createReferralAction({revivalId, values}), t("Participation.referralSent"))) {
+                      track("referral-create");
+                      // Keeps the registered inputs: the React Compiler does not register them again after a reset
+                      form.reset(EMPTY, {keepFieldsRef: true});
+                  }
+              }))}>
             <div className="flex flex-col gap-2">
                 <Label htmlFor={`${id}-name`}>{t("Participation.referralName")}</Label>
-                <Input id={`${id}-name`} autoComplete="off" className={TOUCH_FIELD} {...describedBy(`${id}-name`, {error: errors.name?.message})}
+                <Input id={`${id}-name`} autoComplete="off"
+                       className={TOUCH_FIELD} {...describedBy(`${id}-name`, {error: errors.name?.message})}
                        {...form.register("name")}/>
                 <FieldErrorText fieldId={`${id}-name`} message={message(errors.name?.message)}/>
             </div>
             <div className="flex flex-col gap-2">
                 <Label htmlFor={`${id}-contact`}>{t("Participation.referralContact")}</Label>
                 <Input id={`${id}-contact`} autoComplete="off" className={TOUCH_FIELD}
-                       {...describedBy(`${id}-contact`, {error: errors.contact?.message, hint: true})} {...form.register("contact")}/>
-                <p id={`${id}-contact-hint`} className="text-sm text-muted-foreground">{t("Participation.referralContactHint")}</p>
+                       {...describedBy(`${id}-contact`, {
+                           error: errors.contact?.message,
+                           hint: true
+                       })} {...form.register("contact")}/>
+                <p id={`${id}-contact-hint`}
+                   className="text-sm text-muted-foreground">{t("Participation.referralContactHint")}</p>
                 <FieldErrorText fieldId={`${id}-contact`} message={message(errors.contact?.message)}/>
             </div>
             <div className="flex flex-col gap-2">
                 <Label htmlFor={`${id}-comment`}>{t("Participation.referralComment")}</Label>
-                <Textarea id={`${id}-comment`} rows={2} className="text-base" {...describedBy(`${id}-comment`, {error: errors.comment?.message})}
+                <Textarea id={`${id}-comment`} rows={2}
+                          className="text-base" {...describedBy(`${id}-comment`, {error: errors.comment?.message})}
                           {...form.register("comment")}/>
                 <FieldErrorText fieldId={`${id}-comment`} message={message(errors.comment?.message)}/>
             </div>
-            <Button type="submit" size="lg" variant="outline" className="h-11 w-full sm:w-auto sm:self-start" disabled={pending}>
+            <Button type="submit" size="lg" variant="outline" className="h-11 w-full sm:w-auto sm:self-start"
+                    disabled={pending}>
                 {t("Participation.sendReferral")}
             </Button>
         </form>

@@ -6,7 +6,14 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Pencil, Plus, Trash2} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {DateInput} from "@/components/date-input.client";
@@ -16,12 +23,19 @@ import {
     updateSpexCalendarDateAction,
 } from "@/app/(app)/admin/spex-calendar/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {MAX_SPEX_DATE_LABEL, type SpexCalendarDateValues, spexCalendarDateValuesSchema} from "@/lib/spex-calendar/schema";
+import {
+    MAX_SPEX_DATE_LABEL,
+    type SpexCalendarDateValues,
+    spexCalendarDateValuesSchema
+} from "@/lib/spex-calendar/schema";
 import {formatDate} from "@/utils/format";
 
 export type SpexCalendarDateRow = { id: string; date: string; label: string; version: number };
 
-function DateDialog({entry, onOpenChange}: { entry: SpexCalendarDateRow | null; onOpenChange: (open: boolean) => void }) {
+function DateDialog({entry, onOpenChange}: {
+    entry: SpexCalendarDateRow | null;
+    onOpenChange: (open: boolean) => void
+}) {
     const t = useTranslations();
     const id = useId();
     const feedback = useActionFeedback();
@@ -31,7 +45,8 @@ function DateDialog({entry, onOpenChange}: { entry: SpexCalendarDateRow | null; 
         defaultValues: {date: entry?.date ?? "", label: entry?.label ?? ""},
     });
     const {errors} = form.formState;
-    const error = (message?: string) => message && <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const error = (message?: string) => message &&
+        <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
 
     return (
         <Dialog open onOpenChange={onOpenChange}>
@@ -56,11 +71,13 @@ function DateDialog({entry, onOpenChange}: { entry: SpexCalendarDateRow | null; 
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`${id}-label`}>{t("SpexCalendar.label")}</Label>
-                        <Input id={`${id}-label`} maxLength={MAX_SPEX_DATE_LABEL} placeholder={t("SpexCalendar.labelPlaceholder")} {...form.register("label")}/>
+                        <Input id={`${id}-label`} maxLength={MAX_SPEX_DATE_LABEL}
+                               placeholder={t("SpexCalendar.labelPlaceholder")} {...form.register("label")}/>
                         {error(errors.label?.message)}
                     </div>
                     <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </DialogFooter>
                 </form>
@@ -90,10 +107,16 @@ export function SpexCalendarEditor({dates}: { dates: SpexCalendarDateRow[] }) {
                         <li key={entry.id} className="flex items-center gap-3 rounded-lg border p-3 text-sm">
                             <span className="w-28 shrink-0 font-medium tabular-nums">{formatDate(entry.date)}</span>
                             <span className="min-w-0 flex-1">{entry.label}</span>
-                            <Button size="icon" variant="ghost" aria-label={t("SpexCalendar.edit", {label: entry.label})} onClick={() => setEditing(entry)}><Pencil/></Button>
-                            <Button size="icon" variant="ghost" aria-label={t("SpexCalendar.delete", {label: entry.label})} disabled={pending}
+                            <Button size="icon" variant="ghost"
+                                    aria-label={t("SpexCalendar.edit", {label: entry.label})}
+                                    onClick={() => setEditing(entry)}><Pencil/></Button>
+                            <Button size="icon" variant="ghost"
+                                    aria-label={t("SpexCalendar.delete", {label: entry.label})} disabled={pending}
                                     onClick={() => startTransition(async () => {
-                                        feedback(await deleteSpexCalendarDateAction({id: entry.id, version: entry.version}), t("SpexCalendar.deleted"));
+                                        feedback(await deleteSpexCalendarDateAction({
+                                            id: entry.id,
+                                            version: entry.version
+                                        }), t("SpexCalendar.deleted"));
                                     })}><Trash2/></Button>
                         </li>
                     ))}

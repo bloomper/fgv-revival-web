@@ -14,14 +14,16 @@ export function RevivalPoster({revivalId, className}: { revivalId: string; class
 
     if (failed === src) {
         return (
-            <div className={cn("flex items-center justify-center bg-muted text-muted-foreground", className)} aria-hidden>
+            <div className={cn("flex items-center justify-center bg-muted text-muted-foreground", className)}
+                 aria-hidden>
                 <Drama className="size-1/2 max-h-8 max-w-8 opacity-60"/>
             </div>
         );
     }
     return (
         // eslint-disable-next-line @next/next/no-img-element -- next/image would fetch it without the user's session
-        <img src={src} alt="" aria-hidden loading="lazy" decoding="async" className={cn("bg-muted object-cover", className)}
+        <img src={src} alt="" aria-hidden loading="lazy" decoding="async"
+             className={cn("bg-muted object-cover", className)}
              onError={() => setFailed(src)}
              ref={img => {
                  // An error before hydration fires no onError, so check what the browser already knows

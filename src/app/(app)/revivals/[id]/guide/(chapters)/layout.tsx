@@ -35,7 +35,8 @@ export default async function RevivalGuideChaptersLayout({children, params}: {
                 <h3 className="sr-only">
                     {t("title")}{revival.guideVersion?.label ? ` ${revival.guideVersion.label}` : ""}
                 </h3>
-                <Link href={basePath} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                <Link href={basePath}
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                     <ArrowLeft className="size-4"/>
                     {t("tab.back")}
                 </Link>

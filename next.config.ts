@@ -37,11 +37,17 @@ const nextConfig: NextConfig = {
             },
             {
                 source: "/api/revival-poster/:id",
-                headers: [{key: "Content-Security-Policy", value: "default-src 'none'; style-src 'unsafe-inline'; sandbox"}],
+                headers: [{
+                    key: "Content-Security-Policy",
+                    value: "default-src 'none'; style-src 'unsafe-inline'; sandbox"
+                }],
             },
             {
                 source: "/api/swish-qr/:revivalId",
-                headers: [{key: "Content-Security-Policy", value: "default-src 'none'; style-src 'unsafe-inline'; sandbox"}],
+                headers: [{
+                    key: "Content-Security-Policy",
+                    value: "default-src 'none'; style-src 'unsafe-inline'; sandbox"
+                }],
             },
         ];
     },

@@ -1,7 +1,7 @@
 import {describe, expect, it, vi} from "vitest";
 import {render, screen, waitFor, within} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {AvailabilityForm, availabilityDefaults} from "@/components/participation/availability-form.client";
+import {availabilityDefaults, AvailabilityForm} from "@/components/participation/availability-form.client";
 
 const setAvailabilityAction = vi.hoisted(() => vi.fn());
 
@@ -10,12 +10,20 @@ vi.mock("@/app/(app)/revivals/[id]/me/actions.server", () => ({setAvailabilityAc
 vi.mock("@/hooks/use-action-feedback", () => ({useActionFeedback: () => () => true}));
 
 const event = {id: "7", title: "Rephelg 1", startDate: "2028-01-15", endDate: "2028-01-16", location: "Kårhuset"};
-const answers = [{eventId: "7", date: "2028-01-16", answer: "MAYBE" as const, comment: "Dålig rygg"}, {eventId: "8", date: "2028-01-15", answer: "NO" as const}];
+const answers = [{eventId: "7", date: "2028-01-16", answer: "MAYBE" as const, comment: "Dålig rygg"}, {
+    eventId: "8",
+    date: "2028-01-15",
+    answer: "NO" as const
+}];
 
 describe("availabilityDefaults", () => {
     it("has a row per day of the event, with the answers given before for that event", () => {
         expect(availabilityDefaults(event, answers)).toEqual({
-            days: [{date: "2028-01-15", answer: "", comment: ""}, {date: "2028-01-16", answer: "MAYBE", comment: "Dålig rygg"}],
+            days: [{date: "2028-01-15", answer: "", comment: ""}, {
+                date: "2028-01-16",
+                answer: "MAYBE",
+                comment: "Dålig rygg"
+            }],
         });
     });
 });

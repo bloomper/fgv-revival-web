@@ -20,7 +20,9 @@ export async function searchSpexAction(query: string): Promise<ActionResult<Spex
     }));
 }
 
-export async function createRevivalAction(input: { spexId: string; year: number }): Promise<ActionResult<{ id: string }>> {
+export async function createRevivalAction(input: { spexId: string; year: number }): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
         const parsed = revivalCreateSchema.parse(input);
         const created = await createRevival(parsed);
@@ -30,7 +32,12 @@ export async function createRevivalAction(input: { spexId: string; year: number 
     }));
 }
 
-export async function updateRevivalAction(input: { id: string; version: number; spexId: string; year: number }): Promise<ActionResult<null>> {
+export async function updateRevivalAction(input: {
+    id: string;
+    version: number;
+    spexId: string;
+    year: number
+}): Promise<ActionResult<null>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
         const {id, version, spexId, year} = revivalCoreSchema.parse(input);
 
@@ -43,7 +50,9 @@ export async function updateRevivalAction(input: { id: string; version: number; 
 /**
  * Deletes the revivals one by one and stops at the first refusal, which it reports.
  */
-export async function deleteRevivalsAction(revivals: { id: string; version: number }[]): Promise<ActionResult<{ deleted: number }>> {
+export async function deleteRevivalsAction(revivals: { id: string; version: number }[]): Promise<ActionResult<{
+    deleted: number
+}>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
         let deleted = 0;
 

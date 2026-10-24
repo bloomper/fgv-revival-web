@@ -35,7 +35,10 @@ export function InvitationBadge({state}: { state: InvitationState }) {
 /**
  * Picks a position from Spexregister's task list, grouped by category.
  */
-export function PositionSelect({positions, emptyLabel, ...props}: { positions: PositionValue[]; emptyLabel: string } & Omit<ComponentProps<"select">, "size">) {
+export function PositionSelect({positions, emptyLabel, ...props}: {
+    positions: PositionValue[];
+    emptyLabel: string
+} & Omit<ComponentProps<"select">, "size">) {
     const groups = new Map<string, PositionValue[]>();
 
     positions.forEach(position => {

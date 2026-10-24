@@ -28,7 +28,10 @@ describe("adding a member", () => {
     });
 
     it("searches FGV accounts and adds the one picked", async () => {
-        search.mockResolvedValue({ok: true, data: [{email: "dana@example.org", displayName: "Dana Directeur", hasAccess: false}]});
+        search.mockResolvedValue({
+            ok: true,
+            data: [{email: "dana@example.org", displayName: "Dana Directeur", hasAccess: false}]
+        });
         await userEvent.type(renderForm(), "dan");
 
         await userEvent.click(await screen.findByRole("button", {name: /Dana Directeur/}));
@@ -36,7 +39,10 @@ describe("adding a member", () => {
         await userEvent.click(screen.getByRole("button", {name: "Members.addDirecteur"}));
 
         expect(search).toHaveBeenLastCalledWith("1", "dan");
-        await waitFor(() => expect(add).toHaveBeenCalledWith(expect.objectContaining({email: "dana@example.org", role: "DIRECTEUR"})));
+        await waitFor(() => expect(add).toHaveBeenCalledWith(expect.objectContaining({
+            email: "dana@example.org",
+            role: "DIRECTEUR"
+        })));
         expect(add.mock.calls[0][0]).not.toHaveProperty("firstName");
     });
 
@@ -49,7 +55,11 @@ describe("adding a member", () => {
         await userEvent.type(screen.getByLabelText("Members.lastName"), "Ny");
         await userEvent.click(screen.getByRole("button", {name: "Members.invite"}));
 
-        await waitFor(() => expect(add).toHaveBeenCalledWith(expect.objectContaining({email: "ny@example.org", firstName: "Nora", lastName: "Ny"})));
+        await waitFor(() => expect(add).toHaveBeenCalledWith(expect.objectContaining({
+            email: "ny@example.org",
+            firstName: "Nora",
+            lastName: "Ny"
+        })));
     });
 
     it("still takes a typed address when the accounts cannot be searched", async () => {

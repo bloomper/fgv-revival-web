@@ -17,7 +17,10 @@ export async function GET(_request: NextRequest, {params}: { params: Promise<{ i
     const response = await apiFetch(`/api/revivals/${id}/poster`);
 
     if (response.status === 204) {
-        return NextResponse.json({error: "No poster"}, {status: 404, headers: {"Cache-Control": "private, max-age=3600"}});
+        return NextResponse.json({error: "No poster"}, {
+            status: 404,
+            headers: {"Cache-Control": "private, max-age=3600"}
+        });
     }
     if (!response.ok) {
         return NextResponse.json({error: "Download failed"}, {status: response.status});

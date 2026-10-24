@@ -7,7 +7,9 @@ import {guideDiscardSchema, guidePublishSchema, guideRemoveSchema} from "@/lib/g
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
 
-export async function publishGuideAction(input: { id: string; version: number; note?: string }): Promise<ActionResult<{ id: string }>> {
+export async function publishGuideAction(input: { id: string; version: number; note?: string }): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
         const parsed = guidePublishSchema.parse(input);
         const published = await publishGuideDraft({...parsed, note: parsed.note || null});

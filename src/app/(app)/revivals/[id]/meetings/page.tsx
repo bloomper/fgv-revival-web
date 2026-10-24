@@ -38,9 +38,11 @@ export default async function MeetingsPage({params}: { params: Promise<{ id: str
         return (
             <div className="flex flex-1 flex-col gap-4">
                 <h3 className="sr-only">{t("title")}</h3>
-                <ReadOnlyNotice revivalId={revival.id} status={revival.status} canWrite={revival.permissions.canWriteLog} roles={roles}/>
+                <ReadOnlyNotice revivalId={revival.id} status={revival.status}
+                                canWrite={revival.permissions.canWriteLog} roles={roles}/>
                 <MeetingTable revivalId={revival.id} meetings={meetings}
-                              actions={revival.permissions.canWriteLog && <NewMeetingButton revivalId={revival.id} members={revival.ownerCandidates}/>}/>
+                              actions={revival.permissions.canWriteLog &&
+                                  <NewMeetingButton revivalId={revival.id} members={revival.ownerCandidates}/>}/>
             </div>
         );
     });

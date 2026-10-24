@@ -1,14 +1,32 @@
 import {describe, expect, it} from "vitest";
 import {render, screen, within} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {BudgetCategoryTable, type BudgetCategorySummary, categoryDifference} from "@/components/budget/budget-category-table.client";
+import {
+    type BudgetCategorySummary,
+    BudgetCategoryTable,
+    categoryDifference
+} from "@/components/budget/budget-category-table.client";
 
 const nbsp = (text: string | null) => text?.replace(/ /g, " ");
 
 const tickets: BudgetCategorySummary = {
-    category: {id: "SHOW_TICKETS", kind: "INCOME", role: "SHOW_TICKETS", name: {sv: "Biljetter föreställning", en: "Show tickets"}, retired: false},
+    category: {
+        id: "SHOW_TICKETS",
+        kind: "INCOME",
+        role: "SHOW_TICKETS",
+        name: {sv: "Biljetter föreställning", en: "Show tickets"},
+        retired: false
+    },
     budgeted: "60000", actual: "64500.50",
-    references: [{label: "Nobel 2026", year: 2026, participants: 60, budgeted: "55000", actual: "58000", budgetedPerParticipant: "917", actualPerParticipant: "967"}],
+    references: [{
+        label: "Nobel 2026",
+        year: 2026,
+        participants: 60,
+        budgeted: "55000",
+        actual: "58000",
+        budgetedPerParticipant: "917",
+        actualPerParticipant: "967"
+    }],
 };
 const venue: BudgetCategorySummary = {
     category: {id: "VENUE", kind: "COST", role: "VENUE", name: {sv: "Lokaler", en: "Venues"}, retired: false},

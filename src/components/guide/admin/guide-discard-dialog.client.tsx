@@ -33,7 +33,8 @@ export function GuideDiscardDialog({draftId, version, acceptedSuggestionCount}: 
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={<Button variant="outline" className="text-destructive hover:text-destructive"/>}>
+            <AlertDialogTrigger
+                render={<Button variant="outline" className="text-destructive hover:text-destructive"/>}>
                 <Trash2/>
                 {t("Guide.discard.open")}
             </AlertDialogTrigger>

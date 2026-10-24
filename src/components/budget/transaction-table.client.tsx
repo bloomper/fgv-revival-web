@@ -16,7 +16,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import {Input} from "@/components/ui/input";
 import {Switch} from "@/components/ui/switch";
 import {DataEmpty} from "@/components/data-empty";
@@ -26,7 +32,11 @@ import {catalogName} from "@/components/catalog/catalog";
 import {OwnerLabel, type OwnerValue} from "@/components/owner/owner-label";
 import type {OwnerMember} from "@/components/owner/owner-field.client";
 import {AmountText, type BudgetCategoryValue} from "@/components/budget/budget-labels";
-import {type BudgetLineOption, type EditableTransaction, TransactionDialog} from "@/components/budget/transaction-dialog.client";
+import {
+    type BudgetLineOption,
+    type EditableTransaction,
+    TransactionDialog
+} from "@/components/budget/transaction-dialog.client";
 import {receiptUrl, removeReceipt, uploadReceipt} from "@/components/budget/receipt";
 import {useReceiptFeedback} from "@/components/budget/use-receipt-feedback.client";
 import {UrlSwitch} from "@/components/budget/url-switch.client";
@@ -53,7 +63,13 @@ export type TransactionFilter = {
     missingReceipt: boolean;
 };
 
-export const EMPTY_TRANSACTION_FILTER: TransactionFilter = {query: "", categories: new Set(), kinds: new Set(), notReimbursed: false, missingReceipt: false};
+export const EMPTY_TRANSACTION_FILTER: TransactionFilter = {
+    query: "",
+    categories: new Set(),
+    kinds: new Set(),
+    notReimbursed: false,
+    missingReceipt: false
+};
 
 /**
  * Every word must appear in the description, the category, the budget line, the payer or the date; then the chosen
@@ -75,7 +91,11 @@ export function filterTransactions(transactions: TransactionRow[], filter: Trans
     });
 }
 
-function ReimbursedCell({transaction, revivalId, canWrite}: { transaction: TransactionRow; revivalId: string; canWrite: boolean }) {
+function ReimbursedCell({transaction, revivalId, canWrite}: {
+    transaction: TransactionRow;
+    revivalId: string;
+    canWrite: boolean
+}) {
     const t = useTranslations("Budget");
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
@@ -84,14 +104,21 @@ function ReimbursedCell({transaction, revivalId, canWrite}: { transaction: Trans
         return <span className="text-muted-foreground">—</span>;
     }
     if (!canWrite || transaction.cancelled) {
-        return transaction.reimbursed ? <Badge variant="secondary">{t("reimbursedYes")}</Badge> : <Badge variant="outline">{t("reimbursedNo")}</Badge>;
+        return transaction.reimbursed ? <Badge variant="secondary">{t("reimbursedYes")}</Badge> :
+            <Badge variant="outline">{t("reimbursedNo")}</Badge>;
     }
     // Toggling it must not open the row's dialog
     return (
         <span className="inline-flex" onClick={click => click.stopPropagation()}>
-            <Switch checked={transaction.reimbursed} disabled={pending} aria-label={t("reimbursedFor", {description: transaction.description})}
+            <Switch checked={transaction.reimbursed} disabled={pending}
+                    aria-label={t("reimbursedFor", {description: transaction.description})}
                     onCheckedChange={reimbursed => startTransition(async () => {
-                        feedback(await setReimbursedAction({revivalId, id: transaction.id, version: transaction.version, reimbursed}),
+                        feedback(await setReimbursedAction({
+                                revivalId,
+                                id: transaction.id,
+                                version: transaction.version,
+                                reimbursed
+                            }),
                             reimbursed ? t("markedReimbursed") : t("markedNotReimbursed"));
                     })}/>
         </span>
@@ -102,11 +129,14 @@ function ReceiptCell({transaction}: { transaction: TransactionRow }) {
     const t = useTranslations("Budget");
 
     if (!transaction.receipt) {
-        return <span className={cn("text-xs", transaction.cancelled ? "text-muted-foreground" : "text-destructive")}>{t("noReceipt")}</span>;
+        return <span
+            className={cn("text-xs", transaction.cancelled ? "text-muted-foreground" : "text-destructive")}>{t("noReceipt")}</span>;
     }
     return (
-        <a href={receiptUrl(transaction.id)} download className="inline-flex items-center hover:text-foreground" onClick={click => click.stopPropagation()}
-           aria-label={t("downloadReceipt", {filename: transaction.receipt.filename})} title={transaction.receipt.filename}>
+        <a href={receiptUrl(transaction.id)} download className="inline-flex items-center hover:text-foreground"
+           onClick={click => click.stopPropagation()}
+           aria-label={t("downloadReceipt", {filename: transaction.receipt.filename})}
+           title={transaction.receipt.filename}>
             <FileText className="size-4"/>
         </a>
     );
@@ -126,21 +156,32 @@ function RowActions({transaction, onEdit, onCancel, onUpload, onRemoveReceipt}: 
     }
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" aria-label={t("rowMenu", {name: transaction.description})}/>}>
+            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0"
+                                                 aria-label={t("rowMenu", {name: transaction.description})}/>}>
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => onEdit(transaction)}><Pencil/>{t("edit")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onUpload(transaction)}><FileUp/>{transaction.receipt ? t("replaceReceipt") : t("uploadReceipt")}</DropdownMenuItem>
-                {transaction.receipt && <DropdownMenuItem onClick={() => onRemoveReceipt(transaction)}><FileX/>{t("removeReceipt")}</DropdownMenuItem>}
+                <DropdownMenuItem
+                    onClick={() => onUpload(transaction)}><FileUp/>{transaction.receipt ? t("replaceReceipt") : t("uploadReceipt")}
+                </DropdownMenuItem>
+                {transaction.receipt &&
+                    <DropdownMenuItem onClick={() => onRemoveReceipt(transaction)}><FileX/>{t("removeReceipt")}
+                    </DropdownMenuItem>}
                 <DropdownMenuSeparator/>
-                <DropdownMenuItem variant="destructive" onClick={() => onCancel(transaction)}><Ban/>{t("cancelTransaction")}</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive"
+                                  onClick={() => onCancel(transaction)}><Ban/>{t("cancelTransaction")}
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
 }
 
-function CancelDialog({transaction, revivalId, onOpenChange}: { transaction: TransactionRow; revivalId: string; onOpenChange: (open: boolean) => void }) {
+function CancelDialog({transaction, revivalId, onOpenChange}: {
+    transaction: TransactionRow;
+    revivalId: string;
+    onOpenChange: (open: boolean) => void
+}) {
     const t = useTranslations();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
@@ -154,11 +195,16 @@ function CancelDialog({transaction, revivalId, onOpenChange}: { transaction: Tra
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
-                    <AlertDialogAction variant="destructive" disabled={pending} onClick={() => startTransition(async () => {
-                        if (feedback(await cancelTransactionAction({revivalId, id: transaction.id, version: transaction.version}), t("Budget.transactionCancelled"))) {
-                            onOpenChange(false);
-                        }
-                    })}>
+                    <AlertDialogAction variant="destructive" disabled={pending}
+                                       onClick={() => startTransition(async () => {
+                                           if (feedback(await cancelTransactionAction({
+                                               revivalId,
+                                               id: transaction.id,
+                                               version: transaction.version
+                                           }), t("Budget.transactionCancelled"))) {
+                                               onOpenChange(false);
+                                           }
+                                       })}>
                         {t("Budget.cancelTransaction")}
                     </AlertDialogAction>
                 </AlertDialogFooter>
@@ -184,7 +230,8 @@ function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.Co
             id: "description",
             accessorFn: transaction => transaction.description,
             sortFn: "alphanumeric",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("description")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("description")}/>,
             cell: ({row}) => {
                 const transaction = row.original;
 
@@ -196,7 +243,8 @@ function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.Co
                         </span>
                         <span className="flex flex-wrap gap-x-3 text-xs text-muted-foreground">
                             <span className="md:hidden">{catalogName(transaction.category, locale)}</span>
-                            {transaction.budgetLine && <span>{t("againstLine", {description: transaction.budgetLine.description})}</span>}
+                            {transaction.budgetLine &&
+                                <span>{t("againstLine", {description: transaction.budgetLine.description})}</span>}
                             {transaction.paidBy && <span className="lg:hidden">{t("paidByName", {
                                 name: transaction.paidBy.person?.displayName ?? transaction.paidBy.name ?? "",
                             })}</span>}
@@ -210,7 +258,8 @@ function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.Co
             accessorFn: transaction => catalogName(transaction.category, locale),
             sortFn: "alphanumeric",
             header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("category")}/>,
-            cell: ({row}) => <Badge variant={row.original.category.kind === "INCOME" ? "secondary" : "outline"}>{catalogName(row.original.category, locale)}</Badge>,
+            cell: ({row}) => <Badge
+                variant={row.original.category.kind === "INCOME" ? "secondary" : "outline"}>{catalogName(row.original.category, locale)}</Badge>,
             meta: {className: "hidden md:table-cell"},
         },
         {
@@ -222,7 +271,8 @@ function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.Co
                 const income = row.original.category.kind === "INCOME";
 
                 return (
-                    <span className={cn("block text-right font-medium", income && !row.original.cancelled && "text-emerald-700 dark:text-emerald-400")}>
+                    <span
+                        className={cn("block text-right font-medium", income && !row.original.cancelled && "text-emerald-700 dark:text-emerald-400")}>
                         <span className="sr-only">{t(`kinds.${row.original.category.kind}`)} </span>
                         {income ? "+" : "−"}<AmountText value={row.original.amount}/>
                     </span>
@@ -233,7 +283,8 @@ function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.Co
         {
             id: "paidBy",
             header: () => t("paidBy"),
-            cell: ({row}) => row.original.paidBy ? <OwnerLabel owner={row.original.paidBy}/> : <span className="text-muted-foreground">—</span>,
+            cell: ({row}) => row.original.paidBy ? <OwnerLabel owner={row.original.paidBy}/> :
+                <span className="text-muted-foreground">—</span>,
             meta: {className: "hidden lg:table-cell"},
         },
         {
@@ -261,9 +312,14 @@ function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.Co
     return columns;
 }
 
-function ToggleFilter({pressed, onChange, children}: { pressed: boolean; onChange: (pressed: boolean) => void; children: React.ReactNode }) {
+function ToggleFilter({pressed, onChange, children}: {
+    pressed: boolean;
+    onChange: (pressed: boolean) => void;
+    children: React.ReactNode
+}) {
     return (
-        <Button variant={pressed ? "secondary" : "outline"} size="sm" className="h-8 border-dashed" aria-pressed={pressed} onClick={() => onChange(!pressed)}>
+        <Button variant={pressed ? "secondary" : "outline"} size="sm" className="h-8 border-dashed"
+                aria-pressed={pressed} onClick={() => onChange(!pressed)}>
             {children}
         </Button>
     );
@@ -311,7 +367,11 @@ export function TransactionTable({revivalId, transactions, categories, lines, me
     const categoryOptions = useMemo(() => {
         const held = new Map(transactions.map(transaction => [transaction.category.id, transaction.category]));
 
-        return [...held.values()].map(category => ({label: catalogName(category, locale), value: category.id, groupLabel: t(`Budget.kinds.${category.kind}`)}));
+        return [...held.values()].map(category => ({
+            label: catalogName(category, locale),
+            value: category.id,
+            groupLabel: t(`Budget.kinds.${category.kind}`)
+        }));
     }, [transactions, locale, t]);
 
     return (
@@ -319,29 +379,41 @@ export function TransactionTable({revivalId, transactions, categories, lines, me
             <DataTable columns={columns} data={filtered} filtered={active} initialSorting={[{id: "date", desc: true}]}
                        onRowClick={canWrite ? (transaction => !transaction.cancelled && setEditing(transaction)) : undefined}
                        rowClassName={transaction => transaction.cancelled && "text-muted-foreground line-through decoration-muted-foreground/50"}
-                       empty={<DataEmpty title={t("Budget.noTransactions")} description={canWrite ? t("Budget.noTransactionsHint") : t("Budget.noTransactionsReadOnly")}/>}>
+                       empty={<DataEmpty title={t("Budget.noTransactions")}
+                                         description={canWrite ? t("Budget.noTransactionsHint") : t("Budget.noTransactionsReadOnly")}/>}>
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-wrap items-center gap-2">
                         <div className="relative w-full sm:w-75">
-                            <Input placeholder={t("Budget.filterTransactions")} value={filter.query} onChange={change => update({query: change.target.value})}
+                            <Input placeholder={t("Budget.filterTransactions")} value={filter.query}
+                                   onChange={change => update({query: change.target.value})}
                                    aria-label={t("Common.search")} className="h-8 pr-8"/>
                             {filter.query && (
-                                <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                                <Button variant="ghost" size="icon"
+                                        className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
                                         aria-label={t("Common.clearSearch")} onClick={() => update({query: ""})}>
                                     <X className="h-3 w-3"/>
                                 </Button>
                             )}
                         </div>
                         {categoryOptions.length > 0 && (
-                            <DataFilter title={t("Budget.category")} options={categoryOptions} selectedValues={filter.categories}
-                                        onSelect={categories => update({categories})} onClear={() => update({categories: new Set()})}/>
+                            <DataFilter title={t("Budget.category")} options={categoryOptions}
+                                        selectedValues={filter.categories}
+                                        onSelect={categories => update({categories})}
+                                        onClear={() => update({categories: new Set()})}/>
                         )}
-                        <DataFilter title={t("Budget.kind")} options={(["INCOME", "COST"] as const).map(kind => ({label: t(`Budget.kinds.${kind}`), value: kind}))}
-                                    selectedValues={filter.kinds} onSelect={kinds => update({kinds})} onClear={() => update({kinds: new Set()})}/>
-                        <ToggleFilter pressed={filter.notReimbursed} onChange={notReimbursed => update({notReimbursed})}>{t("Budget.notReimbursed")}</ToggleFilter>
-                        <ToggleFilter pressed={filter.missingReceipt} onChange={missingReceipt => update({missingReceipt})}>{t("Budget.missingReceipt")}</ToggleFilter>
+                        <DataFilter title={t("Budget.kind")} options={(["INCOME", "COST"] as const).map(kind => ({
+                            label: t(`Budget.kinds.${kind}`),
+                            value: kind
+                        }))}
+                                    selectedValues={filter.kinds} onSelect={kinds => update({kinds})}
+                                    onClear={() => update({kinds: new Set()})}/>
+                        <ToggleFilter pressed={filter.notReimbursed}
+                                      onChange={notReimbursed => update({notReimbursed})}>{t("Budget.notReimbursed")}</ToggleFilter>
+                        <ToggleFilter pressed={filter.missingReceipt}
+                                      onChange={missingReceipt => update({missingReceipt})}>{t("Budget.missingReceipt")}</ToggleFilter>
                         {active && (
-                            <Button variant="ghost" onClick={() => setFilter(EMPTY_TRANSACTION_FILTER)} className="h-8 px-2 lg:px-3">
+                            <Button variant="ghost" onClick={() => setFilter(EMPTY_TRANSACTION_FILTER)}
+                                    className="h-8 px-2 lg:px-3">
                                 <X className="mr-2 h-4 w-4"/>
                                 {t("Common.reset")}
                             </Button>
@@ -352,7 +424,8 @@ export function TransactionTable({revivalId, transactions, categories, lines, me
                 </div>
             </DataTable>
             {canWrite && (
-                <input ref={fileInput} type="file" className="hidden" accept={RECEIPT_TYPES.join(",")} aria-label={t("Budget.receipt")} data-testid="receipt-upload"
+                <input ref={fileInput} type="file" className="hidden" accept={RECEIPT_TYPES.join(",")}
+                       aria-label={t("Budget.receipt")} data-testid="receipt-upload"
                        onChange={change => {
                            const file = change.target.files?.[0];
                            const transaction = uploadFor.current;
@@ -366,7 +439,8 @@ export function TransactionTable({revivalId, transactions, categories, lines, me
                        }}/>
             )}
             {(adding || editing) && (
-                <TransactionDialog key={editing?.id ?? "new"} revivalId={revivalId} categories={categories} lines={lines} members={members}
+                <TransactionDialog key={editing?.id ?? "new"} revivalId={revivalId} categories={categories}
+                                   lines={lines} members={members}
                                    transaction={editing} onOpenChange={open => {
                     if (!open) {
                         setAdding(false);
@@ -374,7 +448,8 @@ export function TransactionTable({revivalId, transactions, categories, lines, me
                     }
                 }}/>
             )}
-            {cancelling && <CancelDialog transaction={cancelling} revivalId={revivalId} onOpenChange={open => !open && setCancelling(null)}/>}
+            {cancelling && <CancelDialog transaction={cancelling} revivalId={revivalId}
+                                         onOpenChange={open => !open && setCancelling(null)}/>}
         </div>
     );
 }

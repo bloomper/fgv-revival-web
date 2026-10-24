@@ -69,7 +69,10 @@ test.describe("Materials and inventory, M8: links to where files are kept, shown
             await expect(mine.getByRole("heading", {name: "Film"})).toBeVisible();
         });
 
-    test("the steering group keeps an inventory item with an owner and a status that needs action", async ({page, loginAs}) => {
+    test("the steering group keeps an inventory item with an owner and a status that needs action", async ({
+                                                                                                               page,
+                                                                                                               loginAs
+                                                                                                           }) => {
         await loginAs("styrgrupp");
         await page.goto("/revivals/1/materials/inventory");
         await expect(page.getByText("Inga inventarier än")).toBeVisible();

@@ -5,7 +5,11 @@ test.describe("Closing, M7: the directeur records the surplus, marks memberships
         await mock.participants({people: true});
     });
 
-    test("the directeur in SETTLING closes the revival, and the super admin sees it anonymized", async ({page, loginAs, mock}) => {
+    test("the directeur in SETTLING closes the revival, and the super admin sees it anonymized", async ({
+                                                                                                            page,
+                                                                                                            loginAs,
+                                                                                                            mock
+                                                                                                        }) => {
         test.setTimeout(90_000);
         await mock.closing({failOnce: ["TASK"]});
         await loginAs("directeur");
@@ -86,7 +90,11 @@ test.describe("Closing, M7: the directeur records the surplus, marks memberships
         await expect(page.getByRole("row").filter({hasText: "Ali Baba"})).toContainText("Anonymiserad");
     });
 
-    test("the super admin is warned before archiving a revival whose sync never completed", async ({page, loginAs, mock}) => {
+    test("the super admin is warned before archiving a revival whose sync never completed", async ({
+                                                                                                       page,
+                                                                                                       loginAs,
+                                                                                                       mock
+                                                                                                   }) => {
         await mock.closing();
         await loginAs("superadmin");
         await page.goto("/revivals/1");
@@ -102,7 +110,11 @@ test.describe("Closing, M7: the directeur records the surplus, marks memberships
         await expect(page.getByRole("region", {name: "Anonymisering"})).toContainText(/Nyuppsättningen anonymiseras automatiskt \d{4}-\d{2}-\d{2}\./);
     });
 
-    test("an observer reads the closing page without controls, and sees no materials", async ({page, loginAs, mock}) => {
+    test("an observer reads the closing page without controls, and sees no materials", async ({
+                                                                                                  page,
+                                                                                                  loginAs,
+                                                                                                  mock
+                                                                                              }) => {
         await mock.closing();
         await loginAs("observer");
         await page.goto("/revivals/1/closing");

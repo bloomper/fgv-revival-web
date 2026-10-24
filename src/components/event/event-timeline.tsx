@@ -40,7 +40,10 @@ function What({item, revivalId}: { item: TimelineItem; revivalId: string }) {
                     {item.event.checklist && (
                         <Link href={`/revivals/${revivalId}/checklists/${item.event.checklist.id}`}
                               className="inline-flex items-center gap-1 text-muted-foreground tabular-nums hover:underline"
-                              aria-label={t("checklistLink", {open: item.event.checklist.openCount, total: item.event.checklist.totalCount})}>
+                              aria-label={t("checklistLink", {
+                                  open: item.event.checklist.openCount,
+                                  total: item.event.checklist.totalCount
+                              })}>
                             <ClipboardCheck className="size-4"/>
                             {item.event.checklist.openCount}/{item.event.checklist.totalCount}
                         </Link>
@@ -76,17 +79,22 @@ export function EventTimeline({revivalId, months}: { revivalId: string; months: 
                                 const Icon = ICONS[item.kind];
 
                                 return (
-                                    <li key={item.key} className={cn("relative flex flex-col gap-1 rounded-md border p-3 text-sm sm:flex-row sm:items-start sm:gap-4",
-                                        item.kind === "premiere" && "border-primary bg-primary/5",
-                                        item.kind === "event" && item.event.cancelled && "text-muted-foreground")}
+                                    <li key={item.key}
+                                        className={cn("relative flex flex-col gap-1 rounded-md border p-3 text-sm sm:flex-row sm:items-start sm:gap-4",
+                                            item.kind === "premiere" && "border-primary bg-primary/5",
+                                            item.kind === "event" && item.event.cancelled && "text-muted-foreground")}
                                         data-kind={item.kind}>
-                                        <span className="flex items-center gap-2 font-medium tabular-nums sm:w-56 sm:shrink-0">
+                                        <span
+                                            className="flex items-center gap-2 font-medium tabular-nums sm:w-56 sm:shrink-0">
                                             <Icon className="size-4 shrink-0 text-muted-foreground" aria-hidden/>
                                             <When item={item}/>
                                         </span>
-                                        <span className="min-w-0 flex-1"><What item={item} revivalId={revivalId}/></span>
+                                        <span className="min-w-0 flex-1"><What item={item}
+                                                                               revivalId={revivalId}/></span>
                                         {item.kind !== "premiere" && (
-                                            <span className="text-xs text-muted-foreground sm:text-sm"><PremiereDistanceLabel days={item.daysFromPremiere}/></span>
+                                            <span
+                                                className="text-xs text-muted-foreground sm:text-sm"><PremiereDistanceLabel
+                                                days={item.daysFromPremiere}/></span>
                                         )}
                                     </li>
                                 );

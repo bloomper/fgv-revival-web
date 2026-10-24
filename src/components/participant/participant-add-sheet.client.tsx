@@ -14,7 +14,7 @@ import {Label} from "@/components/ui/label";
 import {NativeSelect} from "@/components/ui/native-select";
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "@/components/ui/sheet";
 import {Spinner} from "@/components/ui/spinner";
-import {type PositionValue, PositionSelect} from "@/components/participant/participant-labels";
+import {PositionSelect, type PositionValue} from "@/components/participant/participant-labels";
 import {
     addPendingParticipantAction,
     addSpexareParticipantsAction,
@@ -24,7 +24,12 @@ import {
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import type {SpexareCandidateFieldsFragment} from "@/gql/graphql";
 import {participantName} from "@/lib/participant/contact";
-import {MIN_SPEXARE_QUERY, PARTICIPANT_KINDS, type PendingPersonValues, pendingPersonValuesSchema} from "@/lib/participant/schema";
+import {
+    MIN_SPEXARE_QUERY,
+    PARTICIPANT_KINDS,
+    type PendingPersonValues,
+    pendingPersonValuesSchema
+} from "@/lib/participant/schema";
 import {track} from "@/utils/umami";
 import {cn} from "@/utils/utils";
 
@@ -103,7 +108,8 @@ function CandidatesTab({revivalId}: { revivalId: string }) {
     return (
         <div className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">{t("Participants.candidatesHint")}</p>
-            <Input placeholder={t("Participants.filterCandidates")} aria-label={t("Participants.filterCandidates")} value={query}
+            <Input placeholder={t("Participants.filterCandidates")} aria-label={t("Participants.filterCandidates")}
+                   value={query}
                    onChange={change => setQuery(change.target.value)}/>
             {shown.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t("Participants.noCandidates")}</p>
@@ -118,8 +124,10 @@ function CandidatesTab({revivalId}: { revivalId: string }) {
                     <ul className="flex flex-col" aria-label={t("Participants.candidates")}>
                         {shown.map(candidate => (
                             <li key={candidate.spexareId}>
-                                <label className="flex min-h-11 items-center gap-3 rounded-md px-1 py-1.5 hover:bg-accent">
-                                    <input type="checkbox" className="size-4 shrink-0 accent-primary" checked={chosen.has(candidate.spexareId)}
+                                <label
+                                    className="flex min-h-11 items-center gap-3 rounded-md px-1 py-1.5 hover:bg-accent">
+                                    <input type="checkbox" className="size-4 shrink-0 accent-primary"
+                                           checked={chosen.has(candidate.spexareId)}
                                            aria-label={participantName(candidate)}
                                            onChange={change => setChosen(previous => {
                                                const next = new Set(previous);
@@ -185,14 +193,18 @@ function SearchTab({revivalId}: { revivalId: string }) {
         <div className="flex flex-col gap-3">
             <div className="space-y-2">
                 <Label htmlFor={`${id}-query`}>{t("Participants.searchSpexregister")}</Label>
-                <Input id={`${id}-query`} type="search" autoComplete="off" value={query} onChange={change => setQuery(change.target.value)}
+                <Input id={`${id}-query`} type="search" autoComplete="off" value={query}
+                       onChange={change => setQuery(change.target.value)}
                        aria-describedby={`${id}-hint`}/>
-                <p id={`${id}-hint`} className="text-xs text-muted-foreground">{t("Participants.searchHint", {count: MIN_SPEXARE_QUERY})}</p>
+                <p id={`${id}-hint`}
+                   className="text-xs text-muted-foreground">{t("Participants.searchHint", {count: MIN_SPEXARE_QUERY})}</p>
             </div>
             {trimmed.length >= MIN_SPEXARE_QUERY && !current && (
-                <p className="flex items-center gap-2 text-sm text-muted-foreground"><Spinner/>{t("Participants.searching")}</p>
+                <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Spinner/>{t("Participants.searching")}</p>
             )}
-            {current?.unavailable && <Alert><AlertDescription>{t("Errors.SPEXREGISTER_UNAVAILABLE")}</AlertDescription></Alert>}
+            {current?.unavailable &&
+                <Alert><AlertDescription>{t("Errors.SPEXREGISTER_UNAVAILABLE")}</AlertDescription></Alert>}
             {current && !current.unavailable && (current.candidates.length === 0 ? (
                 <p className="text-sm text-muted-foreground" role="status">{t("Participants.noMatches")}</p>
             ) : (
@@ -201,12 +213,17 @@ function SearchTab({revivalId}: { revivalId: string }) {
                         const isAdded = candidate.added || added.has(candidate.spexareId);
 
                         return (
-                            <li key={candidate.spexareId} className="flex min-h-11 items-center justify-between gap-3 py-1.5">
+                            <li key={candidate.spexareId}
+                                className="flex min-h-11 items-center justify-between gap-3 py-1.5">
                                 <CandidateText candidate={candidate}/>
                                 {isAdded ? <Badge variant="secondary">{t("Participants.alreadyAdded")}</Badge> : (
-                                    <Button size="sm" variant="outline" disabled={pending} aria-label={t("Participants.addName", {name: participantName(candidate)})}
+                                    <Button size="sm" variant="outline" disabled={pending}
+                                            aria-label={t("Participants.addName", {name: participantName(candidate)})}
                                             onClick={() => startTransition(async () => {
-                                                const outcome = await addSpexareParticipantsAction({revivalId, spexareIds: [candidate.spexareId]});
+                                                const outcome = await addSpexareParticipantsAction({
+                                                    revivalId,
+                                                    spexareIds: [candidate.spexareId]
+                                                });
 
                                                 if (feedback(outcome, t("Participants.addedName", {name: participantName(candidate)}))) {
                                                     track("participant-add", {count: 1, pending: false});
@@ -225,7 +242,15 @@ function SearchTab({revivalId}: { revivalId: string }) {
     );
 }
 
-const EMPTY_PENDING: PendingPersonValues = {kind: "PARTICIPANT", firstName: "", lastName: "", email: "", phone: "", positionId: "", compensationPerShift: ""};
+const EMPTY_PENDING: PendingPersonValues = {
+    kind: "PARTICIPANT",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    positionId: "",
+    compensationPerShift: ""
+};
 
 /**
  * Someone who is not in Spexregister: a participant to be invited by email, or a helper reached by email or phone.
@@ -235,56 +260,69 @@ function PendingTab({revivalId, positions}: { revivalId: string; positions: Posi
     const id = useId();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
-    const form = useForm<PendingPersonValues>({resolver: zodResolver(pendingPersonValuesSchema), defaultValues: EMPTY_PENDING});
+    const form = useForm<PendingPersonValues>({
+        resolver: zodResolver(pendingPersonValuesSchema),
+        defaultValues: EMPTY_PENDING
+    });
     const {errors} = form.formState;
     const kind = useWatch({control: form.control, name: "kind"});
     const field = (name: string) => `${id}-${name}`;
     const error = (name: string, message?: string) => message &&
         <p id={`${field(name)}-error`} className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
-    const described = (name: string, message?: string) => message ? {"aria-invalid": true, "aria-describedby": `${field(name)}-error`} : {};
+    const described = (name: string, message?: string) => message ? {
+        "aria-invalid": true,
+        "aria-describedby": `${field(name)}-error`
+    } : {};
 
     return (
-        <form className="flex flex-col gap-4" noValidate onSubmit={form.handleSubmit(values => startTransition(async () => {
-            const result = await addPendingParticipantAction({revivalId, values});
+        <form className="flex flex-col gap-4" noValidate
+              onSubmit={form.handleSubmit(values => startTransition(async () => {
+                  const result = await addPendingParticipantAction({revivalId, values});
 
-            if (feedback(result, t("Participants.addedName", {name: `${values.firstName} ${values.lastName}`}))) {
-                track("participant-add", {count: 1, pending: true});
-                // Keeps the registered inputs: the React Compiler does not register them again after a reset
-                form.reset({...EMPTY_PENDING, kind: values.kind}, {keepFieldsRef: true});
-            }
-        }))}>
+                  if (feedback(result, t("Participants.addedName", {name: `${values.firstName} ${values.lastName}`}))) {
+                      track("participant-add", {count: 1, pending: true});
+                      // Keeps the registered inputs: the React Compiler does not register them again after a reset
+                      form.reset({...EMPTY_PENDING, kind: values.kind}, {keepFieldsRef: true});
+                  }
+              }))}>
             <p className="text-sm text-muted-foreground">{t("Participants.pendingHint")}</p>
             <div className="space-y-2">
                 <Label htmlFor={field("kind")}>{t("Participants.kind")}</Label>
                 <NativeSelect id={field("kind")} className="w-full" {...form.register("kind")}>
-                    {PARTICIPANT_KINDS.map(value => <option key={value} value={value}>{t(`Participants.kinds.${value}`)}</option>)}
+                    {PARTICIPANT_KINDS.map(value => <option key={value}
+                                                            value={value}>{t(`Participants.kinds.${value}`)}</option>)}
                 </NativeSelect>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                     <Label htmlFor={field("first")}>{t("Participants.firstName")}</Label>
-                    <Input id={field("first")} autoComplete="off" {...described("first", errors.firstName?.message)} {...form.register("firstName")}/>
+                    <Input id={field("first")}
+                           autoComplete="off" {...described("first", errors.firstName?.message)} {...form.register("firstName")}/>
                     {error("first", errors.firstName?.message)}
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor={field("last")}>{t("Participants.lastName")}</Label>
-                    <Input id={field("last")} autoComplete="off" {...described("last", errors.lastName?.message)} {...form.register("lastName")}/>
+                    <Input id={field("last")}
+                           autoComplete="off" {...described("last", errors.lastName?.message)} {...form.register("lastName")}/>
                     {error("last", errors.lastName?.message)}
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor={field("email")}>{t("Participants.email")}</Label>
-                    <Input id={field("email")} type="email" autoComplete="off" {...described("email", errors.email?.message)} {...form.register("email")}/>
+                    <Input id={field("email")} type="email"
+                           autoComplete="off" {...described("email", errors.email?.message)} {...form.register("email")}/>
                     {error("email", errors.email?.message)}
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor={field("phone")}>{t("Participants.phone")}</Label>
-                    <Input id={field("phone")} type="tel" autoComplete="off" {...described("phone", errors.phone?.message)} {...form.register("phone")}/>
+                    <Input id={field("phone")} type="tel"
+                           autoComplete="off" {...described("phone", errors.phone?.message)} {...form.register("phone")}/>
                     {error("phone", errors.phone?.message)}
                 </div>
             </div>
             <div className="space-y-2">
                 <Label htmlFor={field("position")}>{t("Participants.plannedPosition")}</Label>
-                <PositionSelect id={field("position")} positions={positions} emptyLabel={t("Participants.noPosition")} {...form.register("positionId")}/>
+                <PositionSelect id={field("position")} positions={positions}
+                                emptyLabel={t("Participants.noPosition")} {...form.register("positionId")}/>
             </div>
             {kind === "HELPER" && (
                 <div className="space-y-2">
@@ -294,7 +332,8 @@ function PendingTab({revivalId, positions}: { revivalId: string; positions: Posi
                     {error("compensation", errors.compensationPerShift?.message)}
                 </div>
             )}
-            <Button type="submit" className="self-end" disabled={pending}><UserPlus/>{t("Participants.addPending")}</Button>
+            <Button type="submit" className="self-end" disabled={pending}><UserPlus/>{t("Participants.addPending")}
+            </Button>
         </form>
     );
 }
@@ -331,9 +370,11 @@ export function ParticipantAddSheet({revivalId, positions}: { revivalId: string;
                     <SheetDescription>{t("addDescription")}</SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col gap-4 px-4 pb-6">
-                    <div role="tablist" aria-label={t("addTitle")} className="flex w-full gap-1 rounded-lg bg-muted p-1" onKeyDown={onKeyDown}>
+                    <div role="tablist" aria-label={t("addTitle")} className="flex w-full gap-1 rounded-lg bg-muted p-1"
+                         onKeyDown={onKeyDown}>
                         {TABS.map(key => (
-                            <button key={key} type="button" role="tab" id={`${id}-${key}-tab`} aria-selected={tab === key} aria-controls={`${id}-${key}-panel`}
+                            <button key={key} type="button" role="tab" id={`${id}-${key}-tab`}
+                                    aria-selected={tab === key} aria-controls={`${id}-${key}-panel`}
                                     tabIndex={tab === key ? 0 : -1} ref={element => {
                                 tabRefs.current[key] = element;
                             }}

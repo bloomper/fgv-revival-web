@@ -39,7 +39,11 @@ export async function createChecklistItemAction(input: z.input<typeof checklistI
         const {checklistId, revivalId, values} = checklistItemCreateSchema.parse(input);
 
         await createChecklistItem({
-            checklistId, text: values.text, owner: ownerInput(values.owner), deadline: values.deadline || null, comment: values.comment || null,
+            checklistId,
+            text: values.text,
+            owner: ownerInput(values.owner),
+            deadline: values.deadline || null,
+            comment: values.comment || null,
         });
         revalidate(revivalId);
         return null;
@@ -92,15 +96,28 @@ export async function setChecklistItemStateAction(input: z.input<typeof checklis
     }));
 }
 
-export async function saveEventChecklistAction(input: z.input<typeof eventChecklistSaveSchema>): Promise<ActionResult<{ id: string }>> {
+export async function saveEventChecklistAction(input: z.input<typeof eventChecklistSaveSchema>): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, checklist, values} = eventChecklistSaveSchema.parse(input);
         let id = checklist?.id ?? "";
 
         if (checklist) {
-            await updateEventChecklist({id: checklist.id, version: checklist.version, name: values.name, date: values.date, clearDate: !values.date});
+            await updateEventChecklist({
+                id: checklist.id,
+                version: checklist.version,
+                name: values.name,
+                date: values.date,
+                clearDate: !values.date
+            });
         } else {
-            id = (await createEventChecklist({revivalId, name: values.name, date: values.date, templateId: values.templateId || null}))?.id ?? "";
+            id = (await createEventChecklist({
+                revivalId,
+                name: values.name,
+                date: values.date,
+                templateId: values.templateId || null
+            }))?.id ?? "";
         }
         revalidate(revivalId);
         return {id};

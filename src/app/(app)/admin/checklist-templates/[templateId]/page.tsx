@@ -67,16 +67,19 @@ export default async function ChecklistTemplatePage({params, searchParams}: {
                                 {t("ChecklistTemplate.title")}
                             </Link>
                         )}
-                        <Heading className={cn("flex flex-wrap items-center gap-2 tracking-tight", superAdmin ? "text-base font-semibold" : "text-lg font-bold")}>
+                        <Heading
+                            className={cn("flex flex-wrap items-center gap-2 tracking-tight", superAdmin ? "text-base font-semibold" : "text-lg font-bold")}>
                             {title}
                             {template.retired && <Badge variant="outline">{t("ChecklistTemplate.retired")}</Badge>}
                         </Heading>
                     </div>
                     {superAdmin && <TemplateRetirement template={template}/>}
                 </div>
-                {superAdmin && !template.retired && template.kind === "EVENT" && <TemplateNameForm key={template.id} template={template}/>}
+                {superAdmin && !template.retired && template.kind === "EVENT" &&
+                    <TemplateNameForm key={template.id} template={template}/>}
                 <CatalogProvider capabilities={capabilities}>
-                    <TemplateEditor key={template.id} templateId={template.id} kind={template.kind} items={template.items} retiredItems={template.retiredItems}
+                    <TemplateEditor key={template.id} templateId={template.id} kind={template.kind}
+                                    items={template.items} retiredItems={template.retiredItems}
                                     showRetired={retired} readOnly={!superAdmin || template.retired}/>
                 </CatalogProvider>
             </div>

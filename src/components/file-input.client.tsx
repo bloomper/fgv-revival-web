@@ -28,8 +28,9 @@ export function FileInput({id, accept, disabled, className, current, chooseLabel
     const [name, setName] = useState<string | null>(null);
 
     return (
-        <div className={cn("flex h-9 w-full min-w-0 items-center gap-3 rounded-md border border-input bg-transparent pl-1 pr-3 shadow-xs md:text-sm dark:bg-input/30",
-            disabled && "opacity-50", className)}>
+        <div
+            className={cn("flex h-9 w-full min-w-0 items-center gap-3 rounded-md border border-input bg-transparent pl-1 pr-3 shadow-xs md:text-sm dark:bg-input/30",
+                disabled && "opacity-50", className)}>
             <input ref={input} id={id} type="file" accept={accept} disabled={disabled} tabIndex={-1} className="sr-only"
                    onChange={(change) => {
                        const chosen = change.target.files?.[0] ?? null;
@@ -37,12 +38,14 @@ export function FileInput({id, accept, disabled, className, current, chooseLabel
                        setName(chosen?.name ?? null);
                        onChange(chosen);
                    }}/>
-            <Button type="button" variant="secondary" size="sm" className="h-7" disabled={disabled} aria-describedby={nameId}
+            <Button type="button" variant="secondary" size="sm" className="h-7" disabled={disabled}
+                    aria-describedby={nameId}
                     onClick={() => input.current?.click()}>
                 <FileUp/>
                 {chooseLabel ?? t("chooseFile")}
             </Button>
-            <span id={nameId} className={cn("truncate", !name && !current && "text-muted-foreground")}>{name ?? current ?? t("noFileChosen")}</span>
+            <span id={nameId}
+                  className={cn("truncate", !name && !current && "text-muted-foreground")}>{name ?? current ?? t("noFileChosen")}</span>
         </div>
     );
 }

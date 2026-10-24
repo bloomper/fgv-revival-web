@@ -11,22 +11,55 @@ vi.mock("next/navigation", () => ({
     useSearchParams: () => new URLSearchParams(),
 }));
 vi.mock("next/link", () => ({
-    default: ({children, href, ...props}: { children?: ReactNode; href: string }) => <a href={href} {...props}>{children}</a>,
+    default: ({children, href, ...props}: { children?: ReactNode; href: string }) => <a
+        href={href} {...props}>{children}</a>,
 }));
 vi.mock("@/app/(app)/revivals/[id]/events/actions.server", () => ({
     cancelEventAction: vi.fn(), restoreEventAction: vi.fn(), createEventAction: vi.fn(), updateEventAction: vi.fn(),
 }));
 vi.mock("@/hooks/use-action-feedback", () => ({useActionFeedback: () => () => true}));
 
-const rephelg = {id: "3", name: {sv: "Rephelg 1", en: "Rehearsal weekend 1"}, days: 2, revivalPays: true, retired: false};
-const proposal = {type: rephelg, startDate: "2028-01-01", endDate: "2028-01-02", earliest: "2027-12-25", latest: "2028-01-08"};
+const rephelg = {
+    id: "3",
+    name: {sv: "Rephelg 1", en: "Rehearsal weekend 1"},
+    days: 2,
+    revivalPays: true,
+    retired: false
+};
+const proposal = {
+    type: rephelg,
+    startDate: "2028-01-01",
+    endDate: "2028-01-02",
+    earliest: "2027-12-25",
+    latest: "2028-01-08"
+};
 const events: EventRow[] = [
     {
-        id: "1", version: 0, type: rephelg, title: "Rephelg 1", startDate: "2028-01-01", endDate: "2028-01-02", location: "Kemihuset",
-        revivalPays: true, daysFromPremiere: -63, checklist: {id: "9", openCount: 3, totalCount: 4, cancelled: false}, cancelled: false,
+        id: "1",
+        version: 0,
+        type: rephelg,
+        title: "Rephelg 1",
+        startDate: "2028-01-01",
+        endDate: "2028-01-02",
+        location: "Kemihuset",
+        revivalPays: true,
+        daysFromPremiere: -63,
+        checklist: {id: "9", openCount: 3, totalCount: 4, cancelled: false},
+        cancelled: false,
     },
-    {id: "2", version: 1, type: null, title: "Förrådsbesök", startDate: "2027-11-02", endDate: "2027-11-02", startTime: "18:00", revivalPays: false,
-        daysFromPremiere: null, checklist: null, cancelled: true},
+    {
+        id: "2",
+        version: 1,
+        type: null,
+        title: "Förrådsbesök",
+        startDate: "2027-11-02",
+        endDate: "2027-11-02",
+        startTime: "18:00",
+        revivalPays: false,
+        daysFromPremiere: null,
+        checklist: null,
+        cancelled: true
+    },
 ];
 
 describe("EventProposals", () => {
@@ -60,7 +93,8 @@ describe("filterEvents", () => {
 
 describe("EventTable", () => {
     it("shows dates, type, distance to the premiere, the checklist and cancelled events", () => {
-        render(<EventTable revivalId="1" events={events} types={[rephelg]} proposals={[proposal]} canWrite showCancelled/>);
+        render(<EventTable revivalId="1" events={events} types={[rephelg]} proposals={[proposal]} canWrite
+                           showCancelled/>);
 
         const rows = screen.getAllByRole("row");
         const first = within(rows[1]);
@@ -79,7 +113,8 @@ describe("EventTable", () => {
     });
 
     it("shows readers no proposals, no new button and no row menus", () => {
-        render(<EventTable revivalId="1" events={events} types={[rephelg]} proposals={[proposal]} canWrite={false} showCancelled={false}/>);
+        render(<EventTable revivalId="1" events={events} types={[rephelg]} proposals={[proposal]} canWrite={false}
+                           showCancelled={false}/>);
 
         expect(screen.queryByRole("button", {name: "Event.new"})).not.toBeInTheDocument();
         expect(screen.queryByText("proposals")).not.toBeInTheDocument();

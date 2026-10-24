@@ -28,7 +28,8 @@ const row = "flex w-full items-baseline gap-2 rounded-md px-2 py-1.5 text-left t
 function Count({count}: { count: number }) {
     const t = useTranslations("ChecklistTemplate");
 
-    return <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">{t("itemCount", {count})}</span>;
+    return <span
+        className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">{t("itemCount", {count})}</span>;
 }
 
 /**
@@ -85,14 +86,16 @@ export function TemplateNav({templates: all, chapters}: { templates: Template[];
              className={cn("space-y-6 lg:sticky lg:top-24 lg:h-fit lg:max-h-[calc(100dvh-8rem)] lg:w-80 lg:shrink-0 lg:overflow-y-auto", current && "hidden lg:block")}>
             <section className="space-y-1" aria-label={t("ChecklistTemplate.chapters")}>
                 <h3 className="px-2 text-sm font-medium text-muted-foreground">{t("ChecklistTemplate.chapters")}</h3>
-                {chapters.length === 0 && <p className="px-2 text-sm text-muted-foreground">{t("ChecklistTemplate.noChapters")}</p>}
+                {chapters.length === 0 &&
+                    <p className="px-2 text-sm text-muted-foreground">{t("ChecklistTemplate.noChapters")}</p>}
                 <ol>
                     {chapters.map((chapter, index) => {
                         const own = templates.filter(template => template.kind === "CHAPTER" && template.chapterKey === chapter.key);
                         const active = own.find(template => !template.retired);
                         const title = (
                             <>
-                                <span className="w-5 shrink-0 text-right tabular-nums text-muted-foreground">{index + 1}.</span>
+                                <span
+                                    className="w-5 shrink-0 text-right tabular-nums text-muted-foreground">{index + 1}.</span>
                                 <span className="min-w-0">{pickText(chapter.title, locale).text}</span>
                             </>
                         );
@@ -100,22 +103,29 @@ export function TemplateNav({templates: all, chapters}: { templates: Template[];
                         return (
                             <li key={chapter.key}>
                                 {active ? link(active, <>{title}<Count count={active.items.length}/></>) : (
-                                    <button type="button" className={cn(row, "disabled:opacity-50")} disabled={pending} onClick={() => startTransition(async () => {
-                                        const result = await createTemplateAction({kind: "CHAPTER", chapterKey: chapter.key});
+                                    <button type="button" className={cn(row, "disabled:opacity-50")} disabled={pending}
+                                            onClick={() => startTransition(async () => {
+                                                const result = await createTemplateAction({
+                                                    kind: "CHAPTER",
+                                                    chapterKey: chapter.key
+                                                });
 
-                                        if (feedback(result)) {
-                                            open(result.data.id);
-                                        }
-                                    })}>
+                                                if (feedback(result)) {
+                                                    open(result.data.id);
+                                                }
+                                            })}>
                                         {title}
-                                        <span className="ml-auto inline-flex shrink-0 items-center gap-1 text-xs text-primary">
+                                        <span
+                                            className="ml-auto inline-flex shrink-0 items-center gap-1 text-xs text-primary">
                                             <Plus className="size-3"/>{t("ChecklistTemplate.createChapter")}
                                         </span>
                                     </button>
                                 )}
                                 {own.filter(template => template.retired).map(template => (
                                     <React.Fragment key={template.id}>
-                                        {link(template, <><span className="text-muted-foreground">{t("ChecklistTemplate.retired")}</span><Count count={template.items.length}/></>, "pl-9")}
+                                        {link(template, <><span
+                                            className="text-muted-foreground">{t("ChecklistTemplate.retired")}</span><Count
+                                            count={template.items.length}/></>, "pl-9")}
                                     </React.Fragment>
                                 ))}
                             </li>
@@ -135,7 +145,8 @@ export function TemplateNav({templates: all, chapters}: { templates: Template[];
                                         <span className="min-w-0">
                                             {template.chapterTitle ? pickText(template.chapterTitle, locale).text : t("ChecklistTemplate.chapterGone")}
                                         </span>
-                                        {template.retired && <Badge variant="outline">{t("ChecklistTemplate.retired")}</Badge>}
+                                        {template.retired &&
+                                            <Badge variant="outline">{t("ChecklistTemplate.retired")}</Badge>}
                                         <Count count={template.items.length}/>
                                     </>
                                 ))}
@@ -147,7 +158,8 @@ export function TemplateNav({templates: all, chapters}: { templates: Template[];
             <section className="space-y-1" aria-label={t("ChecklistTemplate.events")}>
                 <div className="flex items-center justify-between gap-2 px-2">
                     <h3 className="text-sm font-medium text-muted-foreground">{t("ChecklistTemplate.events")}</h3>
-                    <Button size="sm" variant="outline" onClick={() => setCreating(true)}><Plus/>{t("ChecklistTemplate.createEvent")}</Button>
+                    <Button size="sm" variant="outline"
+                            onClick={() => setCreating(true)}><Plus/>{t("ChecklistTemplate.createEvent")}</Button>
                 </div>
                 {events.length === 0 ? (
                     <p className="px-2 text-sm text-muted-foreground">{t("ChecklistTemplate.noEvents")}</p>
@@ -157,8 +169,10 @@ export function TemplateNav({templates: all, chapters}: { templates: Template[];
                             <li key={template.id}>
                                 {link(template, (
                                     <>
-                                        <span className="min-w-0">{template.name ? pickText(template.name, locale).text : ""}</span>
-                                        {template.retired && <Badge variant="outline">{t("ChecklistTemplate.retired")}</Badge>}
+                                        <span
+                                            className="min-w-0">{template.name ? pickText(template.name, locale).text : ""}</span>
+                                        {template.retired &&
+                                            <Badge variant="outline">{t("ChecklistTemplate.retired")}</Badge>}
                                         <Count count={template.items.length}/>
                                     </>
                                 ))}
@@ -169,7 +183,8 @@ export function TemplateNav({templates: all, chapters}: { templates: Template[];
             </section>
             <Sheet open={creating} onOpenChange={setCreating}>
                 <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
-                    <SheetHeader className="p-6 pb-4 shrink-0"><SheetTitle>{t("ChecklistTemplate.createEvent")}</SheetTitle></SheetHeader>
+                    <SheetHeader
+                        className="p-6 pb-4 shrink-0"><SheetTitle>{t("ChecklistTemplate.createEvent")}</SheetTitle></SheetHeader>
                     <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={event => {
                         event.preventDefault();
                         startTransition(async () => {
@@ -191,12 +206,14 @@ export function TemplateNav({templates: all, chapters}: { templates: Template[];
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-name-en`}>{t("ChecklistTemplate.nameEn")}</Label>
-                                    <Input id={`${id}-name-en`} maxLength={MAX_TEMPLATE_NAME} value={name.en} onChange={event => setName({...name, en: event.target.value})}/>
+                                    <Input id={`${id}-name-en`} maxLength={MAX_TEMPLATE_NAME} value={name.en}
+                                           onChange={event => setName({...name, en: event.target.value})}/>
                                 </div>
                             </div>
                         </ScrollArea>
                         <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                            <Button type="button" variant="outline" onClick={() => setCreating(false)}>{t("Common.cancel")}</Button>
+                            <Button type="button" variant="outline"
+                                    onClick={() => setCreating(false)}>{t("Common.cancel")}</Button>
                             <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                         </SheetFooter>
                     </form>

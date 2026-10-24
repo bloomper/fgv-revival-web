@@ -20,7 +20,14 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {deleteGuideVersionAction} from "@/app/(app)/admin/guide/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
@@ -59,7 +66,8 @@ function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnD
             accessorFn: version => version.label ?? undefined,
             sortFn: "alphanumeric",
             sortUndefined: "last",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Guide.admin.versionLabel")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Guide.admin.versionLabel")}/>,
             cell: ({row}) => <span className="font-medium">{row.original.label}</span>,
         },
         {
@@ -74,7 +82,8 @@ function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnD
             accessorFn: version => version.publishedAt ?? undefined,
             sortFn: "basic",
             sortUndefined: "last",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Guide.admin.publishedAt")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Guide.admin.publishedAt")}/>,
             cell: ({row}) => formatInstant(row.original.publishedAt)?.slice(0, 10),
             meta: {className: "whitespace-nowrap"},
         },
@@ -82,7 +91,8 @@ function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnD
             id: "revivalCount",
             accessorFn: version => version.revivalCount,
             sortFn: "basic",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Guide.admin.revivals")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Guide.admin.revivals")}/>,
             meta: {className: "text-right"},
         },
         {
@@ -102,7 +112,8 @@ function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnD
                                 <BookOpen/>
                                 {t("Guide.admin.view")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive" disabled={!row.original.deletable} onClick={() => onDelete(row.original)}>
+                            <DropdownMenuItem className="text-destructive" disabled={!row.original.deletable}
+                                              onClick={() => onDelete(row.original)}>
                                 <Trash2/>
                                 <span className="flex flex-col">
                                     {t("Guide.admin.delete")}
@@ -144,8 +155,10 @@ function GuideVersionViewDialog({version, onClose}: { version: GuideVersion | nu
                         {field(t("Guide.admin.publishedBy"), version.publishedBy)}
                         {field(t("Guide.admin.revivals"), version.revivalCount)}
                         {field(t("Guide.admin.suggestions"), version.suggestionCount)}
-                        <div className="sm:col-span-2">{field(t("Guide.admin.note"), version.note && <PlainText text={version.note}/>)}</div>
-                        {!version.deletable && <p className="text-sm text-muted-foreground sm:col-span-2">{inUse(version)}</p>}
+                        <div className="sm:col-span-2">{field(t("Guide.admin.note"), version.note &&
+                            <PlainText text={version.note}/>)}</div>
+                        {!version.deletable &&
+                            <p className="text-sm text-muted-foreground sm:col-span-2">{inUse(version)}</p>}
                     </div>
                 )}
                 <DialogFooter>
@@ -171,8 +184,10 @@ export function GuideVersionTable({versions}: { versions: GuideVersion[] }) {
 
     return (
         <>
-            <DataTable columns={columns} data={versions} initialSorting={[{id: "publishedAt", desc: true}]} onRowClick={setViewing}
-                       empty={<DataEmpty icon={BookOpen} title={t("Guide.notPublished")} description={t("Guide.admin.notPublishedHint")}/>}/>
+            <DataTable columns={columns} data={versions} initialSorting={[{id: "publishedAt", desc: true}]}
+                       onRowClick={setViewing}
+                       empty={<DataEmpty icon={BookOpen} title={t("Guide.notPublished")}
+                                         description={t("Guide.admin.notPublishedHint")}/>}/>
             <GuideVersionViewDialog version={viewing} onClose={() => setViewing(null)}/>
             <AlertDialog open={!!deleting} onOpenChange={open => !open && setDeleting(null)}>
                 <AlertDialogContent>
@@ -182,12 +197,16 @@ export function GuideVersionTable({versions}: { versions: GuideVersion[] }) {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
-                        <AlertDialogAction variant="destructive" disabled={pending} onClick={() => deleting && startTransition(async () => {
-                            if (feedback(await deleteGuideVersionAction({id: deleting.id, version: deleting.version}), t("Guide.admin.deleted"))) {
-                                setDeleting(null);
-                                router.refresh();
-                            }
-                        })}>
+                        <AlertDialogAction variant="destructive" disabled={pending}
+                                           onClick={() => deleting && startTransition(async () => {
+                                               if (feedback(await deleteGuideVersionAction({
+                                                   id: deleting.id,
+                                                   version: deleting.version
+                                               }), t("Guide.admin.deleted"))) {
+                                                   setDeleting(null);
+                                                   router.refresh();
+                                               }
+                                           })}>
                             {t("Guide.admin.delete")}
                         </AlertDialogAction>
                     </AlertDialogFooter>

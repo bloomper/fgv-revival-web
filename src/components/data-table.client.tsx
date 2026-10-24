@@ -14,8 +14,8 @@ import {
     rowSelectionFeature,
     type RowSelectionState,
     rowSortingFeature,
-    type SortingState,
     sortFns,
+    type SortingState,
     tableFeatures,
     useTable
 } from "@tanstack/react-table";
@@ -52,7 +52,8 @@ export function SortableHeader<TData extends RowData>({column, sorted, title}: {
     return (
         <Button variant="ghost" onClick={() => column.toggleSorting(sorted === "asc")} className="-ml-4 h-8">
             {title}
-            {sorted === "desc" ? <ArrowDown className="ml-2 h-4 w-4"/> : sorted === "asc" ? <ArrowUp className="ml-2 h-4 w-4"/> :
+            {sorted === "desc" ? <ArrowDown className="ml-2 h-4 w-4"/> : sorted === "asc" ?
+                <ArrowUp className="ml-2 h-4 w-4"/> :
                 <ArrowUpDown className="ml-2 h-4 w-4"/>}
         </Button>
     );
@@ -61,7 +62,10 @@ export function SortableHeader<TData extends RowData>({column, sorted, title}: {
 /**
  * A column of checkboxes for selecting rows, as in Spexregister; clicking it does not open the row.
  */
-export function selectColumn<TData extends RowData>(labels: { all: string; row: (row: TData) => string }): DataTableColumnDef<TData> {
+export function selectColumn<TData extends RowData>(labels: {
+    all: string;
+    row: (row: TData) => string
+}): DataTableColumnDef<TData> {
     return {
         id: "select",
         header: ({table}) => (
@@ -71,7 +75,8 @@ export function selectColumn<TData extends RowData>(labels: { all: string; row: 
                       aria-label={labels.all}/>
         ),
         cell: ({row}) => (
-            <Checkbox checked={row.getIsSelected()} onCheckedChange={value => row.toggleSelected(!!value)} aria-label={labels.row(row.original)}/>
+            <Checkbox checked={row.getIsSelected()} onCheckedChange={value => row.toggleSelected(!!value)}
+                      aria-label={labels.row(row.original)}/>
         ),
         enableSorting: false,
         meta: {className: "w-10"},
@@ -150,10 +155,12 @@ export function DataTable<TData extends { id: string }>({
                     </TableHeader>
                     <TableBody>
                         {rows.length ? rows.map(row => (
-                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className={cn(onRowClick && "cursor-pointer", rowClassName?.(row.original))}
+                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}
+                                      className={cn(onRowClick && "cursor-pointer", rowClassName?.(row.original))}
                                       onClick={() => onRowClick?.(row.original)}>
                                 {row.getAllCells().map(cell => (
-                                    <TableCell key={cell.id} className={cn("h-12", cell.column.columnDef.meta?.className)}
+                                    <TableCell key={cell.id}
+                                               className={cn("h-12", cell.column.columnDef.meta?.className)}
                                                onClick={event => (cell.column.id === "select" || cell.column.id === "actions") && event.stopPropagation()}>
                                         <table.FlexRender cell={cell}/>
                                     </TableCell>
@@ -162,7 +169,9 @@ export function DataTable<TData extends { id: string }>({
                         )) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    {filtered ? <DataEmpty title={t("noFilterMatchHeading")} description={t("noFilterMatchDescription")}/> : empty ?? <DataEmpty/>}
+                                    {filtered ? <DataEmpty title={t("noFilterMatchHeading")}
+                                                           description={t("noFilterMatchDescription")}/> : empty ??
+                                        <DataEmpty/>}
                                 </TableCell>
                             </TableRow>
                         )}
@@ -172,12 +181,14 @@ export function DataTable<TData extends { id: string }>({
             <div className="flex flex-col items-end gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center space-x-2">
                     <p className="text-sm font-medium">{t("rowsPerPage")}</p>
-                    <Select value={`${pagination.pageSize}`} onValueChange={value => value !== null && table.setPageSize(Number(value))}>
+                    <Select value={`${pagination.pageSize}`}
+                            onValueChange={value => value !== null && table.setPageSize(Number(value))}>
                         <SelectTrigger className="h-8 w-17.5">
                             <SelectValue placeholder={pagination.pageSize}/>
                         </SelectTrigger>
                         <SelectContent side="top">
-                            {[10, 15, 20, 25, 30, 40, 50].map(size => <SelectItem key={size} value={`${size}`}>{size}</SelectItem>)}
+                            {[10, 15, 20, 25, 30, 40, 50].map(size => <SelectItem key={size}
+                                                                                  value={`${size}`}>{size}</SelectItem>)}
                         </SelectContent>
                     </Select>
                 </div>

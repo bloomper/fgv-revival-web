@@ -8,11 +8,29 @@ const OPERATIONS = ["PARTICIPATION", "TASK", "ACTOR", "MEMBERSHIP"];
 const MONTHS_BEFORE_ANONYMIZING = 36;
 
 export function createClosingState() {
-    return {nextRunId: 1, runs: [], membershipYear: {}, spexregisterRevivals: new Set(), existing: new Set(), failOnce: []};
+    return {
+        nextRunId: 1,
+        runs: [],
+        membershipYear: {},
+        spexregisterRevivals: new Set(),
+        existing: new Set(),
+        failOnce: []
+    };
 }
 
 export function closingResolvers(ctx) {
-    const {GraphQLError, forbidden, roleIn, canSee, visibleRevival, isSuperAdmin, participants, positions, log, resolvers} = ctx;
+    const {
+        GraphQLError,
+        forbidden,
+        roleIn,
+        canSee,
+        visibleRevival,
+        isSuperAdmin,
+        participants,
+        positions,
+        log,
+        resolvers
+    } = ctx;
     const store = () => ctx.state().closing;
     const isVisibleDirecteur = (persona, revival) => roleIn(persona, revival) === "DIRECTEUR" && canSee(persona, revival);
     const steering = (persona, revival) => ["DIRECTEUR", "STEERING_GROUP"].includes(roleIn(persona, revival)) && canSee(persona, revival);
@@ -45,7 +63,10 @@ export function closingResolvers(ctx) {
         if (participant.membershipPaid && year) {
             operations.push({operation: "MEMBERSHIP", detail: String(year)});
         }
-        return operations.map(operation => ({__typename: "SyncOperationPreview", ...operation, exists: store().existing.has(key(participant, operation.operation))}));
+        return operations.map(operation => ({
+            __typename: "SyncOperationPreview", ...operation,
+            exists: store().existing.has(key(participant, operation.operation))
+        }));
     }
 
     function preview(revival) {
@@ -74,8 +95,15 @@ export function closingResolvers(ctx) {
         const count = status => run.steps.filter(step => step.status === status).length;
 
         return {
-            __typename: "SyncRun", id: run.id, status: run.status, startedBy: {__typename: "PersonRef", id: run.startedBy.sub, displayName: run.startedBy.name},
-            startedAt: run.startedAt, finishedAt: run.finishedAt, total: run.steps.length, done: count("DONE") + count("EXISTED"), failed: count("FAILED"),
+            __typename: "SyncRun",
+            id: run.id,
+            status: run.status,
+            startedBy: {__typename: "PersonRef", id: run.startedBy.sub, displayName: run.startedBy.name},
+            startedAt: run.startedAt,
+            finishedAt: run.finishedAt,
+            total: run.steps.length,
+            done: count("DONE") + count("EXISTED"),
+            failed: count("FAILED"),
             failures: run.steps.filter(step => step.status === "FAILED").map(step => ({
                 __typename: "SyncFailure", operation: step.operation, reason: step.reason,
                 participant: step.participant ? participants.ref(step.participant) : null,
@@ -130,7 +158,13 @@ export function closingResolvers(ctx) {
             actualResult: budget?.totals?.actualResult ?? null,
             loanAmount: settings?.loanAmount ?? null,
             loanRepaid: !!settings?.loanRepaidOn,
-            surplusDecision: decision ? {__typename: "LogEntrySummary", id: decision.id, number: decision.number, type: decision.type, status: decision.status} : null,
+            surplusDecision: decision ? {
+                __typename: "LogEntrySummary",
+                id: decision.id,
+                number: decision.number,
+                type: decision.type,
+                status: decision.status
+            } : null,
             membershipYear: store().membershipYear[revival.id] ?? null,
             membershipsPaid: yesParticipants(revival).filter(participant => participant.membershipPaid).length,
             suggestions: ctx.state().guide.suggestions.filter(suggestion => suggestion.revivalId === revival.id).length,
@@ -153,9 +187,16 @@ export function closingResolvers(ctx) {
 
                 return {
                     revival: {
-                        __typename: "Revival", id: revival.id, title: revival.title, year: revival.year, status: revival.status, version: revival.version,
-                        anonymizedAt: revival.anonymizedAt ?? null, permissions: {__typename: "RevivalPermissions", ...ctx.permissions(persona, revival)},
-                        ownerCandidates: log.candidates(revival), closing: readable ? closingOf(persona, revival) : null,
+                        __typename: "Revival",
+                        id: revival.id,
+                        title: revival.title,
+                        year: revival.year,
+                        status: revival.status,
+                        version: revival.version,
+                        anonymizedAt: revival.anonymizedAt ?? null,
+                        permissions: {__typename: "RevivalPermissions", ...ctx.permissions(persona, revival)},
+                        ownerCandidates: log.candidates(revival),
+                        closing: readable ? closingOf(persona, revival) : null,
                     },
                 };
             },
@@ -163,7 +204,13 @@ export function closingResolvers(ctx) {
                 const revival = visibleRevival(persona, id);
                 const run = canReadWork(persona, revival) ? lastRun(revival) : null;
 
-                return {revival: {__typename: "Revival", id: revival.id, closing: {__typename: "ClosingStatus", lastSync: run && toRun(run)}}};
+                return {
+                    revival: {
+                        __typename: "Revival",
+                        id: revival.id,
+                        closing: {__typename: "ClosingStatus", lastSync: run && toRun(run)}
+                    }
+                };
             },
             MembershipParticipants(persona, {revivalId}) {
                 return {participants: resolvers.Participants(persona, {revivalId, includeRemoved: false}).participants};
@@ -180,7 +227,11 @@ export function closingResolvers(ctx) {
                 return {
                     syncPreview: {
                         __typename: "SyncPreview", revivalId: revival.id, hash, spexregisterRevivalExists: exists,
-                        participants: entries.map(entry => ({__typename: "SyncParticipantPreview", participant: participants.ref(entry.participant), operations: entry.operations})),
+                        participants: entries.map(entry => ({
+                            __typename: "SyncParticipantPreview",
+                            participant: participants.ref(entry.participant),
+                            operations: entry.operations
+                        })),
                         excluded: excluded.map(participants.ref),
                         membershipYear: store().membershipYear[revival.id] ?? null,
                         lastRun: run && toRun(run),
@@ -221,10 +272,21 @@ export function closingResolvers(ctx) {
                     ...(exists ? [] : [{participant: null, operation: "REVIVAL", status: "PENDING"}]),
                     ...entries.flatMap(entry => entry.operations.filter(operation => !operation.exists)
                         .sort((a, b) => OPERATIONS.indexOf(a.operation) - OPERATIONS.indexOf(b.operation))
-                        .map(operation => ({participant: entry.participant, operation: operation.operation, status: "PENDING"}))),
+                        .map(operation => ({
+                            participant: entry.participant,
+                            operation: operation.operation,
+                            status: "PENDING"
+                        }))),
                 ];
-                const run = {id: `run-${store().nextRunId++}`, revivalId: revival.id, status: "RUNNING", startedBy: persona, startedAt: new Date().toISOString(),
-                    finishedAt: null, steps};
+                const run = {
+                    id: `run-${store().nextRunId++}`,
+                    revivalId: revival.id,
+                    status: "RUNNING",
+                    startedBy: persona,
+                    startedAt: new Date().toISOString(),
+                    finishedAt: null,
+                    steps
+                };
 
                 store().runs.push(run);
                 return {syncStart: toRun(run)};
@@ -245,7 +307,13 @@ export function closingResolvers(ctx) {
                     participant.membershipPaid = input.participantIds.includes(participant.id);
                     participant.version += 1;
                 });
-                return {membershipSet: yes.map(participant => ({__typename: "Participant", id: participant.id, membershipPaid: participant.membershipPaid}))};
+                return {
+                    membershipSet: yes.map(participant => ({
+                        __typename: "Participant",
+                        id: participant.id,
+                        membershipPaid: participant.membershipPaid
+                    }))
+                };
             },
             RevivalAnonymize(persona, {id, version, confirmation}) {
                 const revival = visibleRevival(persona, id);
@@ -270,7 +338,14 @@ export function closingResolvers(ctx) {
                     entry.owner = null;
                 });
                 Object.assign(revival, {anonymizedAt: new Date().toISOString(), version: revival.version + 1});
-                return {revivalAnonymize: {__typename: "Revival", id: revival.id, anonymizedAt: revival.anonymizedAt, version: revival.version}};
+                return {
+                    revivalAnonymize: {
+                        __typename: "Revival",
+                        id: revival.id,
+                        anonymizedAt: revival.anonymizedAt,
+                        version: revival.version
+                    }
+                };
             },
         },
         /**
@@ -283,14 +358,27 @@ export function closingResolvers(ctx) {
             const all = ctx.state().participant.participants;
             const anna = all.find(participant => participant.spexareId === "501");
 
-            revival.history.push({from: revival.status, to: "SETTLING", changedBy: "Sara Admin", changedAt: new Date().toISOString()});
+            revival.history.push({
+                from: revival.status,
+                to: "SETTLING",
+                changedBy: "Sara Admin",
+                changedAt: new Date().toISOString()
+            });
             revival.status = "SETTLING";
             all.filter(participant => participant.revivalId === "1").forEach(participant => {
                 participant.response = "YES";
             });
             if (anna && !all.some(participant => participant.spexareId === "502")) {
-                all.push({...anna, id: `p${ctx.state().participant.nextId++}`, spexareId: "502", positionId: "T-ORK", roleName: null, vocalPartId: null,
-                    memberId: null, response: "YES"});
+                all.push({
+                    ...anna,
+                    id: `p${ctx.state().participant.nextId++}`,
+                    spexareId: "502",
+                    positionId: "T-ORK",
+                    roleName: null,
+                    vocalPartId: null,
+                    memberId: null,
+                    response: "YES"
+                });
             }
             store().failOnce = [...failOnce];
         },

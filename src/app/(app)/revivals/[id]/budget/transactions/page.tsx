@@ -41,8 +41,10 @@ export default async function BudgetTransactionsPage({params, searchParams}: {
         return (
             <div className="flex flex-col gap-4">
                 <h4 className="sr-only">{t("transactions")}</h4>
-                <TransactionTable revivalId={revival.id} transactions={budget.transactions} categories={categories} lines={budget.lines}
-                                  members={revival.ownerCandidates} canWrite={revival.permissions.canWriteBudget} showCancelled={showCancelled}/>
+                <TransactionTable revivalId={revival.id} transactions={budget.transactions} categories={categories}
+                                  lines={budget.lines}
+                                  members={revival.ownerCandidates} canWrite={revival.permissions.canWriteBudget}
+                                  showCancelled={showCancelled}/>
             </div>
         );
     });

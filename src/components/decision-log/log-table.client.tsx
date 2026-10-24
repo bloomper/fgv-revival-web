@@ -34,7 +34,12 @@ import {formatDate} from "@/utils/format";
 
 type Entry = LogEntryFieldsFragment;
 
-const STATUS_ICONS: Record<LogEntryStatus, React.ComponentType> = {OPEN: RotateCcw, WAITING: CircleDashed, DONE: Check, CANCELLED: X};
+const STATUS_ICONS: Record<LogEntryStatus, React.ComponentType> = {
+    OPEN: RotateCcw,
+    WAITING: CircleDashed,
+    DONE: Check,
+    CANCELLED: X
+};
 
 function closed(entry: Entry) {
     return entry.status === "DONE" || entry.status === "CANCELLED";
@@ -49,10 +54,13 @@ function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
 
     return (
         <>
-            {entry.answers && <span className="text-xs text-muted-foreground">{t("answersRow", {number: entry.answers.number})}</span>}
-            {entry.answeredBy && <span className="text-xs text-muted-foreground">{t("answeredByRow", {number: entry.answeredBy.number})}</span>}
+            {entry.answers && <span
+                className="text-xs text-muted-foreground">{t("answersRow", {number: entry.answers.number})}</span>}
+            {entry.answeredBy && <span
+                className="text-xs text-muted-foreground">{t("answeredByRow", {number: entry.answeredBy.number})}</span>}
             {entry.meeting && (
-                <Link href={`/revivals/${revivalId}/log?meeting=${entry.meeting.id}`} className="text-xs text-muted-foreground hover:underline"
+                <Link href={`/revivals/${revivalId}/log?meeting=${entry.meeting.id}`}
+                      className="text-xs text-muted-foreground hover:underline"
                       onClick={event => event.stopPropagation()}>
                     {t("fromMeeting", {date: formatDate(entry.meeting.date) ?? entry.meeting.date})}
                 </Link>
@@ -76,7 +84,13 @@ function RowActions({entry, revivalId, meetingId, onEdit, onAnswer}: {
     const [pending, startTransition] = useTransition();
 
     const setStatus = (status: LogEntryStatus) => startTransition(async () => {
-        feedback(await updateLogEntryAction({id: entry.id, version: entry.version, revivalId, meetingId, values: {status}}),
+        feedback(await updateLogEntryAction({
+                id: entry.id,
+                version: entry.version,
+                revivalId,
+                meetingId,
+                values: {status}
+            }),
             t("statusChanged", {number: entry.number}));
     });
 
@@ -87,9 +101,12 @@ function RowActions({entry, revivalId, meetingId, onEdit, onAnswer}: {
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onEdit(entry)}><Pencil/>{t("editRow", {number: entry.number})}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onEdit(entry)}><Pencil/>{t("editRow", {number: entry.number})}
+                </DropdownMenuItem>
                 {answerable(entry) && (
-                    <DropdownMenuItem onClick={() => onAnswer(entry)}><MessageSquareReply/>{t("answerRow", {number: entry.number})}</DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => onAnswer(entry)}><MessageSquareReply/>{t("answerRow", {number: entry.number})}
+                    </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator/>
                 <DropdownMenuGroup>
@@ -97,7 +114,9 @@ function RowActions({entry, revivalId, meetingId, onEdit, onAnswer}: {
                     {LOG_ENTRY_STATUSES.filter(status => status !== entry.status).map(status => {
                         const Icon = STATUS_ICONS[status];
 
-                        return <DropdownMenuItem key={status} onClick={() => setStatus(status)}><Icon/>{t(`status.${status}`)}</DropdownMenuItem>;
+                        return <DropdownMenuItem key={status}
+                                                 onClick={() => setStatus(status)}><Icon/>{t(`status.${status}`)}
+                        </DropdownMenuItem>;
                     })}
                 </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -135,7 +154,8 @@ function useColumns({revivalId, canWrite, meetingId, onEdit, onAnswer}: {
             id: "type",
             accessorFn: entry => LOG_ENTRY_TYPES.indexOf(entry.type),
             sortFn: "basic",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("typeLabel")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("typeLabel")}/>,
             cell: ({row}) => <LogTypeBadge type={row.original.type}/>,
             meta: {className: "hidden sm:table-cell"},
         },
@@ -149,10 +169,12 @@ function useColumns({revivalId, canWrite, meetingId, onEdit, onAnswer}: {
                     <div className="flex min-w-60 flex-col gap-1 whitespace-normal">
                         <PlainText text={entry.text}/>
                         {entry.comment && <PlainText className="text-xs text-muted-foreground" text={entry.comment}/>}
-                        {entry.tags.length > 0 && <span className="text-xs text-muted-foreground">{entry.tags.join(", ")}</span>}
+                        {entry.tags.length > 0 &&
+                            <span className="text-xs text-muted-foreground">{entry.tags.join(", ")}</span>}
                         <Links entry={entry} revivalId={revivalId}/>
                         {/* What the hidden columns show, on narrow screens */}
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground md:hidden">
+                        <div
+                            className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground md:hidden">
                             <span className="sm:hidden"><LogTypeBadge type={entry.type}/></span>
                             <span>{t("owner")}: <OwnerLabel owner={entry.owner}/></span>
                             {entry.deadline && <span>{t("deadline")}: {formatDate(entry.deadline)}</span>}
@@ -189,7 +211,8 @@ function useColumns({revivalId, canWrite, meetingId, onEdit, onAnswer}: {
             id: "statusValue",
             accessorFn: entry => LOG_ENTRY_STATUSES.indexOf(entry.status),
             sortFn: "basic",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("statusLabel")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("statusLabel")}/>,
             cell: ({row}) => (
                 <div className="flex flex-col items-start gap-1">
                     <LogStatusBadge status={row.original.status}/>
@@ -203,7 +226,8 @@ function useColumns({revivalId, canWrite, meetingId, onEdit, onAnswer}: {
         columns.push({
             id: "actions",
             header: () => <span className="sr-only">{t("actions")}</span>,
-            cell: ({row}) => <RowActions entry={row.original} revivalId={revivalId} meetingId={meetingId} onEdit={onEdit} onAnswer={onAnswer}/>,
+            cell: ({row}) => <RowActions entry={row.original} revivalId={revivalId} meetingId={meetingId}
+                                         onEdit={onEdit} onAnswer={onAnswer}/>,
             meta: {className: "w-12 text-right"},
         });
     }
@@ -255,8 +279,10 @@ export function LogTable({
     return (
         <>
             <DataTable columns={columns} data={entries} filtered={filtered} initialSorting={initialSorting}
-                       onRowClick={canWrite ? setEditing : undefined} rowClassName={entry => closed(entry) && "text-muted-foreground"}
-                       empty={<DataEmpty title={emptyMessage ?? t("empty")} description={canWrite ? t("emptyHint") : t("emptyReadOnly")}/>}>
+                       onRowClick={canWrite ? setEditing : undefined}
+                       rowClassName={entry => closed(entry) && "text-muted-foreground"}
+                       empty={<DataEmpty title={emptyMessage ?? t("empty")}
+                                         description={canWrite ? t("emptyHint") : t("emptyReadOnly")}/>}>
                 {(toolbar || actions || canWrite) && (
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div>{toolbar}</div>
@@ -268,7 +294,8 @@ export function LogTable({
                 )}
             </DataTable>
             {(adding || editing) && (
-                <LogEntryDialog revivalId={revivalId} entry={editing} members={members} tags={tags} meetingId={meetingId} open
+                <LogEntryDialog revivalId={revivalId} entry={editing} members={members} tags={tags}
+                                meetingId={meetingId} open
                                 onOpenChange={(open) => {
                                     if (!open) {
                                         setAdding(false);

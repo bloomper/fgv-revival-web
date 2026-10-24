@@ -5,10 +5,22 @@ import {useLocale, useTranslations} from "next-intl";
 import {ArrowRightLeft} from "lucide-react";
 import type {GuideChangesQuery, RevivalGuideVersionChangeImpactQuery} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
 import {Label} from "@/components/ui/label";
 import {NativeSelect} from "@/components/ui/native-select";
-import {changeGuideVersionAction, guideChangesAction, guideVersionChangeImpactAction} from "@/app/(app)/revivals/[id]/guide/actions.server";
+import {
+    changeGuideVersionAction,
+    guideChangesAction,
+    guideVersionChangeImpactAction
+} from "@/app/(app)/revivals/[id]/guide/actions.server";
 import {GuideChanges} from "@/components/guide/guide-changes.client";
 import {pickText} from "@/components/guide/localized";
 import {RemovalWarning} from "@/components/guide/removal-warning.client";
@@ -23,7 +35,11 @@ type Removal = NonNullable<RevivalGuideVersionChangeImpactQuery["revival"]>["gui
  * chapters the revival has checklists for, those checklists are deleted with the move, so they are listed and the user
  * must confirm. Offered only with versions the server allows.
  */
-export function GuideVersionChangeDialog({revivalId, current, allowed}: { revivalId: string; current: Version | null; allowed: Version[] }) {
+export function GuideVersionChangeDialog({revivalId, current, allowed}: {
+    revivalId: string;
+    current: Version | null;
+    allowed: Version[]
+}) {
     const t = useTranslations();
     const locale = useLocale();
     const feedback = useActionFeedback();
@@ -71,21 +87,28 @@ export function GuideVersionChangeDialog({revivalId, current, allowed}: { reviva
                 </DialogHeader>
                 <div className="space-y-2">
                     <Label htmlFor="guide-version-target">{t("Guide.version.target")}</Label>
-                    <NativeSelect className="w-full" id="guide-version-target" value={target} onChange={event => choose(event.target.value)}>
+                    <NativeSelect className="w-full" id="guide-version-target" value={target}
+                                  onChange={event => choose(event.target.value)}>
                         <option value="">{t("Guide.version.choose")}</option>
                         {allowed.map(version => <option key={version.id} value={version.id}>{version.label}</option>)}
                     </NativeSelect>
                 </div>
                 {removals && removals.length > 0 && (
-                    <RemovalWarning title={t("Guide.version.removalTitle", {count: removals.length})} confirmLabel={t("Guide.version.removalConfirm")}
+                    <RemovalWarning title={t("Guide.version.removalTitle", {count: removals.length})}
+                                    confirmLabel={t("Guide.version.removalConfirm")}
                                     confirmed={confirmed} onConfirmedChange={setConfirmed}>
                         <p>{t("Guide.version.removalDescription")}</p>
                         <ul className="mt-2 list-disc space-y-1 pl-5">
                             {removals.map(removal => (
                                 <li key={removal.checklistId}>
-                                    <span className="font-medium">{removal.chapterTitle ? pickText(removal.chapterTitle, locale).text : removal.chapterKey}</span>
+                                    <span
+                                        className="font-medium">{removal.chapterTitle ? pickText(removal.chapterTitle, locale).text : removal.chapterKey}</span>
                                     {": "}
-                                    {t("Guide.version.removalCounts", {items: removal.itemCount, done: removal.doneCount, log: removal.linkedLogEntryCount})}
+                                    {t("Guide.version.removalCounts", {
+                                        items: removal.itemCount,
+                                        done: removal.doneCount,
+                                        log: removal.linkedLogEntryCount
+                                    })}
                                 </li>
                             ))}
                         </ul>
@@ -101,7 +124,11 @@ export function GuideVersionChangeDialog({revivalId, current, allowed}: { reviva
                         variant={removals && removals.length > 0 ? "destructive" : "default"}
                         disabled={!target || pending || (!!current && !changes) || !removals || (removals.length > 0 && !confirmed)}
                         onClick={() => startTransition(async () => {
-                            const result = await changeGuideVersionAction({revivalId, fromVersionId: current?.id ?? null, toVersionId: target});
+                            const result = await changeGuideVersionAction({
+                                revivalId,
+                                fromVersionId: current?.id ?? null,
+                                toVersionId: target
+                            });
 
                             if (feedback(result, t("Guide.version.changed"))) {
                                 track("guide-version-change");

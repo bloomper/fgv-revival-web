@@ -6,7 +6,13 @@ import {useLocale, useTranslations} from "next-intl";
 import {MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import {Input} from "@/components/ui/input";
 import {DataEmpty} from "@/components/data-empty";
 import {DataFilter} from "@/components/data-filter";
@@ -49,7 +55,11 @@ export function filterBudgetLines(lines: BudgetLineRow[], query: string, categor
     });
 }
 
-function RowActions({line, revivalId, onEdit}: { line: BudgetLineRow; revivalId: string; onEdit: (line: BudgetLineRow) => void }) {
+function RowActions({line, revivalId, onEdit}: {
+    line: BudgetLineRow;
+    revivalId: string;
+    onEdit: (line: BudgetLineRow) => void
+}) {
     const t = useTranslations("Budget");
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
@@ -57,11 +67,13 @@ function RowActions({line, revivalId, onEdit}: { line: BudgetLineRow; revivalId:
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" disabled={pending} aria-label={t("rowMenu", {name: line.description})}/>}>
+            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" disabled={pending}
+                                                 aria-label={t("rowMenu", {name: line.description})}/>}>
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {!line.removed && <DropdownMenuItem onClick={() => onEdit(line)}><Pencil/>{t("edit")}</DropdownMenuItem>}
+                {!line.removed &&
+                    <DropdownMenuItem onClick={() => onEdit(line)}><Pencil/>{t("edit")}</DropdownMenuItem>}
                 {!line.removed && <DropdownMenuSeparator/>}
                 {line.removed ? (
                     <DropdownMenuItem onClick={() => startTransition(async () => {
@@ -87,14 +99,16 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (line: BudgetL
             accessorFn: line => catalogName(line.category, locale),
             sortFn: "alphanumeric",
             header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("category")}/>,
-            cell: ({row}) => <Badge variant={row.original.category.kind === "INCOME" ? "secondary" : "outline"}>{catalogName(row.original.category, locale)}</Badge>,
+            cell: ({row}) => <Badge
+                variant={row.original.category.kind === "INCOME" ? "secondary" : "outline"}>{catalogName(row.original.category, locale)}</Badge>,
             meta: {className: "hidden md:table-cell"},
         },
         {
             id: "description",
             accessorFn: line => line.description,
             sortFn: "alphanumeric",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("description")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("description")}/>,
             cell: ({row}) => {
                 const line = row.original;
 
@@ -107,12 +121,14 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (line: BudgetL
                         <span className="flex flex-wrap gap-x-3 text-xs text-muted-foreground">
                             <span className="md:hidden">{catalogName(line.category, locale)}</span>
                             {line.event && (
-                                <Link href={`/revivals/${revivalId}/events`} className="hover:underline" onClick={click => click.stopPropagation()}>
+                                <Link href={`/revivals/${revivalId}/events`} className="hover:underline"
+                                      onClick={click => click.stopPropagation()}>
                                     {line.event.title}
                                 </Link>
                             )}
                             {line.logEntry && (
-                                <Link href={`/revivals/${revivalId}/log`} className="hover:underline" onClick={click => click.stopPropagation()}>
+                                <Link href={`/revivals/${revivalId}/log`} className="hover:underline"
+                                      onClick={click => click.stopPropagation()}>
                                     {t("decisionNumber", {number: line.logEntry.number})}
                                 </Link>
                             )}
@@ -179,7 +195,11 @@ export function BudgetLineTable({revivalId, lines, proposals, categories, events
     const categoryOptions = useMemo(() => {
         const held = new Map(lines.map(line => [line.category.id, line.category]));
 
-        return [...held.values()].map(category => ({label: catalogName(category, locale), value: category.id, groupLabel: t(`Budget.kinds.${category.kind}`)}));
+        return [...held.values()].map(category => ({
+            label: catalogName(category, locale),
+            value: category.id,
+            groupLabel: t(`Budget.kinds.${category.kind}`)
+        }));
     }, [lines, locale, t]);
 
     return (
@@ -194,24 +214,29 @@ export function BudgetLineTable({revivalId, lines, proposals, categories, events
                     eventTypeLineId: proposal.line.id,
                 },
             })}/>}
-            <DataTable columns={columns} data={filtered} filtered={active} initialSorting={[{id: "category", desc: false}]}
+            <DataTable columns={columns} data={filtered} filtered={active}
+                       initialSorting={[{id: "category", desc: false}]}
                        onRowClick={canWrite ? (line => !line.removed && setEditing(line)) : undefined}
                        rowClassName={line => line.removed && "text-muted-foreground"}
-                       empty={<DataEmpty title={t("Budget.noLines")} description={canWrite ? t("Budget.noLinesHint") : t("Budget.noLinesReadOnly")}/>}>
+                       empty={<DataEmpty title={t("Budget.noLines")}
+                                         description={canWrite ? t("Budget.noLinesHint") : t("Budget.noLinesReadOnly")}/>}>
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-wrap items-center gap-2">
                         <div className="relative w-full sm:w-75">
-                            <Input placeholder={t("Budget.filterLines")} value={query} onChange={change => setQuery(change.target.value)}
+                            <Input placeholder={t("Budget.filterLines")} value={query}
+                                   onChange={change => setQuery(change.target.value)}
                                    aria-label={t("Common.search")} className="h-8 pr-8"/>
                             {query && (
-                                <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                                <Button variant="ghost" size="icon"
+                                        className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
                                         aria-label={t("Common.clearSearch")} onClick={() => setQuery("")}>
                                     <X className="h-3 w-3"/>
                                 </Button>
                             )}
                         </div>
                         {categoryOptions.length > 0 && (
-                            <DataFilter title={t("Budget.category")} options={categoryOptions} selectedValues={categoryFilter}
+                            <DataFilter title={t("Budget.category")} options={categoryOptions}
+                                        selectedValues={categoryFilter}
                                         onSelect={setCategoryFilter} onClear={() => setCategoryFilter(new Set())}/>
                         )}
                         {active && (
@@ -225,17 +250,20 @@ export function BudgetLineTable({revivalId, lines, proposals, categories, events
                         )}
                         <UrlSwitch param="removed" shown={showRemoved} label={t("Budget.showRemoved")}/>
                     </div>
-                    {canWrite && <Button onClick={() => setAdding({prefill: null})}><Plus/>{t("Budget.newLine")}</Button>}
+                    {canWrite &&
+                        <Button onClick={() => setAdding({prefill: null})}><Plus/>{t("Budget.newLine")}</Button>}
                 </div>
             </DataTable>
             {(adding || editing) && (
-                <BudgetLineDialog key={editing?.id ?? adding?.prefill?.eventTypeLineId ?? "new"} revivalId={revivalId} categories={categories}
-                                  events={events} decisions={decisions} line={editing} prefill={adding?.prefill} onOpenChange={open => {
-                    if (!open) {
-                        setAdding(null);
-                        setEditing(null);
-                    }
-                }}/>
+                <BudgetLineDialog key={editing?.id ?? adding?.prefill?.eventTypeLineId ?? "new"} revivalId={revivalId}
+                                  categories={categories}
+                                  events={events} decisions={decisions} line={editing} prefill={adding?.prefill}
+                                  onOpenChange={open => {
+                                      if (!open) {
+                                          setAdding(null);
+                                          setEditing(null);
+                                      }
+                                  }}/>
             )}
         </div>
     );

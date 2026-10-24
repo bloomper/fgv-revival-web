@@ -16,7 +16,9 @@ import {withPolicyPage} from "@/utils/route.server";
  * (FR-021, FR-021a). With {@code ?view=timeline}, every revival's shows and the Chalmersspex dates by month, with
  * clashing show weekends flagged (product spec 5.1).
  */
-export default async function ManageRevivalsPage({searchParams}: { searchParams: Promise<{ create?: string; view?: string }> }) {
+export default async function ManageRevivalsPage({searchParams}: {
+    searchParams: Promise<{ create?: string; view?: string }>
+}) {
     const {create, view} = await searchParams;
     const timeline = view === "timeline";
 
@@ -31,7 +33,8 @@ export default async function ManageRevivalsPage({searchParams}: { searchParams:
             content = <RevivalTimeline {...buildCrossTimeline(revivals, spexDates)}/>;
         } else {
             content = <RevivalAdminTable revivals={await getRevivals()}
-                                         actions={superAdmin && <RevivalCreateDialog key={create ?? ""} defaultOpen={create !== undefined}/>}/>;
+                                         actions={superAdmin && <RevivalCreateDialog key={create ?? ""}
+                                                                                     defaultOpen={create !== undefined}/>}/>;
         }
 
         return (
@@ -42,7 +45,8 @@ export default async function ManageRevivalsPage({searchParams}: { searchParams:
                 </div>
                 <nav aria-label={t("RevivalTimeline.views")} className="flex w-fit gap-1 rounded-lg bg-muted p-1">
                     <ViewLink href="/revivals/manage" active={!timeline} icon={List}>{t("Event.list")}</ViewLink>
-                    <ViewLink href="/revivals/manage?view=timeline" active={timeline} icon={GanttChart}>{t("RevivalTimeline.title")}</ViewLink>
+                    <ViewLink href="/revivals/manage?view=timeline" active={timeline}
+                              icon={GanttChart}>{t("RevivalTimeline.title")}</ViewLink>
                 </nav>
                 {content}
             </div>

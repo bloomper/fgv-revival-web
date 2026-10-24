@@ -22,14 +22,29 @@ vi.mock("@/app/(app)/revivals/[id]/checklists/actions.server", () => ({
 vi.mock("@/hooks/use-action-feedback", () => ({useActionFeedback: () => () => true}));
 
 const item = (overrides: Partial<ChecklistItemFieldsFragment> = {}): ChecklistItemFieldsFragment => ({
-    id: "1", required: false, text: {sv: "Boka lokal", en: null}, state: "OPEN", stateChangedBy: null, stateChangedAt: null,
-    reason: null, owner: null, deadline: null, deadlineManual: false, overdue: false, comment: null, guideItem: null,
-    defaultCapability: null, logEntries: [], checklist: {id: "9", kind: "CHAPTER", chapterKey: "B", chapterTitle: {sv: "Lokaler", en: null}, name: null}, version: 0,
+    id: "1",
+    required: false,
+    text: {sv: "Boka lokal", en: null},
+    state: "OPEN",
+    stateChangedBy: null,
+    stateChangedAt: null,
+    reason: null,
+    owner: null,
+    deadline: null,
+    deadlineManual: false,
+    overdue: false,
+    comment: null,
+    guideItem: null,
+    defaultCapability: null,
+    logEntries: [],
+    checklist: {id: "9", kind: "CHAPTER", chapterKey: "B", chapterTitle: {sv: "Lokaler", en: null}, name: null},
+    version: 0,
     ...overrides,
 });
 
 function renderRow(value: ChecklistItemFieldsFragment, canWaive: boolean) {
-    render(<ul><ChecklistItemRow revivalId="3" item={value} canWrite canWaive={canWaive} onEdit={() => undefined} onNotApplicable={() => undefined}/></ul>);
+    render(<ul><ChecklistItemRow revivalId="3" item={value} canWrite canWaive={canWaive} onEdit={() => undefined}
+                                 onNotApplicable={() => undefined}/></ul>);
 }
 
 describe("ChecklistItemRow", () => {
@@ -49,7 +64,15 @@ describe("ChecklistItemRow", () => {
 
     it("shows a linked guide item in the reader's language, marked when not translated", () => {
         intl.locale = "en";
-        renderRow(item({guideItem: {id: "5", key: "lokal", type: ITEM_TYPES.REQUIREMENT, text: {sv: "Boka **lokal**", en: null}, version: 1}}), false);
+        renderRow(item({
+            guideItem: {
+                id: "5",
+                key: "lokal",
+                type: ITEM_TYPES.REQUIREMENT,
+                text: {sv: "Boka **lokal**", en: null},
+                version: 1
+            }
+        }), false);
         intl.locale = "sv";
 
         expect(screen.getByText("lokal").tagName).toBe("STRONG");
@@ -67,7 +90,8 @@ describe("ChecklistItemRow", () => {
 
 describe("ChecklistItemDialog", () => {
     it("leaves a deadline out of the update unless it was changed, so a computed one stays computed", async () => {
-        render(<ChecklistItemDialog revivalId="3" checklistId="9" item={item({deadline: "2027-11-15"})} members={[]} open onOpenChange={() => undefined}/>);
+        render(<ChecklistItemDialog revivalId="3" checklistId="9" item={item({deadline: "2027-11-15"})} members={[]}
+                                    open onOpenChange={() => undefined}/>);
 
         await userEvent.type(screen.getByLabelText("Checklist.comment"), "Ring först");
         await userEvent.click(screen.getByRole("button", {name: "Common.save"}));

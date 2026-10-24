@@ -72,9 +72,11 @@ export function MembershipForm({revivalId, year, participants, canWrite}: {
             <div className="max-w-40 space-y-2">
                 <Label htmlFor={`${id}-year`}>{t("Closing.membershipYear")}</Label>
                 <Input id={`${id}-year`} inputMode="numeric" maxLength={4} value={yearText} disabled={!canWrite}
-                       aria-invalid={yearError || undefined} aria-describedby={yearError ? `${id}-year-error` : undefined}
+                       aria-invalid={yearError || undefined}
+                       aria-describedby={yearError ? `${id}-year-error` : undefined}
                        onChange={event => setYearText(event.target.value)}/>
-                {yearError && <p id={`${id}-year-error`} className="text-sm text-destructive">{t("Validation.membershipYearInvalid")}</p>}
+                {yearError && <p id={`${id}-year-error`}
+                                 className="text-sm text-destructive">{t("Validation.membershipYearInvalid")}</p>}
             </div>
             <fieldset className="space-y-2">
                 <legend className="mb-2 text-sm font-medium">{t("Closing.membershipFor")}</legend>
@@ -98,7 +100,10 @@ export function MembershipForm({revivalId, year, participants, canWrite}: {
                 </ul>
             </fieldset>
             <div className="flex items-center gap-3">
-                <p className="text-sm text-muted-foreground" aria-live="polite">{t("Closing.membershipCount", {count: selected.size, total: participants.length})}</p>
+                <p className="text-sm text-muted-foreground" aria-live="polite">{t("Closing.membershipCount", {
+                    count: selected.size,
+                    total: participants.length
+                })}</p>
                 {canWrite && <Button type="submit" disabled={pending} className="ml-auto">{t("Common.save")}</Button>}
             </div>
         </form>

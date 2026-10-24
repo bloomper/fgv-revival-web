@@ -35,8 +35,10 @@ export function MyMaterials({materials}: { materials: MyMaterial[] }) {
     return (
         <div className="flex flex-col gap-4">
             {groups.map(group => (
-                <section key={group.category} aria-labelledby={`my-materials-${group.category}`} className="flex flex-col gap-1">
-                    <h4 id={`my-materials-${group.category}`} className="text-sm font-semibold">{t(`categories.${group.category}`)}</h4>
+                <section key={group.category} aria-labelledby={`my-materials-${group.category}`}
+                         className="flex flex-col gap-1">
+                    <h4 id={`my-materials-${group.category}`}
+                        className="text-sm font-semibold">{t(`categories.${group.category}`)}</h4>
                     <ul className="flex flex-col divide-y rounded-md border">
                         {group.entries.map(material => {
                             const where = material.service ? catalogName(material.service, locale) : hostOf(material.url);
@@ -53,7 +55,8 @@ export function MyMaterials({materials}: { materials: MyMaterial[] }) {
                                         <span className="sr-only">{t("opensInNewTab")}</span>
                                     </a>
                                     {material.comment && (
-                                        <p className="px-3 pb-2 text-sm text-muted-foreground"><PlainText text={material.comment}/></p>
+                                        <p className="px-3 pb-2 text-sm text-muted-foreground"><PlainText
+                                            text={material.comment}/></p>
                                     )}
                                 </li>
                             );

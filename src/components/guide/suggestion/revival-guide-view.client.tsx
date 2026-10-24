@@ -28,18 +28,21 @@ export function RevivalGuideChapter({chapter, number, versionId, revivalId, canS
             number={number}
             itemActions={item => (
                 <>
-                    <SuggestionDialog trigger={<Button variant="ghost" size="icon-sm" aria-label={t("change")} title={t("change")}/>}
-                                      revivalId={revivalId} versionId={versionId} kind="CHANGE" item={item}>
+                    <SuggestionDialog
+                        trigger={<Button variant="ghost" size="icon-sm" aria-label={t("change")} title={t("change")}/>}
+                        revivalId={revivalId} versionId={versionId} kind="CHANGE" item={item}>
                         <MessageSquarePlus/>
                     </SuggestionDialog>
-                    <SuggestionDialog trigger={<Button variant="ghost" size="icon-sm" aria-label={t("remove")} title={t("remove")}/>}
-                                      revivalId={revivalId} versionId={versionId} kind="REMOVE" item={item}>
+                    <SuggestionDialog
+                        trigger={<Button variant="ghost" size="icon-sm" aria-label={t("remove")} title={t("remove")}/>}
+                        revivalId={revivalId} versionId={versionId} kind="REMOVE" item={item}>
                         <MessageSquareX/>
                     </SuggestionDialog>
                 </>
             )}
             placeActions={place => (
-                <SuggestionDialog trigger={<Button variant="ghost" size="sm"/>} revivalId={revivalId} versionId={versionId} kind="ADD" place={place}>
+                <SuggestionDialog trigger={<Button variant="ghost" size="sm"/>} revivalId={revivalId}
+                                  versionId={versionId} kind="ADD" place={place}>
                     <Plus/>
                     {t("add")}
                 </SuggestionDialog>

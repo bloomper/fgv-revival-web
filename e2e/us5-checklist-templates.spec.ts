@@ -35,7 +35,11 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await expect(items.getByRole("listitem").first()).toContainText("Lokaler bokade");
     });
 
-    test("the steering group makes a rehearsal weekend checklist, moves its date and adds from the chapter template", async ({page, mock, loginAs}) => {
+    test("the steering group makes a rehearsal weekend checklist, moves its date and adds from the chapter template", async ({
+                                                                                                                                 page,
+                                                                                                                                 mock,
+                                                                                                                                 loginAs
+                                                                                                                             }) => {
         await mock.guide("published");
         await mock.setStatus("1", "ORGANISING");
         await mock.templates();

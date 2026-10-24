@@ -1,11 +1,22 @@
 import {describe, expect, it} from "vitest";
-import {answerFor, compareSlots, eventDays, overlaps, rankCandidates, slotsByDay, weekdayOf} from "@/lib/staffing/staffing";
+import {
+    answerFor,
+    compareSlots,
+    eventDays,
+    overlaps,
+    rankCandidates,
+    slotsByDay,
+    weekdayOf
+} from "@/lib/staffing/staffing";
 import {shiftSlotValuesSchema, toShiftSlotInput} from "@/lib/staffing/schema";
 
 describe("eventDays", () => {
     it("lists every day of the event, first to last", () => {
         expect(eventDays({startDate: "2028-01-15", endDate: "2028-01-16"})).toEqual(["2028-01-15", "2028-01-16"]);
-        expect(eventDays({startDate: "2028-02-28", endDate: "2028-03-01"})).toEqual(["2028-02-28", "2028-02-29", "2028-03-01"]);
+        expect(eventDays({
+            startDate: "2028-02-28",
+            endDate: "2028-03-01"
+        })).toEqual(["2028-02-28", "2028-02-29", "2028-03-01"]);
         expect(eventDays({startDate: "2028-01-15", endDate: "2028-01-15"})).toEqual(["2028-01-15"]);
     });
 
@@ -23,7 +34,12 @@ describe("weekdayOf", () => {
 });
 
 describe("slots", () => {
-    const slot = (date: string, startTime: string, endTime: string, task = "Biljetter") => ({date, startTime, endTime, task});
+    const slot = (date: string, startTime: string, endTime: string, task = "Biljetter") => ({
+        date,
+        startTime,
+        endTime,
+        task
+    });
 
     it("groups slots by day, in time order", () => {
         const grouped = slotsByDay([slot("2028-01-16", "10:00", "12:00"), slot("2028-01-15", "18:00", "20:00"), slot("2028-01-15", "09:00", "11:00")]);
@@ -44,14 +60,23 @@ describe("slots", () => {
 
 describe("rankCandidates", () => {
     it("offers yes first, then maybe, then no answer, and no last, by name within each", () => {
-        const person = (name: string, answer: "YES" | "MAYBE" | "NO" | null) => ({id: name, name, kind: "PARTICIPANT" as const, answer});
+        const person = (name: string, answer: "YES" | "MAYBE" | "NO" | null) => ({
+            id: name,
+            name,
+            kind: "PARTICIPANT" as const,
+            answer
+        });
         const ranked = rankCandidates([person("Örjan", null), person("Bo", "NO"), person("Cia", "MAYBE"), person("Ada", "YES"), person("Ali", null), person("Abe", "YES")]);
 
         expect(ranked.map(candidate => candidate.name)).toEqual(["Abe", "Ada", "Cia", "Ali", "Örjan", "Bo"]);
     });
 
     it("finds a person's answer for a day of an event", () => {
-        const days = [{eventId: "1", date: "2028-01-15", answer: "YES" as const}, {eventId: "2", date: "2028-01-15", answer: "NO" as const}];
+        const days = [{eventId: "1", date: "2028-01-15", answer: "YES" as const}, {
+            eventId: "2",
+            date: "2028-01-15",
+            answer: "NO" as const
+        }];
 
         expect(answerFor(days, "2", "2028-01-15")?.answer).toBe("NO");
         expect(answerFor(days, "1", "2028-01-16")).toBeNull();
@@ -59,12 +84,25 @@ describe("rankCandidates", () => {
 });
 
 describe("shiftSlotValuesSchema", () => {
-    const values = {date: "2028-01-15", startTime: "18:00", endTime: "20:00", task: "Biljettkontroll", needed: "2", comment: ""};
+    const values = {
+        date: "2028-01-15",
+        startTime: "18:00",
+        endTime: "20:00",
+        task: "Biljettkontroll",
+        needed: "2",
+        comment: ""
+    };
 
     it("takes a slot and turns it into the GraphQL input", () => {
         expect(shiftSlotValuesSchema.safeParse(values).success).toBe(true);
         expect(toShiftSlotInput(shiftSlotValuesSchema.parse(values), "7")).toEqual({
-            eventId: "7", date: "2028-01-15", startTime: "18:00", endTime: "20:00", task: "Biljettkontroll", needed: 2, comment: null,
+            eventId: "7",
+            date: "2028-01-15",
+            startTime: "18:00",
+            endTime: "20:00",
+            task: "Biljettkontroll",
+            needed: 2,
+            comment: null,
         });
         expect(toShiftSlotInput(shiftSlotValuesSchema.parse(values))).not.toHaveProperty("eventId");
     });

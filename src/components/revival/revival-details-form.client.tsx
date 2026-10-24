@@ -30,7 +30,13 @@ function dayAfter(date: string): string {
  * server; the server's message is shown when it refuses.
  */
 export function RevivalDetailsForm({revival, onDone}: {
-    revival: { id: string; year: number; version: number; premiereDate?: string | null; shows: { date: string; time?: string | null; venue?: string | null }[] };
+    revival: {
+        id: string;
+        year: number;
+        version: number;
+        premiereDate?: string | null;
+        shows: { date: string; time?: string | null; venue?: string | null }[]
+    };
     onDone: () => void;
 }) {
     const t = useTranslations();
@@ -54,7 +60,11 @@ export function RevivalDetailsForm({revival, onDone}: {
         const values = form.getValues();
         const last = values.shows.at(-1);
 
-        return last ? {date: dayAfter(last.date), time: last.time, venue: last.venue} : {date: values.premiereDate, time: "", venue: ""};
+        return last ? {date: dayAfter(last.date), time: last.time, venue: last.venue} : {
+            date: values.premiereDate,
+            time: "",
+            venue: ""
+        };
     };
 
     return (
@@ -73,7 +83,8 @@ export function RevivalDetailsForm({revival, onDone}: {
             <div className="space-y-2">
                 <Label htmlFor="premiere-date">{t("Revival.premiereDate")}</Label>
                 <DateInput id="premiere-date" {...form.register("premiereDate")}/>
-                {errorText("premiereDate") && <p className="text-sm text-destructive" role="alert">{errorText("premiereDate")}</p>}
+                {errorText("premiereDate") &&
+                    <p className="text-sm text-destructive" role="alert">{errorText("premiereDate")}</p>}
             </div>
 
             <fieldset className="space-y-2">
@@ -84,12 +95,16 @@ export function RevivalDetailsForm({revival, onDone}: {
                     return (
                         <div key={field.id} className="space-y-1">
                             <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
-                                <DateInput aria-label={t("DetailsForm.showDate", {number: index + 1})} {...form.register(`shows.${index}.date`)}/>
-                                <Input className="w-18 shrink-0 tabular-nums" inputMode="numeric" maxLength={5} autoComplete="off" placeholder={t("DetailsForm.timePlaceholder")}
+                                <DateInput
+                                    aria-label={t("DetailsForm.showDate", {number: index + 1})} {...form.register(`shows.${index}.date`)}/>
+                                <Input className="w-18 shrink-0 tabular-nums" inputMode="numeric" maxLength={5}
+                                       autoComplete="off" placeholder={t("DetailsForm.timePlaceholder")}
                                        aria-label={t("DetailsForm.showTime", {number: index + 1})} {...form.register(`shows.${index}.time`)}/>
-                                <Input className="min-w-0 flex-1 basis-40 sm:basis-0" maxLength={MAX_VENUE} placeholder={t("DetailsForm.venuePlaceholder")}
+                                <Input className="min-w-0 flex-1 basis-40 sm:basis-0" maxLength={MAX_VENUE}
+                                       placeholder={t("DetailsForm.venuePlaceholder")}
                                        aria-label={t("DetailsForm.showVenue", {number: index + 1})} {...form.register(`shows.${index}.venue`)}/>
-                                <Button type="button" variant="ghost" size="icon-sm" aria-label={t("DetailsForm.removeShowDate", {number: index + 1})}
+                                <Button type="button" variant="ghost" size="icon-sm"
+                                        aria-label={t("DetailsForm.removeShowDate", {number: index + 1})}
                                         onClick={() => shows.remove(index)}><X/></Button>
                             </div>
                             {error && <p className="text-sm text-destructive" role="alert">{error}</p>}

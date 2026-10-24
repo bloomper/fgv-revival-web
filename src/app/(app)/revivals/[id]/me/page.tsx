@@ -88,7 +88,8 @@ export default async function MyParticipationPage({params}: { params: Promise<{ 
                                     <dd>
                                         <ul>
                                             {revival.shows.map(show => (
-                                                <li key={`${show.date}-${show.time ?? ""}-${show.venue ?? ""}`} className="tabular-nums">
+                                                <li key={`${show.date}-${show.time ?? ""}-${show.venue ?? ""}`}
+                                                    className="tabular-nums">
                                                     {[formatDate(show.date), show.time, show.venue].filter(Boolean).join(" · ")}
                                                 </li>
                                             ))}
@@ -100,41 +101,53 @@ export default async function MyParticipationPage({params}: { params: Promise<{ 
                     </div>
                 </section>
 
-                <ParticipationSection id="participation-response" title={t("responseTitle")} description={t("responseDescription")}>
-                    <ResponseForm revivalId={revival.id} participant={participant} terms={participation.terms} positions={positions} isHelper={isHelper}/>
+                <ParticipationSection id="participation-response" title={t("responseTitle")}
+                                      description={t("responseDescription")}>
+                    <ResponseForm revivalId={revival.id} participant={participant} terms={participation.terms}
+                                  positions={positions} isHelper={isHelper}/>
                 </ParticipationSection>
 
-                <ParticipationSection id="participation-schedule" title={t("scheduleTitle")} description={t("scheduleDescription")}>
-                    <Schedule events={participation.events} shows={isHelper ? [] : revival.shows} shifts={participation.shifts}/>
+                <ParticipationSection id="participation-schedule" title={t("scheduleTitle")}
+                                      description={t("scheduleDescription")}>
+                    <Schedule events={participation.events} shows={isHelper ? [] : revival.shows}
+                              shifts={participation.shifts}/>
                 </ParticipationSection>
 
                 {asksAvailability && (
-                    <ParticipationSection id="participation-availability" title={t("availabilityTitle")} description={t("availabilityDescription")}>
+                    <ParticipationSection id="participation-availability" title={t("availabilityTitle")}
+                                          description={t("availabilityDescription")}>
                         {participation.events.map(event => (
-                            <AvailabilityForm key={event.id} revivalId={revival.id} event={event} answers={participation.availability}/>
+                            <AvailabilityForm key={event.id} revivalId={revival.id} event={event}
+                                              answers={participation.availability}/>
                         ))}
                     </ParticipationSection>
                 )}
 
                 {(participation.shifts.length > 0 || takesShifts || isHelper) && (
-                    <ParticipationSection id="participation-shifts" title={t("shiftsTitle")} description={t("shiftsDescription")}>
-                        <ShiftList revivalId={revival.id} participantId={participant.id} slots={participation.shifts} mode="mine"/>
+                    <ParticipationSection id="participation-shifts" title={t("shiftsTitle")}
+                                          description={t("shiftsDescription")}>
+                        <ShiftList revivalId={revival.id} participantId={participant.id} slots={participation.shifts}
+                                   mode="mine"/>
                     </ParticipationSection>
                 )}
 
                 {takesShifts && (
-                    <ParticipationSection id="participation-open-shifts" title={t("openShiftsTitle")} description={t("openShiftsDescription")}>
-                        <ShiftList revivalId={revival.id} participantId={participant.id} slots={participation.openShifts} mode="open"/>
+                    <ParticipationSection id="participation-open-shifts" title={t("openShiftsTitle")}
+                                          description={t("openShiftsDescription")}>
+                        <ShiftList revivalId={revival.id} participantId={participant.id}
+                                   slots={participation.openShifts} mode="open"/>
                     </ParticipationSection>
                 )}
 
-                <ParticipationSection id="participation-materials" title={t("materialsTitle")} description={t("materialsDescription")}>
+                <ParticipationSection id="participation-materials" title={t("materialsTitle")}
+                                      description={t("materialsDescription")}>
                     <MyMaterials materials={participation.materials}/>
                 </ParticipationSection>
 
                 <ParticipationSection id="participation-contact" title={t("contactTitle")}
                                       description={participant.pending ? t("contactPendingDescription") : t("contactDescription")}>
-                    <ContactForm revivalId={revival.id} contact={participation.contact ?? null} editable={contactEditable}/>
+                    <ContactForm revivalId={revival.id} contact={participation.contact ?? null}
+                                 editable={contactEditable}/>
                 </ParticipationSection>
 
                 <ParticipationSection id="participation-dietary" title={t("dietaryTitle")}>
@@ -142,14 +155,17 @@ export default async function MyParticipationPage({params}: { params: Promise<{ 
                 </ParticipationSection>
 
                 {participant.fee != null && (
-                    <ParticipationSection id="participation-fee" title={t("feeTitle")} description={t("feeDescription")}>
-                        <FeeDetails revivalId={revival.id} fee={participant.fee} paid={participant.feePaid} paidAt={participant.feePaidAt}
+                    <ParticipationSection id="participation-fee" title={t("feeTitle")}
+                                          description={t("feeDescription")}>
+                        <FeeDetails revivalId={revival.id} fee={participant.fee} paid={participant.feePaid}
+                                    paidAt={participant.feePaidAt}
                                     swish={participation.swish ?? null}/>
                     </ParticipationSection>
                 )}
 
                 {participation.whatsappLink && (
-                    <ParticipationSection id="participation-whatsapp" title={t("whatsappTitle")} description={t("whatsappDescription")}>
+                    <ParticipationSection id="participation-whatsapp" title={t("whatsappTitle")}
+                                          description={t("whatsappDescription")}>
                         <a href={participation.whatsappLink} target="_blank" rel="noopener noreferrer"
                            className={cn(buttonVariants({size: "lg"}), "h-11 w-full sm:w-auto sm:self-start")}>
                             <MessageCircle/>{t("whatsappJoin")}
@@ -157,24 +173,29 @@ export default async function MyParticipationPage({params}: { params: Promise<{ 
                     </ParticipationSection>
                 )}
 
-                <ParticipationSection id="participation-steering-group" title={t("steeringGroupTitle")} description={t("steeringGroupDescription")}>
+                <ParticipationSection id="participation-steering-group" title={t("steeringGroupTitle")}
+                                      description={t("steeringGroupDescription")}>
                     {participation.steeringGroup.length === 0 ? (
                         <p className="text-sm text-muted-foreground">{t("steeringGroupNone")}</p>
                     ) : (
                         <ul className="flex flex-col gap-1">
-                            {participation.steeringGroup.map(person => <li key={person.id}>{person.displayName ?? t("unnamed")}</li>)}
+                            {participation.steeringGroup.map(person => <li
+                                key={person.id}>{person.displayName ?? t("unnamed")}</li>)}
                         </ul>
                     )}
                 </ParticipationSection>
 
-                <ParticipationSection id="participation-referral" title={t("referralTitle")} description={t("referralDescription")}>
+                <ParticipationSection id="participation-referral" title={t("referralTitle")}
+                                      description={t("referralDescription")}>
                     <ReferralForm revivalId={revival.id}/>
                 </ParticipationSection>
 
                 {revival.permissions.canSubscribeCalendar && (
-                    <ParticipationSection id="participation-calendar" title={t("calendarTitle")} description={t("calendarDescription")}>
+                    <ParticipationSection id="participation-calendar" title={t("calendarTitle")}
+                                          description={t("calendarDescription")}>
                         <div>
-                            <CalendarLinkDialog revivalId={revival.id} feed={revival.calendarFeed ?? null} triggerClassName="h-11 w-full sm:w-auto"/>
+                            <CalendarLinkDialog revivalId={revival.id} feed={revival.calendarFeed ?? null}
+                                                triggerClassName="h-11 w-full sm:w-auto"/>
                         </div>
                     </ParticipationSection>
                 )}

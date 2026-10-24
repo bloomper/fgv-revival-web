@@ -15,7 +15,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Button} from "@/components/ui/button";
 import {AudiencePreview, useAudiencePreview} from "@/components/mailing/mailing-editor.client";
-import {cancelMailingAction, retryMailingAction, sendMailingAction} from "@/app/(app)/revivals/[id]/mailings/actions.server";
+import {
+    cancelMailingAction,
+    retryMailingAction,
+    sendMailingAction
+} from "@/app/(app)/revivals/[id]/mailings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import type {AudienceValues} from "@/lib/mailing/schema";
 import {track} from "@/utils/umami";
@@ -46,14 +50,22 @@ function SendDialog({revivalId, mailing, audience, onOpenChange}: {
                 <AudiencePreview preview={preview}/>
                 <AlertDialogFooter>
                     <AlertDialogCancel>{t("cancelSend")}</AlertDialogCancel>
-                    <AlertDialogAction disabled={pending || !preview?.recipients || count === 0} onClick={() => startTransition(async () => {
-                        const result = await sendMailingAction({revivalId, id: mailing.id, version: mailing.version});
+                    <AlertDialogAction disabled={pending || !preview?.recipients || count === 0}
+                                       onClick={() => startTransition(async () => {
+                                           const result = await sendMailingAction({
+                                               revivalId,
+                                               id: mailing.id,
+                                               version: mailing.version
+                                           });
 
-                        if (feedback(result, result.ok ? t("sentToast", {count: result.data.sent}) : undefined)) {
-                            track("mailing-send", {audience: audience.kind, count: result.data.sent});
-                            onOpenChange(false);
-                        }
-                    })}>
+                                           if (feedback(result, result.ok ? t("sentToast", {count: result.data.sent}) : undefined)) {
+                                               track("mailing-send", {
+                                                   audience: audience.kind,
+                                                   count: result.data.sent
+                                               });
+                                               onOpenChange(false);
+                                           }
+                                       })}>
                         <Send/>{t("sendTo", {count})}
                     </AlertDialogAction>
                 </AlertDialogFooter>
@@ -84,17 +96,22 @@ export function MailingActions({revivalId, mailing, audience, canSend, canDraft,
         <div className="flex flex-wrap items-center gap-2">
             {draft && canSend && <Button onClick={() => setSending(true)}><Send/>{t("send")}</Button>}
             {draft && !canSend && canDraft && <p className="text-sm text-muted-foreground">{t("cannotSend")}</p>}
-            {draft && canDraft && <Button variant="outline" onClick={() => setCancelling(true)}><Ban/>{t("cancelDraft")}</Button>}
+            {draft && canDraft &&
+                <Button variant="outline" onClick={() => setCancelling(true)}><Ban/>{t("cancelDraft")}</Button>}
             {canRetry && (
                 <Button variant="outline" disabled={pending} onClick={() => startTransition(async () => {
                     const result = await retryMailingAction({revivalId, id: mailing.id});
 
-                    feedback(result, result.ok ? t("retried", {sent: result.data.sent, failed: result.data.failed}) : undefined);
+                    feedback(result, result.ok ? t("retried", {
+                        sent: result.data.sent,
+                        failed: result.data.failed
+                    }) : undefined);
                 })}>
                     <RotateCw/>{t("retry")}
                 </Button>
             )}
-            {sending && <SendDialog revivalId={revivalId} mailing={mailing} audience={audience} onOpenChange={setSending}/>}
+            {sending &&
+                <SendDialog revivalId={revivalId} mailing={mailing} audience={audience} onOpenChange={setSending}/>}
             {cancelling && (
                 <AlertDialog open onOpenChange={setCancelling}>
                     <AlertDialogContent>
@@ -104,11 +121,16 @@ export function MailingActions({revivalId, mailing, audience, canSend, canDraft,
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>{t("keepDraft")}</AlertDialogCancel>
-                            <AlertDialogAction variant="destructive" disabled={pending} onClick={() => startTransition(async () => {
-                                if (feedback(await cancelMailingAction({revivalId, id: mailing.id, version: mailing.version}), t("draftCancelled"))) {
-                                    setCancelling(false);
-                                }
-                            })}>{t("cancelDraft")}</AlertDialogAction>
+                            <AlertDialogAction variant="destructive" disabled={pending}
+                                               onClick={() => startTransition(async () => {
+                                                   if (feedback(await cancelMailingAction({
+                                                       revivalId,
+                                                       id: mailing.id,
+                                                       version: mailing.version
+                                                   }), t("draftCancelled"))) {
+                                                       setCancelling(false);
+                                                   }
+                                               })}>{t("cancelDraft")}</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>

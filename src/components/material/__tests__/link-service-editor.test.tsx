@@ -4,17 +4,36 @@ import userEvent from "@testing-library/user-event";
 import {LinkServiceEditor} from "@/components/material/link-service-editor.client";
 
 const actions = vi.hoisted(() => ({
-    createLinkServiceAction: vi.fn(), updateLinkServiceAction: vi.fn(), moveLinkServiceAction: vi.fn(), retireLinkServiceAction: vi.fn(),
-    restoreLinkServiceAction: vi.fn(), deleteLinkServiceAction: vi.fn(),
+    createLinkServiceAction: vi.fn(),
+    updateLinkServiceAction: vi.fn(),
+    moveLinkServiceAction: vi.fn(),
+    retireLinkServiceAction: vi.fn(),
+    restoreLinkServiceAction: vi.fn(),
+    deleteLinkServiceAction: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn()})}));
 vi.mock("@/app/(app)/admin/link-services/actions.server", () => actions);
 
-const spexflix = {id: "SPEXFLIX", name: {sv: "Spexflix", en: null}, hosts: [], homeUrl: null, retired: false, position: 0, inUse: true, version: 1};
+const spexflix = {
+    id: "SPEXFLIX",
+    name: {sv: "Spexflix", en: null},
+    hosts: [],
+    homeUrl: null,
+    retired: false,
+    position: 0,
+    inUse: true,
+    version: 1
+};
 const drive = {
-    id: "GOOGLE_DRIVE", name: {sv: "Google Drive", en: null}, hosts: ["drive.google.com", "docs.google.com"], homeUrl: null, retired: false,
-    position: 1, inUse: false, version: 0,
+    id: "GOOGLE_DRIVE",
+    name: {sv: "Google Drive", en: null},
+    hosts: ["drive.google.com", "docs.google.com"],
+    homeUrl: null,
+    retired: false,
+    position: 1,
+    inUse: false,
+    version: 0,
 };
 
 describe("LinkServiceEditor", () => {

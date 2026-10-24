@@ -92,7 +92,8 @@ export function GuideSearch({versionId, basePath, chapterNumbers}: {
                     <ul className="max-h-80 divide-y overflow-y-auto rounded-md border" aria-label={t("results")}>
                         {hits.map((hit, index) => (
                             <li key={`${hit.itemKey ?? hit.sectionKey ?? hit.chapterKey}-${index}`}>
-                                <Link href={hrefOf(hit, basePath)} onClick={() => setQuery("")} className="block space-y-1 px-3 py-2 text-sm hover:bg-accent">
+                                <Link href={hrefOf(hit, basePath)} onClick={() => setQuery("")}
+                                      className="block space-y-1 px-3 py-2 text-sm hover:bg-accent">
                                     <span className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                                         {hit.chapterKey && (
                                             <span>
@@ -101,7 +102,8 @@ export function GuideSearch({versionId, basePath, chapterNumbers}: {
                                             </span>
                                         )}
                                         {hit.sectionTitle && <span>› {pickText(hit.sectionTitle, locale).text}</span>}
-                                        {hit.itemType && hit.itemType.kind !== "TEXT" && <GuideTypeBadge type={hit.itemType}/>}
+                                        {hit.itemType && hit.itemType.kind !== "TEXT" &&
+                                            <GuideTypeBadge type={hit.itemType}/>}
                                     </span>
                                     <span className="block">{hit.snippet}</span>
                                 </Link>

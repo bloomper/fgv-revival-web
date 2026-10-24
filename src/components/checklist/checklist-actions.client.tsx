@@ -26,7 +26,12 @@ export function ChecklistActions({revivalId, checklist, templates}: {
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
     const add = (templateId: string) => startTransition(async () => {
-        feedback(await addFromTemplateAction({revivalId, id: checklist.id, version: checklist.version, templateId}), t("addedFromTemplate"));
+        feedback(await addFromTemplateAction({
+            revivalId,
+            id: checklist.id,
+            version: checklist.version,
+            templateId
+        }), t("addedFromTemplate"));
     });
     const label = (template: Template) => template.kind === "CHAPTER"
         ? t("chapterTemplate", {chapter: template.chapterTitle ? pickText(template.chapterTitle, locale).text : ""})
@@ -35,20 +40,29 @@ export function ChecklistActions({revivalId, checklist, templates}: {
     return (
         <>
             {templates.length === 1 && (
-                <Button variant="outline" disabled={pending} onClick={() => add(templates[0].id)}><ListPlus/>{t("addFromTemplate")}</Button>
+                <Button variant="outline" disabled={pending}
+                        onClick={() => add(templates[0].id)}><ListPlus/>{t("addFromTemplate")}</Button>
             )}
             {templates.length > 1 && (
                 <DropdownMenu>
-                    <DropdownMenuTrigger render={<Button variant="outline" disabled={pending}/>}><ListPlus/>{t("addFromTemplate")}</DropdownMenuTrigger>
+                    <DropdownMenuTrigger
+                        render={<Button variant="outline" disabled={pending}/>}><ListPlus/>{t("addFromTemplate")}
+                    </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                        {templates.map(template => <DropdownMenuItem key={template.id} onClick={() => add(template.id)}>{label(template)}</DropdownMenuItem>)}
+                        {templates.map(template => <DropdownMenuItem key={template.id}
+                                                                     onClick={() => add(template.id)}>{label(template)}</DropdownMenuItem>)}
                     </DropdownMenuContent>
                 </DropdownMenu>
             )}
             {checklist.kind === "EVENT" && (
-                <Button variant="outline" className="text-destructive hover:text-destructive" disabled={pending} onClick={() => startTransition(async () => {
-                    feedback(await cancelEventChecklistAction({revivalId, id: checklist.id, version: checklist.version}), t("cancelledDone"));
-                })}><Ban/>{t("cancelEvent")}</Button>
+                <Button variant="outline" className="text-destructive hover:text-destructive" disabled={pending}
+                        onClick={() => startTransition(async () => {
+                            feedback(await cancelEventChecklistAction({
+                                revivalId,
+                                id: checklist.id,
+                                version: checklist.version
+                            }), t("cancelledDone"));
+                        })}><Ban/>{t("cancelEvent")}</Button>
             )}
         </>
     );

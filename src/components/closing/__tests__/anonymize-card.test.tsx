@@ -31,25 +31,32 @@ describe("AnonymizeCard", () => {
         await userEvent.type(within(dialog).getByRole("textbox"), " 2028");
         await userEvent.click(confirm);
 
-        await waitFor(() => expect(actions.anonymizeRevivalAction).toHaveBeenCalledWith({id: "1", version: 4, confirmation: "ali baba 2028"}));
+        await waitFor(() => expect(actions.anonymizeRevivalAction).toHaveBeenCalledWith({
+            id: "1",
+            version: 4,
+            confirmation: "ali baba 2028"
+        }));
         expect(track).toHaveBeenCalledWith("revival-anonymize");
     });
 
     it("tells when it happens by itself, and offers nothing without canAnonymize", () => {
-        render(<AnonymizeCard revival={revival} anonymizedAt={null} autoAnonymizeOn="2029-10-23" canAnonymize={false}/>);
+        render(<AnonymizeCard revival={revival} anonymizedAt={null} autoAnonymizeOn="2029-10-23"
+                              canAnonymize={false}/>);
 
         expect(screen.getByText('automaticOn:{"date":"2029-10-23"}')).toBeInTheDocument();
         expect(screen.queryByRole("button")).not.toBeInTheDocument();
     });
 
     it("warns that a sync not completed cannot be done afterwards", () => {
-        render(<AnonymizeCard revival={revival} anonymizedAt={null} autoAnonymizeOn={null} canAnonymize syncIncomplete/>);
+        render(<AnonymizeCard revival={revival} anonymizedAt={null} autoAnonymizeOn={null} canAnonymize
+                              syncIncomplete/>);
 
         expect(screen.getByText("syncIncomplete")).toBeInTheDocument();
     });
 
     it("says when it was anonymized", () => {
-        render(<AnonymizeCard revival={revival} anonymizedAt="2026-10-23T10:00:00Z" autoAnonymizeOn={null} canAnonymize/>);
+        render(<AnonymizeCard revival={revival} anonymizedAt="2026-10-23T10:00:00Z" autoAnonymizeOn={null}
+                              canAnonymize/>);
 
         expect(screen.getByText('done:{"at":"2026-10-23 12:00"}')).toBeInTheDocument();
         expect(screen.queryByRole("button")).not.toBeInTheDocument();

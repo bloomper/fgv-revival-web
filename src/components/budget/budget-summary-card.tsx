@@ -10,7 +10,14 @@ import {AmountText} from "@/components/budget/budget-labels";
  */
 export function BudgetSummaryCard({revivalId, totals}: {
     revivalId: string;
-    totals: { budgetedResult: string; actualResult: string; budgetedIncome: string; budgetedCost: string; actualIncome: string; actualCost: string };
+    totals: {
+        budgetedResult: string;
+        actualResult: string;
+        budgetedIncome: string;
+        budgetedCost: string;
+        actualIncome: string;
+        actualCost: string
+    };
 }) {
     const t = useTranslations("Budget");
 
@@ -19,7 +26,8 @@ export function BudgetSummaryCard({revivalId, totals}: {
             <CardHeader>
                 <CardTitle>{t("title")}</CardTitle>
                 <CardAction>
-                    <Link href={`/revivals/${revivalId}/budget`} className={buttonVariants({variant: "outline", size: "sm"})}>
+                    <Link href={`/revivals/${revivalId}/budget`}
+                          className={buttonVariants({variant: "outline", size: "sm"})}>
                         {t("open")}
                         <ChevronRight/>
                     </Link>
@@ -32,7 +40,8 @@ export function BudgetSummaryCard({revivalId, totals}: {
                     <dt className="text-muted-foreground">{t("actualResult")}</dt>
                     <dd className="text-right font-medium"><AmountText value={totals.actualResult} signed/></dd>
                     <dt className="text-muted-foreground">{t("actualCostOfBudgeted")}</dt>
-                    <dd className="text-right"><AmountText value={totals.actualCost}/> / <AmountText value={totals.budgetedCost}/></dd>
+                    <dd className="text-right"><AmountText value={totals.actualCost}/> / <AmountText
+                        value={totals.budgetedCost}/></dd>
                 </dl>
             </CardContent>
         </Card>

@@ -55,7 +55,8 @@ export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, o
                     {item.state === "NOT_APPLICABLE" && <Badge variant="outline">{t("state.NOT_APPLICABLE")}</Badge>}
                     {item.overdue && <OverdueBadge/>}
                     {item.deadline && <Badge variant="outline">{t("deadline")}: {formatDate(item.deadline)}</Badge>}
-                    {!item.owner && item.defaultCapability && <Badge variant="outline">{t("capabilityHint", {capability: catalogName(item.defaultCapability, locale)})}</Badge>}
+                    {!item.owner && item.defaultCapability && <Badge
+                        variant="outline">{t("capabilityHint", {capability: catalogName(item.defaultCapability, locale)})}</Badge>}
                     <span>{t("owner")}: <OwnerLabel owner={item.owner}/></span>
                     {item.stateChangedBy?.displayName && item.state !== "OPEN" && (
                         <span className="text-xs">{t("changedBy", {name: item.stateChangedBy.displayName})}</span>
@@ -77,9 +78,11 @@ export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, o
                 <div className="flex shrink-0 items-start gap-1">
                     <Button size="icon" variant="ghost" aria-label={t("editItem")} onClick={onEdit}><Pencil/></Button>
                     {item.state === "NOT_APPLICABLE" ? (
-                        <Button size="icon" variant="ghost" aria-label={t("reopen")} disabled={pending} onClick={() => setState("OPEN")}><RotateCcw/></Button>
+                        <Button size="icon" variant="ghost" aria-label={t("reopen")} disabled={pending}
+                                onClick={() => setState("OPEN")}><RotateCcw/></Button>
                     ) : (!item.required || canWaive) && (
-                        <Button size="icon" variant="ghost" aria-label={t("markNotApplicable")} onClick={onNotApplicable}><Ban/></Button>
+                        <Button size="icon" variant="ghost" aria-label={t("markNotApplicable")}
+                                onClick={onNotApplicable}><Ban/></Button>
                     )}
                 </div>
             )}

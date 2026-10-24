@@ -1,5 +1,13 @@
 import {describe, expect, it} from "vitest";
-import {amountInputValue, fromOre, lineAmount, parseAmount, parseQuantity, subtractAmounts, toOre} from "@/lib/budget/amount";
+import {
+    amountInputValue,
+    fromOre,
+    lineAmount,
+    parseAmount,
+    parseQuantity,
+    subtractAmounts,
+    toOre
+} from "@/lib/budget/amount";
 
 describe("parseAmount", () => {
     it.each([

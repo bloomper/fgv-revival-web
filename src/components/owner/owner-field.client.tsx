@@ -58,7 +58,8 @@ export function OwnerField({members, value, onChange, disabled, current, label, 
                 {current && !members.some(member => member.id === current.id) && (
                     <option value={current.id}>{current.displayName ?? current.id} ({t("formerMember")})</option>
                 )}
-                {members.map(member => <option key={member.id} value={member.id}>{member.displayName ?? member.id}</option>)}
+                {members.map(member => <option key={member.id}
+                                               value={member.id}>{member.displayName ?? member.id}</option>)}
                 <option value={OTHER}>{t("someoneElse")}</option>
             </NativeSelect>
             {other && (

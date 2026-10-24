@@ -2,7 +2,12 @@
 
 import {revalidatePath} from "next/cache";
 import type {z} from "zod";
-import type {BudgetLineUpdateInput, BudgetScenarioResultFieldsFragment, OwnerInput, TransactionUpdateInput} from "@/gql/graphql";
+import type {
+    BudgetLineUpdateInput,
+    BudgetScenarioResultFieldsFragment,
+    OwnerInput,
+    TransactionUpdateInput
+} from "@/gql/graphql";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
 import {
     calculateScenario,
@@ -71,7 +76,9 @@ export async function updateBudgetSettingsAction(input: z.input<typeof budgetSet
     }));
 }
 
-export async function createBudgetLineAction(input: z.input<typeof budgetLineCreateSchema>): Promise<ActionResult<{ id: string }>> {
+export async function createBudgetLineAction(input: z.input<typeof budgetLineCreateSchema>): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, eventTypeLineId, values} = budgetLineCreateSchema.parse(input);
         const created = await createBudgetLine({
@@ -135,7 +142,9 @@ export async function restoreBudgetLineAction(input: z.input<typeof budgetTransi
 /**
  * Adds a transaction; who paid is only sent for a cost. The receipt is uploaded afterwards through the route handler.
  */
-export async function createTransactionAction(input: z.input<typeof transactionCreateSchema>): Promise<ActionResult<{ id: string }>> {
+export async function createTransactionAction(input: z.input<typeof transactionCreateSchema>): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, cost, values} = transactionCreateSchema.parse(input);
         const created = await createTransaction({
@@ -198,7 +207,9 @@ export async function calculateScenarioAction(input: z.input<typeof scenarioCalc
     }));
 }
 
-export async function saveScenarioAction(input: z.input<typeof scenarioSaveSchema>): Promise<ActionResult<{ id: string }>> {
+export async function saveScenarioAction(input: z.input<typeof scenarioSaveSchema>): Promise<ActionResult<{
+    id: string
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, name, values} = scenarioSaveSchema.parse(input);
         const saved = await saveScenario({revivalId, name, parameters: toScenarioInput(values)});

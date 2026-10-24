@@ -34,16 +34,19 @@ export function GuideChapterView({chapter, number, itemActions, placeActions}: {
     return (
         <section aria-labelledby="chapter-title" className="space-y-6">
             <div className="flex flex-wrap items-center gap-2">
-                <h3 id="chapter-title" className="text-lg font-semibold tracking-tight">{number}. {title(chapter.title)}</h3>
+                <h3 id="chapter-title"
+                    className="text-lg font-semibold tracking-tight">{number}. {title(chapter.title)}</h3>
                 {notTranslated(chapter.title)}
                 {placeActions?.({chapterKey: chapter.key, sectionKey: null})}
             </div>
-            {chapter.items.length > 0 && <div className="space-y-3">{items(chapter.items, {chapterKey: chapter.key, sectionKey: null})}</div>}
+            {chapter.items.length > 0 &&
+                <div className="space-y-3">{items(chapter.items, {chapterKey: chapter.key, sectionKey: null})}</div>}
             {chapter.sections.map((section: Section) => (
                 <section key={section.id} id={`section-${section.key}`} aria-labelledby={`section-${section.key}-title`}
                          className="scroll-mt-32 space-y-3 lg:scroll-mt-24">
                     <div className="flex flex-wrap items-center gap-2">
-                        <h4 id={`section-${section.key}-title`} className="text-base font-semibold">{title(section.title)}</h4>
+                        <h4 id={`section-${section.key}-title`}
+                            className="text-base font-semibold">{title(section.title)}</h4>
                         {notTranslated(section.title)}
                         {placeActions?.({chapterKey: chapter.key, sectionKey: section.key})}
                     </div>

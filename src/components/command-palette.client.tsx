@@ -69,8 +69,18 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
         ];
 
         if (canReadAllRevivals(roles)) {
-            navigationEntries.push({id: "all-revivals", label: t("Nav.allRevivals"), href: "/revivals/manage", icon: ListChecks});
-            navigationEntries.push({id: "revival-timeline", label: t("Nav.revivalTimeline"), href: "/revivals/manage?view=timeline", icon: CalendarRange});
+            navigationEntries.push({
+                id: "all-revivals",
+                label: t("Nav.allRevivals"),
+                href: "/revivals/manage",
+                icon: ListChecks
+            });
+            navigationEntries.push({
+                id: "revival-timeline",
+                label: t("Nav.revivalTimeline"),
+                href: "/revivals/manage?view=timeline",
+                icon: CalendarRange
+            });
         }
 
         if (guideReadable) {
@@ -78,16 +88,66 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
         }
 
         if (isSuperAdmin(roles)) {
-            navigationEntries.push({id: "admin-guide", label: t("Nav.adminGuide"), href: "/admin/guide", icon: BookOpenCheck});
-            navigationEntries.push({id: "admin-checklist-templates", label: t("Nav.adminChecklistTemplates"), href: "/admin/checklist-templates", icon: ClipboardList});
-            navigationEntries.push({id: "admin-event-types", label: t("Nav.adminEventTypes"), href: "/admin/event-types", icon: CalendarDays});
-            navigationEntries.push({id: "admin-mailing-templates", label: t("Nav.adminMailingTemplates"), href: "/admin/mailing-templates", icon: Mail});
-            navigationEntries.push({id: "admin-guide-item-types", label: t("Nav.adminGuideItemTypes"), href: "/admin/guide-item-types", icon: Tags});
-            navigationEntries.push({id: "admin-capabilities", label: t("Nav.adminCapabilities"), href: "/admin/capabilities", icon: Users});
-            navigationEntries.push({id: "admin-budget-categories", label: t("Nav.adminBudgetCategories"), href: "/admin/budget-categories", icon: Wallet});
-            navigationEntries.push({id: "admin-link-services", label: t("Nav.adminLinkServices"), href: "/admin/link-services", icon: Link2});
-            navigationEntries.push({id: "admin-reference-figures", label: t("Nav.adminReferenceFigures"), href: "/admin/reference-figures", icon: History});
-            navigationEntries.push({id: "admin-spex-calendar", label: t("Nav.adminSpexCalendar"), href: "/admin/spex-calendar", icon: CalendarRange});
+            navigationEntries.push({
+                id: "admin-guide",
+                label: t("Nav.adminGuide"),
+                href: "/admin/guide",
+                icon: BookOpenCheck
+            });
+            navigationEntries.push({
+                id: "admin-checklist-templates",
+                label: t("Nav.adminChecklistTemplates"),
+                href: "/admin/checklist-templates",
+                icon: ClipboardList
+            });
+            navigationEntries.push({
+                id: "admin-event-types",
+                label: t("Nav.adminEventTypes"),
+                href: "/admin/event-types",
+                icon: CalendarDays
+            });
+            navigationEntries.push({
+                id: "admin-mailing-templates",
+                label: t("Nav.adminMailingTemplates"),
+                href: "/admin/mailing-templates",
+                icon: Mail
+            });
+            navigationEntries.push({
+                id: "admin-guide-item-types",
+                label: t("Nav.adminGuideItemTypes"),
+                href: "/admin/guide-item-types",
+                icon: Tags
+            });
+            navigationEntries.push({
+                id: "admin-capabilities",
+                label: t("Nav.adminCapabilities"),
+                href: "/admin/capabilities",
+                icon: Users
+            });
+            navigationEntries.push({
+                id: "admin-budget-categories",
+                label: t("Nav.adminBudgetCategories"),
+                href: "/admin/budget-categories",
+                icon: Wallet
+            });
+            navigationEntries.push({
+                id: "admin-link-services",
+                label: t("Nav.adminLinkServices"),
+                href: "/admin/link-services",
+                icon: Link2
+            });
+            navigationEntries.push({
+                id: "admin-reference-figures",
+                label: t("Nav.adminReferenceFigures"),
+                href: "/admin/reference-figures",
+                icon: History
+            });
+            navigationEntries.push({
+                id: "admin-spex-calendar",
+                label: t("Nav.adminSpexCalendar"),
+                href: "/admin/spex-calendar",
+                icon: CalendarRange
+            });
         }
 
         navigationEntries.push(
@@ -98,7 +158,12 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
         const actionEntries: PaletteEntry[] = [];
 
         if (isSuperAdmin(roles)) {
-            actionEntries.push({id: "create-revival", label: t("Admin.create"), href: "/revivals/manage?create=1", icon: Plus});
+            actionEntries.push({
+                id: "create-revival",
+                label: t("Admin.create"),
+                href: "/revivals/manage?create=1",
+                icon: Plus
+            });
         }
 
         return {navigation: navigationEntries, actions: actionEntries};

@@ -7,15 +7,29 @@ const DAY = 24 * 60 * 60 * 1000;
 const WEB_URL = process.env.WEB_URL || "http://localhost:3101";
 
 const type = (id, sv, en, offsets, days, revivalPays, description) => ({
-    id, name: {sv, en}, description, rooms: null, catering: null, offsetMinDays: offsets?.[0] ?? null, offsetMaxDays: offsets?.[1] ?? null,
-    days, revivalPays, checklistTemplateId: null, position: Number(id) - 1, retired: false, version: 0,
+    id,
+    name: {sv, en},
+    description,
+    rooms: null,
+    catering: null,
+    offsetMinDays: offsets?.[0] ?? null,
+    offsetMaxDays: offsets?.[1] ?? null,
+    days,
+    revivalPays,
+    checklistTemplateId: null,
+    position: Number(id) - 1,
+    retired: false,
+    version: 0,
 });
 
 export function createEventState() {
     return {
         nextId: 1,
         types: [
-            type("1", "AW", "After work", null, 1, false, {sv: "Öl och mat på restaurang. Alla betalar själva.", en: "Beer and food at a restaurant. Everyone pays for themselves."}),
+            type("1", "AW", "After work", null, 1, false, {
+                sv: "Öl och mat på restaurang. Alla betalar själva.",
+                en: "Beer and food at a restaurant. Everyone pays for themselves."
+            }),
             type("2", "Kickoff", "Kickoff", [-120, -60], 1, false, null),
             type("3", "Rephelg 1", "Rehearsal weekend 1", [-70, -56], 2, true, null),
             type("4", "Rephelg 2", "Rehearsal weekend 2", [-42, -35], 2, true, null),
@@ -56,7 +70,12 @@ export function proposalFor(premiere, eventType) {
 
     const startDate = addDays(premiere, offset);
 
-    return {startDate, endDate: addDays(startDate, days - 1), earliest: addDays(premiere, min), latest: addDays(premiere, max)};
+    return {
+        startDate,
+        endDate: addDays(startDate, days - 1),
+        earliest: addDays(premiere, min),
+        latest: addDays(premiere, max)
+    };
 }
 
 export function eventResolvers(ctx) {
@@ -70,12 +89,23 @@ export function eventResolvers(ctx) {
     const templateSummary = id => {
         const template = checklists().templates.find(candidate => candidate.id === id);
 
-        return template ? {__typename: "ChecklistTemplateSummary", id: template.id, kind: template.kind, chapterKey: null, chapterTitle: null,
-            name: localized(template.name), retired: template.retired} : null;
+        return template ? {
+            __typename: "ChecklistTemplateSummary",
+            id: template.id,
+            kind: template.kind,
+            chapterKey: null,
+            chapterTitle: null,
+            name: localized(template.name),
+            retired: template.retired
+        } : null;
     };
     const toType = eventType => ({
-        __typename: "EventType", ...eventType, name: localized(eventType.name), description: localized(eventType.description),
-        rooms: localized(eventType.rooms), catering: localized(eventType.catering), checklistTemplate: eventType.checklistTemplateId ? templateSummary(eventType.checklistTemplateId) : null,
+        __typename: "EventType", ...eventType,
+        name: localized(eventType.name),
+        description: localized(eventType.description),
+        rooms: localized(eventType.rooms),
+        catering: localized(eventType.catering),
+        checklistTemplate: eventType.checklistTemplateId ? templateSummary(eventType.checklistTemplateId) : null,
     });
     const ordered = () => [...store().types].sort((a, b) => a.position - b.position);
     const findType = (id, version) => {
@@ -97,9 +127,20 @@ export function eventResolvers(ctx) {
         }
         const items = checklists().items.filter(item => item.checklistId === id);
 
-        return {__typename: "ChecklistSummary", id, kind: "EVENT", chapterKey: null, chapterTitle: null, name: checklist.name, date: checklist.date,
-            cancelled: checklist.cancelled, openCount: items.filter(item => item.state === "OPEN").length,
-            overdueCount: 0, totalCount: items.length, eventId: checklist.eventId ?? null};
+        return {
+            __typename: "ChecklistSummary",
+            id,
+            kind: "EVENT",
+            chapterKey: null,
+            chapterTitle: null,
+            name: checklist.name,
+            date: checklist.date,
+            cancelled: checklist.cancelled,
+            openCount: items.filter(item => item.state === "OPEN").length,
+            overdueCount: 0,
+            totalCount: items.length,
+            eventId: checklist.eventId ?? null
+        };
     };
     const toEvent = event => {
         const revival = ctx.state().revivals.find(candidate => candidate.id === event.revivalId);
@@ -158,7 +199,10 @@ export function eventResolvers(ctx) {
         const held = new Set(store().events.filter(event => event.revivalId === revival.id && !event.cancelled).map(event => event.typeId));
 
         return ordered().filter(eventType => !eventType.retired && eventType.offsetMinDays !== null && !held.has(eventType.id))
-            .map(eventType => ({__typename: "EventProposal", type: toType(eventType), ...proposalFor(revival.premiereDate, eventType)}))
+            .map(eventType => ({
+                __typename: "EventProposal",
+                type: toType(eventType), ...proposalFor(revival.premiereDate, eventType)
+            }))
             .sort((a, b) => a.startDate.localeCompare(b.startDate));
     };
     const feedOf = (persona, revival) => store().feeds.find(feed => feed.revivalId === revival.id && feed.sub === persona.sub && !feed.revoked);
@@ -182,8 +226,14 @@ export function eventResolvers(ctx) {
         const text = value => value?.sv?.trim() ? {sv: value.sv.trim(), en: value.en?.trim() || null} : null;
 
         return {
-            name: {sv, en: input.name.en?.trim() || null}, description: text(input.description), rooms: text(input.rooms), catering: text(input.catering),
-            offsetMinDays: input.offsetMinDays ?? null, offsetMaxDays: input.offsetMaxDays ?? null, days: input.days, revivalPays: input.revivalPays,
+            name: {sv, en: input.name.en?.trim() || null},
+            description: text(input.description),
+            rooms: text(input.rooms),
+            catering: text(input.catering),
+            offsetMinDays: input.offsetMinDays ?? null,
+            offsetMaxDays: input.offsetMaxDays ?? null,
+            days: input.days,
+            revivalPays: input.revivalPays,
             checklistTemplateId: input.checklistTemplateId ?? null,
         };
     };
@@ -191,7 +241,12 @@ export function eventResolvers(ctx) {
         const checklist = checklists().checklists.find(candidate => candidate.id === event.checklistId);
 
         if (checklist && !checklist.cancelled) {
-            resolvers.EventChecklistUpdate(persona, {input: {id: checklist.id, version: checklist.version, ...changes}});
+            resolvers.EventChecklistUpdate(persona, {
+                input: {
+                    id: checklist.id,
+                    version: checklist.version, ...changes
+                }
+            });
         }
     };
 
@@ -201,7 +256,12 @@ export function eventResolvers(ctx) {
         },
         EventTypeCreate(persona, {input}) {
             superAdmin(persona);
-            const created = {id: `et${store().nextId++}`, ...typeInput(input), position: store().types.length, retired: false, version: 0};
+            const created = {
+                id: `et${store().nextId++}`, ...typeInput(input),
+                position: store().types.length,
+                retired: false,
+                version: 0
+            };
 
             store().types.push(created);
             return {eventTypeCreate: toType(created)};
@@ -246,16 +306,30 @@ export function eventResolvers(ctx) {
 
             return {
                 revival: {
-                    __typename: "Revival", id: revival.id, title: revival.title, status: revival.status, premiereDate: revival.premiereDate,
+                    __typename: "Revival",
+                    id: revival.id,
+                    title: revival.title,
+                    status: revival.status,
+                    premiereDate: revival.premiereDate,
                     shows: revival.shows.map(show => ({__typename: "RevivalShow", ...show})),
-                    permissions: {__typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival), canSubscribeCalendar: canSubscribe(persona, revival)},
+                    permissions: {
+                        __typename: "RevivalPermissions",
+                        canWriteLog: canWrite(persona, revival),
+                        canSubscribeCalendar: canSubscribe(persona, revival)
+                    },
                     eventProposals: proposals(revival),
                     calendarFeed: feed ? {__typename: "CalendarFeed", createdAt: feed.createdAt} : null,
                 },
                 events: eventsOf(revival, includeCancelled).map(toEvent),
                 eventTypes: ordered().filter(eventType => !eventType.retired).map(toType),
                 meetings: ctx.state().meeting.meetings.filter(meeting => meeting.revivalId === revival.id)
-                    .map(meeting => ({__typename: "MeetingSummary", id: meeting.id, date: meeting.date, title: meeting.title, status: meeting.status})),
+                    .map(meeting => ({
+                        __typename: "MeetingSummary",
+                        id: meeting.id,
+                        date: meeting.date,
+                        title: meeting.title,
+                        status: meeting.status
+                    })),
             };
         },
         EventCreate(persona, {input}) {
@@ -270,19 +344,34 @@ export function eventResolvers(ctx) {
                 throw new GraphQLError("BAD_REQUEST", "Händelsetypen är avvecklad.");
             }
             const event = {
-                id: String(store().nextId++), revivalId: revival.id, typeId: eventType?.id ?? null,
-                title: input.title?.trim() || eventType?.name.sv || "", startDate: input.startDate,
+                id: String(store().nextId++),
+                revivalId: revival.id,
+                typeId: eventType?.id ?? null,
+                title: input.title?.trim() || eventType?.name.sv || "",
+                startDate: input.startDate,
                 endDate: input.endDate || addDays(input.startDate, (eventType?.days ?? 1) - 1),
-                startTime: time(input.startTime), endTime: time(input.endTime), location: input.location?.trim() || null,
-                description: input.description?.trim() || null, revivalPays: input.revivalPays ?? eventType?.revivalPays ?? false,
-                cancelled: false, checklistId: null, version: 0,
+                startTime: time(input.startTime),
+                endTime: time(input.endTime),
+                location: input.location?.trim() || null,
+                description: input.description?.trim() || null,
+                revivalPays: input.revivalPays ?? eventType?.revivalPays ?? false,
+                cancelled: false,
+                checklistId: null,
+                version: 0,
             };
 
             validate(event);
             const template = eventType?.checklistTemplateId && checklists().templates.find(candidate => candidate.id === eventType.checklistTemplateId);
 
             if (template && !template.retired) {
-                const created = resolvers.EventChecklistCreate(persona, {input: {revivalId: revival.id, name: event.title, date: event.startDate, templateId: template.id}});
+                const created = resolvers.EventChecklistCreate(persona, {
+                    input: {
+                        revivalId: revival.id,
+                        name: event.title,
+                        date: event.startDate,
+                        templateId: template.id
+                    }
+                });
 
                 event.checklistId = created.eventChecklistCreate.id;
                 checklists().checklists.find(candidate => candidate.id === event.checklistId).eventId = event.id;
@@ -347,10 +436,22 @@ export function eventResolvers(ctx) {
                 feed.revoked = true;
             });
             const token = randomBytes(32).toString("base64url");
-            const feed = {revivalId: revival.id, sub: persona.sub, token, createdAt: new Date().toISOString(), revoked: false};
+            const feed = {
+                revivalId: revival.id,
+                sub: persona.sub,
+                token,
+                createdAt: new Date().toISOString(),
+                revoked: false
+            };
 
             store().feeds.push(feed);
-            return {calendarFeedCreate: {__typename: "CalendarFeedLink", url: `${WEB_URL}/api/calendar/${token}.ics`, createdAt: feed.createdAt}};
+            return {
+                calendarFeedCreate: {
+                    __typename: "CalendarFeedLink",
+                    url: `${WEB_URL}/api/calendar/${token}.ics`,
+                    createdAt: feed.createdAt
+                }
+            };
         },
         CalendarFeedRevoke(persona, {revivalId}) {
             const revival = visibleRevival(persona, revivalId);
@@ -375,10 +476,24 @@ export function eventResolvers(ctx) {
             const as = {sub: "p-superadmin", roles: ["USER", "SUPER_ADMIN"]};
             const revival = ctx.state().revivals.find(candidate => candidate.id === "1");
 
-            Object.assign(revival, {premiereDate: "2028-03-04", shows: [{date: "2028-03-04", time: "19:00", venue: "Kårhuset"}]});
-            const {checklistTemplateCreate: template} = resolvers.ChecklistTemplateCreate(as, {input: {kind: "EVENT", name: {sv: "Övningshelg", en: null}}});
+            Object.assign(revival, {
+                premiereDate: "2028-03-04",
+                shows: [{date: "2028-03-04", time: "19:00", venue: "Kårhuset"}]
+            });
+            const {checklistTemplateCreate: template} = resolvers.ChecklistTemplateCreate(as, {
+                input: {
+                    kind: "EVENT",
+                    name: {sv: "Övningshelg", en: null}
+                }
+            });
 
-            resolvers.ChecklistTemplateItemCreate(as, {input: {templateId: template.id, text: {sv: "Boka lokaler"}, deadline: {kind: "DAYS", amount: -14}}});
+            resolvers.ChecklistTemplateItemCreate(as, {
+                input: {
+                    templateId: template.id,
+                    text: {sv: "Boka lokaler"},
+                    deadline: {kind: "DAYS", amount: -14}
+                }
+            });
             resolvers.ChecklistTemplateItemCreate(as, {input: {templateId: template.id, text: {sv: "Handla fika"}}});
             store().types.find(candidate => candidate.id === "3").checklistTemplateId = template.id;
         },

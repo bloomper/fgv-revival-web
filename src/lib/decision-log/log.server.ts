@@ -44,7 +44,12 @@ const LogEntryAnswerMutation = graphql(`
 export async function getRevivalLog(revivalId: string, filter: LogEntryFilter) {
     const data = await runQuery(RevivalLogQuery, {id: revivalId, filter});
 
-    return data?.revival ? {revival: data.revival, entries: data.logEntries, tags: data.logTags, meetings: data.meetings} : null;
+    return data?.revival ? {
+        revival: data.revival,
+        entries: data.logEntries,
+        tags: data.logTags,
+        meetings: data.meetings
+    } : null;
 }
 
 export async function createLogEntry(input: LogEntryCreateInput) {

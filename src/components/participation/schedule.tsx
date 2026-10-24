@@ -4,7 +4,15 @@ import type {ShiftSlotFieldsFragment} from "@/gql/graphql";
 import {compareSlots} from "@/lib/staffing/staffing";
 import {formatDate} from "@/utils/format";
 
-type ScheduleEvent = { id: string; title: string; startDate: string; endDate: string; startTime?: string | null; endTime?: string | null; location?: string | null };
+type ScheduleEvent = {
+    id: string;
+    title: string;
+    startDate: string;
+    endDate: string;
+    startTime?: string | null;
+    endTime?: string | null;
+    location?: string | null
+};
 type Show = { date: string; time?: string | null; venue?: string | null };
 
 type Entry =
@@ -28,7 +36,11 @@ export function scheduleEntries(events: ScheduleEvent[], shows: Show[], shifts: 
  * The participant's schedule (M6B-FR-7): the revival's events and shows by date, with their own shifts under the event.
  * A helper's events are only those they hold shifts in, as the server returns them.
  */
-export function Schedule({events, shows, shifts}: { events: ScheduleEvent[]; shows: Show[]; shifts: ShiftSlotFieldsFragment[] }) {
+export function Schedule({events, shows, shifts}: {
+    events: ScheduleEvent[];
+    shows: Show[];
+    shifts: ShiftSlotFieldsFragment[]
+}) {
     const t = useTranslations("Schedule");
     const entries = scheduleEntries(events, shows, shifts);
 
@@ -62,7 +74,12 @@ export function Schedule({events, shows, shifts}: { events: ScheduleEvent[]; sho
                                 {entry.shifts.map(shift => (
                                     <li key={shift.id} className="flex items-center gap-1.5 text-sm tabular-nums">
                                         <Clock className="size-3.5 text-muted-foreground" aria-hidden/>
-                                        {t("shift", {task: shift.task, date: formatDate(shift.date) ?? "", start: shift.startTime, end: shift.endTime})}
+                                        {t("shift", {
+                                            task: shift.task,
+                                            date: formatDate(shift.date) ?? "",
+                                            start: shift.startTime,
+                                            end: shift.endTime
+                                        })}
                                     </li>
                                 ))}
                             </ul>

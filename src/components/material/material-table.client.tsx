@@ -7,7 +7,13 @@ import {ExternalLink, MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "
 import type {MaterialCategory, MaterialVisibility} from "@/gql/graphql";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import {Input} from "@/components/ui/input";
 import {DataEmpty} from "@/components/data-empty";
 import {DataFilter} from "@/components/data-filter";
@@ -16,7 +22,13 @@ import {PlainText} from "@/components/plain-text";
 import {catalogName} from "@/components/catalog/catalog";
 import {UrlSwitch} from "@/components/budget/url-switch.client";
 import {type EditableMaterial, MaterialDialog} from "@/components/material/material-dialog.client";
-import {CategoryBadge, type LinkServiceValue, MaterialLink, ServiceBadge, VisibilityLabel} from "@/components/material/material-labels";
+import {
+    CategoryBadge,
+    type LinkServiceValue,
+    MaterialLink,
+    ServiceBadge,
+    VisibilityLabel
+} from "@/components/material/material-labels";
 import type {PositionValue} from "@/components/participant/participant-labels";
 import {removeMaterialAction, restoreMaterialAction} from "@/app/(app)/revivals/[id]/materials/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
@@ -49,7 +61,11 @@ export function filterMaterials(materials: MaterialRow[], query: string, filters
     });
 }
 
-function RowActions({material, revivalId, onEdit}: { material: MaterialRow; revivalId: string; onEdit: (material: MaterialRow) => void }) {
+function RowActions({material, revivalId, onEdit}: {
+    material: MaterialRow;
+    revivalId: string;
+    onEdit: (material: MaterialRow) => void
+}) {
     const t = useTranslations("Material");
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
@@ -57,11 +73,13 @@ function RowActions({material, revivalId, onEdit}: { material: MaterialRow; revi
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" disabled={pending} aria-label={t("rowMenu", {title: material.title})}/>}>
+            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" disabled={pending}
+                                                 aria-label={t("rowMenu", {title: material.title})}/>}>
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {!material.removed && <DropdownMenuItem onClick={() => onEdit(material)}><Pencil/>{t("edit")}</DropdownMenuItem>}
+                {!material.removed &&
+                    <DropdownMenuItem onClick={() => onEdit(material)}><Pencil/>{t("edit")}</DropdownMenuItem>}
                 <DropdownMenuItem render={<a href={material.url} target="_blank" rel="noopener noreferrer"/>}>
                     <ExternalLink/>{t("open")}
                 </DropdownMenuItem>
@@ -89,7 +107,8 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (material: Mat
             id: "title",
             accessorFn: material => material.title,
             sortFn: "alphanumeric",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("titleLabel")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("titleLabel")}/>,
             cell: ({row}) => {
                 const material = row.original;
 
@@ -97,7 +116,8 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (material: Mat
                     <div className="flex min-w-40 flex-col items-start gap-1 whitespace-normal">
                         {/* The row opens the dialog for writers; the link itself opens the material */}
                         <span className="flex flex-wrap items-center gap-2">
-                            <MaterialLink title={material.title} url={material.url} onClick={click => click.stopPropagation()}/>
+                            <MaterialLink title={material.title} url={material.url}
+                                          onClick={click => click.stopPropagation()}/>
                             {material.removed && <Badge variant="outline">{t("removed")}</Badge>}
                         </span>
                         {/* What the hidden columns show, on narrow screens */}
@@ -129,7 +149,8 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (material: Mat
         {
             id: "visibility",
             header: () => t("visibility"),
-            cell: ({row}) => <span className="whitespace-normal"><VisibilityLabel visibility={row.original.visibility} positions={row.original.positions}/></span>,
+            cell: ({row}) => <span className="whitespace-normal"><VisibilityLabel visibility={row.original.visibility}
+                                                                                  positions={row.original.positions}/></span>,
             meta: {className: "hidden md:table-cell"},
         },
         {
@@ -160,7 +181,15 @@ const NO_FILTERS: MaterialFilters = {categories: new Set(), services: new Set(),
  * category, service and visibility, removed ones on request for writers, and a menu per row to edit, open, remove or
  * restore. Materials are never deleted.
  */
-export function MaterialTable({revivalId, materials, services, positions, positionsUnavailable, canWrite, showRemoved}: {
+export function MaterialTable({
+                                  revivalId,
+                                  materials,
+                                  services,
+                                  positions,
+                                  positionsUnavailable,
+                                  canWrite,
+                                  showRemoved
+                              }: {
     revivalId: string;
     materials: MaterialRow[];
     /** The active services. */
@@ -184,39 +213,58 @@ export function MaterialTable({revivalId, materials, services, positions, positi
 
         return [
             ...[...held.values()].map(service => ({label: catalogName(service, locale), value: service.id})),
-            ...(materials.some(material => !material.service) ? [{label: t("Material.unknownService"), value: NO_SERVICE, sortKey: "￿"}] : []),
+            ...(materials.some(material => !material.service) ? [{
+                label: t("Material.unknownService"),
+                value: NO_SERVICE,
+                sortKey: "￿"
+            }] : []),
         ];
     }, [materials, locale, t]);
-    const set = (key: keyof MaterialFilters) => (values: Set<string>) => setFilters(current => ({...current, [key]: values}));
+    const set = (key: keyof MaterialFilters) => (values: Set<string>) => setFilters(current => ({
+        ...current,
+        [key]: values
+    }));
 
     return (
         <div className="flex flex-col gap-6">
             <DataTable columns={columns} data={filtered} filtered={active} initialSorting={[{id: "title", desc: false}]}
                        onRowClick={canWrite ? (material => !material.removed && setEditing(material)) : undefined}
                        rowClassName={material => material.removed && "text-muted-foreground"}
-                       empty={<DataEmpty title={t("Material.empty")} description={canWrite ? t("Material.emptyHint") : t("Material.emptyReadOnly")}/>}>
+                       empty={<DataEmpty title={t("Material.empty")}
+                                         description={canWrite ? t("Material.emptyHint") : t("Material.emptyReadOnly")}/>}>
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-wrap items-center gap-2">
                         <div className="relative w-full sm:w-75">
-                            <Input placeholder={t("Material.filterPlaceholder")} value={query} onChange={change => setQuery(change.target.value)}
+                            <Input placeholder={t("Material.filterPlaceholder")} value={query}
+                                   onChange={change => setQuery(change.target.value)}
                                    aria-label={t("Common.search")} className="h-8 pr-8"/>
                             {query && (
-                                <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                                <Button variant="ghost" size="icon"
+                                        className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
                                         aria-label={t("Common.clearSearch")} onClick={() => setQuery("")}>
                                     <X className="h-3 w-3"/>
                                 </Button>
                             )}
                         </div>
-                        <DataFilter title={t("Material.category")} selectedValues={filters.categories} onSelect={set("categories")}
+                        <DataFilter title={t("Material.category")} selectedValues={filters.categories}
+                                    onSelect={set("categories")}
                                     onClear={() => set("categories")(new Set())}
-                                    options={MATERIAL_CATEGORIES.map((category: MaterialCategory) => ({label: t(`Material.categories.${category}`), value: category}))}/>
+                                    options={MATERIAL_CATEGORIES.map((category: MaterialCategory) => ({
+                                        label: t(`Material.categories.${category}`),
+                                        value: category
+                                    }))}/>
                         {serviceOptions.length > 0 && (
-                            <DataFilter title={t("Material.service")} options={serviceOptions} selectedValues={filters.services} onSelect={set("services")}
+                            <DataFilter title={t("Material.service")} options={serviceOptions}
+                                        selectedValues={filters.services} onSelect={set("services")}
                                         onClear={() => set("services")(new Set())}/>
                         )}
-                        <DataFilter title={t("Material.visibility")} selectedValues={filters.visibilities} onSelect={set("visibilities")}
+                        <DataFilter title={t("Material.visibility")} selectedValues={filters.visibilities}
+                                    onSelect={set("visibilities")}
                                     onClear={() => set("visibilities")(new Set())}
-                                    options={MATERIAL_VISIBILITIES.map((visibility: MaterialVisibility) => ({label: t(`Material.visibilities.${visibility}`), value: visibility}))}/>
+                                    options={MATERIAL_VISIBILITIES.map((visibility: MaterialVisibility) => ({
+                                        label: t(`Material.visibilities.${visibility}`),
+                                        value: visibility
+                                    }))}/>
                         {active && (
                             <Button variant="ghost" onClick={() => {
                                 setQuery("");
@@ -236,7 +284,8 @@ export function MaterialTable({revivalId, materials, services, positions, positi
                 </div>
             </DataTable>
             {(adding || editing) && (
-                <MaterialDialog key={editing?.id ?? "new"} revivalId={revivalId} services={services} positions={positions}
+                <MaterialDialog key={editing?.id ?? "new"} revivalId={revivalId} services={services}
+                                positions={positions}
                                 positionsUnavailable={positionsUnavailable} material={editing} onOpenChange={open => {
                     if (!open) {
                         setAdding(false);

@@ -71,7 +71,12 @@ export async function createReferralAction(input: z.input<typeof referralSchema>
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, values} = referralSchema.parse(input);
 
-        await createReferral({revivalId, name: values.name, contact: values.contact || null, comment: values.comment || null});
+        await createReferral({
+            revivalId,
+            name: values.name,
+            contact: values.contact || null,
+            comment: values.comment || null
+        });
         return null;
     }));
 }
@@ -85,7 +90,13 @@ export async function setAvailabilityAction(input: z.input<typeof availabilitySc
         const {revivalId, eventId, values} = availabilitySchema.parse(input);
 
         for (const day of values.days) {
-            await setAvailability({revivalId, eventId, date: day.date, answer: day.answer || null, comment: day.answer ? day.comment || null : null});
+            await setAvailability({
+                revivalId,
+                eventId,
+                date: day.date,
+                answer: day.answer || null,
+                comment: day.answer ? day.comment || null : null
+            });
         }
         revalidate(revivalId);
         return null;

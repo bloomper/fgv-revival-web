@@ -12,7 +12,9 @@ import {withPolicyPage} from "@/utils/route.server";
  * One chapter of the version a revival is pinned to, with suggestion controls for those who may suggest (FR-031). The
  * heading, search and chapter list are in the layout.
  */
-export default async function RevivalGuideChapterPage({params}: { params: Promise<{ id: string; chapterKey: string }> }) {
+export default async function RevivalGuideChapterPage({params}: {
+    params: Promise<{ id: string; chapterKey: string }>
+}) {
     const {id, chapterKey} = await params;
 
     return withPolicyPage(Policies.app.requireAccess, async () => {
@@ -31,10 +33,12 @@ export default async function RevivalGuideChapterPage({params}: { params: Promis
         return (
             <>
                 <CatalogProvider itemTypes={itemTypes}>
-                    <RevivalGuideChapter chapter={version.chapters[index]} number={index + 1} versionId={version.id} revivalId={revival.id}
+                    <RevivalGuideChapter chapter={version.chapters[index]} number={index + 1} versionId={version.id}
+                                         revivalId={revival.id}
                                          canSuggest={revival.permissions.canSuggestGuideChange}/>
                 </CatalogProvider>
-                <GuideChapterPager chapters={navChapters(version)} current={key} basePath={`/revivals/${revival.id}/guide`}/>
+                <GuideChapterPager chapters={navChapters(version)} current={key}
+                                   basePath={`/revivals/${revival.id}/guide`}/>
             </>
         );
     });

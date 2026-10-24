@@ -1,5 +1,11 @@
 import {describe, expect, it} from "vitest";
-import {buildTimeline, defaultEndDate, formatEventDates, offsetRange, premiereDistance} from "@/components/event/timeline";
+import {
+    buildTimeline,
+    defaultEndDate,
+    formatEventDates,
+    offsetRange,
+    premiereDistance
+} from "@/components/event/timeline";
 import {addDays, daysBetween} from "@/lib/event/dates";
 
 const event = (id: string, startDate: string, extra: Partial<Parameters<typeof buildTimeline>[0]["events"][number]> = {}) => ({
@@ -23,8 +29,17 @@ describe("dates", () => {
 describe("formatEventDates", () => {
     it("shows one day, a range, and times when set", () => {
         expect(formatEventDates({startDate: "2028-01-01", endDate: "2028-01-01"})).toBe("2028-01-01");
-        expect(formatEventDates({startDate: "2028-01-01", endDate: "2028-01-01", startTime: "18:00"})).toBe("2028-01-01 18:00");
-        expect(formatEventDates({startDate: "2028-01-01", endDate: "2028-01-01", startTime: "18:00", endTime: "21:00"})).toBe("2028-01-01 18:00–21:00");
+        expect(formatEventDates({
+            startDate: "2028-01-01",
+            endDate: "2028-01-01",
+            startTime: "18:00"
+        })).toBe("2028-01-01 18:00");
+        expect(formatEventDates({
+            startDate: "2028-01-01",
+            endDate: "2028-01-01",
+            startTime: "18:00",
+            endTime: "21:00"
+        })).toBe("2028-01-01 18:00–21:00");
         expect(formatEventDates({startDate: "2028-01-01", endDate: "2028-01-02"})).toBe("2028-01-01 – 2028-01-02");
         expect(formatEventDates({startDate: "2028-01-01", endDate: "2028-01-02", startTime: "10:00", endTime: "16:00"}))
             .toBe("2028-01-01 10:00 – 2028-01-02 16:00");
@@ -57,8 +72,15 @@ describe("buildTimeline", () => {
     it("groups events, shows, meetings and the premiere by month in date order", () => {
         const months = buildTimeline({
             premiereDate: "2028-03-04",
-            events: [event("2", "2028-03-04", {startTime: "12:00", daysFromPremiere: 0}), event("1", "2028-01-01", {daysFromPremiere: -63})],
-            shows: [{date: "2028-03-04", time: "19:00", venue: "Kårhuset"}, {date: "2028-03-05", time: null, venue: null}],
+            events: [event("2", "2028-03-04", {
+                startTime: "12:00",
+                daysFromPremiere: 0
+            }), event("1", "2028-01-01", {daysFromPremiere: -63})],
+            shows: [{date: "2028-03-04", time: "19:00", venue: "Kårhuset"}, {
+                date: "2028-03-05",
+                time: null,
+                venue: null
+            }],
             meetings: [
                 {id: "m1", date: "2028-01-15", title: "Direktionsmöte 4", status: "CLOSED"},
                 {id: "m2", date: "2028-01-20", title: null, status: "CANCELLED"},
@@ -73,7 +95,11 @@ describe("buildTimeline", () => {
     });
 
     it("works without a premiere, with no distances", () => {
-        const months = buildTimeline({events: [event("1", "2027-11-02")], shows: [], meetings: [{id: "m1", date: "2027-11-01", status: "PLANNED"}]});
+        const months = buildTimeline({
+            events: [event("1", "2027-11-02")],
+            shows: [],
+            meetings: [{id: "m1", date: "2027-11-01", status: "PLANNED"}]
+        });
 
         expect(months).toHaveLength(1);
         expect(months[0].items.map(item => [item.key, item.daysFromPremiere])).toEqual([["meeting-m1", null], ["event-1", null]]);

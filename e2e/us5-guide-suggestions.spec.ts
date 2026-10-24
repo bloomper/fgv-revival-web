@@ -31,7 +31,10 @@ test.describe("Guide, user story 5: the steering group suggests changes", () => 
         await expect(page.getByText("Förrådet ska inventeras innan första rephelgen.")).toBeVisible();
 
         await page.getByRole("button", {name: "Föreslå ny punkt"}).click();
-        await page.getByRole("combobox", {name: "Kapitel", exact: true}).selectOption({label: "10. Stänga nyuppsättningen"});
+        await page.getByRole("combobox", {
+            name: "Kapitel",
+            exact: true
+        }).selectOption({label: "10. Stänga nyuppsättningen"});
         await page.getByLabel("Svenska").fill("Lärdomar ska skrivas ner.");
         await page.getByRole("button", {name: "Skicka förslaget"}).click();
         await expect(page.getByText("Lärdomar ska skrivas ner.")).toBeVisible();
@@ -43,7 +46,12 @@ test.describe("Guide, user story 5: the steering group suggests changes", () => 
 });
 
 test.describe("Guide, user story 5: the super admin decides", () => {
-    test("accepts one suggestion into a new draft, rejects another, and a discarded draft reopens the accepted one", async ({page, mock, loginAs, request}) => {
+    test("accepts one suggestion into a new draft, rejects another, and a discarded draft reopens the accepted one", async ({
+                                                                                                                                page,
+                                                                                                                                mock,
+                                                                                                                                loginAs,
+                                                                                                                                request
+                                                                                                                            }) => {
         await mock.guide("published");
         await mock.setStatus("1", "ORGANISING");
         await loginAs("superadmin");

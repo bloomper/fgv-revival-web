@@ -63,7 +63,11 @@ function useCandidates(revivalId: string, query: string) {
  * Adds a member by picking a user of the FGV realm, searched by name or email. An email that is no user's is invited:
  * the server creates an account without access and Keycloak emails them, and a super admin then grants access.
  */
-export function AddMemberForm({revivalId, role, onAdded}: { revivalId: string; role: AssignableRole; onAdded?: (name: string) => void }) {
+export function AddMemberForm({revivalId, role, onAdded}: {
+    revivalId: string;
+    role: AssignableRole;
+    onAdded?: (name: string) => void
+}) {
     const t = useTranslations();
     const locale = useLocale();
     const feedback = useActionFeedback();
@@ -132,8 +136,10 @@ export function AddMemberForm({revivalId, role, onAdded}: { revivalId: string; r
                 {selected ? (
                     <div className="flex h-9 items-center gap-2 rounded-md border px-3 text-sm">
                         <span className="truncate font-medium">{selected.displayName ?? selected.email}</span>
-                        {selected.displayName && <span className="truncate text-muted-foreground">{selected.email}</span>}
-                        <Button type="button" variant="ghost" size="icon-sm" className="ml-auto shrink-0" aria-label={t("Members.changePerson")}
+                        {selected.displayName &&
+                            <span className="truncate text-muted-foreground">{selected.email}</span>}
+                        <Button type="button" variant="ghost" size="icon-sm" className="ml-auto shrink-0"
+                                aria-label={t("Members.changePerson")}
                                 onClick={() => setSelected(null)}><X/></Button>
                     </div>
                 ) : (
@@ -153,36 +159,45 @@ export function AddMemberForm({revivalId, role, onAdded}: { revivalId: string; r
                     />
                 )}
                 {!selected && candidates.length > 0 && (
-                    <ul id={listId} role="listbox" aria-label={t("Members.candidates")} className="divide-y rounded-md border">
+                    <ul id={listId} role="listbox" aria-label={t("Members.candidates")}
+                        className="divide-y rounded-md border">
                         {candidates.map(candidate => (
                             <li key={candidate.email} role="option" aria-selected={false}>
-                                <button type="button" className="flex w-full flex-wrap items-baseline gap-x-2 px-3 py-2 text-left text-sm hover:bg-accent"
+                                <button type="button"
+                                        className="flex w-full flex-wrap items-baseline gap-x-2 px-3 py-2 text-left text-sm hover:bg-accent"
                                         onClick={() => {
                                             setSelected(candidate);
                                             setError(null);
                                         }}>
                                     <span className="font-medium">{candidate.displayName ?? candidate.email}</span>
-                                    {candidate.displayName && <span className="text-muted-foreground">{candidate.email}</span>}
-                                    {!candidate.hasAccess && <Badge variant="outline" className="ml-auto">{t("Members.noAccessYet")}</Badge>}
+                                    {candidate.displayName &&
+                                        <span className="text-muted-foreground">{candidate.email}</span>}
+                                    {!candidate.hasAccess &&
+                                        <Badge variant="outline" className="ml-auto">{t("Members.noAccessYet")}</Badge>}
                                 </button>
                             </li>
                         ))}
                     </ul>
                 )}
                 {!selected && searching && <p className="text-xs text-muted-foreground">{t("Members.searching")}</p>}
-                {!selected && unavailable && <p className="text-xs text-muted-foreground">{t("Members.directoryUnavailable")}</p>}
+                {!selected && unavailable &&
+                    <p className="text-xs text-muted-foreground">{t("Members.directoryUnavailable")}</p>}
                 {!selected && !searching && !unavailable && query.trim().length >= MIN_MEMBER_QUERY && candidates.length === 0 && !inviting && (
                     <p className="text-xs text-muted-foreground">{t("Members.noCandidates")}</p>
                 )}
-                {selected && !selected.hasAccess && <p className="text-xs text-muted-foreground">{t("Members.selectedWithoutAccess")}</p>}
+                {selected && !selected.hasAccess &&
+                    <p className="text-xs text-muted-foreground">{t("Members.selectedWithoutAccess")}</p>}
             </div>
             {inviting && (
                 <div className="space-y-2 rounded-md border border-dashed p-3">
                     <p className="text-sm text-muted-foreground">{t("Members.inviteDescription", {email: typedEmail})}</p>
                     <div className="flex flex-col gap-2 sm:flex-row">
-                        <Input value={name.firstName} maxLength={MAX_MEMBER_NAME} placeholder={t("Members.firstName")} aria-label={t("Members.firstName")}
-                               onChange={event => setName({...name, firstName: event.target.value})} disabled={pending}/>
-                        <Input value={name.lastName} maxLength={MAX_MEMBER_NAME} placeholder={t("Members.lastName")} aria-label={t("Members.lastName")}
+                        <Input value={name.firstName} maxLength={MAX_MEMBER_NAME} placeholder={t("Members.firstName")}
+                               aria-label={t("Members.firstName")}
+                               onChange={event => setName({...name, firstName: event.target.value})}
+                               disabled={pending}/>
+                        <Input value={name.lastName} maxLength={MAX_MEMBER_NAME} placeholder={t("Members.lastName")}
+                               aria-label={t("Members.lastName")}
                                onChange={event => setName({...name, lastName: event.target.value})} disabled={pending}/>
                     </div>
                 </div>

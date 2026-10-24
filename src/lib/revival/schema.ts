@@ -28,7 +28,10 @@ export const revivalCoreSchema = revivalCreateSchema.extend({
  * The years a revival of the spex may have, newest first as in Spexregister: not before the original, and for a new
  * revival not before this year either. The server checks the same.
  */
-export function revivalYears(originalYear: number | null | undefined, options: { fromThisYear: boolean; include?: number }): number[] {
+export function revivalYears(originalYear: number | null | undefined, options: {
+    fromThisYear: boolean;
+    include?: number
+}): number[] {
     const thisYear = new Date().getFullYear();
     const first = Math.max(originalYear ?? MIN_YEAR, options.fromThisYear ? thisYear : MIN_YEAR);
     const last = Math.max(thisYear + 5, options.include ?? 0);

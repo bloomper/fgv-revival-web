@@ -53,8 +53,10 @@ export default async function MaterialsPage({params, searchParams}: {
         return (
             <div className="flex flex-col gap-4">
                 <h4 className="sr-only">{t("materials")}</h4>
-                <MaterialTable revivalId={loaded.revival.id} materials={loaded.materials} services={loaded.services} positions={positions.positions}
-                               positionsUnavailable={positions.unavailable} canWrite={canWrite} showRemoved={showRemoved && canWrite}/>
+                <MaterialTable revivalId={loaded.revival.id} materials={loaded.materials} services={loaded.services}
+                               positions={positions.positions}
+                               positionsUnavailable={positions.unavailable} canWrite={canWrite}
+                               showRemoved={showRemoved && canWrite}/>
             </div>
         );
     });

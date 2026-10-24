@@ -41,7 +41,13 @@ test.describe("Decision log, user story 1: the steering group keeps the decision
         await expect(page.getByRole("heading", {level: 3, name: "Beslutslogg"})).toBeVisible();
         await expect(page.getByText("Loggen är tom.")).toBeVisible();
 
-        await addRow(page, {type: "Att göra", text: "Boka RunAn", owner: "Stina Styrgrupp", deadline: yesterday(), tag: "lokal"});
+        await addRow(page, {
+            type: "Att göra",
+            text: "Boka RunAn",
+            owner: "Stina Styrgrupp",
+            deadline: yesterday(),
+            tag: "lokal"
+        });
         await addRow(page, {type: "Fråga", text: "Var har vi kalaset?", tag: "lokal"});
         await addRow(page, {type: "Att göra", text: "Skicka offert", ownerName: "Sam på lokalen"});
 

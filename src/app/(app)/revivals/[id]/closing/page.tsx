@@ -37,7 +37,11 @@ async function loadMembership(id: string) {
         return {
             participants: participants
                 .filter(participant => participant.kind === "PARTICIPANT" && participant.response === "YES" && !participant.removed)
-                .map(participant => ({id: participant.id, name: participantName(participant), membershipPaid: participant.membershipPaid}))
+                .map(participant => ({
+                    id: participant.id,
+                    name: participantName(participant),
+                    membershipPaid: participant.membershipPaid
+                }))
                 .sort((a, b) => a.name.localeCompare(b.name, "sv")),
             unavailable: false,
         };
@@ -114,8 +118,10 @@ export default async function ClosingPage({params}: { params: Promise<{ id: stri
                                 <AlertDescription>{t("unavailable")}</AlertDescription>
                             </Alert>
                         ) : (
-                            <MembershipForm key={`${closing.membershipYear}-${closing.membershipsPaid}`} revivalId={revival.id}
-                                            year={closing.membershipYear ?? revival.year} participants={membership.participants}
+                            <MembershipForm key={`${closing.membershipYear}-${closing.membershipsPaid}`}
+                                            revivalId={revival.id}
+                                            year={closing.membershipYear ?? revival.year}
+                                            participants={membership.participants}
                                             canWrite={permissions.canSetMembership}/>
                         )}
                     </Section>
@@ -129,7 +135,8 @@ export default async function ClosingPage({params}: { params: Promise<{ id: stri
                                 <AlertDescription>{t("sync.unavailable")}</AlertDescription>
                             </Alert>
                         ) : preview ? (
-                            <SyncPanel key={`${preview.hash}-${preview.lastRun?.id}-${preview.lastRun?.status}`} revivalId={revival.id}
+                            <SyncPanel key={`${preview.hash}-${preview.lastRun?.id}-${preview.lastRun?.status}`}
+                                       revivalId={revival.id}
                                        preview={preview} canSync={permissions.canSync}/>
                         ) : (
                             <p className="text-sm text-muted-foreground">{t("sync.notYet")}</p>
@@ -139,8 +146,10 @@ export default async function ClosingPage({params}: { params: Promise<{ id: stri
 
                 {(permissions.canAnonymize || anonymized || closing.autoAnonymizeOn) && (
                     <Section title={t("anonymize.title")}>
-                        <AnonymizeCard revival={revival} anonymizedAt={revival.anonymizedAt ?? closing.anonymizedAt} autoAnonymizeOn={closing.autoAnonymizeOn}
-                                       canAnonymize={permissions.canAnonymize} syncIncomplete={syncIncomplete(closing.lastSync)}/>
+                        <AnonymizeCard revival={revival} anonymizedAt={revival.anonymizedAt ?? closing.anonymizedAt}
+                                       autoAnonymizeOn={closing.autoAnonymizeOn}
+                                       canAnonymize={permissions.canAnonymize}
+                                       syncIncomplete={syncIncomplete(closing.lastSync)}/>
                     </Section>
                 )}
             </div>

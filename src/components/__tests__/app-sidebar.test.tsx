@@ -11,7 +11,8 @@ vi.mock("next/navigation", () => ({
     usePathname: () => pathname,
 }));
 vi.mock("next/link", () => ({
-    default: ({children, href, ...rest}: { children?: ReactNode; href: string }) => <a href={href} {...rest}>{children}</a>,
+    default: ({children, href, ...rest}: { children?: ReactNode; href: string }) => <a
+        href={href} {...rest}>{children}</a>,
 }));
 vi.mock("@/hooks/use-is-client.client", () => ({
     useIsClient: () => true,

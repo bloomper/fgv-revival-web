@@ -12,5 +12,9 @@ export const spexCalendarDateValuesSchema = z.object({
 export type SpexCalendarDateValues = z.infer<typeof spexCalendarDateValuesSchema>;
 
 export const spexCalendarDateCreateSchema = z.object({values: spexCalendarDateValuesSchema});
-export const spexCalendarDateUpdateSchema = z.object({id: z.string().min(1), version: z.number().int().nonnegative(), values: spexCalendarDateValuesSchema});
+export const spexCalendarDateUpdateSchema = z.object({
+    id: z.string().min(1),
+    version: z.number().int().nonnegative(),
+    values: spexCalendarDateValuesSchema
+});
 export const spexCalendarDateDeleteSchema = z.object({id: z.string().min(1), version: z.number().int().nonnegative()});

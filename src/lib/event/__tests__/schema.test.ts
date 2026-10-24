@@ -1,12 +1,28 @@
 import {describe, expect, it} from "vitest";
-import {type EventTypeValues, eventTypeValuesSchema, type EventValues, eventValuesSchema, toEventTypeInput} from "@/lib/event/schema";
+import {
+    type EventTypeValues,
+    eventTypeValuesSchema,
+    type EventValues,
+    eventValuesSchema,
+    toEventTypeInput
+} from "@/lib/event/schema";
 
 const values = (overrides: Partial<EventValues> = {}): EventValues => ({
-    typeId: "", title: "Förrådsbesök", startDate: "2028-01-01", endDate: "", startTime: "", endTime: "", location: "", description: "",
+    typeId: "",
+    title: "Förrådsbesök",
+    startDate: "2028-01-01",
+    endDate: "",
+    startTime: "",
+    endTime: "",
+    location: "",
+    description: "",
     revivalPays: false, ...overrides,
 });
 
-const messages = (result: { success: boolean; error?: { issues: { message: string }[] } }) => result.error?.issues.map(issue => issue.message) ?? [];
+const messages = (result: {
+    success: boolean;
+    error?: { issues: { message: string }[] }
+}) => result.error?.issues.map(issue => issue.message) ?? [];
 
 describe("eventValuesSchema", () => {
     it("accepts a free event with a title, and a typed one without", () => {
@@ -27,8 +43,15 @@ describe("eventValuesSchema", () => {
     it("checks times: HH:mm, an end only with a start, not before it on one day", () => {
         expect(messages(eventValuesSchema.safeParse(values({startTime: "25:00"})))).toEqual(["timeInvalid"]);
         expect(messages(eventValuesSchema.safeParse(values({endTime: "18:00"})))).toEqual(["eventEndTimeWithoutStart"]);
-        expect(messages(eventValuesSchema.safeParse(values({startTime: "18:00", endTime: "17:00"})))).toEqual(["eventEndTimeBeforeStart"]);
-        expect(eventValuesSchema.safeParse(values({startTime: "18:00", endTime: "17:00", endDate: "2028-01-02"})).success).toBe(true);
+        expect(messages(eventValuesSchema.safeParse(values({
+            startTime: "18:00",
+            endTime: "17:00"
+        })))).toEqual(["eventEndTimeBeforeStart"]);
+        expect(eventValuesSchema.safeParse(values({
+            startTime: "18:00",
+            endTime: "17:00",
+            endDate: "2028-01-02"
+        })).success).toBe(true);
     });
 
     it("limits the location and description", () => {
@@ -55,7 +78,12 @@ describe("eventTypeValuesSchema", () => {
     it("takes 1–14 days and a Swedish text before an English one", () => {
         expect(messages(eventTypeValuesSchema.safeParse(type({days: "0"})))).toEqual(["eventDaysInvalid"]);
         expect(messages(eventTypeValuesSchema.safeParse(type({days: "15"})))).toEqual(["eventDaysInvalid"]);
-        expect(messages(eventTypeValuesSchema.safeParse(type({rooms: {sv: "", en: "Two rooms"}})))).toEqual(["swedishRequired"]);
+        expect(messages(eventTypeValuesSchema.safeParse(type({
+            rooms: {
+                sv: "",
+                en: "Two rooms"
+            }
+        })))).toEqual(["swedishRequired"]);
     });
 
     it("turns the values into the GraphQL input, clearing blank texts", () => {
@@ -70,6 +98,9 @@ describe("eventTypeValuesSchema", () => {
             revivalPays: true,
             checklistTemplateId: null,
         });
-        expect(toEventTypeInput(type({offsetMinDays: "", offsetMaxDays: ""}))).toMatchObject({offsetMinDays: null, offsetMaxDays: null});
+        expect(toEventTypeInput(type({offsetMinDays: "", offsetMaxDays: ""}))).toMatchObject({
+            offsetMinDays: null,
+            offsetMaxDays: null
+        });
     });
 });

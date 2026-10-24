@@ -5,7 +5,14 @@ import {useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
@@ -35,7 +42,11 @@ export function ParticipationSettingsDialog({revivalId, settings, onOpenChange}:
     const [pending, startTransition] = useTransition();
     const form = useForm<ParticipationSettingsValues>({
         resolver: zodResolver(participationSettingsValuesSchema),
-        defaultValues: {swishNumber: settings.swishNumber ?? "", whatsappLink: settings.whatsappLink ?? "", terms: settings.terms ?? ""},
+        defaultValues: {
+            swishNumber: settings.swishNumber ?? "",
+            whatsappLink: settings.whatsappLink ?? "",
+            terms: settings.terms ?? ""
+        },
     });
     const {errors} = form.formState;
     const error = (name: string, message?: string) => message &&
@@ -52,32 +63,44 @@ export function ParticipationSettingsDialog({revivalId, settings, onOpenChange}:
                     <DialogTitle>{t("Participants.settingsTitle")}</DialogTitle>
                     <DialogDescription>{t("Participants.settingsDescription")}</DialogDescription>
                 </DialogHeader>
-                <form className="space-y-4" noValidate onSubmit={form.handleSubmit(values => startTransition(async () => {
-                    if (feedback(await updateParticipationSettingsAction({revivalId, version: settings.version, values}), t("Common.saved"))) {
-                        onOpenChange(false);
-                    }
-                }))}>
+                <form className="space-y-4" noValidate
+                      onSubmit={form.handleSubmit(values => startTransition(async () => {
+                          if (feedback(await updateParticipationSettingsAction({
+                              revivalId,
+                              version: settings.version,
+                              values
+                          }), t("Common.saved"))) {
+                              onOpenChange(false);
+                          }
+                      }))}>
                     <div className="space-y-2">
                         <Label htmlFor={`${id}-swish`}>{t("Participants.swishNumber")}</Label>
-                        <Input id={`${id}-swish`} inputMode="numeric" autoComplete="off" {...described("swish", errors.swishNumber?.message)} {...form.register("swishNumber")}/>
-                        <p id={`${id}-swish-hint`} className="text-xs text-muted-foreground">{t("Participants.swishNumberHint")}</p>
+                        <Input id={`${id}-swish`} inputMode="numeric"
+                               autoComplete="off" {...described("swish", errors.swishNumber?.message)} {...form.register("swishNumber")}/>
+                        <p id={`${id}-swish-hint`}
+                           className="text-xs text-muted-foreground">{t("Participants.swishNumberHint")}</p>
                         {error("swish", errors.swishNumber?.message)}
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`${id}-whatsapp`}>{t("Participants.whatsappLink")}</Label>
-                        <Input id={`${id}-whatsapp`} type="url" autoComplete="off" placeholder="https://chat.whatsapp.com/…"
+                        <Input id={`${id}-whatsapp`} type="url" autoComplete="off"
+                               placeholder="https://chat.whatsapp.com/…"
                                {...described("whatsapp", errors.whatsappLink?.message)} {...form.register("whatsappLink")}/>
-                        <p id={`${id}-whatsapp-hint`} className="text-xs text-muted-foreground">{t("Participants.whatsappLinkHint")}</p>
+                        <p id={`${id}-whatsapp-hint`}
+                           className="text-xs text-muted-foreground">{t("Participants.whatsappLinkHint")}</p>
                         {error("whatsapp", errors.whatsappLink?.message)}
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor={`${id}-terms`}>{t("Participants.extraTerms")}</Label>
-                        <Textarea id={`${id}-terms`} rows={5} {...described("terms", errors.terms?.message)} {...form.register("terms")}/>
-                        <p id={`${id}-terms-hint`} className="text-xs text-muted-foreground">{t("Participants.extraTermsHint")}</p>
+                        <Textarea id={`${id}-terms`}
+                                  rows={5} {...described("terms", errors.terms?.message)} {...form.register("terms")}/>
+                        <p id={`${id}-terms-hint`}
+                           className="text-xs text-muted-foreground">{t("Participants.extraTermsHint")}</p>
                         {error("terms", errors.terms?.message)}
                     </div>
                     <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </DialogFooter>
                 </form>

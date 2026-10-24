@@ -90,9 +90,23 @@ export type TimelineEvent = EventDates & {
 
 export type TimelineItem =
     | { kind: "premiere"; key: string; date: string; daysFromPremiere: 0 }
-    | { kind: "show"; key: string; date: string; time?: string | null; venue?: string | null; daysFromPremiere: number | null }
+    | {
+    kind: "show";
+    key: string;
+    date: string;
+    time?: string | null;
+    venue?: string | null;
+    daysFromPremiere: number | null
+}
     | { kind: "meeting"; key: string; id: string; date: string; title?: string | null; daysFromPremiere: number | null }
-    | { kind: "event"; key: string; date: string; time?: string | null; event: TimelineEvent; daysFromPremiere: number | null };
+    | {
+    kind: "event";
+    key: string;
+    date: string;
+    time?: string | null;
+    event: TimelineEvent;
+    daysFromPremiere: number | null
+};
 
 export type TimelineMonth = { month: string; items: TimelineItem[] };
 
@@ -114,10 +128,29 @@ export function buildTimeline({events, shows, meetings, premiereDate}: {
 }): TimelineMonth[] {
     const from = (date: string) => premiereDate ? daysBetween(premiereDate, date) : null;
     const items: TimelineItem[] = [
-        ...(premiereDate ? [{kind: "premiere" as const, key: "premiere", date: premiereDate, daysFromPremiere: 0 as const}] : []),
-        ...shows.map((show, index) => ({kind: "show" as const, key: `show-${index}`, date: show.date, time: show.time, venue: show.venue, daysFromPremiere: from(show.date)})),
+        ...(premiereDate ? [{
+            kind: "premiere" as const,
+            key: "premiere",
+            date: premiereDate,
+            daysFromPremiere: 0 as const
+        }] : []),
+        ...shows.map((show, index) => ({
+            kind: "show" as const,
+            key: `show-${index}`,
+            date: show.date,
+            time: show.time,
+            venue: show.venue,
+            daysFromPremiere: from(show.date)
+        })),
         ...meetings.filter(meeting => meeting.status !== "CANCELLED")
-            .map(meeting => ({kind: "meeting" as const, key: `meeting-${meeting.id}`, id: meeting.id, date: meeting.date, title: meeting.title, daysFromPremiere: from(meeting.date)})),
+            .map(meeting => ({
+                kind: "meeting" as const,
+                key: `meeting-${meeting.id}`,
+                id: meeting.id,
+                date: meeting.date,
+                title: meeting.title,
+                daysFromPremiere: from(meeting.date)
+            })),
         ...events.map(event => ({
             kind: "event" as const, key: `event-${event.id}`, date: event.startDate, time: event.startTime, event,
             daysFromPremiere: event.daysFromPremiere ?? from(event.startDate),

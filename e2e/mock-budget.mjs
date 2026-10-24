@@ -3,7 +3,15 @@
 // (fgv-revival-server/src/main/resources/graphql/budget.graphqls, spex-calendar.graphqls). Amounts are kept in öre and
 // returned as the server's decimal strings. Test data is fictitious.
 
-const category = (id, sv, en, kind, role, position) => ({id, name: {sv, en}, kind, role, position, retired: false, version: 0});
+const category = (id, sv, en, kind, role, position) => ({
+    id,
+    name: {sv, en},
+    kind,
+    role,
+    position,
+    retired: false,
+    version: 0
+});
 
 export function createBudgetState() {
     return {
@@ -98,7 +106,9 @@ export function budgetResolvers(ctx) {
         ...store().references.flatMap(reference => reference.figures.map(figure => figure.categoryId)), ...store().typeLines.map(line => line.categoryId),
     ]);
     const toCategory = found => ({
-        __typename: "BudgetCategory", ...found, name: {__typename: "LocalizedText", ...found.name}, inUse: usedCategories().has(found.id),
+        __typename: "BudgetCategory", ...found,
+        name: {__typename: "LocalizedText", ...found.name},
+        inUse: usedCategories().has(found.id),
     });
     const activeCategory = id => {
         const found = categoryById(id);
@@ -139,7 +149,14 @@ export function budgetResolvers(ctx) {
     // --- Budget -----------------------------------------------------------------------------------------------------
 
     const settingsOf = revival => store().settings[revival.id]
-        ?? {participantsPlanned: null, participationFee: null, loanAmount: null, loanReceivedOn: null, loanRepaidOn: null, version: 0};
+        ?? {
+            participantsPlanned: null,
+            participationFee: null,
+            loanAmount: null,
+            loanReceivedOn: null,
+            loanRepaidOn: null,
+            version: 0
+        };
     const linesOf = (revival, includeRemoved = false) => store().lines
         .filter(line => line.revivalId === revival.id && (includeRemoved || !line.removed))
         .sort((a, b) => categoryById(a.categoryId).position - categoryById(b.categoryId).position || Number(a.id) - Number(b.id));
@@ -150,32 +167,74 @@ export function budgetResolvers(ctx) {
     const toEventRef = id => {
         const event = id && eventOf(id);
 
-        return event ? {__typename: "Event", id: event.id, title: event.title, startDate: event.startDate, endDate: event.endDate, cancelled: event.cancelled} : null;
+        return event ? {
+            __typename: "Event",
+            id: event.id,
+            title: event.title,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            cancelled: event.cancelled
+        } : null;
     };
     const toLogSummary = id => {
         const entry = id && ctx.state().log.entries.find(candidate => candidate.id === id);
 
-        return entry ? {__typename: "LogEntrySummary", id: entry.id, number: entry.number, type: entry.type, status: entry.status} : null;
+        return entry ? {
+            __typename: "LogEntrySummary",
+            id: entry.id,
+            number: entry.number,
+            type: entry.type,
+            status: entry.status
+        } : null;
     };
     const toLine = line => ({
-        __typename: "BudgetLine", id: line.id, category: toCategory(categoryById(line.categoryId)), description: line.description,
-        quantity: line.quantity, unitAmount: fromOre(line.unitOre), amount: fromOre(times(line.quantity, line.unitOre)), event: toEventRef(line.eventId),
-        logEntry: toLogSummary(line.logEntryId), comment: line.comment, removed: line.removed, version: line.version,
+        __typename: "BudgetLine",
+        id: line.id,
+        category: toCategory(categoryById(line.categoryId)),
+        description: line.description,
+        quantity: line.quantity,
+        unitAmount: fromOre(line.unitOre),
+        amount: fromOre(times(line.quantity, line.unitOre)),
+        event: toEventRef(line.eventId),
+        logEntry: toLogSummary(line.logEntryId),
+        comment: line.comment,
+        removed: line.removed,
+        version: line.version,
     });
     const receiptOf = transaction => {
         const receipt = store().receipts[transaction.id];
 
-        return receipt ? {__typename: "Receipt", filename: receipt.filename, contentType: receipt.contentType, size: receipt.size, uploadedAt: receipt.uploadedAt} : null;
+        return receipt ? {
+            __typename: "Receipt",
+            filename: receipt.filename,
+            contentType: receipt.contentType,
+            size: receipt.size,
+            uploadedAt: receipt.uploadedAt
+        } : null;
     };
     const toTransaction = (revival, transaction) => {
         const line = transaction.budgetLineId && store().lines.find(candidate => candidate.id === transaction.budgetLineId);
 
         return {
-            __typename: "Transaction", id: transaction.id, date: transaction.date, amount: fromOre(transaction.amountOre),
-            category: toCategory(categoryById(transaction.categoryId)), description: transaction.description,
-            budgetLine: line ? {__typename: "BudgetLine", id: line.id, description: line.description, removed: line.removed, category: {__typename: "BudgetCategory", id: line.categoryId}} : null,
-            paidBy: log.toOwner(revival, transaction.paidBy), reimbursed: !!transaction.reimbursedAt, reimbursedAt: transaction.reimbursedAt,
-            receipt: receiptOf(transaction), cancelled: transaction.cancelled, version: transaction.version,
+            __typename: "Transaction",
+            id: transaction.id,
+            date: transaction.date,
+            amount: fromOre(transaction.amountOre),
+            category: toCategory(categoryById(transaction.categoryId)),
+            description: transaction.description,
+            budgetLine: line ? {
+                __typename: "BudgetLine",
+                id: line.id,
+                description: line.description,
+                removed: line.removed,
+                category: {__typename: "BudgetCategory", id: line.categoryId}
+            } : null,
+            paidBy: log.toOwner(revival, transaction.paidBy),
+            reimbursed: !!transaction.reimbursedAt,
+            reimbursedAt: transaction.reimbursedAt,
+            receipt: receiptOf(transaction),
+            cancelled: transaction.cancelled,
+            version: transaction.version,
         };
     };
     const lineAmount = line => times(line.quantity, line.unitOre);
@@ -189,21 +248,35 @@ export function budgetResolvers(ctx) {
 
         return {
             __typename: "BudgetTotals",
-            budgetedIncome: fromOre(budgeted("INCOME")), budgetedCost: fromOre(budgeted("COST")), budgetedResult: fromOre(budgeted("INCOME") - budgeted("COST")),
-            actualIncome: fromOre(actual("INCOME")), actualCost: fromOre(actual("COST")), actualResult: fromOre(actual("INCOME") - actual("COST")),
-            unreimbursed: fromOre(sum(unreimbursed.map(transaction => transaction.amountOre))), unreimbursedCount: unreimbursed.length,
+            budgetedIncome: fromOre(budgeted("INCOME")),
+            budgetedCost: fromOre(budgeted("COST")),
+            budgetedResult: fromOre(budgeted("INCOME") - budgeted("COST")),
+            actualIncome: fromOre(actual("INCOME")),
+            actualCost: fromOre(actual("COST")),
+            actualResult: fromOre(actual("INCOME") - actual("COST")),
+            unreimbursed: fromOre(sum(unreimbursed.map(transaction => transaction.amountOre))),
+            unreimbursedCount: unreimbursed.length,
             missingReceipts: transactions.filter(transaction => !store().receipts[transaction.id]).length,
         };
     };
     const references = categoryId => store().references
-        .flatMap(reference => reference.figures.filter(figure => figure.categoryId === categoryId).map(figure => ({reference, figure})))
+        .flatMap(reference => reference.figures.filter(figure => figure.categoryId === categoryId).map(figure => ({
+            reference,
+            figure
+        })))
         .sort((a, b) => b.reference.year - a.reference.year)
         .map(({reference, figure}) => {
             const per = ore => ore !== null && reference.participants ? fromOre(Math.round(ore / reference.participants / 100) * 100) : null;
 
             return {
-                __typename: "ReferenceFigureView", label: reference.label, year: reference.year, participants: reference.participants,
-                budgeted: fromOre(figure.budgetedOre), actual: fromOre(figure.actualOre), budgetedPerParticipant: per(figure.budgetedOre), actualPerParticipant: per(figure.actualOre),
+                __typename: "ReferenceFigureView",
+                label: reference.label,
+                year: reference.year,
+                participants: reference.participants,
+                budgeted: fromOre(figure.budgetedOre),
+                actual: fromOre(figure.actualOre),
+                budgetedPerParticipant: per(figure.budgetedOre),
+                actualPerParticipant: per(figure.actualOre),
             };
         });
     const categorySummaries = revival => {
@@ -219,9 +292,14 @@ export function budgetResolvers(ctx) {
         }));
     };
     const toTypeLine = line => ({
-        __typename: "EventTypeBudgetLine", id: line.id, category: toCategory(categoryById(line.categoryId)),
-        description: {__typename: "LocalizedText", ...line.description}, quantityRule: line.quantityRule, quantity: line.quantity,
-        unitAmount: fromOre(line.unitOre), version: line.version,
+        __typename: "EventTypeBudgetLine",
+        id: line.id,
+        category: toCategory(categoryById(line.categoryId)),
+        description: {__typename: "LocalizedText", ...line.description},
+        quantityRule: line.quantityRule,
+        quantity: line.quantity,
+        unitAmount: fromOre(line.unitOre),
+        version: line.version,
     });
     const proposals = revival => {
         const participants = settingsOf(revival).participantsPlanned;
@@ -247,10 +325,14 @@ export function budgetResolvers(ctx) {
         const amountOf = role => sum(ofRole(role).map(lineAmount));
         const priceOf = role => quantityOf(role) ? Math.round(amountOf(role) / quantityOf(role)) : null;
         const baseline = {
-            participants: settings.participantsPlanned, participationFee: settings.participationFee,
-            showTicketPrice: fromOre(priceOf("SHOW_TICKETS")), showTickets: ofRole("SHOW_TICKETS").length ? Math.round(quantityOf("SHOW_TICKETS")) : null,
-            partyTicketPrice: fromOre(priceOf("PARTY_TICKETS")), partyTickets: ofRole("PARTY_TICKETS").length ? Math.round(quantityOf("PARTY_TICKETS")) : null,
-            venueCost: fromOre(amountOf("VENUE")), partyCost: fromOre(amountOf("PARTY")),
+            participants: settings.participantsPlanned,
+            participationFee: settings.participationFee,
+            showTicketPrice: fromOre(priceOf("SHOW_TICKETS")),
+            showTickets: ofRole("SHOW_TICKETS").length ? Math.round(quantityOf("SHOW_TICKETS")) : null,
+            partyTicketPrice: fromOre(priceOf("PARTY_TICKETS")),
+            partyTickets: ofRole("PARTY_TICKETS").length ? Math.round(quantityOf("PARTY_TICKETS")) : null,
+            venueCost: fromOre(amountOf("VENUE")),
+            partyCost: fromOre(amountOf("PARTY")),
         };
         const used = Object.fromEntries(Object.entries(baseline).map(([key, value]) => [key, input[key] ?? value]));
         const ticketIncome = (role, ticketsKey, priceKey) => input[ticketsKey] != null || input[priceKey] != null
@@ -286,8 +368,18 @@ export function budgetResolvers(ctx) {
         proposals: proposals(revival),
         scenarios: store().scenarios.filter(scenario => scenario.revivalId === revival.id && !scenario.removed).map(scenario => toScenario(revival, scenario)),
     } : null;
-    const permissions = (persona, revival) => ({__typename: "RevivalPermissions", canReadBudget: canRead(persona, revival), canWriteBudget: canWrite(persona, revival)});
-    const revivalHead = (persona, revival) => ({__typename: "Revival", id: revival.id, title: revival.title, status: revival.status, permissions: permissions(persona, revival)});
+    const permissions = (persona, revival) => ({
+        __typename: "RevivalPermissions",
+        canReadBudget: canRead(persona, revival),
+        canWriteBudget: canWrite(persona, revival)
+    });
+    const revivalHead = (persona, revival) => ({
+        __typename: "Revival",
+        id: revival.id,
+        title: revival.title,
+        status: revival.status,
+        permissions: permissions(persona, revival)
+    });
     const findLine = (persona, id, version) => {
         const line = store().lines.find(candidate => candidate.id === String(id));
 
@@ -341,20 +433,32 @@ export function budgetResolvers(ctx) {
             throw new GraphQLError("BAD_REQUEST", "Skriv en benämning.");
         }
         return {
-            label: input.label.trim(), year: input.year, participants: input.participants ?? null, comment: input.comment?.trim() || null,
-            figures: input.figures.map(figure => ({categoryId: figure.categoryId, budgetedOre: toOre(figure.budgeted), actualOre: toOre(figure.actual)})),
+            label: input.label.trim(),
+            year: input.year,
+            participants: input.participants ?? null,
+            comment: input.comment?.trim() || null,
+            figures: input.figures.map(figure => ({
+                categoryId: figure.categoryId,
+                budgetedOre: toOre(figure.budgeted),
+                actualOre: toOre(figure.actual)
+            })),
         };
     };
     const toReference = reference => ({
         __typename: "ReferenceRevival", ...reference,
         figures: reference.figures.map(figure => ({
-            __typename: "ReferenceFigure", category: toCategory(categoryById(figure.categoryId)), budgeted: fromOre(figure.budgetedOre), actual: fromOre(figure.actualOre),
+            __typename: "ReferenceFigure",
+            category: toCategory(categoryById(figure.categoryId)),
+            budgeted: fromOre(figure.budgetedOre),
+            actual: fromOre(figure.actualOre),
         })),
     });
     const typeLineInput = input => ({
         categoryId: activeCategory(input.categoryId).id,
         description: {sv: description(input.description.sv), en: input.description.en?.trim() || null},
-        quantityRule: input.quantityRule, quantity: input.quantityRule === "FIXED" ? input.quantity : null, unitOre: toOre(input.unitAmount),
+        quantityRule: input.quantityRule,
+        quantity: input.quantityRule === "FIXED" ? input.quantity : null,
+        unitOre: toOre(input.unitAmount),
     });
     const eventTypeOf = id => {
         const found = ctx.state().event.types.find(type => type.id === String(id));
@@ -388,8 +492,15 @@ export function budgetResolvers(ctx) {
             BudgetCategoryCreate(persona, {input}) {
                 superAdmin(persona);
                 roleFree(input.role);
-                const created = {id: `bc-${store().nextId++}`, name: categoryName(input.name), kind: input.kind, role: input.role ?? null,
-                    position: store().categories.length, retired: false, version: 0};
+                const created = {
+                    id: `bc-${store().nextId++}`,
+                    name: categoryName(input.name),
+                    kind: input.kind,
+                    role: input.role ?? null,
+                    position: store().categories.length,
+                    retired: false,
+                    version: 0
+                };
 
                 store().categories.push(created);
                 return {budgetCategoryCreate: toCategory(created)};
@@ -401,7 +512,11 @@ export function budgetResolvers(ctx) {
                 if (!found.retired) {
                     roleFree(input.role, found);
                 }
-                Object.assign(found, {name: categoryName(input.name, found), role: input.role ?? null, version: found.version + 1});
+                Object.assign(found, {
+                    name: categoryName(input.name, found),
+                    role: input.role ?? null,
+                    version: found.version + 1
+                });
                 return {budgetCategoryUpdate: toCategory(found)};
             },
             BudgetCategoryMove(persona, {id, version, position}) {
@@ -484,7 +599,11 @@ export function budgetResolvers(ctx) {
                 superAdmin(persona);
                 const eventType = eventTypeOf(input.eventTypeId);
 
-                store().typeLines.push({id: `etl${store().nextId++}`, eventTypeId: eventType.id, ...typeLineInput(input), version: 0});
+                store().typeLines.push({
+                    id: `etl${store().nextId++}`,
+                    eventTypeId: eventType.id, ...typeLineInput(input),
+                    version: 0
+                });
                 return {eventTypeBudgetLineCreate: {__typename: "EventType", id: eventType.id}};
             },
             EventTypeBudgetLineUpdate(persona, {id, version, input}) {
@@ -525,11 +644,26 @@ export function budgetResolvers(ctx) {
                 const budget = budgetOf(persona, revival);
 
                 return {
-                    revival: {...revivalHead(persona, revival), budget: budget && {...budget, lines: linesOf(revival, includeRemoved).map(toLine)}},
+                    revival: {
+                        ...revivalHead(persona, revival),
+                        budget: budget && {...budget, lines: linesOf(revival, includeRemoved).map(toLine)}
+                    },
                     events: ctx.state().event.events.filter(event => event.revivalId === revival.id && !event.cancelled)
-                        .map(event => ({__typename: "Event", id: event.id, title: event.title, startDate: event.startDate, endDate: event.endDate})),
+                        .map(event => ({
+                            __typename: "Event",
+                            id: event.id,
+                            title: event.title,
+                            startDate: event.startDate,
+                            endDate: event.endDate
+                        })),
                     logEntries: ctx.state().log.entries.filter(entry => entry.revivalId === revival.id && entry.type === "DECISION")
-                        .map(entry => ({__typename: "LogEntry", id: entry.id, number: entry.number, text: entry.text, date: entry.date})),
+                        .map(entry => ({
+                            __typename: "LogEntry",
+                            id: entry.id,
+                            number: entry.number,
+                            text: entry.text,
+                            date: entry.date
+                        })),
                     budgetCategories: orderedCategories().filter(found => !found.retired).map(toCategory),
                 };
             },
@@ -541,7 +675,8 @@ export function budgetResolvers(ctx) {
                     revival: {
                         ...revivalHead(persona, revival), ownerCandidates: log.candidates(revival),
                         budget: budget && {
-                            ...budget, transactions: transactionsOf(revival, includeCancelled).map(transaction => toTransaction(revival, transaction)),
+                            ...budget,
+                            transactions: transactionsOf(revival, includeCancelled).map(transaction => toTransaction(revival, transaction)),
                             lines: linesOf(revival).map(toLine),
                         },
                     },
@@ -566,8 +701,12 @@ export function budgetResolvers(ctx) {
                     throw conflict();
                 }
                 store().settings[revival.id] = {
-                    participantsPlanned: input.participantsPlanned ?? null, participationFee: input.participationFee ?? null, loanAmount: input.loanAmount ?? null,
-                    loanReceivedOn: input.loanReceivedOn ?? null, loanRepaidOn: input.loanRepaidOn ?? null, version: input.version + 1,
+                    participantsPlanned: input.participantsPlanned ?? null,
+                    participationFee: input.participationFee ?? null,
+                    loanAmount: input.loanAmount ?? null,
+                    loanReceivedOn: input.loanReceivedOn ?? null,
+                    loanRepaidOn: input.loanRepaidOn ?? null,
+                    version: input.version + 1,
                 };
                 return {budgetSettingsUpdate: budgetOf(persona, revival)};
             },
@@ -583,9 +722,18 @@ export function budgetResolvers(ctx) {
                     throw new GraphQLError("BAD_REQUEST", "Raden finns redan för händelsen.");
                 }
                 const line = {
-                    id: String(store().nextId++), revivalId: revival.id, categoryId: input.categoryId, description: description(input.description),
-                    quantity: input.quantity ?? 1, unitOre: toOre(input.unitAmount), eventId: input.eventId ?? null, logEntryId: input.logEntryId ?? null,
-                    eventTypeLineId: input.eventTypeLineId ?? null, comment: input.comment?.trim() || null, removed: false, version: 0,
+                    id: String(store().nextId++),
+                    revivalId: revival.id,
+                    categoryId: input.categoryId,
+                    description: description(input.description),
+                    quantity: input.quantity ?? 1,
+                    unitOre: toOre(input.unitAmount),
+                    eventId: input.eventId ?? null,
+                    logEntryId: input.logEntryId ?? null,
+                    eventTypeLineId: input.eventTypeLineId ?? null,
+                    comment: input.comment?.trim() || null,
+                    removed: false,
+                    version: 0,
                 };
 
                 store().lines.push(line);
@@ -636,8 +784,17 @@ export function budgetResolvers(ctx) {
                     throw new GraphQLError("BAD_REQUEST", "Beloppet måste vara större än noll.");
                 }
                 const transaction = {
-                    id: String(store().nextId++), revivalId: revival.id, date: input.date, amountOre, categoryId: found.id, description: description(input.description),
-                    budgetLineId: input.budgetLineId ?? null, paidBy: log.owner(revival, input.paidBy), reimbursedAt: null, cancelled: false, version: 0,
+                    id: String(store().nextId++),
+                    revivalId: revival.id,
+                    date: input.date,
+                    amountOre,
+                    categoryId: found.id,
+                    description: description(input.description),
+                    budgetLineId: input.budgetLineId ?? null,
+                    paidBy: log.owner(revival, input.paidBy),
+                    reimbursedAt: null,
+                    cancelled: false,
+                    version: 0,
                 };
 
                 store().transactions.push(transaction);
@@ -673,12 +830,22 @@ export function budgetResolvers(ctx) {
                 if (!transaction.paidBy) {
                     throw new GraphQLError("BAD_REQUEST", "Bara utlägg kan betalas tillbaka.");
                 }
-                Object.assign(transaction, {reimbursedAt: reimbursed ? new Date().toISOString() : null, version: transaction.version + 1});
+                Object.assign(transaction, {
+                    reimbursedAt: reimbursed ? new Date().toISOString() : null,
+                    version: transaction.version + 1
+                });
                 return {transactionSetReimbursed: toTransaction(visibleRevival(persona, transaction.revivalId), transaction)};
             },
             BudgetScenarioSave(persona, {input}) {
                 const revival = writable(persona, input.revivalId);
-                const scenario = {id: String(store().nextId++), revivalId: revival.id, name: input.name.trim(), parameters: input.parameters, removed: false, version: 0};
+                const scenario = {
+                    id: String(store().nextId++),
+                    revivalId: revival.id,
+                    name: input.name.trim(),
+                    parameters: input.parameters,
+                    removed: false,
+                    version: 0
+                };
 
                 store().scenarios.push(scenario);
                 return {budgetScenarioSave: toScenario(revival, scenario)};
@@ -690,7 +857,11 @@ export function budgetResolvers(ctx) {
                 if (scenario.version !== version) {
                     throw conflict();
                 }
-                Object.assign(scenario, {name: input.name.trim(), parameters: input.parameters, version: scenario.version + 1});
+                Object.assign(scenario, {
+                    name: input.name.trim(),
+                    parameters: input.parameters,
+                    version: scenario.version + 1
+                });
                 return {budgetScenarioUpdate: toScenario(revival, scenario)};
             },
             BudgetScenarioRemove(persona, {id, version}) {
@@ -709,7 +880,11 @@ export function budgetResolvers(ctx) {
             RevivalTimeline(persona) {
                 return {
                     revivals: ctx.state().revivals.filter(revival => canSee(persona, revival)).map(revival => ({
-                        __typename: "Revival", id: revival.id, title: revival.title, status: revival.status, premiereDate: revival.premiereDate,
+                        __typename: "Revival",
+                        id: revival.id,
+                        title: revival.title,
+                        status: revival.status,
+                        premiereDate: revival.premiereDate,
                         shows: revival.shows.map(show => ({__typename: "RevivalShow", ...show})),
                     })),
                     spexCalendarDates: readSpexDates(persona),
@@ -747,7 +922,12 @@ export function budgetResolvers(ctx) {
         handleHttp(persona, req, path, url, rawBody, res) {
             const json = (status, body) => res.writeHead(status, {"Content-Type": "application/json"}).end(JSON.stringify(body));
             const fail = error => error instanceof GraphQLError
-                ? json({NOT_FOUND: 404, FORBIDDEN: 403, CONFLICT: 409, BAD_REQUEST: 400}[error.classification] ?? 500, {code: error.classification, message: error.message})
+                ? json({
+                    NOT_FOUND: 404,
+                    FORBIDDEN: 403,
+                    CONFLICT: 409,
+                    BAD_REQUEST: 400
+                }[error.classification] ?? 500, {code: error.classification, message: error.message})
                 : json(500, {code: "INTERNAL_ERROR", message: String(error)});
             const receipt = /^\/api\/transactions\/([^/]+)\/receipt$/.exec(path);
             const exported = /^\/api\/revivals\/([^/]+)\/budget\.xlsx$/.exec(path);
@@ -765,8 +945,10 @@ export function budgetResolvers(ctx) {
                         throw new GraphQLError("NOT_FOUND", "Kvittot finns inte.");
                     }
                     res.writeHead(200, {
-                        "Content-Type": stored.contentType, "Content-Disposition": `attachment; filename="${stored.filename}"`,
-                        "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'; sandbox",
+                        "Content-Type": stored.contentType,
+                        "Content-Disposition": `attachment; filename="${stored.filename}"`,
+                        "X-Content-Type-Options": "nosniff",
+                        "Content-Security-Policy": "default-src 'none'; sandbox",
                     }).end(stored.content);
                     return true;
                 }
@@ -778,11 +960,21 @@ export function budgetResolvers(ctx) {
                         && !file.content.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
                         throw new GraphQLError("BAD_REQUEST", "Kvittot måste vara en PDF eller en bild.");
                     }
-                    const stored = {filename: file.filename.split(/[\\/]/).pop(), contentType: file.contentType, size: file.content.length,
-                        uploadedAt: new Date().toISOString(), content: file.content};
+                    const stored = {
+                        filename: file.filename.split(/[\\/]/).pop(),
+                        contentType: file.contentType,
+                        size: file.content.length,
+                        uploadedAt: new Date().toISOString(),
+                        content: file.content
+                    };
 
                     store().receipts[transaction.id] = stored;
-                    json(200, {filename: stored.filename, contentType: stored.contentType, size: stored.size, uploadedAt: stored.uploadedAt});
+                    json(200, {
+                        filename: stored.filename,
+                        contentType: stored.contentType,
+                        size: stored.size,
+                        uploadedAt: stored.uploadedAt
+                    });
                     return true;
                 }
                 if (receipt && req.method === "DELETE") {
@@ -816,27 +1008,82 @@ export function budgetResolvers(ctx) {
          * loses the FINANCE area.
          */
         seed({finance = true} = {}) {
-            store().settings["1"] = {participantsPlanned: 40, participationFee: "800", loanAmount: "10000", loanReceivedOn: null, loanRepaidOn: null, version: 1};
+            store().settings["1"] = {
+                participantsPlanned: 40,
+                participationFee: "800",
+                loanAmount: "10000",
+                loanReceivedOn: null,
+                loanRepaidOn: null,
+                version: 1
+            };
             store().typeLines.push({
-                id: `etl${store().nextId++}`, eventTypeId: "3", categoryId: "FOOD", description: {sv: "Mat under rephelgen", en: "Food during the weekend"},
-                quantityRule: "PER_PARTICIPANT", quantity: null, unitOre: 8500, version: 0,
+                id: `etl${store().nextId++}`,
+                eventTypeId: "3",
+                categoryId: "FOOD",
+                description: {sv: "Mat under rephelgen", en: "Food during the weekend"},
+                quantityRule: "PER_PARTICIPANT",
+                quantity: null,
+                unitOre: 8500,
+                version: 0,
             });
             store().lines.push({
-                id: String(store().nextId++), revivalId: "1", categoryId: "SHOW_TICKETS", description: "Biljetter, fyra föreställningar", quantity: 400,
-                unitOre: 15000, eventId: null, logEntryId: null, eventTypeLineId: null, comment: null, removed: false, version: 0,
+                id: String(store().nextId++),
+                revivalId: "1",
+                categoryId: "SHOW_TICKETS",
+                description: "Biljetter, fyra föreställningar",
+                quantity: 400,
+                unitOre: 15000,
+                eventId: null,
+                logEntryId: null,
+                eventTypeLineId: null,
+                comment: null,
+                removed: false,
+                version: 0,
             }, {
-                id: String(store().nextId++), revivalId: "1", categoryId: "VENUE", description: "Hyra Kårhuset", quantity: 1,
-                unitOre: 4000000, eventId: null, logEntryId: null, eventTypeLineId: null, comment: null, removed: false, version: 0,
+                id: String(store().nextId++),
+                revivalId: "1",
+                categoryId: "VENUE",
+                description: "Hyra Kårhuset",
+                quantity: 1,
+                unitOre: 4000000,
+                eventId: null,
+                logEntryId: null,
+                eventTypeLineId: null,
+                comment: null,
+                removed: false,
+                version: 0,
             });
             store().references.push({
-                id: String(store().nextId++), label: "Nobel 2026", year: 2026, participants: 50, comment: null, automatic: false, version: 0,
-                figures: [{categoryId: "VENUE", budgetedOre: 3500000, actualOre: 3800000}, {categoryId: "FOOD", budgetedOre: 1000000, actualOre: 1200000}],
+                id: String(store().nextId++),
+                label: "Nobel 2026",
+                year: 2026,
+                participants: 50,
+                comment: null,
+                automatic: false,
+                version: 0,
+                figures: [{categoryId: "VENUE", budgetedOre: 3500000, actualOre: 3800000}, {
+                    categoryId: "FOOD",
+                    budgetedOre: 1000000,
+                    actualOre: 1200000
+                }],
             });
             const events = ctx.state().event;
 
             events.events.push({
-                id: String(events.nextId++), revivalId: "1", typeId: "3", title: "Rephelg 1", startDate: "2028-01-01", endDate: "2028-01-02", startTime: null,
-                endTime: null, location: null, description: null, revivalPays: true, cancelled: false, checklistId: null, version: 0,
+                id: String(events.nextId++),
+                revivalId: "1",
+                typeId: "3",
+                title: "Rephelg 1",
+                startDate: "2028-01-01",
+                endDate: "2028-01-02",
+                startTime: null,
+                endTime: null,
+                location: null,
+                description: null,
+                revivalPays: true,
+                cancelled: false,
+                checklistId: null,
+                version: 0,
             });
             if (!finance) {
                 const member = ctx.state().members.find(candidate => candidate.revivalId === "1" && candidate.sub === "p-styrgrupp");
@@ -873,7 +1120,8 @@ function multipartFile(contentType, body) {
 
         if (filename) {
             return {
-                filename: filename[1], contentType: /content-type:\s*([^\r\n]+)/i.exec(headers)?.[1]?.trim() ?? "application/octet-stream",
+                filename: filename[1],
+                contentType: /content-type:\s*([^\r\n]+)/i.exec(headers)?.[1]?.trim() ?? "application/octet-stream",
                 content: part.subarray(headerEnd + 4),
             };
         }

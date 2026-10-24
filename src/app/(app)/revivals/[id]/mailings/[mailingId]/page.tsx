@@ -44,13 +44,18 @@ export default async function MailingPage({params}: { params: Promise<{ id: stri
         const {revival, mailing} = data;
         const {permissions} = revival;
         const editable = mailing.status === "DRAFT" && permissions.canDraftMailings;
-        const audience: AudienceValues = {kind: mailing.audience.kind, positionId: mailing.audience.position?.id ?? "", eventId: mailing.audience.event?.id ?? ""};
+        const audience: AudienceValues = {
+            kind: mailing.audience.kind,
+            positionId: mailing.audience.position?.id ?? "",
+            eventId: mailing.audience.event?.id ?? ""
+        };
         const [options, positions] = editable ? await Promise.all([getMailingEditorOptions(revival.id), loadMailingPositions()]) : [null, null];
         const failed = mailing.recipients.filter(recipient => recipient.status === "FAILED").length;
 
         return (
             <div className="flex flex-1 flex-col gap-4">
-                <Link href={`/revivals/${revival.id}/mailings`} className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+                <Link href={`/revivals/${revival.id}/mailings`}
+                      className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
                     <ArrowLeft className="size-4"/>{t("back")}
                 </Link>
                 <div className="flex flex-col gap-2">
@@ -63,7 +68,10 @@ export default async function MailingPage({params}: { params: Promise<{ id: stri
                         {mailing.plannedFor && (
                             <>
                                 <dt className="text-muted-foreground">{t("plannedFor")}</dt>
-                                <dd>{t("fromPlan", {name: pickText(mailing.plannedFor.template.name, locale).text, date: formatDate(mailing.plannedFor.dueDate) ?? ""})}</dd>
+                                <dd>{t("fromPlan", {
+                                    name: pickText(mailing.plannedFor.template.name, locale).text,
+                                    date: formatDate(mailing.plannedFor.dueDate) ?? ""
+                                })}</dd>
                             </>
                         )}
                         <dt className="text-muted-foreground">{t("createdBy")}</dt>
@@ -75,28 +83,37 @@ export default async function MailingPage({params}: { params: Promise<{ id: stri
                             </>
                         )}
                     </dl>
-                    <MailingActions revivalId={revival.id} mailing={mailing} audience={audience} canSend={mailing.canSend}
-                                    canDraft={permissions.canDraftMailings} canRetry={mailing.status === "SENT" && failed > 0 && permissions.canSendMailings}/>
+                    <MailingActions revivalId={revival.id} mailing={mailing} audience={audience}
+                                    canSend={mailing.canSend}
+                                    canDraft={permissions.canDraftMailings}
+                                    canRetry={mailing.status === "SENT" && failed > 0 && permissions.canSendMailings}/>
                 </div>
 
                 {editable && options && positions ? (
-                    <MailingEditor revivalId={revival.id} mailingId={mailing.id} version={mailing.version} events={options.events}
+                    <MailingEditor revivalId={revival.id} mailingId={mailing.id} version={mailing.version}
+                                   events={options.events}
                                    positions={positions.positions} positionsUnavailable={positions.unavailable}
-                                   planned={mailing.plannedFor ? {templateId: mailing.plannedFor.template.id, eventId: mailing.plannedFor.event?.id ?? null} : null}
+                                   planned={mailing.plannedFor ? {
+                                       templateId: mailing.plannedFor.template.id,
+                                       eventId: mailing.plannedFor.event?.id ?? null
+                                   } : null}
                                    defaults={{audience, subject: mailing.subject, body: mailing.body}}/>
                 ) : (
                     <section aria-labelledby="mailing-body" className="flex flex-col gap-2">
                         <h4 id="mailing-body" className="font-semibold">{t("body")}</h4>
-                        <div className="max-w-prose rounded-md border p-4 text-sm"><GuideMarkdown>{mailing.body}</GuideMarkdown></div>
+                        <div className="max-w-prose rounded-md border p-4 text-sm">
+                            <GuideMarkdown>{mailing.body}</GuideMarkdown></div>
                     </section>
                 )}
 
                 {mailing.status === "SENT" && (
                     <section aria-labelledby="mailing-recipients" className="flex flex-col gap-2">
-                        <h4 id="mailing-recipients" className="font-semibold">{t("recipientsTitle", {count: mailing.recipients.length})}</h4>
+                        <h4 id="mailing-recipients"
+                            className="font-semibold">{t("recipientsTitle", {count: mailing.recipients.length})}</h4>
                         <ul className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
                             {mailing.recipients.map((recipient, index) => (
-                                <li key={index} className="flex items-center justify-between gap-2 rounded-md border px-3 py-1.5 text-sm">
+                                <li key={index}
+                                    className="flex items-center justify-between gap-2 rounded-md border px-3 py-1.5 text-sm">
                                     <span>{recipient.displayName}</span>
                                     <RecipientStatusBadge status={recipient.status}/>
                                 </li>

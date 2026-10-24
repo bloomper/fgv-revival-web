@@ -16,8 +16,20 @@ vi.mock("@/app/(app)/revivals/manage/actions.server", () => ({
 const permissions = revivalDetail().permissions;
 const revivals = [
     revivalDetail({id: "1", title: "Ali Baba 2028", year: 2028}),
-    revivalDetail({id: "2", title: "Nobel 2030", year: 2030, status: "PROPOSED", spex: {id: "2", title: "Nobel", year: 1988, available: true}}),
-    revivalDetail({id: "3", title: "Snorre 2027", year: 2027, status: "OPEN", spex: {id: "3", title: "Snorre", year: 1974, available: true}}),
+    revivalDetail({
+        id: "2",
+        title: "Nobel 2030",
+        year: 2030,
+        status: "PROPOSED",
+        spex: {id: "2", title: "Nobel", year: 1988, available: true}
+    }),
+    revivalDetail({
+        id: "3",
+        title: "Snorre 2027",
+        year: 2027,
+        status: "OPEN",
+        spex: {id: "3", title: "Snorre", year: 1974, available: true}
+    }),
 ];
 
 function spex() {

@@ -31,46 +31,82 @@ export function meetingResolvers(ctx) {
     const entries = revivalId => ctx.state().log.entries.filter(entry => entry.revivalId === revivalId);
     const unowned = revivalId => entries(revivalId).filter(entry => entry.type === "TODO" && ["OPEN", "WAITING"].includes(entry.status)
         && !entry.owner?.personId && !entry.owner?.name);
-    const summary = meeting => ({__typename: "MeetingSummary", id: meeting.id, date: meeting.date, title: meeting.title, status: meeting.status});
-    const minutesRow = entry => ({__typename: "MinutesRow", entryId: entry.id, number: entry.number, type: entry.type, text: entry.text,
-        owner: log.toOwner(ctx.state().revivals.find(revival => revival.id === entry.revivalId), entry.owner), deadline: entry.deadline, status: entry.status});
+    const summary = meeting => ({
+        __typename: "MeetingSummary",
+        id: meeting.id,
+        date: meeting.date,
+        title: meeting.title,
+        status: meeting.status
+    });
+    const minutesRow = entry => ({
+        __typename: "MinutesRow",
+        entryId: entry.id,
+        number: entry.number,
+        type: entry.type,
+        text: entry.text,
+        owner: log.toOwner(ctx.state().revivals.find(revival => revival.id === entry.revivalId), entry.owner),
+        deadline: entry.deadline,
+        status: entry.status
+    });
     const toMeeting = (persona, meeting) => {
         const revival = ctx.state().revivals.find(candidate => candidate.id === meeting.revivalId);
         const open = meeting.status === "PLANNED" || meeting.status === "IN_PROGRESS";
 
         return {
-            __typename: "Meeting", ...meeting, attendees: meeting.attendeeIds.map(person), recorder: meeting.recorder ? person(meeting.recorder) : null,
-            startedAt: null, closedAt: null,
+            __typename: "Meeting", ...meeting,
+            attendees: meeting.attendeeIds.map(person),
+            recorder: meeting.recorder ? person(meeting.recorder) : null,
+            startedAt: null,
+            closedAt: null,
             canEmailMinutes: meeting.status === "CLOSED" && canWrite(persona, revival),
             openEntries: open ? entries(meeting.revivalId).filter(entry => ["OPEN", "WAITING"].includes(entry.status))
                 .sort((a, b) => a.number - b.number).map(log.toEntry) : [],
             entries: entries(meeting.revivalId).filter(entry => entry.meetingId === meeting.id).map(log.toEntry),
-            blockingEntries: meeting.status === "IN_PROGRESS" ? unowned(meeting.revivalId).map(entry => ({__typename: "LogEntrySummary", id: entry.id,
-                number: entry.number, type: entry.type, status: entry.status})) : [],
+            blockingEntries: meeting.status === "IN_PROGRESS" ? unowned(meeting.revivalId).map(entry => ({
+                __typename: "LogEntrySummary", id: entry.id,
+                number: entry.number, type: entry.type, status: entry.status
+            })) : [],
             minutes: meeting.minutes ? {
                 __typename: "Minutes", ...Object.fromEntries(["decisions", "todos", "questions", "closed"].map(key => [key, meeting.minutes[key].map(minutesRow)])),
-                agendaPoints: meeting.agendaPoints, attendees: meeting.attendeeIds.map(person), othersPresent: meeting.othersPresent,
+                agendaPoints: meeting.agendaPoints,
+                attendees: meeting.attendeeIds.map(person),
+                othersPresent: meeting.othersPresent,
                 recorder: meeting.recorder ? person(meeting.recorder) : null,
             } : null,
-            emails: meetings().emails.filter(email => email.meetingId === meeting.id).map(email => ({__typename: "MinutesEmail", ...email,
-                sentBy: person(email.sentBy), recipients: email.recipients.map(recipient => ({__typename: "MinutesEmailRecipient", person: person(recipient.sub),
-                    status: recipient.status}))})),
+            emails: meetings().emails.filter(email => email.meetingId === meeting.id).map(email => ({
+                __typename: "MinutesEmail", ...email,
+                sentBy: person(email.sentBy), recipients: email.recipients.map(recipient => ({
+                    __typename: "MinutesEmailRecipient", person: person(recipient.sub),
+                    status: recipient.status
+                }))
+            })),
         };
     };
     // Addresses in failOnce fail on the next send only, so a retry reaches them.
     const send = (persona, meeting, language, subs, waitingLeftOut, retryOf = null) => {
         const recipients = subs.map(sub => ({sub, status: meetings().failOnce.includes(sub) ? "FAILED" : "SENT"}));
-        const email = {id: String(meetings().emails.length + 1), meetingId: meeting.id, language, sentBy: persona.sub,
-            sentAt: new Date().toISOString(), waitingLeftOut, recipients, retryOf};
+        const email = {
+            id: String(meetings().emails.length + 1), meetingId: meeting.id, language, sentBy: persona.sub,
+            sentAt: new Date().toISOString(), waitingLeftOut, recipients, retryOf
+        };
 
         meetings().failOnce = [];
         meetings().emails.push(email);
-        return {__typename: "MinutesEmail", id: email.id, waitingLeftOut,
-            recipients: recipients.map(recipient => ({__typename: "MinutesEmailRecipient", person: person(recipient.sub), status: recipient.status}))};
+        return {
+            __typename: "MinutesEmail", id: email.id, waitingLeftOut,
+            recipients: recipients.map(recipient => ({
+                __typename: "MinutesEmailRecipient",
+                person: person(recipient.sub),
+                status: recipient.status
+            }))
+        };
     };
     const revivalHeader = (persona, revival) => ({
-        __typename: "Revival", id: revival.id, title: revival.title,
-        permissions: {__typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival)}, ownerCandidates: log.candidates(revival),
+        __typename: "Revival",
+        id: revival.id,
+        title: revival.title,
+        permissions: {__typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival)},
+        ownerCandidates: log.candidates(revival),
     });
 
     return {
@@ -99,9 +135,18 @@ export function meetingResolvers(ctx) {
                 throw forbidden();
             }
             const meeting = {
-                id: String(meetings().nextId++), revivalId: revival.id, date: input.date, title: input.title || null, status: "PLANNED",
-                attendeeIds: input.attendeeIds ?? [], othersPresent: input.othersPresent || null, agendaPoints: input.agendaPoints ?? [],
-                recorder: null, minutes: null, version: 0, changes: [],
+                id: String(meetings().nextId++),
+                revivalId: revival.id,
+                date: input.date,
+                title: input.title || null,
+                status: "PLANNED",
+                attendeeIds: input.attendeeIds ?? [],
+                othersPresent: input.othersPresent || null,
+                agendaPoints: input.agendaPoints ?? [],
+                recorder: null,
+                minutes: null,
+                version: 0,
+                changes: [],
             };
 
             meetings().meetings.push(meeting);
@@ -111,8 +156,14 @@ export function meetingResolvers(ctx) {
             const meeting = find(persona, input.id);
 
             writable(persona, meeting, input.version);
-            Object.assign(meeting, {date: input.date ?? meeting.date, title: input.title || null, attendeeIds: input.attendeeIds ?? meeting.attendeeIds,
-                othersPresent: input.othersPresent || null, agendaPoints: input.agendaPoints ?? meeting.agendaPoints, version: meeting.version + 1});
+            Object.assign(meeting, {
+                date: input.date ?? meeting.date,
+                title: input.title || null,
+                attendeeIds: input.attendeeIds ?? meeting.attendeeIds,
+                othersPresent: input.othersPresent || null,
+                agendaPoints: input.agendaPoints ?? meeting.agendaPoints,
+                version: meeting.version + 1
+            });
             return {meetingUpdate: {__typename: "Meeting", id: meeting.id}};
         },
         MeetingStart(persona, {id, version}) {
@@ -160,8 +211,10 @@ export function meetingResolvers(ctx) {
             writable(persona, meeting);
             const members = ctx.state().members.filter(member => member.revivalId === meeting.revivalId && !member.removed);
 
-            return {minutesEmailSend: send(persona, meeting, input.language, members.filter(member => member.sub).map(member => member.sub),
-                members.filter(member => !member.sub).length)};
+            return {
+                minutesEmailSend: send(persona, meeting, input.language, members.filter(member => member.sub).map(member => member.sub),
+                    members.filter(member => !member.sub).length)
+            };
         },
         MinutesEmailRetry(persona, {emailId}) {
             const earlier = meetings().emails.find(email => email.id === String(emailId));

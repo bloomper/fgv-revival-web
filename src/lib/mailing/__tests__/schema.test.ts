@@ -1,5 +1,11 @@
 import {describe, expect, it} from "vitest";
-import {audienceValuesSchema, mailingTemplateValuesSchema, mailingValuesSchema, toAudienceInput, toMailingTemplateInput} from "@/lib/mailing/schema";
+import {
+    audienceValuesSchema,
+    mailingTemplateValuesSchema,
+    mailingValuesSchema,
+    toAudienceInput,
+    toMailingTemplateInput
+} from "@/lib/mailing/schema";
 
 describe("audienceValuesSchema", () => {
     it("asks for the position or the event the audience needs", () => {
@@ -11,9 +17,21 @@ describe("audienceValuesSchema", () => {
     });
 
     it("sends only the position or event the kind uses", () => {
-        expect(toAudienceInput({kind: "POSITION", positionId: "T-ORK", eventId: "3"})).toEqual({kind: "POSITION", positionId: "T-ORK", eventId: null});
-        expect(toAudienceInput({kind: "EVENT_ATTENDEES", positionId: "T-ORK", eventId: "3"})).toEqual({kind: "EVENT_ATTENDEES", positionId: null, eventId: "3"});
-        expect(toAudienceInput({kind: "HELPERS", positionId: "T-ORK", eventId: "3"})).toEqual({kind: "HELPERS", positionId: null, eventId: null});
+        expect(toAudienceInput({kind: "POSITION", positionId: "T-ORK", eventId: "3"})).toEqual({
+            kind: "POSITION",
+            positionId: "T-ORK",
+            eventId: null
+        });
+        expect(toAudienceInput({
+            kind: "EVENT_ATTENDEES",
+            positionId: "T-ORK",
+            eventId: "3"
+        })).toEqual({kind: "EVENT_ATTENDEES", positionId: null, eventId: "3"});
+        expect(toAudienceInput({kind: "HELPERS", positionId: "T-ORK", eventId: "3"})).toEqual({
+            kind: "HELPERS",
+            positionId: null,
+            eventId: null
+        });
     });
 });
 
@@ -24,7 +42,10 @@ describe("mailingValuesSchema", () => {
 
         expect(issues({subject: "Allergier", body: "Svara **senast** måndag."})).toEqual([]);
         expect(issues({subject: " ", body: ""})).toEqual(["subjectRequired", "mailingBodyRequired"]);
-        expect(issues({subject: "x".repeat(201), body: "x".repeat(20001)})).toEqual(["subjectTooLong", "mailingBodyTooLong"]);
+        expect(issues({
+            subject: "x".repeat(201),
+            body: "x".repeat(20001)
+        })).toEqual(["subjectTooLong", "mailingBodyTooLong"]);
     });
 });
 
@@ -50,12 +71,19 @@ describe("mailingTemplateValuesSchema", () => {
     });
 
     it("keeps an amount only for day rules", () => {
-        expect(toMailingTemplateInput(mailingTemplateValuesSchema.parse({...values, due: {kind: "DAYS", amount: -7, weekday: "MONDAY"}})).due)
+        expect(toMailingTemplateInput(mailingTemplateValuesSchema.parse({
+            ...values,
+            due: {kind: "DAYS", amount: -7, weekday: "MONDAY"}
+        })).due)
             .toEqual({kind: "DAYS", amount: -7, weekday: null});
     });
 
     it("needs the Swedish texts", () => {
-        const result = mailingTemplateValuesSchema.safeParse({...values, name: {sv: "", en: "Allergies"}, body: {sv: "", en: "Hi"}});
+        const result = mailingTemplateValuesSchema.safeParse({
+            ...values,
+            name: {sv: "", en: "Allergies"},
+            body: {sv: "", en: "Hi"}
+        });
 
         expect(result.error?.issues.map(issue => issue.message)).toEqual(["catalogNameRequired", "mailingBodyRequired"]);
     });

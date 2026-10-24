@@ -5,7 +5,8 @@ import {revivalDetail} from "@/components/revival/__tests__/fixtures";
 
 describe("RevivalCard", () => {
     it("shows the year once, and the spex with its original year", () => {
-        render(<RevivalCard revival={revivalDetail({spex: {id: "1", title: "Ali Baba", year: 1987, available: true}})} role={null}/>);
+        render(<RevivalCard revival={revivalDetail({spex: {id: "1", title: "Ali Baba", year: 1987, available: true}})}
+                            role={null}/>);
 
         expect(screen.getByText("2028")).toBeInTheDocument();
         expect(screen.getByText("Ali Baba").closest("[data-slot=card-title]")).toHaveTextContent("Ali Baba (1987)");

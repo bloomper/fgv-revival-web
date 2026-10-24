@@ -17,7 +17,8 @@ export function GuideOverview({version, basePath}: { version: GuideVersionFields
         <div className="space-y-6">
             {introduction.text && (
                 <section aria-label={t("introduction")} className="space-y-2">
-                    {!introduction.translated && <span className="text-xs text-muted-foreground">{t("notTranslated")}</span>}
+                    {!introduction.translated &&
+                        <span className="text-xs text-muted-foreground">{t("notTranslated")}</span>}
                     <GuideMarkdown>{introduction.text}</GuideMarkdown>
                 </section>
             )}
@@ -34,9 +35,11 @@ export function GuideOverview({version, basePath}: { version: GuideVersionFields
                                 <li key={chapter.id}>
                                     <Link href={`${basePath}/${encodeURIComponent(chapter.key)}`}
                                           className="flex h-full items-center gap-3 rounded-md border p-3 hover:bg-accent">
-                                        <span className="w-6 shrink-0 text-right font-medium tabular-nums text-muted-foreground">{index + 1}.</span>
+                                        <span
+                                            className="w-6 shrink-0 text-right font-medium tabular-nums text-muted-foreground">{index + 1}.</span>
                                         <span className="min-w-0 flex-1">
-                                            <span className="block font-medium">{pickText(chapter.title, locale).text}</span>
+                                            <span
+                                                className="block font-medium">{pickText(chapter.title, locale).text}</span>
                                             <span className="block text-xs text-muted-foreground">
                                                 {t("chapterContents", {sections: chapter.sections.length, items})}
                                             </span>

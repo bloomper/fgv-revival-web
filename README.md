@@ -33,16 +33,16 @@ a guide version without a chapter loses its checklist for it, which the web asks
 The committed `.env` holds `SUPPORT_EMAIL`, `FEEDBACK_EMAIL`, `SUPPORTED_LOCALES` and `DEFAULT_LOCALE`. Create
 `.env.local` for the rest:
 
-| Variable                 | Example                                              | What                                         |
-|--------------------------|------------------------------------------------------|----------------------------------------------|
-| `AUTH_SECRET`            | output of `openssl rand -base64 32`                  | Signs the session cookie                     |
-| `KEYCLOAK_CLIENT_ID`     | `fgv-revival`                                        | Keycloak client                              |
-| `KEYCLOAK_CLIENT_SECRET` | secret of `fgv-revival`                              | Keycloak client secret                       |
-| `KEYCLOAK_ISSUER`        | `https://auth.fgv.local.nu:8443/auth/realms/fgv`     | The FGV realm                                |
-| `API_GRAPHQL_ENDPOINT`   | `https://api.revival.fgv.local.nu:8443/api/graphql`  | Nyuppsättning Server                         |
-| `BETTER_AUTH_URL`        | `http://localhost:3001`                              | This application's own address               |
-| `UMAMI_URL`              | `https://analytics.fgv.local.nu:8443`                | Optional: Umami, for visitor statistics      |
-| `UMAMI_WEBSITE_ID`       | printed by `fgv-infra-deploy/local/bin/configure-umami.sh` | Optional: the Umami website            |
+| Variable                 | Example                                                    | What                                    |
+|--------------------------|------------------------------------------------------------|-----------------------------------------|
+| `AUTH_SECRET`            | output of `openssl rand -base64 32`                        | Signs the session cookie                |
+| `KEYCLOAK_CLIENT_ID`     | `fgv-revival`                                              | Keycloak client                         |
+| `KEYCLOAK_CLIENT_SECRET` | secret of `fgv-revival`                                    | Keycloak client secret                  |
+| `KEYCLOAK_ISSUER`        | `https://auth.fgv.local.nu:8443/auth/realms/fgv`           | The FGV realm                           |
+| `API_GRAPHQL_ENDPOINT`   | `https://api.revival.fgv.local.nu:8443/api/graphql`        | Nyuppsättning Server                    |
+| `BETTER_AUTH_URL`        | `http://localhost:3001`                                    | This application's own address          |
+| `UMAMI_URL`              | `https://analytics.fgv.local.nu:8443`                      | Optional: Umami, for visitor statistics |
+| `UMAMI_WEBSITE_ID`       | printed by `fgv-infra-deploy/local/bin/configure-umami.sh` | Optional: the Umami website             |
 
 Then run `npm ci` and `npm run dev`. The dev server is on port 3001, next to Spexregister Web on 3000. `npm run dev`
 and `docker compose` trust the root certificate of fgv-infra-deploy's local Caddy

@@ -9,7 +9,9 @@ import {withPolicyPage} from "@/utils/route.server";
  * The services materials' links lead to, for super admins (M8-FR-1): FGV's own applications and services such as
  * Google Drive, with the hosts that recognise them. Retired ones only when asked for.
  */
-export default async function LinkServicesPage({searchParams}: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+export default async function LinkServicesPage({searchParams}: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
     const retired = (await searchParams).retired === "1";
 
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {

@@ -42,21 +42,30 @@ export function ShiftList({revivalId, participantId, slots, mode}: {
                 const label = `${slot.task}, ${formatDate(slot.date)} ${slot.startTime}–${slot.endTime}`;
 
                 return (
-                    <li key={slot.id} className="flex flex-col gap-3 rounded-lg border p-3 sm:flex-row sm:items-center sm:justify-between">
+                    <li key={slot.id}
+                        className="flex flex-col gap-3 rounded-lg border p-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="min-w-0 space-y-0.5">
                             <p className="font-medium">{slot.task}</p>
                             <p className="text-sm tabular-nums">
-                                <span className="capitalize">{weekday(slot.date)}</span> {formatDate(slot.date)} · {slot.startTime}–{slot.endTime}
+                                <span
+                                    className="capitalize">{weekday(slot.date)}</span> {formatDate(slot.date)} · {slot.startTime}–{slot.endTime}
                             </p>
                             <p className="text-sm text-muted-foreground">{[slot.event.title, slot.event.location].filter(Boolean).join(" · ")}</p>
-                            {slot.comment && <p className="text-sm text-muted-foreground"><PlainText text={slot.comment}/></p>}
-                            {mode === "open" && <p className="text-sm text-muted-foreground">{t("openCount", {count: slot.open})}</p>}
-                            {mode === "mine" && !own && <p className="text-sm text-muted-foreground">{t("assignedByGroup")}</p>}
+                            {slot.comment &&
+                                <p className="text-sm text-muted-foreground"><PlainText text={slot.comment}/></p>}
+                            {mode === "open" &&
+                                <p className="text-sm text-muted-foreground">{t("openCount", {count: slot.open})}</p>}
+                            {mode === "mine" && !own &&
+                                <p className="text-sm text-muted-foreground">{t("assignedByGroup")}</p>}
                         </div>
                         {mode === "open" && (
-                            <Button size="lg" className="h-11 w-full shrink-0 sm:w-auto" disabled={pending} aria-label={t("signUpFor", {slot: label})}
+                            <Button size="lg" className="h-11 w-full shrink-0 sm:w-auto" disabled={pending}
+                                    aria-label={t("signUpFor", {slot: label})}
                                     onClick={() => startTransition(async () => {
-                                        if (feedback(await signUpForShiftAction({revivalId, slotId: slot.id}), t("signedUp"))) {
+                                        if (feedback(await signUpForShiftAction({
+                                            revivalId,
+                                            slotId: slot.id
+                                        }), t("signedUp"))) {
                                             track("shift-sign-up");
                                         }
                                     })}>
@@ -64,9 +73,13 @@ export function ShiftList({revivalId, participantId, slots, mode}: {
                             </Button>
                         )}
                         {mode === "mine" && own && (
-                            <Button size="lg" variant="outline" className="h-11 w-full shrink-0 sm:w-auto" disabled={pending} aria-label={t("withdrawFrom", {slot: label})}
+                            <Button size="lg" variant="outline" className="h-11 w-full shrink-0 sm:w-auto"
+                                    disabled={pending} aria-label={t("withdrawFrom", {slot: label})}
                                     onClick={() => startTransition(async () => {
-                                        feedback(await withdrawFromShiftAction({revivalId, slotId: slot.id}), t("withdrawn"));
+                                        feedback(await withdrawFromShiftAction({
+                                            revivalId,
+                                            slotId: slot.id
+                                        }), t("withdrawn"));
                                     })}>
                                 {t("withdraw")}
                             </Button>

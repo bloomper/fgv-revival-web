@@ -27,16 +27,19 @@ export default async function GuideDraftPage() {
 
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <Link href="/admin/guide" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                <Link href="/admin/guide"
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                     <ArrowLeft className="size-4"/>
                     {t("admin.title")}
                 </Link>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <h2 className="text-lg font-bold tracking-tight">{t("admin.draft")}</h2>
                     <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-sm text-muted-foreground">{t("admin.untranslated", {count: draft.untranslatedCount})}</span>
+                        <span
+                            className="text-sm text-muted-foreground">{t("admin.untranslated", {count: draft.untranslatedCount})}</span>
                         <GuidePdfButton versionId={draft.draft.id}/>
-                        <GuidePublishDialog draftId={draft.draft.id} version={draft.draft.version} removedChapters={removedChapters}/>
+                        <GuidePublishDialog draftId={draft.draft.id} version={draft.draft.version}
+                                            removedChapters={removedChapters}/>
                         <GuideDiscardDialog draftId={draft.draft.id} version={draft.draft.version}
                                             acceptedSuggestionCount={draft.acceptedSuggestionCount}/>
                     </div>

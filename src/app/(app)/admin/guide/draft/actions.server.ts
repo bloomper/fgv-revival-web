@@ -64,11 +64,18 @@ export async function updateIntroductionAction(input: z.input<typeof guideIntrod
 
 export async function createChapterAction(input: z.input<typeof guideChapterCreateSchema>) {
     return edit(guideChapterCreateSchema, input, parsed =>
-        createGuideChapter({versionId: parsed.versionId, position: parsed.position ?? null, title: {sv: parsed.title.sv, en: en(parsed.title)}}));
+        createGuideChapter({
+            versionId: parsed.versionId,
+            position: parsed.position ?? null,
+            title: {sv: parsed.title.sv, en: en(parsed.title)}
+        }));
 }
 
 export async function updateChapterAction(input: z.input<typeof guideChapterUpdateSchema>) {
-    return edit(guideChapterUpdateSchema, input, parsed => updateGuideChapter({...parsed, title: {sv: parsed.title.sv, en: en(parsed.title)}}));
+    return edit(guideChapterUpdateSchema, input, parsed => updateGuideChapter({
+        ...parsed,
+        title: {sv: parsed.title.sv, en: en(parsed.title)}
+    }));
 }
 
 export async function moveChapterAction(input: z.input<typeof guideChapterMoveSchema>) {
@@ -88,11 +95,18 @@ export async function chapterRemovalImpactAction(chapterKey: string): Promise<Ac
 
 export async function createSectionAction(input: z.input<typeof guideSectionCreateSchema>) {
     return edit(guideSectionCreateSchema, input, parsed =>
-        createGuideSection({chapterId: parsed.chapterId, position: parsed.position ?? null, title: {sv: parsed.title.sv, en: en(parsed.title)}}));
+        createGuideSection({
+            chapterId: parsed.chapterId,
+            position: parsed.position ?? null,
+            title: {sv: parsed.title.sv, en: en(parsed.title)}
+        }));
 }
 
 export async function updateSectionAction(input: z.input<typeof guideSectionUpdateSchema>) {
-    return edit(guideSectionUpdateSchema, input, parsed => updateGuideSection({...parsed, title: {sv: parsed.title.sv, en: en(parsed.title)}}));
+    return edit(guideSectionUpdateSchema, input, parsed => updateGuideSection({
+        ...parsed,
+        title: {sv: parsed.title.sv, en: en(parsed.title)}
+    }));
 }
 
 export async function moveSectionAction(input: z.input<typeof guideSectionMoveSchema>) {
@@ -105,14 +119,22 @@ export async function removeSectionAction(input: z.input<typeof guideRemoveSchem
 
 export async function createItemAction(input: z.input<typeof guideItemCreateSchema>) {
     return edit(guideItemCreateSchema, input, parsed => createGuideItem({
-        chapterId: parsed.chapterId, sectionId: parsed.sectionId ?? null, position: parsed.position ?? null, type: parsed.type,
+        chapterId: parsed.chapterId,
+        sectionId: parsed.sectionId ?? null,
+        position: parsed.position ?? null,
+        type: parsed.type,
         text: {sv: parsed.text.sv, en: en(parsed.text)},
     }));
 }
 
 export async function updateItemAction(input: z.input<typeof guideItemUpdateSchema>) {
     return edit(guideItemUpdateSchema, input, parsed =>
-        updateGuideItem({id: parsed.id, version: parsed.version, type: parsed.type, text: {sv: parsed.text.sv, en: en(parsed.text)}}));
+        updateGuideItem({
+            id: parsed.id,
+            version: parsed.version,
+            type: parsed.type,
+            text: {sv: parsed.text.sv, en: en(parsed.text)}
+        }));
 }
 
 export async function moveItemAction(input: z.input<typeof guideItemMoveSchema>) {

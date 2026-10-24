@@ -45,14 +45,30 @@ export function logResolvers(ctx) {
         return {name: input.name.trim()};
     };
     const toOwner = (revival, value) => value?.personId
-        ? {__typename: "Owner", name: null, person: {__typename: "OwnerPerson", id: value.personId, displayName: personas[value.personId]?.name ?? null,
-            active: candidates(revival).some(candidate => candidate.id === value.personId)}}
+        ? {
+            __typename: "Owner", name: null, person: {
+                __typename: "OwnerPerson", id: value.personId, displayName: personas[value.personId]?.name ?? null,
+                active: candidates(revival).some(candidate => candidate.id === value.personId)
+            }
+        }
         : value?.name ? {__typename: "Owner", name: value.name, person: null} : null;
-    const summary = entry => entry ? {__typename: "LogEntrySummary", id: entry.id, number: entry.number, type: entry.type, status: entry.status} : null;
+    const summary = entry => entry ? {
+        __typename: "LogEntrySummary",
+        id: entry.id,
+        number: entry.number,
+        type: entry.type,
+        status: entry.status
+    } : null;
     const meetingOf = entry => {
         const meeting = entry.meetingId ? ctx.state().meeting.meetings.find(candidate => candidate.id === entry.meetingId) : null;
 
-        return meeting ? {__typename: "MeetingSummary", id: meeting.id, date: meeting.date, title: meeting.title, status: meeting.status} : null;
+        return meeting ? {
+            __typename: "MeetingSummary",
+            id: meeting.id,
+            date: meeting.date,
+            title: meeting.title,
+            status: meeting.status
+        } : null;
     };
     const toEntry = entry => {
         const revival = ctx.state().revivals.find(candidate => candidate.id === entry.revivalId);
@@ -80,10 +96,22 @@ export function logResolvers(ctx) {
     };
     const create = (persona, revival, input, extra = {}) => {
         const entry = {
-            id: String(log().nextId++), revivalId: revival.id, number: nextNumber(revival.id), date: input.date ?? today(), type: input.type,
-            text: text(input.text), status: input.status ?? "OPEN", owner: owner(revival, input.owner), deadline: input.deadline ?? null,
-            comment: input.comment?.trim() || null, tags: [...new Set((input.tags ?? []).map(tag => tag.trim()))].sort(), guideItemKey: null,
-            answersId: null, origin: "MANUAL", createdBy: persona.name, version: 0, ...extra,
+            id: String(log().nextId++),
+            revivalId: revival.id,
+            number: nextNumber(revival.id),
+            date: input.date ?? today(),
+            type: input.type,
+            text: text(input.text),
+            status: input.status ?? "OPEN",
+            owner: owner(revival, input.owner),
+            deadline: input.deadline ?? null,
+            comment: input.comment?.trim() || null,
+            tags: [...new Set((input.tags ?? []).map(tag => tag.trim()))].sort(),
+            guideItemKey: null,
+            answersId: null,
+            origin: "MANUAL",
+            createdBy: persona.name,
+            version: 0, ...extra,
         };
 
         log().entries.push(entry);
@@ -113,7 +141,11 @@ export function logResolvers(ctx) {
 
             return {
                 revival: {
-                    __typename: "Revival", id: revival.id, title: revival.title, year: revival.year, status: revival.status,
+                    __typename: "Revival",
+                    id: revival.id,
+                    title: revival.title,
+                    year: revival.year,
+                    status: revival.status,
                     permissions: {
                         __typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival),
                     },
@@ -122,7 +154,13 @@ export function logResolvers(ctx) {
                 logEntries: entries.filter(matches(persona, filter)).sort((a, b) => a.number - b.number).map(toEntry),
                 logTags: [...new Set(entries.flatMap(entry => entry.tags))].sort(),
                 meetings: ctx.state().meeting.meetings.filter(meeting => meeting.revivalId === revival.id).reverse()
-                    .map(meeting => ({__typename: "MeetingSummary", id: meeting.id, date: meeting.date, title: meeting.title, status: meeting.status})),
+                    .map(meeting => ({
+                        __typename: "MeetingSummary",
+                        id: meeting.id,
+                        date: meeting.date,
+                        title: meeting.title,
+                        status: meeting.status
+                    })),
             };
         },
         LogEntryCreate(persona, {input}) {
@@ -185,7 +223,13 @@ export function logResolvers(ctx) {
 
             question.status = "DONE";
             question.version += 1;
-            return {logEntryAnswer: {__typename: "LogEntryAnswerPayload", question: toEntry(question), decision: toEntry(decision)}};
+            return {
+                logEntryAnswer: {
+                    __typename: "LogEntryAnswerPayload",
+                    question: toEntry(question),
+                    decision: toEntry(decision)
+                }
+            };
         },
     };
 }

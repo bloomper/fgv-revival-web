@@ -12,10 +12,22 @@ import {NativeSelect} from "@/components/ui/native-select";
 import {Textarea} from "@/components/ui/textarea";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import type {LocalizedTextValue} from "@/components/guide/localized";
-import {type PositionValue, PositionSelect} from "@/components/participant/participant-labels";
-import {createMailingAction, previewAudienceAction, updateMailingAction} from "@/app/(app)/revivals/[id]/mailings/actions.server";
+import {PositionSelect, type PositionValue} from "@/components/participant/participant-labels";
+import {
+    createMailingAction,
+    previewAudienceAction,
+    updateMailingAction
+} from "@/app/(app)/revivals/[id]/mailings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {AUDIENCE_KINDS, type AudienceValues, audienceValuesSchema, MAX_BODY, MAX_SUBJECT, type MailingValues, mailingValuesSchema} from "@/lib/mailing/schema";
+import {
+    AUDIENCE_KINDS,
+    type AudienceValues,
+    audienceValuesSchema,
+    type MailingValues,
+    mailingValuesSchema,
+    MAX_BODY,
+    MAX_SUBJECT
+} from "@/lib/mailing/schema";
 import {formatDate} from "@/utils/format";
 import {track} from "@/utils/umami";
 
@@ -45,7 +57,10 @@ export function useAudiencePreview(revivalId: string, audience: AudienceValues) 
         let current = true;
         const [kind, positionId, eventId] = key.split("|");
 
-        void previewAudienceAction({revivalId, audience: {kind: kind as AudienceValues["kind"], positionId, eventId}}).then(result => {
+        void previewAudienceAction({
+            revivalId,
+            audience: {kind: kind as AudienceValues["kind"], positionId, eventId}
+        }).then(result => {
             if (current) {
                 setPreview({key, recipients: result.ok ? result.data : null, failed: !result.ok});
             }
@@ -74,7 +89,10 @@ export function AudiencePreview({preview}: { preview: ReturnType<typeof useAudie
             <p className="font-medium">{t("recipientsCount", {count: preview.recipients.length})}</p>
             {missing.length > 0 && (
                 <p className="text-amber-700 dark:text-amber-400">
-                    {t("withoutAddress", {count: missing.length, names: missing.map(recipient => recipient.displayName).join(", ")})}
+                    {t("withoutAddress", {
+                        count: missing.length,
+                        names: missing.map(recipient => recipient.displayName).join(", ")
+                    })}
                 </p>
             )}
             {preview.recipients.length > 0 && (
@@ -94,7 +112,16 @@ export function AudiencePreview({preview}: { preview: ReturnType<typeof useAudie
  * count and names of who it reaches now — the subject, and the body in Markdown with a preview rendered as the email
  * will be (the guide's safe Markdown, no raw HTML, no images). Saves a draft; sending happens on the mailing's page.
  */
-export function MailingEditor({revivalId, mailingId, version, planned, defaults, events, positions, positionsUnavailable}: {
+export function MailingEditor({
+                                  revivalId,
+                                  mailingId,
+                                  version,
+                                  planned,
+                                  defaults,
+                                  events,
+                                  positions,
+                                  positionsUnavailable
+                              }: {
     revivalId: string;
     mailingId?: string;
     version?: number;
@@ -114,7 +141,10 @@ export function MailingEditor({revivalId, mailingId, version, planned, defaults,
     const preview = useAudiencePreview(revivalId, audience);
     const {errors} = form.formState;
     const field = (name: string) => `${id}-${name}`;
-    const described = (name: string, message?: string) => message ? {"aria-invalid": true, "aria-describedby": `${field(name)}-error`} : {};
+    const described = (name: string, message?: string) => message ? {
+        "aria-invalid": true,
+        "aria-describedby": `${field(name)}-error`
+    } : {};
     const error = (name: string, message?: string) => message &&
         <p id={`${field(name)}-error`} className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
     const fillFrom = (language: "sv" | "en") => {
@@ -125,46 +155,58 @@ export function MailingEditor({revivalId, mailingId, version, planned, defaults,
     };
 
     return (
-        <form className="flex flex-col gap-6" noValidate onSubmit={form.handleSubmit(values => startTransition(async () => {
-            const plan = planned ? {templateId: planned.templateId, eventId: planned.eventId} : null;
+        <form className="flex flex-col gap-6" noValidate
+              onSubmit={form.handleSubmit(values => startTransition(async () => {
+                  const plan = planned ? {templateId: planned.templateId, eventId: planned.eventId} : null;
 
-            if (mailingId && version !== undefined) {
-                if (feedback(await updateMailingAction({revivalId, id: mailingId, version, planned: plan, values}), t("Mailings.draftSaved"))) {
-                    form.reset(values, {keepFieldsRef: true});
-                }
-                return;
-            }
-            const result = await createMailingAction({revivalId, planned: plan, values});
+                  if (mailingId && version !== undefined) {
+                      if (feedback(await updateMailingAction({
+                          revivalId,
+                          id: mailingId,
+                          version,
+                          planned: plan,
+                          values
+                      }), t("Mailings.draftSaved"))) {
+                          form.reset(values, {keepFieldsRef: true});
+                      }
+                      return;
+                  }
+                  const result = await createMailingAction({revivalId, planned: plan, values});
 
-            if (feedback(result, t("Mailings.draftSaved"))) {
-                track("mailing-draft", {audience: values.audience.kind});
-                router.push(result.data ? `/revivals/${revivalId}/mailings/${result.data}` : `/revivals/${revivalId}/mailings`);
-            }
-        }))}>
+                  if (feedback(result, t("Mailings.draftSaved"))) {
+                      track("mailing-draft", {audience: values.audience.kind});
+                      router.push(result.data ? `/revivals/${revivalId}/mailings/${result.data}` : `/revivals/${revivalId}/mailings`);
+                  }
+              }))}>
             <fieldset className="flex flex-col gap-3">
                 <legend className="mb-1 text-sm font-medium">{t("Mailings.audience")}</legend>
                 <div className="flex flex-col gap-3 sm:flex-row">
                     <div className="space-y-2 sm:w-72">
                         <Label htmlFor={field("kind")}>{t("Mailings.audienceKind")}</Label>
                         <NativeSelect id={field("kind")} className="w-full" {...form.register("audience.kind")}>
-                            {AUDIENCE_KINDS.map(kind => <option key={kind} value={kind}>{t(`Mailings.audiences.${kind}`)}</option>)}
+                            {AUDIENCE_KINDS.map(kind => <option key={kind}
+                                                                value={kind}>{t(`Mailings.audiences.${kind}`)}</option>)}
                         </NativeSelect>
                     </div>
                     {audience.kind === "POSITION" && (
                         <div className="space-y-2 sm:flex-1">
                             <Label htmlFor={field("position")}>{t("Mailings.position")}</Label>
-                            <PositionSelect id={field("position")} positions={positions} emptyLabel={t("Mailings.choosePosition")}
+                            <PositionSelect id={field("position")} positions={positions}
+                                            emptyLabel={t("Mailings.choosePosition")}
                                             {...described("position", errors.audience?.positionId?.message)} {...form.register("audience.positionId")}/>
-                            {positionsUnavailable && <p className="text-xs text-muted-foreground">{t("Mailings.positionsUnavailable")}</p>}
+                            {positionsUnavailable &&
+                                <p className="text-xs text-muted-foreground">{t("Mailings.positionsUnavailable")}</p>}
                             {error("position", errors.audience?.positionId?.message)}
                         </div>
                     )}
                     {audience.kind === "EVENT_ATTENDEES" && (
                         <div className="space-y-2 sm:flex-1">
                             <Label htmlFor={field("event")}>{t("Mailings.event")}</Label>
-                            <NativeSelect id={field("event")} className="w-full" {...described("event", errors.audience?.eventId?.message)} {...form.register("audience.eventId")}>
+                            <NativeSelect id={field("event")}
+                                          className="w-full" {...described("event", errors.audience?.eventId?.message)} {...form.register("audience.eventId")}>
                                 <option value="">{t("Mailings.chooseEvent")}</option>
-                                {events.map(event => <option key={event.id} value={event.id}>{`${event.title} (${formatDate(event.startDate)})`}</option>)}
+                                {events.map(event => <option key={event.id}
+                                                             value={event.id}>{`${event.title} (${formatDate(event.startDate)})`}</option>)}
                             </NativeSelect>
                             {error("event", errors.audience?.eventId?.message)}
                         </div>
@@ -177,14 +219,17 @@ export function MailingEditor({revivalId, mailingId, version, planned, defaults,
             {planned?.subject && (
                 <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="text-muted-foreground">{t("Mailings.fillFromTemplate")}</span>
-                    <Button type="button" variant="outline" size="sm" onClick={() => fillFrom("sv")}>{t("Mailings.swedish")}</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => fillFrom("en")}>{t("Mailings.english")}</Button>
+                    <Button type="button" variant="outline" size="sm"
+                            onClick={() => fillFrom("sv")}>{t("Mailings.swedish")}</Button>
+                    <Button type="button" variant="outline" size="sm"
+                            onClick={() => fillFrom("en")}>{t("Mailings.english")}</Button>
                 </div>
             )}
 
             <div className="space-y-2">
                 <Label htmlFor={field("subject")}>{t("Mailings.subject")}</Label>
-                <Input id={field("subject")} maxLength={MAX_SUBJECT} autoComplete="off" {...described("subject", errors.subject?.message)} {...form.register("subject")}/>
+                <Input id={field("subject")} maxLength={MAX_SUBJECT}
+                       autoComplete="off" {...described("subject", errors.subject?.message)} {...form.register("subject")}/>
                 {error("subject", errors.subject?.message)}
             </div>
 
@@ -193,13 +238,15 @@ export function MailingEditor({revivalId, mailingId, version, planned, defaults,
                     <Label htmlFor={field("body")}>{t("Mailings.body")}</Label>
                     <Textarea id={field("body")} rows={14} maxLength={MAX_BODY} className="font-mono text-sm"
                               aria-describedby={`${field("body")}-hint`} {...described("body", errors.body?.message)} {...form.register("body")}/>
-                    <p id={`${field("body")}-hint`} className="text-xs text-muted-foreground">{t("Mailings.bodyHint")}</p>
+                    <p id={`${field("body")}-hint`}
+                       className="text-xs text-muted-foreground">{t("Mailings.bodyHint")}</p>
                     {error("body", errors.body?.message)}
                 </div>
                 <section aria-labelledby={field("preview")} className="space-y-2">
                     <h5 id={field("preview")} className="text-sm font-medium">{t("Mailings.preview")}</h5>
                     <div className="min-h-40 rounded-md border p-4 text-sm">
-                        {body?.trim() ? <GuideMarkdown>{body}</GuideMarkdown> : <p className="text-muted-foreground">{t("Mailings.previewEmpty")}</p>}
+                        {body?.trim() ? <GuideMarkdown>{body}</GuideMarkdown> :
+                            <p className="text-muted-foreground">{t("Mailings.previewEmpty")}</p>}
                     </div>
                 </section>
             </div>

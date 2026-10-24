@@ -57,7 +57,10 @@ export function ResponseForm({revivalId, participant, terms, positions, isHelper
     const id = useId();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
-    const form = useForm<RespondValues>({resolver: zodResolver(respondValuesSchema), defaultValues: responseDefaults(participant)});
+    const form = useForm<RespondValues>({
+        resolver: zodResolver(respondValuesSchema),
+        defaultValues: responseDefaults(participant)
+    });
     const {errors} = form.formState;
     const response = useWatch({control: form.control, name: "response"});
     const asksConsent = response === "YES" || response === "MAYBE";
@@ -65,17 +68,22 @@ export function ResponseForm({revivalId, participant, terms, positions, isHelper
     const field = (name: string) => `${id}-${name}`;
 
     return (
-        <form className="flex flex-col gap-6" noValidate onSubmit={form.handleSubmit(values => startTransition(async () => {
-            if (feedback(await respondAction({revivalId, values}), t("Participation.responseSaved"))) {
-                track("participation-respond", {response: values.response});
-            }
-        }))}>
+        <form className="flex flex-col gap-6" noValidate
+              onSubmit={form.handleSubmit(values => startTransition(async () => {
+                  if (feedback(await respondAction({revivalId, values}), t("Participation.responseSaved"))) {
+                      track("participation-respond", {response: values.response});
+                  }
+              }))}>
             {participant.response !== "PENDING" && participant.respondedAt && (
                 <p className="text-sm text-muted-foreground">
-                    {t("Participation.answeredOn", {response: t(`Participants.responses.${participant.response}`), date: formatInstant(participant.respondedAt) ?? ""})}
+                    {t("Participation.answeredOn", {
+                        response: t(`Participants.responses.${participant.response}`),
+                        date: formatInstant(participant.respondedAt) ?? ""
+                    })}
                 </p>
             )}
-            <fieldset className="flex flex-col gap-3" {...describedBy(field("response"), {error: errors.response?.message})}>
+            <fieldset
+                className="flex flex-col gap-3" {...describedBy(field("response"), {error: errors.response?.message})}>
                 <legend className="mb-2 text-sm font-medium">{t("Participation.yourAnswer")}</legend>
                 <div className="grid gap-3 sm:grid-cols-3">
                     {ANSWERS.map(answer => {
@@ -86,7 +94,8 @@ export function ResponseForm({revivalId, participant, terms, positions, isHelper
                                 "flex min-h-14 cursor-pointer items-center gap-3 rounded-lg border-2 p-3 text-base font-medium transition-colors",
                                 "has-checked:border-primary has-checked:bg-primary/10 has-focus-visible:ring-3 has-focus-visible:ring-ring/50 hover:bg-accent",
                             )}>
-                                <input type="radio" value={answer} className="size-5 shrink-0 accent-primary" {...form.register("response")}/>
+                                <input type="radio" value={answer}
+                                       className="size-5 shrink-0 accent-primary" {...form.register("response")}/>
                                 <Icon className="size-5 text-muted-foreground" aria-hidden/>
                                 {t(`Participation.answers.${answer}`)}
                             </label>
@@ -103,17 +112,23 @@ export function ResponseForm({revivalId, participant, terms, positions, isHelper
                             className={cn("w-full rounded-md border border-input bg-transparent px-3 shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30", TOUCH_FIELD)}
                             {...form.register("preferredPositionId")}>
                         <option value="">{t("Participation.noPreference")}</option>
-                        {positions.map(position => <option key={position.id} value={position.id}>{position.name}</option>)}
+                        {positions.map(position => <option key={position.id}
+                                                           value={position.id}>{position.name}</option>)}
                     </select>
-                    <p id={`${field("position")}-hint`} className="text-sm text-muted-foreground">{t("Participation.preferredPositionHint")}</p>
+                    <p id={`${field("position")}-hint`}
+                       className="text-sm text-muted-foreground">{t("Participation.preferredPositionHint")}</p>
                 </div>
             )}
 
             <div className="flex flex-col gap-2">
                 <Label htmlFor={field("comment")}>{t("Participation.comment")}</Label>
-                <Textarea id={field("comment")} rows={3} className="text-base" {...describedBy(field("comment"), {error: errors.comment?.message, hint: true})}
+                <Textarea id={field("comment")} rows={3} className="text-base" {...describedBy(field("comment"), {
+                    error: errors.comment?.message,
+                    hint: true
+                })}
                           {...form.register("comment")}/>
-                <p id={`${field("comment")}-hint`} className="text-sm text-muted-foreground">{t("Participation.commentHint")}</p>
+                <p id={`${field("comment")}-hint`}
+                   className="text-sm text-muted-foreground">{t("Participation.commentHint")}</p>
                 <FieldErrorText fieldId={field("comment")} message={message(errors.comment?.message)}/>
             </div>
 
@@ -126,15 +141,22 @@ export function ResponseForm({revivalId, participant, terms, positions, isHelper
                 )}
                 <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md text-base">
                     <input type="checkbox" className="size-5 shrink-0 accent-primary"
-                           {...describedBy(field("terms"), {error: errors.termsAccepted?.message, hint: true})} {...form.register("termsAccepted")}/>
+                           {...describedBy(field("terms"), {
+                               error: errors.termsAccepted?.message,
+                               hint: true
+                           })} {...form.register("termsAccepted")}/>
                     {t("Participation.acceptTerms")}
                 </label>
-                <p id={`${field("terms")}-hint`} className="text-sm text-muted-foreground">{t("Participation.acceptTermsHint")}</p>
+                <p id={`${field("terms")}-hint`}
+                   className="text-sm text-muted-foreground">{t("Participation.acceptTermsHint")}</p>
                 <FieldErrorText fieldId={field("terms")} message={message(errors.termsAccepted?.message)}/>
             </div>
 
             {asksConsent && (
-                <fieldset className="flex flex-col gap-3" {...describedBy(field("consent"), {error: errors.registerConsent?.message, hint: true})}>
+                <fieldset className="flex flex-col gap-3" {...describedBy(field("consent"), {
+                    error: errors.registerConsent?.message,
+                    hint: true
+                })}>
                     <legend className="mb-1 text-sm font-medium">{t("Participation.registerConsent")}</legend>
                     <div id={`${field("consent")}-hint`} className="space-y-2 text-sm text-muted-foreground">
                         <p>{t("Participation.registerConsentWhat")}</p>
@@ -147,7 +169,8 @@ export function ResponseForm({revivalId, participant, terms, positions, isHelper
                                 "flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border-2 p-3 text-base",
                                 "has-checked:border-primary has-checked:bg-primary/10 has-focus-visible:ring-3 has-focus-visible:ring-ring/50 hover:bg-accent",
                             )}>
-                                <input type="radio" value={choice} className="size-5 shrink-0 accent-primary" {...form.register("registerConsent")}/>
+                                <input type="radio" value={choice}
+                                       className="size-5 shrink-0 accent-primary" {...form.register("registerConsent")}/>
                                 {t(`Participation.consent.${choice}`)}
                             </label>
                         ))}
@@ -156,7 +179,8 @@ export function ResponseForm({revivalId, participant, terms, positions, isHelper
                 </fieldset>
             )}
 
-            <Button type="submit" size="lg" className="h-11 w-full sm:w-auto sm:self-start" disabled={pending}>{t("Participation.sendAnswer")}</Button>
+            <Button type="submit" size="lg" className="h-11 w-full sm:w-auto sm:self-start"
+                    disabled={pending}>{t("Participation.sendAnswer")}</Button>
         </form>
     );
 }

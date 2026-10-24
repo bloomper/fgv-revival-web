@@ -86,7 +86,12 @@ const AvailabilitySetMutation = graphql(`
 export async function getStaffing(revivalId: string) {
     const data = await runQuery(StaffingQuery, {id: revivalId});
 
-    return data?.revival ? {revival: data.revival, events: data.events, slots: data.shiftSlots, availability: data.availability} : null;
+    return data?.revival ? {
+        revival: data.revival,
+        events: data.events,
+        slots: data.shiftSlots,
+        availability: data.availability
+    } : null;
 }
 
 /** The participants and helpers who may be given a shift; names from Spexregister. */

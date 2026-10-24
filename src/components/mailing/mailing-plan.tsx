@@ -27,7 +27,11 @@ export function planEntryHref(revivalId: string, entry: { template: { id: string
  * premiere), and the mailing made from it. Entries due within a week with nothing sent are highlighted, with a button
  * that drafts the mailing from the template.
  */
-export function MailingPlan({revivalId, entries, canDraft}: { revivalId: string; entries: PlanEntry[]; canDraft: boolean }) {
+export function MailingPlan({revivalId, entries, canDraft}: {
+    revivalId: string;
+    entries: PlanEntry[];
+    canDraft: boolean
+}) {
     const t = useTranslations("Mailings");
     const locale = useLocale();
 
@@ -52,20 +56,28 @@ export function MailingPlan({revivalId, entries, canDraft}: { revivalId: string;
                                 {entry.due && <Badge variant="destructive">{t("dueNow")}</Badge>}
                             </p>
                             <p className="text-sm text-muted-foreground">
-                                {entry.event ? t("forEvent", {event: entry.event.title, date: formatDate(entry.event.startDate) ?? ""}) : t("forPremiere")}
+                                {entry.event ? t("forEvent", {
+                                    event: entry.event.title,
+                                    date: formatDate(entry.event.startDate) ?? ""
+                                }) : t("forPremiere")}
                                 {" · "}<AudienceText audience={{kind: entry.template.audience, event: entry.event}}/>
                             </p>
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
                             {entry.mailing && (
-                                <Link href={`/revivals/${revivalId}/mailings/${entry.mailing.id}`} className="flex items-center gap-2 text-sm underline-offset-2 hover:underline"
+                                <Link href={`/revivals/${revivalId}/mailings/${entry.mailing.id}`}
+                                      className="flex items-center gap-2 text-sm underline-offset-2 hover:underline"
                                       aria-label={t("openMailing", {subject: entry.mailing.subject})}>
                                     <MailingStatusBadge status={entry.mailing.status}/>
-                                    {sent && entry.mailing.sentAt && <span className="tabular-nums text-muted-foreground">{formatDate(entry.mailing.sentAt)}</span>}
+                                    {sent && entry.mailing.sentAt && <span
+                                        className="tabular-nums text-muted-foreground">{formatDate(entry.mailing.sentAt)}</span>}
                                 </Link>
                             )}
                             {canDraft && !entry.mailing && (
-                                <Link href={planEntryHref(revivalId, entry)} className={buttonVariants({variant: entry.due ? "default" : "outline", size: "sm"})}
+                                <Link href={planEntryHref(revivalId, entry)} className={buttonVariants({
+                                    variant: entry.due ? "default" : "outline",
+                                    size: "sm"
+                                })}
                                       aria-label={t("createDraftFor", {name})}>
                                     <Plus/>{t("createDraft")}
                                 </Link>

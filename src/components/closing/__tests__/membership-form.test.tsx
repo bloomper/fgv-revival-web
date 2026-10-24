@@ -31,7 +31,11 @@ describe("MembershipForm", () => {
         await userEvent.type(screen.getByLabelText("Closing.membershipYear"), "2029");
         await userEvent.click(screen.getByRole("button", {name: "Common.save"}));
 
-        await waitFor(() => expect(actions.setMembershipAction).toHaveBeenCalledWith({revivalId: "1", year: 2029, participantIds: ["p2"]}));
+        await waitFor(() => expect(actions.setMembershipAction).toHaveBeenCalledWith({
+            revivalId: "1",
+            year: 2029,
+            participantIds: ["p2"]
+        }));
         expect(track).toHaveBeenCalledWith("membership-set", {count: 1});
     });
 

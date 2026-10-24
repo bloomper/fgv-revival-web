@@ -9,7 +9,9 @@ import {withPolicyPage} from "@/utils/route.server";
  * The budget categories every revival's budget uses, for super admins (M5): income or cost, fixed at creation, and the
  * role a category plays in scenarios. Retired ones only when asked for.
  */
-export default async function BudgetCategoriesPage({searchParams}: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+export default async function BudgetCategoriesPage({searchParams}: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
     const retired = (await searchParams).retired === "1";
 
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {

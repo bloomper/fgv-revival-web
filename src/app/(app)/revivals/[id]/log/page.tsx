@@ -43,10 +43,13 @@ export default async function RevivalLogPage({params, searchParams}: {
         return (
             <div className="flex flex-1 flex-col gap-4">
                 <h3 className="sr-only">{t("title")}</h3>
-                <ReadOnlyNotice revivalId={revival.id} status={revival.status} canWrite={revival.permissions.canWriteLog} roles={roles}/>
+                <ReadOnlyNotice revivalId={revival.id} status={revival.status}
+                                canWrite={revival.permissions.canWriteLog} roles={roles}/>
                 <LogTable revivalId={revival.id} entries={entries} members={revival.ownerCandidates} tags={tags}
-                          canWrite={revival.permissions.canWriteLog} filtered={isLogFiltered(filter)} initialSorting={[{id: "number", desc: true}]}
-                          toolbar={<LogFilters key={JSON.stringify(filter)} filter={filter} tags={tags} meetings={meetings}/>}/>
+                          canWrite={revival.permissions.canWriteLog} filtered={isLogFiltered(filter)}
+                          initialSorting={[{id: "number", desc: true}]}
+                          toolbar={<LogFilters key={JSON.stringify(filter)} filter={filter} tags={tags}
+                                               meetings={meetings}/>}/>
             </div>
         );
     });

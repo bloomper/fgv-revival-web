@@ -7,7 +7,14 @@ import {CalendarSync, Copy} from "lucide-react";
 import {toast} from "sonner";
 import {Alert, AlertDescription} from "@/components/ui/alert";
 import {Button} from "@/components/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {createCalendarFeedAction, revokeCalendarFeedAction} from "@/app/(app)/revivals/[id]/events/actions.server";
@@ -72,8 +79,10 @@ export function CalendarLinkDialog({revivalId, feed, triggerClassName}: {
                     <div className="space-y-2">
                         <Label htmlFor={`${id}-url`}>{t("Calendar.address")}</Label>
                         <div className="flex gap-2">
-                            <Input id={`${id}-url`} value={url} readOnly onFocus={focus => focus.target.select()} className="font-mono text-xs"/>
-                            <Button type="button" variant="outline" size="icon" aria-label={t("Calendar.copy")} onClick={copy}><Copy/></Button>
+                            <Input id={`${id}-url`} value={url} readOnly onFocus={focus => focus.target.select()}
+                                   className="font-mono text-xs"/>
+                            <Button type="button" variant="outline" size="icon" aria-label={t("Calendar.copy")}
+                                    onClick={copy}><Copy/></Button>
                         </div>
                         <p className="text-sm text-muted-foreground">{t("Calendar.shownOnce")}</p>
                     </div>
@@ -92,7 +101,8 @@ export function CalendarLinkDialog({revivalId, feed, triggerClassName}: {
                         <Button type="button" onClick={() => setOpen(false)}>{t("Common.close")}</Button>
                     ) : feed ? (
                         <>
-                            <Button type="button" variant="outline" disabled={pending} onClick={revoke}>{t("Calendar.revoke")}</Button>
+                            <Button type="button" variant="outline" disabled={pending}
+                                    onClick={revoke}>{t("Calendar.revoke")}</Button>
                             <Button type="button" disabled={pending} onClick={create}>{t("Calendar.replace")}</Button>
                         </>
                     ) : (

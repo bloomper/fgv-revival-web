@@ -34,7 +34,8 @@ export default async function ChecklistsPage({params, searchParams}: {
 
         if (!filter) {
             return (
-                <div className="hidden flex-1 items-center justify-center rounded-lg border border-dashed p-8 text-sm text-muted-foreground lg:flex">
+                <div
+                    className="hidden flex-1 items-center justify-center rounded-lg border border-dashed p-8 text-sm text-muted-foreground lg:flex">
                     <h3 className="sr-only">{t("title")}</h3>
                     {t("choose")}
                 </div>

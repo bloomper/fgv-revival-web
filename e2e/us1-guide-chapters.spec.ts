@@ -82,7 +82,11 @@ test.describe("Guide, user story 1: the super admin writes the first version cha
     });
 });
 
-test("removing a chapter is confirmed three times: when removed, when published and when a revival moves on", async ({page, mock, loginAs}) => {
+test("removing a chapter is confirmed three times: when removed, when published and when a revival moves on", async ({
+                                                                                                                         page,
+                                                                                                                         mock,
+                                                                                                                         loginAs
+                                                                                                                     }) => {
     await mock.guide("published");
     await mock.setStatus("1", "ORGANISING");
     await loginAs("superadmin");

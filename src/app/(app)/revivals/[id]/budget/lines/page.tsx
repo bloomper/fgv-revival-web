@@ -41,8 +41,10 @@ export default async function BudgetLinesPage({params, searchParams}: {
         return (
             <div className="flex flex-col gap-4">
                 <h4 className="sr-only">{t("lines")}</h4>
-                <BudgetLineTable revivalId={revival.id} lines={budget.lines} proposals={budget.proposals} categories={categories}
-                                 events={events} decisions={decisions} canWrite={revival.permissions.canWriteBudget} showRemoved={showRemoved}/>
+                <BudgetLineTable revivalId={revival.id} lines={budget.lines} proposals={budget.proposals}
+                                 categories={categories}
+                                 events={events} decisions={decisions} canWrite={revival.permissions.canWriteBudget}
+                                 showRemoved={showRemoved}/>
             </div>
         );
     });

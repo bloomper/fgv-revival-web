@@ -25,7 +25,8 @@ export function RevivalCard({revival, role}: { revival: RevivalSummaryFragment; 
     const originalYear = revival.spex.year ? ` (${revival.spex.year})` : "";
 
     return (
-        <Link href={participant ? `/revivals/${revival.id}/me` : `/revivals/${revival.id}`} className="block rounded-xl focus-visible:outline-2 focus-visible:outline-ring">
+        <Link href={participant ? `/revivals/${revival.id}/me` : `/revivals/${revival.id}`}
+              className="block rounded-xl focus-visible:outline-2 focus-visible:outline-ring">
             <Card className="h-full flex-row gap-0 overflow-hidden py-0 transition-colors hover:bg-accent/40">
                 <RevivalPoster revivalId={revival.id} className="min-h-32 w-24 shrink-0 self-stretch border-r"/>
                 <div className="flex min-w-0 flex-1 flex-col gap-4 py-4">

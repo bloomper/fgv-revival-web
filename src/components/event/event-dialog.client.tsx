@@ -30,7 +30,13 @@ import {track} from "@/utils/umami";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-export type EventTypeOption = { id: string; name: LocalizedTextValue; days: number; revivalPays: boolean; retired: boolean };
+export type EventTypeOption = {
+    id: string;
+    name: LocalizedTextValue;
+    days: number;
+    revivalPays: boolean;
+    retired: boolean
+};
 
 export type EditableEvent = {
     id: string;
@@ -52,8 +58,14 @@ export type EventPrefill = { typeId: string; startDate: string; endDate: string 
 function initialValues(event: EditableEvent | null, prefill: EventPrefill | null, types: EventTypeOption[], locale: string): EventValues {
     if (event) {
         return {
-            typeId: event.type?.id ?? "", title: event.title, startDate: event.startDate, endDate: event.endDate,
-            startTime: event.startTime ?? "", endTime: event.endTime ?? "", location: event.location ?? "", description: event.description ?? "",
+            typeId: event.type?.id ?? "",
+            title: event.title,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            startTime: event.startTime ?? "",
+            endTime: event.endTime ?? "",
+            location: event.location ?? "",
+            description: event.description ?? "",
             revivalPays: event.revivalPays,
         };
     }
@@ -61,8 +73,15 @@ function initialValues(event: EditableEvent | null, prefill: EventPrefill | null
     const type = types.find(candidate => candidate.id === prefill?.typeId);
 
     return {
-        typeId: type?.id ?? "", title: type ? catalogName(type, locale) : "", startDate: prefill?.startDate ?? "", endDate: prefill?.endDate ?? "",
-        startTime: "", endTime: "", location: "", description: "", revivalPays: type?.revivalPays ?? false,
+        typeId: type?.id ?? "",
+        title: type ? catalogName(type, locale) : "",
+        startDate: prefill?.startDate ?? "",
+        endDate: prefill?.endDate ?? "",
+        startTime: "",
+        endTime: "",
+        location: "",
+        description: "",
+        revivalPays: type?.revivalPays ?? false,
     };
 }
 
@@ -91,7 +110,8 @@ export function EventDialog({revivalId, types, event, prefill = null, open, onOp
     });
     const {errors} = form.formState;
     const typeOf = (typeId: string) => types.find(type => type.id === typeId);
-    const error = (message?: string) => message && <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const error = (message?: string) => message &&
+        <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
 
     const followType = (typeId: string) => {
         const previous = typeOf(form.getValues("typeId"));
@@ -121,81 +141,99 @@ export function EventDialog({revivalId, types, event, prefill = null, open, onOp
                     <SheetTitle>{event ? t("Event.editTitle") : t("Event.newTitle")}</SheetTitle>
                     <SheetDescription>{t("Event.dialogDescription")}</SheetDescription>
                 </SheetHeader>
-                <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(values => startTransition(async () => {
-                    if (event) {
-                        if (feedback(await updateEventAction({id: event.id, version: event.version, revivalId, values}), t("Common.saved"))) {
-                            onOpenChange(false);
-                        }
-                    } else if (feedback(await createEventAction({revivalId, values}), t("Event.created"))) {
-                        track("event-create", {typed: !!values.typeId});
-                        onOpenChange(false);
-                    }
-                }))}>
+                <form className="flex min-h-0 flex-1 flex-col overflow-hidden"
+                      onSubmit={form.handleSubmit(values => startTransition(async () => {
+                          if (event) {
+                              if (feedback(await updateEventAction({
+                                  id: event.id,
+                                  version: event.version,
+                                  revivalId,
+                                  values
+                              }), t("Common.saved"))) {
+                                  onOpenChange(false);
+                              }
+                          } else if (feedback(await createEventAction({revivalId, values}), t("Event.created"))) {
+                              track("event-create", {typed: !!values.typeId});
+                              onOpenChange(false);
+                          }
+                      }))}>
                     <ScrollArea className="min-h-0 flex-1 border-t">
                         <div className="space-y-4 px-6 py-6 pb-12">
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-type`}>{t("Event.type")}</Label>
                                 {event ? (
-                                    <p id={`${id}-type`} className="text-sm">{event.type ? catalogName(event.type, locale) : t("Event.otherType")}</p>
+                                    <p id={`${id}-type`}
+                                       className="text-sm">{event.type ? catalogName(event.type, locale) : t("Event.otherType")}</p>
                                 ) : (
                                     <NativeSelect className="w-full" id={`${id}-type`}
                                                   {...form.register("typeId", {onChange: (change: React.ChangeEvent<HTMLSelectElement>) => followType(change.target.value)})}>
-                                        {types.map(type => <option key={type.id} value={type.id}>{catalogName(type, locale)}</option>)}
+                                        {types.map(type => <option key={type.id}
+                                                                   value={type.id}>{catalogName(type, locale)}</option>)}
                                         <option value="">{t("Event.otherType")}</option>
                                     </NativeSelect>
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-title`}>{t("Event.titleLabel")}</Label>
-                                <Input id={`${id}-title`} maxLength={MAX_EVENT_TITLE} aria-invalid={errors.title ? true : undefined} {...form.register("title")}/>
+                                <Input id={`${id}-title`} maxLength={MAX_EVENT_TITLE}
+                                       aria-invalid={errors.title ? true : undefined} {...form.register("title")}/>
                                 {error(errors.title?.message)}
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-start`}>{t("Event.startDate")}</Label>
-                                    <DateInput id={`${id}-start`} {...form.register("startDate", {onChange: (change: React.ChangeEvent<HTMLInputElement>) => followStart(change.target.value)})}/>
+                                    <DateInput
+                                        id={`${id}-start`} {...form.register("startDate", {onChange: (change: React.ChangeEvent<HTMLInputElement>) => followStart(change.target.value)})}/>
                                     {error(errors.startDate?.message)}
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-end`}>{t("Event.endDate")}</Label>
-                                    <DateInput id={`${id}-end`} {...form.register("endDate", {onChange: () => {
-                                        setEndChanged(true);
-                                    }})}/>
+                                    <DateInput id={`${id}-end`} {...form.register("endDate", {
+                                        onChange: () => {
+                                            setEndChanged(true);
+                                        }
+                                    })}/>
                                     {error(errors.endDate?.message)}
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-start-time`}>{t("Event.startTime")}</Label>
-                                    <Input id={`${id}-start-time`} className="w-24 tabular-nums" inputMode="numeric" maxLength={5} autoComplete="off"
+                                    <Input id={`${id}-start-time`} className="w-24 tabular-nums" inputMode="numeric"
+                                           maxLength={5} autoComplete="off"
                                            placeholder={t("DetailsForm.timePlaceholder")} {...form.register("startTime")}/>
                                     {error(errors.startTime?.message)}
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-end-time`}>{t("Event.endTime")}</Label>
-                                    <Input id={`${id}-end-time`} className="w-24 tabular-nums" inputMode="numeric" maxLength={5} autoComplete="off"
+                                    <Input id={`${id}-end-time`} className="w-24 tabular-nums" inputMode="numeric"
+                                           maxLength={5} autoComplete="off"
                                            placeholder={t("DetailsForm.timePlaceholder")} {...form.register("endTime")}/>
                                     {error(errors.endTime?.message)}
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-location`}>{t("Event.location")}</Label>
-                                <Input id={`${id}-location`} maxLength={MAX_EVENT_LOCATION} {...form.register("location")}/>
+                                <Input id={`${id}-location`}
+                                       maxLength={MAX_EVENT_LOCATION} {...form.register("location")}/>
                                 {error(errors.location?.message)}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-description`}>{t("Event.description")}</Label>
-                                <Textarea id={`${id}-description`} rows={4} maxLength={MAX_EVENT_DESCRIPTION} {...form.register("description")}/>
+                                <Textarea id={`${id}-description`} rows={4}
+                                          maxLength={MAX_EVENT_DESCRIPTION} {...form.register("description")}/>
                                 {error(errors.description?.message)}
                             </div>
                             <Controller control={form.control} name="revivalPays" render={({field}) => (
                                 <div className="flex items-center gap-2">
-                                    <Switch id={`${id}-pays`} checked={field.value} onCheckedChange={checked => field.onChange(checked)}/>
+                                    <Switch id={`${id}-pays`} checked={field.value}
+                                            onCheckedChange={checked => field.onChange(checked)}/>
                                     <Label htmlFor={`${id}-pays`}>{t("Event.revivalPays")}</Label>
                                 </div>
                             )}/>
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </SheetFooter>
                 </form>

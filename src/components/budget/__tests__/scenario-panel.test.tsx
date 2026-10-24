@@ -1,19 +1,42 @@
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import {render, screen, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {parameterText, ScenarioPanel, type ScenarioResult, toScenarioValues} from "@/components/budget/scenario-panel.client";
+import {
+    parameterText,
+    ScenarioPanel,
+    type ScenarioResult,
+    toScenarioValues
+} from "@/components/budget/scenario-panel.client";
 
 const actions = vi.hoisted(() => ({
-    calculateScenarioAction: vi.fn(), saveScenarioAction: vi.fn(), updateScenarioAction: vi.fn(), removeScenarioAction: vi.fn(),
+    calculateScenarioAction: vi.fn(),
+    saveScenarioAction: vi.fn(),
+    updateScenarioAction: vi.fn(),
+    removeScenarioAction: vi.fn(),
 }));
 
 vi.mock("@/app/(app)/revivals/[id]/budget/actions.server", () => actions);
 vi.mock("@/hooks/use-action-feedback", () => ({useActionFeedback: () => (result: { ok: boolean }) => result.ok}));
 
 const baseline = {
-    participants: 40, participationFee: "800", showTicketPrice: "150", showTickets: 400, partyTicketPrice: "350", partyTickets: 80, venueCost: "40000", partyCost: "30000",
+    participants: 40,
+    participationFee: "800",
+    showTicketPrice: "150",
+    showTickets: 400,
+    partyTicketPrice: "350",
+    partyTickets: 80,
+    venueCost: "40000",
+    partyCost: "30000",
 };
-const current: ScenarioResult = {baseline, used: baseline, income: "120000", cost: "110000", result: "10000", breakEvenShowTickets: 334, partySubsidy: "2000"};
+const current: ScenarioResult = {
+    baseline,
+    used: baseline,
+    income: "120000",
+    cost: "110000",
+    result: "10000",
+    breakEvenShowTickets: 334,
+    partySubsidy: "2000"
+};
 const nbsp = (text: string | null | undefined) => text?.replace(/ /g, " ");
 
 beforeEach(() => {
@@ -41,7 +64,10 @@ describe("ScenarioPanel", () => {
     });
 
     it("calculates with only the changed parameters and shows the result", async () => {
-        actions.calculateScenarioAction.mockResolvedValue({ok: true, data: {...current, result: "-5000", breakEvenShowTickets: 434}});
+        actions.calculateScenarioAction.mockResolvedValue({
+            ok: true,
+            data: {...current, result: "-5000", breakEvenShowTickets: 434}
+        });
         render(<ScenarioPanel revivalId="1" current={current} scenarios={[]} canWrite={false}/>);
 
         await userEvent.type(screen.getByLabelText("Budget.parameters.showTickets"), "300");
@@ -69,7 +95,13 @@ describe("ScenarioPanel", () => {
 
     it("saves a named scenario and loads a saved one back", async () => {
         actions.saveScenarioAction.mockResolvedValue({ok: true, data: {id: "9"}});
-        const saved = {id: "5", name: "Färre biljetter", parameters: {showTickets: 300}, result: {...current, result: "-5000"}, version: 0};
+        const saved = {
+            id: "5",
+            name: "Färre biljetter",
+            parameters: {showTickets: 300},
+            result: {...current, result: "-5000"},
+            version: 0
+        };
 
         render(<ScenarioPanel revivalId="1" current={current} scenarios={[saved]} canWrite/>);
 

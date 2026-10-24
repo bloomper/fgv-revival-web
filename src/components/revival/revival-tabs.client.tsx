@@ -133,12 +133,18 @@ export function RevivalTabs({
         {
             segment: "log", title: t("log"), icon: ListChecks,
             count: work && <WorkCount open={work.openEntries} overdue={work.overdueEntries}
-                                      label={t("openOverdue", {open: work.openEntries, overdue: work.overdueEntries})}/>,
+                                      label={t("openOverdue", {
+                                          open: work.openEntries,
+                                          overdue: work.overdueEntries
+                                      })}/>,
         },
         {
             segment: "checklists", title: t("checklists"), icon: ClipboardCheck,
             count: work && <WorkCount open={work.openRequiredItems} overdue={work.overdueChecklistItems}
-                                      label={t("requirementsOverdue", {open: work.openRequiredItems, overdue: work.overdueChecklistItems})}/>,
+                                      label={t("requirementsOverdue", {
+                                          open: work.openRequiredItems,
+                                          overdue: work.overdueChecklistItems
+                                      })}/>,
         },
         {segment: "guide", title: t("guide"), icon: BookOpen},
         ...(canReadBudget ? [{segment: "budget", title: t("budget"), icon: Wallet}] : []),
@@ -148,7 +154,8 @@ export function RevivalTabs({
         ...(canReadMaterials ? [{segment: "materials", title: t("materials"), icon: FolderOpen}] : []),
         {
             segment: "closing", title: t("closing"), icon: Flag,
-            count: closingProminent && <span className="size-2 rounded-full bg-primary" title={t("closingNow")} aria-hidden/>,
+            count: closingProminent &&
+                <span className="size-2 rounded-full bg-primary" title={t("closingNow")} aria-hidden/>,
         },
     ];
 
@@ -169,28 +176,30 @@ export function RevivalTabs({
         <nav aria-label={t("sections")} className="print:hidden relative -mx-4 md:mx-0">
             {overflow.start && <ScrollButton side="start" onClick={() => scrollBy(-1)}/>}
             {overflow.end && <ScrollButton side="end" onClick={() => scrollBy(1)}/>}
-            <div ref={scroller} className="overflow-x-auto overflow-y-hidden px-4 [scrollbar-width:none] md:px-0 [&::-webkit-scrollbar]:hidden">
-            <ul className="flex min-w-max gap-1 border-b">
-                {tabs.map(tab => {
-                    const active = tab.segment === segment;
-                    return (
-                        <li key={tab.segment ?? ""}>
-                            <Link href={tab.segment ? `/revivals/${revivalId}/${tab.segment}` : `/revivals/${revivalId}`}
-                                  aria-current={active ? "page" : undefined}
-                                  className={cn(
-                                      "-mb-px flex items-center gap-2 border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors [&_svg]:size-4",
-                                      active
-                                          ? "border-primary text-foreground"
-                                          : "border-transparent text-muted-foreground hover:border-border hover:text-foreground",
-                                  )}>
-                                <tab.icon/>
-                                {tab.title}
-                                {tab.count}
-                            </Link>
-                        </li>
-                    );
-                })}
-            </ul>
+            <div ref={scroller}
+                 className="overflow-x-auto overflow-y-hidden px-4 [scrollbar-width:none] md:px-0 [&::-webkit-scrollbar]:hidden">
+                <ul className="flex min-w-max gap-1 border-b">
+                    {tabs.map(tab => {
+                        const active = tab.segment === segment;
+                        return (
+                            <li key={tab.segment ?? ""}>
+                                <Link
+                                    href={tab.segment ? `/revivals/${revivalId}/${tab.segment}` : `/revivals/${revivalId}`}
+                                    aria-current={active ? "page" : undefined}
+                                    className={cn(
+                                        "-mb-px flex items-center gap-2 border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors [&_svg]:size-4",
+                                        active
+                                            ? "border-primary text-foreground"
+                                            : "border-transparent text-muted-foreground hover:border-border hover:text-foreground",
+                                    )}>
+                                    <tab.icon/>
+                                    {tab.title}
+                                    {tab.count}
+                                </Link>
+                            </li>
+                        );
+                    })}
+                </ul>
             </div>
         </nav>
     );

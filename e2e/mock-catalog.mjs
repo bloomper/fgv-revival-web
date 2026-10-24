@@ -2,7 +2,13 @@
 // server's rules (retired entries are kept, only unused ones are deleted). The rest of the mock stores their ids, as the
 // server does, and toObjects() turns them into the objects GraphQL returns.
 
-const entry = (id, sv, en, position, kind) => ({id, name: {sv, en}, position, retired: false, version: 0, ...(kind ? {kind} : {})});
+const entry = (id, sv, en, position, kind) => ({
+    id,
+    name: {sv, en},
+    position,
+    retired: false,
+    version: 0, ...(kind ? {kind} : {})
+});
 
 export function createCatalogState() {
     return {
@@ -105,7 +111,11 @@ export function catalogResolvers({state, GraphQLError, forbidden, isSuperAdmin, 
             manage(persona);
             const list_ = catalog()[name_];
             const created = {
-                id: `${name_}-${catalog().nextId++}`, name: name(list_, input.name), position: list_.length, retired: false, version: 0,
+                id: `${name_}-${catalog().nextId++}`,
+                name: name(list_, input.name),
+                position: list_.length,
+                retired: false,
+                version: 0,
                 ...(input.kind ? {kind: input.kind} : {}),
             };
             list_.push(created);

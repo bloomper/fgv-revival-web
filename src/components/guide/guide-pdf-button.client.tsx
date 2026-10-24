@@ -21,7 +21,8 @@ export function GuidePdfButton({versionId, revivalId}: { versionId?: string; rev
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 {(["sv", "en"] as const).map(lang => (
-                    <DropdownMenuItem key={lang} render={<a href={`/api/guide-pdf?${target}&lang=${lang}`} download onClick={() => track("guide-pdf")}/>}>
+                    <DropdownMenuItem key={lang} render={<a href={`/api/guide-pdf?${target}&lang=${lang}`} download
+                                                            onClick={() => track("guide-pdf")}/>}>
                         {t(lang)}
                     </DropdownMenuItem>
                 ))}

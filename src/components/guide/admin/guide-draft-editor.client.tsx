@@ -48,8 +48,14 @@ function NoEnglish({text}: { text: { en?: string | null } }) {
     return text.en ? null : <Badge variant="outline">{t("noEnglish")}</Badge>;
 }
 
-function IconAction({label, onClick, children, disabled}: { label: string; onClick: () => void; children: ReactNode; disabled?: boolean }) {
-    return <Button type="button" variant="ghost" size="icon-sm" aria-label={label} title={label} onClick={onClick} disabled={disabled}>{children}</Button>;
+function IconAction({label, onClick, children, disabled}: {
+    label: string;
+    onClick: () => void;
+    children: ReactNode;
+    disabled?: boolean
+}) {
+    return <Button type="button" variant="ghost" size="icon-sm" aria-label={label} title={label} onClick={onClick}
+                   disabled={disabled}>{children}</Button>;
 }
 
 function ConfirmRemove({label, onConfirm}: { label: string; onConfirm: () => Promise<ActionResult<null>> }) {
@@ -59,7 +65,9 @@ function ConfirmRemove({label, onConfirm}: { label: string; onConfirm: () => Pro
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" className="text-destructive hover:bg-destructive/10 hover:text-destructive" aria-label={label} title={label}/>}>
+            <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm"
+                                                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                                aria-label={label} title={label}/>}>
                 <Trash2/>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -68,9 +76,10 @@ function ConfirmRemove({label, onConfirm}: { label: string; onConfirm: () => Pro
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
-                    <AlertDialogAction variant="destructive" disabled={pending} onClick={() => startTransition(async () => {
-                        feedback(await onConfirm(), t("Guide.editor.saved"));
-                    })}>{t("Common.delete")}</AlertDialogAction>
+                    <AlertDialogAction variant="destructive" disabled={pending}
+                                       onClick={() => startTransition(async () => {
+                                           feedback(await onConfirm(), t("Guide.editor.saved"));
+                                       })}>{t("Common.delete")}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
@@ -116,9 +125,17 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
     const title = (text: { sv: string; en?: string | null }) => pickText(text, locale).text;
 
     const places: Place[] = draft.chapters.flatMap((chapter, index) => [
-        {chapterId: chapter.id, sectionId: null, label: `${index + 1}. ${title(chapter.title)}`, size: chapter.items.length},
+        {
+            chapterId: chapter.id,
+            sectionId: null,
+            label: `${index + 1}. ${title(chapter.title)}`,
+            size: chapter.items.length
+        },
         ...chapter.sections.map(section => ({
-            chapterId: chapter.id, sectionId: section.id, label: `${index + 1} › ${title(section.title)}`, size: section.items.length,
+            chapterId: chapter.id,
+            sectionId: section.id,
+            label: `${index + 1} › ${title(section.title)}`,
+            size: section.items.length,
         })),
     ]);
     const number = draft.chapters.findIndex(candidate => candidate.key === chapterKey) + 1;
@@ -130,11 +147,13 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
     const itemRow = (item: GuideItemFieldsFragment, list: GuideItemFieldsFragment[], index: number, chapter: Chapter, section: Section | null) => (
         <li key={item.id} className="space-y-2 rounded-md border p-3" data-testid={`draft-item-${item.key}`}>
             <div className="flex flex-wrap items-center gap-2">
-                {item.type.kind !== "TEXT" ? <GuideTypeBadge type={item.type}/> : <Badge variant="secondary">{catalogName(item.type, locale)}</Badge>}
+                {item.type.kind !== "TEXT" ? <GuideTypeBadge type={item.type}/> :
+                    <Badge variant="secondary">{catalogName(item.type, locale)}</Badge>}
                 <NoEnglish text={item.text}/>
                 <div className="ml-auto flex flex-wrap items-center gap-1">
                     <GuideItemDialog
-                        trigger={<Button variant="ghost" size="icon-sm" aria-label={t("Guide.editor.editItem")} title={t("Guide.editor.editItem")}/>}
+                        trigger={<Button variant="ghost" size="icon-sm" aria-label={t("Guide.editor.editItem")}
+                                         title={t("Guide.editor.editItem")}/>}
                         heading={t("Guide.editor.editItem")}
                         initial={{type: item.type, text: item.text}}
                         onSave={values => updateItemAction({id: item.id, version: item.version, ...values})}
@@ -142,31 +161,51 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                         <PencilLine/>
                     </GuideItemDialog>
                     <IconAction label={t("Guide.editor.moveUp")} disabled={pending || index === 0}
-                                onClick={() => run(() => moveItemAction({id: item.id, version: item.version, chapterId: chapter.id, sectionId: section?.id ?? null, position: index - 1}))}>
+                                onClick={() => run(() => moveItemAction({
+                                    id: item.id,
+                                    version: item.version,
+                                    chapterId: chapter.id,
+                                    sectionId: section?.id ?? null,
+                                    position: index - 1
+                                }))}>
                         <ArrowUp/>
                     </IconAction>
                     <IconAction label={t("Guide.editor.moveDown")} disabled={pending || index === list.length - 1}
-                                onClick={() => run(() => moveItemAction({id: item.id, version: item.version, chapterId: chapter.id, sectionId: section?.id ?? null, position: index + 1}))}>
+                                onClick={() => run(() => moveItemAction({
+                                    id: item.id,
+                                    version: item.version,
+                                    chapterId: chapter.id,
+                                    sectionId: section?.id ?? null,
+                                    position: index + 1
+                                }))}>
                         <ArrowDown/>
                     </IconAction>
                     <NativeSelect size="sm" className="max-w-48"
-                        aria-label={t("Guide.editor.moveTo")}
-                        value=""
-                        disabled={pending}
-                        onChange={event => {
-                            const target = places[Number(event.target.value)];
+                                  aria-label={t("Guide.editor.moveTo")}
+                                  value=""
+                                  disabled={pending}
+                                  onChange={event => {
+                                      const target = places[Number(event.target.value)];
 
-                            if (target) {
-                                run(() => moveItemAction({id: item.id, version: item.version, chapterId: target.chapterId, sectionId: target.sectionId, position: target.size}));
-                            }
-                        }}
+                                      if (target) {
+                                          run(() => moveItemAction({
+                                              id: item.id,
+                                              version: item.version,
+                                              chapterId: target.chapterId,
+                                              sectionId: target.sectionId,
+                                              position: target.size
+                                          }));
+                                      }
+                                  }}
                     >
                         <option value="">{t("Guide.editor.moveTo")}</option>
                         {places.map((place, placeIndex) => (place.chapterId === chapter.id && place.sectionId === (section?.id ?? null))
                             ? null
-                            : <option key={`${place.chapterId}-${place.sectionId}`} value={placeIndex}>{place.label}</option>)}
+                            : <option key={`${place.chapterId}-${place.sectionId}`}
+                                      value={placeIndex}>{place.label}</option>)}
                     </NativeSelect>
-                    <ConfirmRemove label={t("Guide.editor.removeItem")} onConfirm={() => removeItemAction({id: item.id, version: item.version})}/>
+                    <ConfirmRemove label={t("Guide.editor.removeItem")}
+                                   onConfirm={() => removeItemAction({id: item.id, version: item.version})}/>
                 </div>
             </div>
             <GuideMarkdown>{item.text.sv}</GuideMarkdown>
@@ -194,13 +233,18 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                 <div className="flex flex-wrap items-center gap-2 border-b pb-2">
                     <h3 className="text-base font-semibold">{number}. {title(chapter.title)}</h3>
                     <NoEnglish text={chapter.title}/>
-                    <span className="text-xs text-muted-foreground">{t("Guide.admin.untranslated", {count: untranslated(chapter)})}</span>
+                    <span
+                        className="text-xs text-muted-foreground">{t("Guide.admin.untranslated", {count: untranslated(chapter)})}</span>
                     <div className="ml-auto flex flex-wrap gap-1">
                         <GuideTitleDialog
                             trigger={<Button variant="ghost" size="sm"/>}
                             heading={t("Guide.editor.renameChapter")}
                             initial={chapter.title}
-                            onSave={value => updateChapterAction({id: chapter.id, version: chapter.version, title: value})}
+                            onSave={value => updateChapterAction({
+                                id: chapter.id,
+                                version: chapter.version,
+                                title: value
+                            })}
                         >
                             <PencilLine/>
                             {t("Guide.editor.renameChapter")}
@@ -219,45 +263,73 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                 <div>{addItem(chapter, null)}</div>
 
                 {chapter.sections.map((section, sectionIndex) => (
-                    <section key={section.id} className="space-y-2 rounded-md bg-muted/30 p-3" aria-label={title(section.title)}>
+                    <section key={section.id} className="space-y-2 rounded-md bg-muted/30 p-3"
+                             aria-label={title(section.title)}>
                         <div className="flex flex-wrap items-center gap-2">
                             <h4 className="font-medium">{title(section.title)}</h4>
                             <NoEnglish text={section.title}/>
                             <div className="ml-auto flex flex-wrap items-center gap-1">
                                 <GuideTitleDialog
-                                    trigger={<Button variant="ghost" size="icon-sm" aria-label={t("Guide.editor.renameSection")} title={t("Guide.editor.renameSection")}/>}
+                                    trigger={<Button variant="ghost" size="icon-sm"
+                                                     aria-label={t("Guide.editor.renameSection")}
+                                                     title={t("Guide.editor.renameSection")}/>}
                                     heading={t("Guide.editor.renameSection")}
                                     initial={section.title}
-                                    onSave={value => updateSectionAction({id: section.id, version: section.version, title: value})}
+                                    onSave={value => updateSectionAction({
+                                        id: section.id,
+                                        version: section.version,
+                                        title: value
+                                    })}
                                 >
                                     <PencilLine/>
                                 </GuideTitleDialog>
                                 <IconAction label={t("Guide.editor.moveUp")} disabled={pending || sectionIndex === 0}
-                                            onClick={() => run(() => moveSectionAction({id: section.id, version: section.version, chapterId: chapter.id, position: sectionIndex - 1}))}>
+                                            onClick={() => run(() => moveSectionAction({
+                                                id: section.id,
+                                                version: section.version,
+                                                chapterId: chapter.id,
+                                                position: sectionIndex - 1
+                                            }))}>
                                     <ArrowUp/>
                                 </IconAction>
-                                <IconAction label={t("Guide.editor.moveDown")} disabled={pending || sectionIndex === chapter.sections.length - 1}
-                                            onClick={() => run(() => moveSectionAction({id: section.id, version: section.version, chapterId: chapter.id, position: sectionIndex + 1}))}>
+                                <IconAction label={t("Guide.editor.moveDown")}
+                                            disabled={pending || sectionIndex === chapter.sections.length - 1}
+                                            onClick={() => run(() => moveSectionAction({
+                                                id: section.id,
+                                                version: section.version,
+                                                chapterId: chapter.id,
+                                                position: sectionIndex + 1
+                                            }))}>
                                     <ArrowDown/>
                                 </IconAction>
                                 <NativeSelect size="sm"
-                                    aria-label={t("Guide.editor.moveSectionTo")}
-                                    value=""
-                                    disabled={pending}
-                                    onChange={event => {
-                                        const target = draft.chapters.find(candidate => candidate.id === event.target.value);
+                                              aria-label={t("Guide.editor.moveSectionTo")}
+                                              value=""
+                                              disabled={pending}
+                                              onChange={event => {
+                                                  const target = draft.chapters.find(candidate => candidate.id === event.target.value);
 
-                                        if (target) {
-                                            run(() => moveSectionAction({id: section.id, version: section.version, chapterId: target.id, position: target.sections.length}));
-                                        }
-                                    }}
+                                                  if (target) {
+                                                      run(() => moveSectionAction({
+                                                          id: section.id,
+                                                          version: section.version,
+                                                          chapterId: target.id,
+                                                          position: target.sections.length
+                                                      }));
+                                                  }
+                                              }}
                                 >
                                     <option value="">{t("Guide.editor.moveSectionTo")}</option>
                                     {draft.chapters.map((candidate, index) => candidate.id === chapter.id ? null : (
-                                        <option key={candidate.id} value={candidate.id}>{index + 1}. {title(candidate.title)}</option>
+                                        <option key={candidate.id}
+                                                value={candidate.id}>{index + 1}. {title(candidate.title)}</option>
                                     ))}
                                 </NativeSelect>
-                                <ConfirmRemove label={t("Guide.editor.removeSection")} onConfirm={() => removeSectionAction({id: section.id, version: section.version})}/>
+                                <ConfirmRemove label={t("Guide.editor.removeSection")}
+                                               onConfirm={() => removeSectionAction({
+                                                   id: section.id,
+                                                   version: section.version
+                                               })}/>
                             </div>
                         </div>
                         <ol className="space-y-2">{section.items.map((item, index) => itemRow(item, section.items, index, chapter, section))}</ol>

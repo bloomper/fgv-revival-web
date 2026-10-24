@@ -4,7 +4,12 @@ import userEvent from "@testing-library/user-event";
 import {RevivalStatusSelect} from "@/components/revival/revival-status-select.client";
 import {changeStatusAction} from "@/app/(app)/revivals/[id]/actions.server";
 
-vi.mock("@/app/(app)/revivals/[id]/actions.server", () => ({changeStatusAction: vi.fn(async () => ({ok: true, data: {status: "ORGANISING"}}))}));
+vi.mock("@/app/(app)/revivals/[id]/actions.server", () => ({
+    changeStatusAction: vi.fn(async () => ({
+        ok: true,
+        data: {status: "ORGANISING"}
+    }))
+}));
 vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn()})}));
 vi.mock("sonner", () => ({toast: {success: vi.fn(), error: vi.fn()}}));
 
@@ -32,7 +37,11 @@ describe("RevivalStatusSelect", () => {
 
         await userEvent.selectOptions(screen.getByRole("combobox"), "ORGANISING");
 
-        await waitFor(() => expect(changeStatusAction).toHaveBeenCalledWith({id: "7", from: "APPROVED", to: "ORGANISING"}));
+        await waitFor(() => expect(changeStatusAction).toHaveBeenCalledWith({
+            id: "7",
+            from: "APPROVED",
+            to: "ORGANISING"
+        }));
     });
 
     it("asks before archiving when the sync has not completed", async () => {
@@ -44,7 +53,11 @@ describe("RevivalStatusSelect", () => {
         expect(changeStatusAction).not.toHaveBeenCalled();
         expect(dialog).toHaveTextContent("Revival.archiveSyncDescription");
         await userEvent.click(within(dialog).getByRole("button", {name: "Revival.archiveAnyway"}));
-        await waitFor(() => expect(changeStatusAction).toHaveBeenCalledWith({id: "7", from: "SETTLING", to: "ARCHIVED"}));
+        await waitFor(() => expect(changeStatusAction).toHaveBeenCalledWith({
+            id: "7",
+            from: "SETTLING",
+            to: "ARCHIVED"
+        }));
     });
 
     it("archives at once when the sync has completed", async () => {
@@ -52,7 +65,11 @@ describe("RevivalStatusSelect", () => {
 
         await userEvent.selectOptions(screen.getByRole("combobox"), "ARCHIVED");
 
-        await waitFor(() => expect(changeStatusAction).toHaveBeenCalledWith({id: "7", from: "SETTLING", to: "ARCHIVED"}));
+        await waitFor(() => expect(changeStatusAction).toHaveBeenCalledWith({
+            id: "7",
+            from: "SETTLING",
+            to: "ARCHIVED"
+        }));
         expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
     });
 });

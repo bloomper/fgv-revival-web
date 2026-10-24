@@ -11,7 +11,11 @@ test.describe("Staffing and mailings, M6b: availability, shifts, the mailing pla
         await mock.participants({people: true});
     });
 
-    test("the participant answers for each day, takes an open shift, sees it in the schedule and leaves it", async ({page, loginAs, mock}) => {
+    test("the participant answers for each day, takes an open shift, sees it in the schedule and leaves it", async ({
+                                                                                                                        page,
+                                                                                                                        loginAs,
+                                                                                                                        mock
+                                                                                                                    }) => {
         await mock.staffing({answered: true});
         await page.setViewportSize({width: 390, height: 844});
         await loginAs("deltagare");
@@ -49,7 +53,11 @@ test.describe("Staffing and mailings, M6b: availability, shifts, the mailing pla
         await expect(mine).toContainText("Du har inga pass än.");
     });
 
-    test("a STAFFING member adds a slot and assigns by availability; the matrix and the print show it", async ({page, loginAs, mock}) => {
+    test("a STAFFING member adds a slot and assigns by availability; the matrix and the print show it", async ({
+                                                                                                                   page,
+                                                                                                                   loginAs,
+                                                                                                                   mock
+                                                                                                               }) => {
         await mock.staffing({capabilities: ["STAFFING"], answered: true});
         await loginAs("styrgrupp");
         await page.goto("/revivals/1");
@@ -105,7 +113,11 @@ test.describe("Staffing and mailings, M6b: availability, shifts, the mailing pla
         await expect(page.getByRole("button", {name: "Skriv ut"})).toBeHidden();
     });
 
-    test("a steering group member without STAFFING reads the staffing but cannot change it", async ({page, loginAs, mock}) => {
+    test("a steering group member without STAFFING reads the staffing but cannot change it", async ({
+                                                                                                        page,
+                                                                                                        loginAs,
+                                                                                                        mock
+                                                                                                    }) => {
         await mock.staffing();
         await loginAs("styrgrupp");
         await page.goto("/revivals/1/staffing");
@@ -157,7 +169,11 @@ test.describe("Staffing and mailings, M6b: availability, shifts, the mailing pla
         await expect(page.getByRole("row").filter({hasText: "Allergier inför rephelgen"})).toContainText("Skickat");
     });
 
-    test("a member without COMMS drafts a mailing with a live audience but cannot send it", async ({page, loginAs, mock}) => {
+    test("a member without COMMS drafts a mailing with a live audience but cannot send it", async ({
+                                                                                                       page,
+                                                                                                       loginAs,
+                                                                                                       mock
+                                                                                                   }) => {
         await mock.staffing({answered: true});
         await loginAs("styrgrupp");
         await page.goto("/revivals/1/mailings");

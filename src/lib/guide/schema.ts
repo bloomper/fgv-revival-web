@@ -48,18 +48,34 @@ const id = z.string().min(1);
 const version = z.number().int();
 
 export const guideIntroductionUpdateSchema = z.object({versionId: id, version, introduction: guideIntroductionSchema});
-export const guideChapterCreateSchema = z.object({versionId: id, position: z.number().int().min(0).nullable().optional(), title: guideTitleSchema});
+export const guideChapterCreateSchema = z.object({
+    versionId: id,
+    position: z.number().int().min(0).nullable().optional(),
+    title: guideTitleSchema
+});
 export const guideChapterUpdateSchema = z.object({id, version, title: guideTitleSchema});
 export const guideChapterMoveSchema = z.object({id, version, position: z.number().int().min(0)});
-export const guideSectionCreateSchema = z.object({chapterId: id, position: z.number().int().nullable().optional(), title: guideTitleSchema});
+export const guideSectionCreateSchema = z.object({
+    chapterId: id,
+    position: z.number().int().nullable().optional(),
+    title: guideTitleSchema
+});
 export const guideSectionUpdateSchema = z.object({id, version, title: guideTitleSchema});
 export const guideSectionMoveSchema = z.object({id, version, chapterId: id, position: z.number().int().min(0)});
 export const guideRemoveSchema = z.object({id, version});
 export const guideItemCreateSchema = z.object({
-    chapterId: id, sectionId: id.nullable().optional(), position: z.number().int().nullable().optional(), ...guideItemSchema.shape,
+    chapterId: id,
+    sectionId: id.nullable().optional(),
+    position: z.number().int().nullable().optional(), ...guideItemSchema.shape,
 });
 export const guideItemUpdateSchema = z.object({id, version, ...guideItemSchema.shape});
-export const guideItemMoveSchema = z.object({id, version, chapterId: id, sectionId: id.nullable().optional(), position: z.number().int().min(0)});
+export const guideItemMoveSchema = z.object({
+    id,
+    version,
+    chapterId: id,
+    sectionId: id.nullable().optional(),
+    position: z.number().int().min(0)
+});
 export const revivalGuideVersionChangeSchema = z.object({revivalId: id, fromVersionId: id.nullable(), toVersionId: id});
 
 export const SUGGESTION_KINDS = ["CHANGE", "REMOVE", "ADD"] as const;
@@ -99,7 +115,15 @@ export const guideSuggestionCreateSchema = z.object({
 export const guideSuggestionAcceptSchema = z.object({
     id, version,
     note: z.string().trim().max(MAX_REASON, "reasonTooLong").optional().nullable(),
-    resolution: z.object({keep: z.boolean().optional(), type: catalogId.optional().nullable(), text: guideItemTextSchema.optional().nullable()}).optional().nullable(),
+    resolution: z.object({
+        keep: z.boolean().optional(),
+        type: catalogId.optional().nullable(),
+        text: guideItemTextSchema.optional().nullable()
+    }).optional().nullable(),
 });
 
-export const guideSuggestionRejectSchema = z.object({id, version, reason: z.string().trim().max(MAX_REASON, "reasonTooLong").optional().nullable()});
+export const guideSuggestionRejectSchema = z.object({
+    id,
+    version,
+    reason: z.string().trim().max(MAX_REASON, "reasonTooLong").optional().nullable()
+});

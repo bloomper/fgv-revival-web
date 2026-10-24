@@ -30,7 +30,8 @@ function CopyRow({label, value, shown}: { label: string; value: string; shown?: 
                 <dt className="text-sm text-muted-foreground">{label}</dt>
                 <dd className="font-mono text-base break-all">{shown ?? value}</dd>
             </div>
-            <Button type="button" variant="outline" className="size-11 shrink-0" aria-label={t("copy", {label})} onClick={copy}>
+            <Button type="button" variant="outline" className="size-11 shrink-0" aria-label={t("copy", {label})}
+                    onClick={copy}>
                 {copied ? <Check/> : <Copy/>}
             </Button>
         </div>
@@ -58,21 +59,25 @@ export function FeeDetails({revivalId, fee, paid, paidAt, swish}: {
             <div className="flex flex-wrap items-center gap-3">
                 <span className="text-2xl font-bold tabular-nums">{formatAmount(fee)}</span>
                 {paid
-                    ? <Badge variant="secondary">{paidAt ? t("feePaidOn", {date: formatInstant(paidAt) ?? ""}) : t("feePaid")}</Badge>
+                    ? <Badge
+                        variant="secondary">{paidAt ? t("feePaidOn", {date: formatInstant(paidAt) ?? ""}) : t("feePaid")}</Badge>
                     : <Badge variant="outline">{t("feeUnpaid")}</Badge>}
             </div>
             {!paid && swish && (
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                     {swish.qrAvailable && !qrFailed && (
                         // eslint-disable-next-line @next/next/no-img-element -- next/image would fetch it without the user's session
-                        <img src={`/api/swish-qr/${revivalId}`} alt={t("swishQrAlt", {amount: formatAmount(swish.amount) ?? ""})} width={200} height={200}
-                             className="size-50 self-center rounded-md border bg-white p-2 sm:self-start" onError={() => setQrFailed(true)}/>
+                        <img src={`/api/swish-qr/${revivalId}`}
+                             alt={t("swishQrAlt", {amount: formatAmount(swish.amount) ?? ""})} width={200} height={200}
+                             className="size-50 self-center rounded-md border bg-white p-2 sm:self-start"
+                             onError={() => setQrFailed(true)}/>
                     )}
                     <div className="flex min-w-0 flex-1 flex-col gap-2">
                         <p className="text-sm">{t("swishInstructions")}</p>
                         <dl className="flex flex-col divide-y">
                             <CopyRow label={t("swishNumber")} value={swish.number}/>
-                            <CopyRow label={t("swishAmount")} value={amountForSwish} shown={formatAmount(swish.amount) ?? swish.amount}/>
+                            <CopyRow label={t("swishAmount")} value={amountForSwish}
+                                     shown={formatAmount(swish.amount) ?? swish.amount}/>
                             <CopyRow label={t("swishMessage")} value={swish.message}/>
                         </dl>
                     </div>

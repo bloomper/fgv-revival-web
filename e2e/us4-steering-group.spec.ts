@@ -43,7 +43,11 @@ test.describe("User story 4: the directeur builds the steering group", () => {
         await expect(page.getByRole("row").filter({hasText: "Olle Observatör"})).toBeVisible();
     });
 
-    test("the member sees the revival only while organising, open or closing, and read-only", async ({page, loginAs, mock}) => {
+    test("the member sees the revival only while organising, open or closing, and read-only", async ({
+                                                                                                         page,
+                                                                                                         loginAs,
+                                                                                                         mock
+                                                                                                     }) => {
         await loginAs("styrgrupp");
         await page.goto("/revivals");
         await expect(page.getByText("Ali Baba 2028")).toHaveCount(0);

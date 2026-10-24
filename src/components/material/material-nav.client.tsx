@@ -25,7 +25,8 @@ export function MaterialNav({revivalId}: { revivalId: string }) {
                 const active = view.segment === segment;
 
                 return (
-                    <Link key={view.key} href={view.segment ? `${base}/${view.segment}` : base} aria-current={active ? "page" : undefined}
+                    <Link key={view.key} href={view.segment ? `${base}/${view.segment}` : base}
+                          aria-current={active ? "page" : undefined}
                           className={cn("inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-medium whitespace-nowrap [&_svg]:size-4",
                               active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
                         <view.icon/>

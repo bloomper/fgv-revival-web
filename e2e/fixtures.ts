@@ -64,7 +64,13 @@ export const test = base.extend<{ resetBackend: void; loginAs: (persona: Persona
     },
 });
 
-type LogRow = { revivalId: string; type: "DECISION" | "TODO" | "QUESTION"; text: string; status?: string; deadline?: string };
+type LogRow = {
+    revivalId: string;
+    type: "DECISION" | "TODO" | "QUESTION";
+    text: string;
+    status?: string;
+    deadline?: string
+};
 
 type Mock = {
     setStatus: (id: string, status: string) => Promise<void>;

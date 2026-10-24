@@ -12,5 +12,6 @@ export default async function GuideVersionChaptersLayout({children, params}: {
 }) {
     const {versionId} = await params;
 
-    return withPolicyPage(Policies.app.requireAccess, async () => <GuideChapters version={decodeURIComponent(versionId)}>{children}</GuideChapters>);
+    return withPolicyPage(Policies.app.requireAccess, async () => <GuideChapters
+        version={decodeURIComponent(versionId)}>{children}</GuideChapters>);
 }

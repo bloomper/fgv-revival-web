@@ -18,7 +18,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Switch} from "@/components/ui/switch";
@@ -26,7 +32,12 @@ import {DataEmpty} from "@/components/data-empty";
 import {DataFilter} from "@/components/data-filter";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
 import {catalogName} from "@/components/catalog/catalog";
-import {EventDialog, type EditableEvent, type EventPrefill, type EventTypeOption} from "@/components/event/event-dialog.client";
+import {
+    type EditableEvent,
+    EventDialog,
+    type EventPrefill,
+    type EventTypeOption
+} from "@/components/event/event-dialog.client";
 import {CancelledBadge, PremiereDistanceLabel} from "@/components/event/event-labels";
 import {type EventProposal, EventProposals} from "@/components/event/event-proposals.client";
 import {formatEventDates} from "@/components/event/timeline";
@@ -100,11 +111,13 @@ function RowActions({event, revivalId, onEdit, onCancel}: {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" disabled={pending} aria-label={t("rowMenu", {title: event.title})}/>}>
+            <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" disabled={pending}
+                                                 aria-label={t("rowMenu", {title: event.title})}/>}>
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {!event.cancelled && <DropdownMenuItem onClick={() => onEdit(event)}><Pencil/>{t("edit")}</DropdownMenuItem>}
+                {!event.cancelled &&
+                    <DropdownMenuItem onClick={() => onEdit(event)}><Pencil/>{t("edit")}</DropdownMenuItem>}
                 {event.checklist && (
                     <DropdownMenuItem render={<Link href={`/revivals/${revivalId}/checklists/${event.checklist.id}`}/>}>
                         <ClipboardCheck/>{t("openChecklist")}
@@ -113,17 +126,26 @@ function RowActions({event, revivalId, onEdit, onCancel}: {
                 <DropdownMenuSeparator/>
                 {event.cancelled ? (
                     <DropdownMenuItem onClick={() => startTransition(async () => {
-                        feedback(await restoreEventAction({id: event.id, version: event.version, revivalId}), t("restored"));
+                        feedback(await restoreEventAction({
+                            id: event.id,
+                            version: event.version,
+                            revivalId
+                        }), t("restored"));
                     })}><RotateCcw/>{t("restore")}</DropdownMenuItem>
                 ) : (
-                    <DropdownMenuItem variant="destructive" onClick={() => onCancel(event)}><Ban/>{t("cancel")}</DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive" onClick={() => onCancel(event)}><Ban/>{t("cancel")}
+                    </DropdownMenuItem>
                 )}
             </DropdownMenuContent>
         </DropdownMenu>
     );
 }
 
-function CancelDialog({event, revivalId, onOpenChange}: { event: EventRow; revivalId: string; onOpenChange: (open: boolean) => void }) {
+function CancelDialog({event, revivalId, onOpenChange}: {
+    event: EventRow;
+    revivalId: string;
+    onOpenChange: (open: boolean) => void
+}) {
     const t = useTranslations();
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
@@ -137,11 +159,16 @@ function CancelDialog({event, revivalId, onOpenChange}: { event: EventRow; reviv
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
-                    <AlertDialogAction variant="destructive" disabled={pending} onClick={() => startTransition(async () => {
-                        if (feedback(await cancelEventAction({id: event.id, version: event.version, revivalId}), t("Event.cancelled"))) {
-                            onOpenChange(false);
-                        }
-                    })}>
+                    <AlertDialogAction variant="destructive" disabled={pending}
+                                       onClick={() => startTransition(async () => {
+                                           if (feedback(await cancelEventAction({
+                                               id: event.id,
+                                               version: event.version,
+                                               revivalId
+                                           }), t("Event.cancelled"))) {
+                                               onOpenChange(false);
+                                           }
+                                       })}>
                         {t("Event.cancel")}
                     </AlertDialogAction>
                 </AlertDialogFooter>
@@ -154,8 +181,10 @@ function ChecklistLink({revivalId, checklist}: { revivalId: string; checklist: N
     const t = useTranslations("Event");
 
     return (
-        <Link href={`/revivals/${revivalId}/checklists/${checklist.id}`} className="whitespace-nowrap tabular-nums hover:underline"
-              aria-label={t("checklistLink", {open: checklist.openCount, total: checklist.totalCount})} onClick={click => click.stopPropagation()}>
+        <Link href={`/revivals/${revivalId}/checklists/${checklist.id}`}
+              className="whitespace-nowrap tabular-nums hover:underline"
+              aria-label={t("checklistLink", {open: checklist.openCount, total: checklist.totalCount})}
+              onClick={click => click.stopPropagation()}>
             <ClipboardCheck className="mr-1 inline size-4 align-text-bottom"/>
             {checklist.openCount}/{checklist.totalCount}
         </Link>
@@ -172,14 +201,16 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (event: EventR
             accessorFn: event => `${event.startDate} ${event.startTime ?? ""}`,
             sortFn: "alphanumeric",
             header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("dates")}/>,
-            cell: ({row}) => <span className="whitespace-nowrap font-medium tabular-nums">{formatEventDates(row.original)}</span>,
+            cell: ({row}) => <span
+                className="whitespace-nowrap font-medium tabular-nums">{formatEventDates(row.original)}</span>,
             meta: {className: "w-48"},
         },
         {
             id: "title",
             accessorFn: event => event.title,
             sortFn: "alphanumeric",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("titleLabel")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("titleLabel")}/>,
             cell: ({row}) => {
                 const event = row.original;
 
@@ -214,14 +245,16 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (event: EventR
             accessorFn: event => event.daysFromPremiere ?? undefined,
             sortFn: "basic",
             sortUndefined: "last",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("toPremiere")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("toPremiere")}/>,
             cell: ({row}) => <PremiereDistanceLabel days={row.original.daysFromPremiere}/>,
             meta: {className: "hidden sm:table-cell"},
         },
         {
             id: "checklist",
             header: () => t("checklist"),
-            cell: ({row}) => row.original.checklist ? <ChecklistLink revivalId={revivalId} checklist={row.original.checklist}/> : "—",
+            cell: ({row}) => row.original.checklist ?
+                <ChecklistLink revivalId={revivalId} checklist={row.original.checklist}/> : "—",
             meta: {className: "hidden md:table-cell"},
         },
     ];
@@ -230,7 +263,8 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (event: EventR
         columns.push({
             id: "actions",
             header: () => <span className="sr-only">{t("actions")}</span>,
-            cell: ({row}) => <RowActions event={row.original} revivalId={revivalId} onEdit={onEdit} onCancel={onCancel}/>,
+            cell: ({row}) => <RowActions event={row.original} revivalId={revivalId} onEdit={onEdit}
+                                         onCancel={onCancel}/>,
             meta: {className: "w-12 text-right"},
         });
     }
@@ -279,14 +313,17 @@ export function EventTable({revivalId, events, types, proposals, canWrite, showC
             <DataTable columns={columns} data={filtered} filtered={active} initialSorting={[{id: "date", desc: false}]}
                        onRowClick={canWrite ? (event => !event.cancelled && setEditing(event)) : undefined}
                        rowClassName={event => event.cancelled && "text-muted-foreground"}
-                       empty={<DataEmpty title={t("Event.empty")} description={canWrite ? t("Event.emptyHint") : t("Event.emptyReadOnly")}/>}>
+                       empty={<DataEmpty title={t("Event.empty")}
+                                         description={canWrite ? t("Event.emptyHint") : t("Event.emptyReadOnly")}/>}>
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-wrap items-center gap-2">
                         <div className="relative w-full sm:w-75">
-                            <Input placeholder={t("Event.filterPlaceholder")} value={query} onChange={change => setQuery(change.target.value)}
+                            <Input placeholder={t("Event.filterPlaceholder")} value={query}
+                                   onChange={change => setQuery(change.target.value)}
                                    aria-label={t("Common.search")} className="h-8 pr-8"/>
                             {query && (
-                                <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                                <Button variant="ghost" size="icon"
+                                        className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
                                         aria-label={t("Common.clearSearch")} onClick={() => setQuery("")}>
                                     <X className="h-3 w-3"/>
                                 </Button>
@@ -310,12 +347,14 @@ export function EventTable({revivalId, events, types, proposals, canWrite, showC
                     <div className="flex flex-wrap items-center gap-2">
                         {/* A lone child: an element from the server page can arrive lazy, and React then asks for a key. */}
                         <>{actions}</>
-                        {canWrite && <Button onClick={() => setAdding({prefill: null})}><Plus/>{t("Event.new")}</Button>}
+                        {canWrite &&
+                            <Button onClick={() => setAdding({prefill: null})}><Plus/>{t("Event.new")}</Button>}
                     </div>
                 </div>
             </DataTable>
             {(adding || editing) && (
-                <EventDialog key={editing?.id ?? adding?.prefill?.typeId ?? "new"} revivalId={revivalId} types={types} event={editing}
+                <EventDialog key={editing?.id ?? adding?.prefill?.typeId ?? "new"} revivalId={revivalId} types={types}
+                             event={editing}
                              prefill={adding?.prefill} open onOpenChange={open => {
                     if (!open) {
                         setAdding(null);
@@ -323,7 +362,8 @@ export function EventTable({revivalId, events, types, proposals, canWrite, showC
                     }
                 }}/>
             )}
-            {cancelling && <CancelDialog event={cancelling} revivalId={revivalId} onOpenChange={open => !open && setCancelling(null)}/>}
+            {cancelling && <CancelDialog event={cancelling} revivalId={revivalId}
+                                         onOpenChange={open => !open && setCancelling(null)}/>}
         </div>
     );
 }

@@ -76,7 +76,10 @@ export type PendingPersonValues = z.infer<typeof pendingPersonValuesSchema>;
 
 export const participantAddPendingSchema = z.object({revivalId: id, values: pendingPersonValuesSchema});
 export const participantAddSpexareSchema = z.object({revivalId: id, spexareIds: z.array(id).min(1).max(MAX_BULK_ADD)});
-export const spexareSearchSchema = z.object({revivalId: id, query: z.string().trim().min(MIN_SPEXARE_QUERY).max(MAX_PERSON_NAME * 2)});
+export const spexareSearchSchema = z.object({
+    revivalId: id,
+    query: z.string().trim().min(MIN_SPEXARE_QUERY).max(MAX_PERSON_NAME * 2)
+});
 
 // --- Editing ------------------------------------------------------------------------------------------------------
 
@@ -120,7 +123,11 @@ function checkPendingPerson(values: ParticipantEditValues, kind: (typeof PARTICI
 export function participantEditSchemaFor(kind: (typeof PARTICIPANT_KINDS)[number], pending: boolean) {
     return participantEditValuesSchema.superRefine((values, ctx) => {
         if (pending) {
-            checkPendingPerson(values, kind, (message, field) => ctx.addIssue({code: "custom", message, path: [field]}));
+            checkPendingPerson(values, kind, (message, field) => ctx.addIssue({
+                code: "custom",
+                message,
+                path: [field]
+            }));
         }
     });
 }
@@ -135,7 +142,11 @@ export const participantUpdateSchema = z.object({
     values: participantEditValuesSchema,
 }).superRefine((input, ctx) => {
     if (input.pending) {
-        checkPendingPerson(input.values, input.kind, (message, field) => ctx.addIssue({code: "custom", message, path: ["values", field]}));
+        checkPendingPerson(input.values, input.kind, (message, field) => ctx.addIssue({
+            code: "custom",
+            message,
+            path: ["values", field]
+        }));
     }
 });
 
@@ -162,7 +173,11 @@ export const participationSettingsValuesSchema = z.object({
 
 export type ParticipationSettingsValues = z.infer<typeof participationSettingsValuesSchema>;
 
-export const participationSettingsSchema = z.object({revivalId: id, version, values: participationSettingsValuesSchema});
+export const participationSettingsSchema = z.object({
+    revivalId: id,
+    version,
+    values: participationSettingsValuesSchema
+});
 
 export const referralHandleSchema = z.object({revivalId: id, id, outcome: z.enum(["ADDED", "DISMISSED"])});
 

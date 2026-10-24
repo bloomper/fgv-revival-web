@@ -38,7 +38,10 @@ async function load(id: string) {
  * Administration, kept here so moving between checklists only reloads the checklist. The layout cannot read the query,
  * so it fetches the cancelled event checklists too and the list hides them unless asked for (FR-023).
  */
-export default async function ChecklistsLayout({children, params}: { children: React.ReactNode; params: Promise<{ id: string }> }) {
+export default async function ChecklistsLayout({children, params}: {
+    children: React.ReactNode;
+    params: Promise<{ id: string }>
+}) {
     const {id} = await params;
 
     return withPolicyPage(Policies.app.requireAccess, async ({roles}) => {
@@ -57,7 +60,8 @@ export default async function ChecklistsLayout({children, params}: { children: R
                 <ReadOnlyNotice revivalId={revival.id} status={revival.status} canWrite={canWrite} roles={roles}/>
                 <div className="flex flex-1 flex-col gap-6 lg:flex-row">
                     <Suspense fallback={<Skeleton className="h-96 lg:w-80 lg:shrink-0"/>}>
-                        <ChecklistNav revivalId={revival.id} checklists={checklists} templates={templates} canWrite={canWrite}/>
+                        <ChecklistNav revivalId={revival.id} checklists={checklists} templates={templates}
+                                      canWrite={canWrite}/>
                     </Suspense>
                     <div className="flex min-w-0 flex-1 flex-col">{children}</div>
                 </div>

@@ -33,7 +33,10 @@ function chaptersOf(changes: Changes): { key: string; title: Text | null }[] {
 export function GuideChanges({changes}: { changes: Changes }) {
     const t = useTranslations("Guide.changes");
     const locale = useLocale();
-    const text = (value: { sv: string; en?: string | null } | null | undefined) => value ? pickText(value, locale).text : "";
+    const text = (value: {
+        sv: string;
+        en?: string | null
+    } | null | undefined) => value ? pickText(value, locale).text : "";
     const empty = changes.introductionChanged.length === 0 && changes.chapters.length === 0 && changes.sections.length === 0 && changes.items.length === 0;
 
     if (empty) {
@@ -54,20 +57,25 @@ export function GuideChanges({changes}: { changes: Changes }) {
                     <section key={key} className="space-y-3" aria-label={t("chapter", {title: text(title)})}>
                         <h3 className="text-lg font-semibold">{t("chapter", {title: text(title)})}</h3>
                         {chapter && (
-                            <div className="flex flex-wrap items-center gap-2 text-sm" data-testid={`chapter-change-${key}`}>
-                                <Badge variant={chapter.kind === "REMOVED" ? "destructive" : chapter.kind === "ADDED" ? "default" : "secondary"}>
+                            <div className="flex flex-wrap items-center gap-2 text-sm"
+                                 data-testid={`chapter-change-${key}`}>
+                                <Badge
+                                    variant={chapter.kind === "REMOVED" ? "destructive" : chapter.kind === "ADDED" ? "default" : "secondary"}>
                                     {t(`chapterKind.${chapter.kind}`)}
                                 </Badge>
                                 {chapter.renamed.length > 0 && (
-                                    <span><span className="line-through">{text(chapter.before)}</span> → {text(chapter.after)}</span>
+                                    <span><span
+                                        className="line-through">{text(chapter.before)}</span> → {text(chapter.after)}</span>
                                 )}
                                 {chapter.moved && <Badge variant="outline">{t("moved")}</Badge>}
-                                {chapter.kind === "REMOVED" && <span className="text-destructive">{t("chapterRemovedChecklists")}</span>}
+                                {chapter.kind === "REMOVED" &&
+                                    <span className="text-destructive">{t("chapterRemovedChecklists")}</span>}
                             </div>
                         )}
                         {sections.map(change => (
                             <p key={change.key} className="flex flex-wrap items-center gap-2 text-sm">
-                                <Badge variant={change.kind === "REMOVED" ? "destructive" : change.kind === "ADDED" ? "default" : "secondary"}>
+                                <Badge
+                                    variant={change.kind === "REMOVED" ? "destructive" : change.kind === "ADDED" ? "default" : "secondary"}>
                                     {t(`kind.${change.kind}`)}
                                 </Badge>
                                 <span>{t("section")} {text(change.after ?? change.before)}</span>
@@ -78,23 +86,31 @@ export function GuideChanges({changes}: { changes: Changes }) {
                         ))}
                         <ul className="space-y-2">
                             {items.map(change => (
-                                <li key={change.key} className="space-y-2 rounded-md border p-3" data-testid={`change-${change.key}`}>
+                                <li key={change.key} className="space-y-2 rounded-md border p-3"
+                                    data-testid={`change-${change.key}`}>
                                     <div className="flex flex-wrap items-center gap-2">
-                                        <Badge variant={change.kind === "REMOVED" ? "destructive" : change.kind === "ADDED" ? "default" : "secondary"}>
+                                        <Badge
+                                            variant={change.kind === "REMOVED" ? "destructive" : change.kind === "ADDED" ? "default" : "secondary"}>
                                             {t(`kind.${change.kind}`)}
                                         </Badge>
-                                        {(change.after ?? change.before) && <GuideTypeBadge type={(change.after ?? change.before)!.type}/>}
-                                        {change.reworded.map(language => <Badge key={language} variant="outline">{t("reworded", {language})}</Badge>)}
+                                        {(change.after ?? change.before) &&
+                                            <GuideTypeBadge type={(change.after ?? change.before)!.type}/>}
+                                        {change.reworded.map(language => <Badge key={language}
+                                                                                variant="outline">{t("reworded", {language})}</Badge>)}
                                         {change.retyped && <Badge variant="outline">{t("retyped")}</Badge>}
                                         {change.moved && <Badge variant="outline">{t("moved")}</Badge>}
                                     </div>
                                     {change.before && change.after && change.reworded.length > 0 ? (
                                         <div className="grid gap-2 md:grid-cols-2">
-                                            <div className="rounded bg-muted/50 p-2 text-sm"><GuideMarkdown>{text(change.before.text)}</GuideMarkdown></div>
-                                            <div className="rounded bg-muted/50 p-2 text-sm"><GuideMarkdown>{text(change.after.text)}</GuideMarkdown></div>
+                                            <div className="rounded bg-muted/50 p-2 text-sm">
+                                                <GuideMarkdown>{text(change.before.text)}</GuideMarkdown></div>
+                                            <div className="rounded bg-muted/50 p-2 text-sm">
+                                                <GuideMarkdown>{text(change.after.text)}</GuideMarkdown></div>
                                         </div>
                                     ) : (
-                                        <div className="text-sm"><GuideMarkdown>{text((change.after ?? change.before)?.text)}</GuideMarkdown></div>
+                                        <div className="text-sm">
+                                            <GuideMarkdown>{text((change.after ?? change.before)?.text)}</GuideMarkdown>
+                                        </div>
                                     )}
                                 </li>
                             ))}

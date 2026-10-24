@@ -7,7 +7,14 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Pencil} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Card, CardAction, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {DateInput} from "@/components/date-input.client";
@@ -27,7 +34,11 @@ export type BudgetSettingsValue = {
     version: number;
 };
 
-function SettingsDialog({revivalId, settings, onOpenChange}: { revivalId: string; settings: BudgetSettingsValue; onOpenChange: (open: boolean) => void }) {
+function SettingsDialog({revivalId, settings, onOpenChange}: {
+    revivalId: string;
+    settings: BudgetSettingsValue;
+    onOpenChange: (open: boolean) => void
+}) {
     const t = useTranslations();
     const id = useId();
     const feedback = useActionFeedback();
@@ -43,7 +54,8 @@ function SettingsDialog({revivalId, settings, onOpenChange}: { revivalId: string
         },
     });
     const {errors} = form.formState;
-    const error = (message?: string) => message && <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const error = (message?: string) => message &&
+        <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
 
     return (
         <Dialog open onOpenChange={onOpenChange}>
@@ -53,24 +65,31 @@ function SettingsDialog({revivalId, settings, onOpenChange}: { revivalId: string
                     <DialogDescription>{t("Budget.settingsDescription")}</DialogDescription>
                 </DialogHeader>
                 <form className="space-y-4" onSubmit={form.handleSubmit(values => startTransition(async () => {
-                    if (feedback(await updateBudgetSettingsAction({revivalId, version: settings.version, values}), t("Common.saved"))) {
+                    if (feedback(await updateBudgetSettingsAction({
+                        revivalId,
+                        version: settings.version,
+                        values
+                    }), t("Common.saved"))) {
                         onOpenChange(false);
                     }
                 }))}>
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
                             <Label htmlFor={`${id}-participants`}>{t("Budget.participantsPlanned")}</Label>
-                            <Input id={`${id}-participants`} inputMode="numeric" autoComplete="off" {...form.register("participantsPlanned")}/>
+                            <Input id={`${id}-participants`} inputMode="numeric"
+                                   autoComplete="off" {...form.register("participantsPlanned")}/>
                             {error(errors.participantsPlanned?.message)}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor={`${id}-fee`}>{t("Budget.participationFee")}</Label>
-                            <Input id={`${id}-fee`} inputMode="decimal" autoComplete="off" {...form.register("participationFee")}/>
+                            <Input id={`${id}-fee`} inputMode="decimal"
+                                   autoComplete="off" {...form.register("participationFee")}/>
                             {error(errors.participationFee?.message)}
                         </div>
                         <div className="space-y-2 sm:col-span-2">
                             <Label htmlFor={`${id}-loan`}>{t("Budget.loanAmount")}</Label>
-                            <Input id={`${id}-loan`} inputMode="decimal" autoComplete="off" {...form.register("loanAmount")}/>
+                            <Input id={`${id}-loan`} inputMode="decimal"
+                                   autoComplete="off" {...form.register("loanAmount")}/>
                             <p className="text-xs text-muted-foreground">{t("Budget.loanHelp")}</p>
                             {error(errors.loanAmount?.message)}
                         </div>
@@ -86,7 +105,8 @@ function SettingsDialog({revivalId, settings, onOpenChange}: { revivalId: string
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </DialogFooter>
                 </form>
@@ -99,7 +119,11 @@ function SettingsDialog({revivalId, settings, onOpenChange}: { revivalId: string
  * The budget's settings: planned participants and fee, which lines per participant and scenarios use, and the loan from
  * FGV/JK with when it came and was paid back. Writers change them in a dialog.
  */
-export function BudgetSettingsCard({revivalId, settings, canWrite}: { revivalId: string; settings: BudgetSettingsValue; canWrite: boolean }) {
+export function BudgetSettingsCard({revivalId, settings, canWrite}: {
+    revivalId: string;
+    settings: BudgetSettingsValue;
+    canWrite: boolean
+}) {
     const t = useTranslations("Budget");
     const [editing, setEditing] = useState(false);
     const notSet = <span className="text-muted-foreground">{t("notSet")}</span>;
@@ -110,7 +134,8 @@ export function BudgetSettingsCard({revivalId, settings, canWrite}: { revivalId:
                 <CardTitle>{t("settings")}</CardTitle>
                 {canWrite && (
                     <CardAction>
-                        <Button size="sm" variant="outline" onClick={() => setEditing(true)}><Pencil/>{t("editSettings")}</Button>
+                        <Button size="sm" variant="outline"
+                                onClick={() => setEditing(true)}><Pencil/>{t("editSettings")}</Button>
                     </CardAction>
                 )}
             </CardHeader>

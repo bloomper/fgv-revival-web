@@ -39,7 +39,8 @@ export function BudgetTotals({totals}: { totals: BudgetTotalsValue }) {
                     <CardTitle className="text-2xl"><AmountText value={totals.budgetedResult} signed/></CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">
-                    {t("actualSoFar")} <AmountText value={totals.actualResult} signed className="font-medium text-foreground"/>
+                    {t("actualSoFar")} <AmountText value={totals.actualResult} signed
+                                                   className="font-medium text-foreground"/>
                 </CardContent>
             </Card>
             <Card role="region" className="gap-2" aria-label={t("incomeAndCost")}>
@@ -60,12 +61,14 @@ export function BudgetTotals({totals}: { totals: BudgetTotalsValue }) {
                     <CardDescription>{t("unreimbursed")}</CardDescription>
                     <CardTitle className="text-2xl"><AmountText value={totals.unreimbursed}/></CardTitle>
                 </CardHeader>
-                <CardContent className="text-sm text-muted-foreground">{t("unreimbursedCount", {count: totals.unreimbursedCount})}</CardContent>
+                <CardContent
+                    className="text-sm text-muted-foreground">{t("unreimbursedCount", {count: totals.unreimbursedCount})}</CardContent>
             </Card>
             <Card role="region" className="gap-2" aria-label={t("missingReceipts")}>
                 <CardHeader>
                     <CardDescription>{t("missingReceipts")}</CardDescription>
-                    <CardTitle className={totals.missingReceipts > 0 ? "text-2xl text-destructive" : "text-2xl"}>{totals.missingReceipts}</CardTitle>
+                    <CardTitle
+                        className={totals.missingReceipts > 0 ? "text-2xl text-destructive" : "text-2xl"}>{totals.missingReceipts}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">{t("missingReceiptsHint")}</CardContent>
             </Card>

@@ -15,10 +15,10 @@ export function RevivalCreateDialog({defaultOpen = false}: { defaultOpen?: boole
 
     return (
         <RevivalFormSheet open={open} onOpenChange={setOpen} trigger={
-            <Button size="sm" className="h-8 w-full lg:w-auto">
-                <Plus/>
-                {t("create")}
-            </Button>
-        }/>
+                                                                 <Button size="sm" className="h-8 w-full lg:w-auto">
+                                                                     <Plus/>
+                                                                     {t("create")}
+                                                                 </Button>
+                                                             }/>
     );
 }

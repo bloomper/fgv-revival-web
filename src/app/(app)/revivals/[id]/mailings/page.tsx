@@ -43,11 +43,13 @@ export default async function MailingsPage({params}: { params: Promise<{ id: str
                         <h4 id="mailing-plan" className="font-semibold">{t("plan")}</h4>
                         <p className="text-sm text-muted-foreground">{t("planDescription")}</p>
                     </div>
-                    <MailingPlan revivalId={revival.id} entries={revival.mailingPlan} canDraft={revival.permissions.canDraftMailings}/>
+                    <MailingPlan revivalId={revival.id} entries={revival.mailingPlan}
+                                 canDraft={revival.permissions.canDraftMailings}/>
                 </section>
                 <section aria-labelledby="mailing-list" className="flex flex-col gap-3">
                     <h4 id="mailing-list" className="font-semibold">{t("list")}</h4>
-                    <MailingTable revivalId={revival.id} mailings={mailings} canDraft={revival.permissions.canDraftMailings}/>
+                    <MailingTable revivalId={revival.id} mailings={mailings}
+                                  canDraft={revival.permissions.canDraftMailings}/>
                 </section>
             </div>
         );

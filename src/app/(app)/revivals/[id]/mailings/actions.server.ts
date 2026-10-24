@@ -4,7 +4,14 @@ import {revalidatePath} from "next/cache";
 import type {z} from "zod";
 import type {MailingRecipientStatus} from "@/gql/graphql";
 import {type ActionResult, toActionResult} from "@/lib/graphql.server";
-import {cancelMailing, createMailing, previewMailingAudience, retryMailing, sendMailing, updateMailing} from "@/lib/mailing/mailing.server";
+import {
+    cancelMailing,
+    createMailing,
+    previewMailingAudience,
+    retryMailing,
+    sendMailing,
+    updateMailing
+} from "@/lib/mailing/mailing.server";
 import {
     audiencePreviewSchema,
     mailingCreateSchema,
@@ -28,7 +35,10 @@ const counts = (recipients: { status: MailingRecipientStatus }[]) => ({
 });
 
 /** Who the audience reaches now, by name, for the editor's live preview and the send dialog. */
-export async function previewAudienceAction(input: z.input<typeof audiencePreviewSchema>): Promise<ActionResult<{ displayName: string; hasAddress: boolean }[]>> {
+export async function previewAudienceAction(input: z.input<typeof audiencePreviewSchema>): Promise<ActionResult<{
+    displayName: string;
+    hasAddress: boolean
+}[]>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, audience} = audiencePreviewSchema.parse(input);
 

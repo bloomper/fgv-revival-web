@@ -44,7 +44,11 @@ describe("LogFilters", () => {
 
     it("filters by one meeting at a time", async () => {
         render(<LogFilters filter={{open: true, meetingId: "4"}} tags={[]}
-                           meetings={[{id: "4", date: "2026-09-01"}, {id: "5", date: "2026-10-19", title: "Direktionsmöte 4"}]}/>);
+                           meetings={[{id: "4", date: "2026-09-01"}, {
+                               id: "5",
+                               date: "2026-10-19",
+                               title: "Direktionsmöte 4"
+                           }]}/>);
         await pick("Log.filter.meeting", "2026-10-19 Direktionsmöte 4");
 
         expect(push).toHaveBeenLastCalledWith("/revivals/1/log?open=1&meeting=5");

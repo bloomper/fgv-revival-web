@@ -13,7 +13,9 @@ import {withPolicyPage} from "@/utils/route.server";
 /**
  * Suggestions for super admins to accept into the draft or reject (US5, FR-033).
  */
-export default async function AdminGuideSuggestionsPage({searchParams}: { searchParams: Promise<{ status?: string }> }) {
+export default async function AdminGuideSuggestionsPage({searchParams}: {
+    searchParams: Promise<{ status?: string }>
+}) {
     const {status} = await searchParams;
 
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {
@@ -26,14 +28,16 @@ export default async function AdminGuideSuggestionsPage({searchParams}: { search
 
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <Link href="/admin/guide" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                <Link href="/admin/guide"
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                     <ArrowLeft className="size-4"/>
                     {t("back")}
                 </Link>
                 <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
                 <nav aria-label={t("filter")} className="flex flex-wrap gap-3 text-sm">
                     {SUGGESTION_STATUSES.map(candidate => (
-                        <Link key={candidate} href={`/admin/guide/suggestions?status=${candidate}`} aria-current={candidate === filter ? "page" : undefined}
+                        <Link key={candidate} href={`/admin/guide/suggestions?status=${candidate}`}
+                              aria-current={candidate === filter ? "page" : undefined}
                               className={candidate === filter ? "font-semibold" : "underline-offset-2 hover:underline"}>
                             {t(`status.${candidate}`)}
                         </Link>

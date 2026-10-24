@@ -53,9 +53,14 @@ function SyncRunStatus({run}: { run: SyncRunFieldsFragment }) {
             <div className="space-y-1">
                 <div className="h-2 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={t("progress")}
                      aria-valuemin={0} aria-valuemax={run.total} aria-valuenow={run.done + run.failed}>
-                    <div className={run.failed > 0 ? "h-full bg-destructive" : "h-full bg-primary"} style={{width: `${percent}%`}}/>
+                    <div className={run.failed > 0 ? "h-full bg-destructive" : "h-full bg-primary"}
+                         style={{width: `${percent}%`}}/>
                 </div>
-                <p className="text-sm" aria-live="polite">{t("counts", {done: run.done, failed: run.failed, total: run.total})}</p>
+                <p className="text-sm" aria-live="polite">{t("counts", {
+                    done: run.done,
+                    failed: run.failed,
+                    total: run.total
+                })}</p>
             </div>
             {run.failures.length > 0 && (
                 <div className="space-y-1">
@@ -146,7 +151,8 @@ export function SyncPanel({revivalId, preview, canSync}: { revivalId: string; pr
                             <TableRow key={entry.participant.id}>
                                 <TableCell className="align-top">
                                     <div className="font-medium">{entry.participant.displayName}</div>
-                                    {entry.participant.position && <div className="text-xs text-muted-foreground">{entry.participant.position.name}</div>}
+                                    {entry.participant.position && <div
+                                        className="text-xs text-muted-foreground">{entry.participant.position.name}</div>}
                                 </TableCell>
                                 <TableCell>
                                     <ul className="flex flex-wrap gap-1">
@@ -183,7 +189,8 @@ export function SyncPanel({revivalId, preview, canSync}: { revivalId: string; pr
                 </p>
                 {canSync && (
                     <AlertDialog open={confirming} onOpenChange={setConfirming}>
-                        <AlertDialogTrigger render={<Button className="ml-auto" disabled={pending || running || planned === 0}/>}>
+                        <AlertDialogTrigger
+                            render={<Button className="ml-auto" disabled={pending || running || planned === 0}/>}>
                             <RefreshCw className={running ? "animate-spin" : undefined}/>
                             {run?.status === "FAILED" ? t("resume") : t("start")}
                         </AlertDialogTrigger>
@@ -191,12 +198,16 @@ export function SyncPanel({revivalId, preview, canSync}: { revivalId: string; pr
                             <AlertDialogHeader>
                                 <AlertDialogTitle>{t("confirmTitle")}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    {t("confirmDescription", {count: planned, participants: preview.participants.length})}
+                                    {t("confirmDescription", {
+                                        count: planned,
+                                        participants: preview.participants.length
+                                    })}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>{tc("cancel")}</AlertDialogCancel>
-                                <AlertDialogAction disabled={pending} onClick={start}>{run?.status === "FAILED" ? t("resume") : t("start")}</AlertDialogAction>
+                                <AlertDialogAction disabled={pending}
+                                                   onClick={start}>{run?.status === "FAILED" ? t("resume") : t("start")}</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>

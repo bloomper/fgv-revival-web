@@ -21,7 +21,10 @@ export type EventProposal = {
  * The events the guide's example timeline proposes from the premiere that the revival has not added yet (M4-FR-7), one
  * compact card each. Adding one opens the event dialog with its type and dates.
  */
-export function EventProposals({proposals, onAdd}: { proposals: EventProposal[]; onAdd: (proposal: EventProposal) => void }) {
+export function EventProposals({proposals, onAdd}: {
+    proposals: EventProposal[];
+    onAdd: (proposal: EventProposal) => void
+}) {
     const t = useTranslations("Event");
     const locale = useLocale();
 
@@ -45,11 +48,15 @@ export function EventProposals({proposals, onAdd}: { proposals: EventProposal[];
                                     <CardDescription className="space-y-0.5">
                                         <span className="block tabular-nums">{formatEventDates(proposal)}</span>
                                         <span className="block text-xs">
-                                            {t("allowedRange", {earliest: formatDate(proposal.earliest) ?? "", latest: formatDate(proposal.latest) ?? ""})}
+                                            {t("allowedRange", {
+                                                earliest: formatDate(proposal.earliest) ?? "",
+                                                latest: formatDate(proposal.latest) ?? ""
+                                            })}
                                         </span>
                                     </CardDescription>
                                     <CardAction>
-                                        <Button size="sm" variant="outline" aria-label={t("addProposal", {name})} onClick={() => onAdd(proposal)}>
+                                        <Button size="sm" variant="outline" aria-label={t("addProposal", {name})}
+                                                onClick={() => onAdd(proposal)}>
                                             <Plus/>{t("add")}
                                         </Button>
                                     </CardAction>

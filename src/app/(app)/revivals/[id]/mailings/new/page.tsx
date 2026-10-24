@@ -47,26 +47,40 @@ export default async function NewMailingPage({params, searchParams}: {
             ? revival.mailingPlan.find(candidate => candidate.template.id === query.template && (candidate.event?.id ?? "") === (typeof query.event === "string" ? query.event : ""))
             : undefined;
         const defaults: MailingValues = entry ? {
-            audience: {kind: entry.template.audience, positionId: "", eventId: entry.template.audience === "EVENT_ATTENDEES" ? entry.event?.id ?? "" : ""},
+            audience: {
+                kind: entry.template.audience,
+                positionId: "",
+                eventId: entry.template.audience === "EVENT_ATTENDEES" ? entry.event?.id ?? "" : ""
+            },
             subject: pickText(entry.template.subject, locale).text,
             body: pickText(entry.template.body, locale).text,
         } : {audience: {kind: "PARTICIPANTS", positionId: "", eventId: ""}, subject: "", body: ""};
 
         return (
             <div className="flex flex-1 flex-col gap-4">
-                <Link href={`/revivals/${revival.id}/mailings`} className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+                <Link href={`/revivals/${revival.id}/mailings`}
+                      className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
                     <ArrowLeft className="size-4"/>{t("back")}
                 </Link>
                 <div>
                     <h3 className="text-lg font-semibold">{t("newTitle")}</h3>
                     {entry && (
                         <p className="text-sm text-muted-foreground">
-                            {t("fromPlan", {name: pickText(entry.template.name, locale).text, date: formatDate(entry.dueDate) ?? ""})}
+                            {t("fromPlan", {
+                                name: pickText(entry.template.name, locale).text,
+                                date: formatDate(entry.dueDate) ?? ""
+                            })}
                         </p>
                     )}
                 </div>
-                <MailingEditor revivalId={revival.id} defaults={defaults} events={events} positions={positions} positionsUnavailable={unavailable}
-                               planned={entry ? {templateId: entry.template.id, eventId: entry.event?.id ?? null, subject: entry.template.subject, body: entry.template.body} : null}/>
+                <MailingEditor revivalId={revival.id} defaults={defaults} events={events} positions={positions}
+                               positionsUnavailable={unavailable}
+                               planned={entry ? {
+                                   templateId: entry.template.id,
+                                   eventId: entry.event?.id ?? null,
+                                   subject: entry.template.subject,
+                                   body: entry.template.body
+                               } : null}/>
             </div>
         );
     });

@@ -73,7 +73,8 @@ export function ParticipantDashboard({counts}: { counts: ParticipantCountsValue 
                             <TableBody>
                                 {counts.byPosition.map(entry => (
                                     <TableRow key={entry.position?.id ?? "none"}>
-                                        <TableCell>{entry.position?.name ?? <span className="text-muted-foreground">{t("noPosition")}</span>}</TableCell>
+                                        <TableCell>{entry.position?.name ?? <span
+                                            className="text-muted-foreground">{t("noPosition")}</span>}</TableCell>
                                         <TableCell className="text-right tabular-nums">{entry.yes}</TableCell>
                                         <TableCell className="text-right tabular-nums">{entry.maybe}</TableCell>
                                         <TableCell className="text-right tabular-nums">{entry.pending}</TableCell>

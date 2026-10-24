@@ -53,13 +53,18 @@ export function MinutesEmailHistory({revivalId, meetingId, emails, canSend}: {
                                         {t("emailFailed")} {failed.map(recipient => recipient.person.displayName ?? "").join(", ")}
                                     </span>
                                     {canSend && email.id === retryable?.id && (
-                                        <Button size="sm" variant="outline" disabled={pending} onClick={() => startTransition(async () => {
-                                            const outcome = await retryMinutesAction({emailId: email.id, revivalId, meetingId});
+                                        <Button size="sm" variant="outline" disabled={pending}
+                                                onClick={() => startTransition(async () => {
+                                                    const outcome = await retryMinutesAction({
+                                                        emailId: email.id,
+                                                        revivalId,
+                                                        meetingId
+                                                    });
 
-                                            if (feedback(outcome) && outcome.data.failed.length === 0) {
-                                                toast.success(t("emailSent", {count: outcome.data.sent}));
-                                            }
-                                        })}>{t("sendAgain")}</Button>
+                                                    if (feedback(outcome) && outcome.data.failed.length === 0) {
+                                                        toast.success(t("emailSent", {count: outcome.data.sent}));
+                                                    }
+                                                })}>{t("sendAgain")}</Button>
                                     )}
                                 </div>
                             )}

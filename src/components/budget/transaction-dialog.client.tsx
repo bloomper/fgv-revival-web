@@ -21,7 +21,13 @@ import {useReceiptFeedback} from "@/components/budget/use-receipt-feedback.clien
 import {createTransactionAction, updateTransactionAction} from "@/app/(app)/revivals/[id]/budget/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {amountInputValue} from "@/lib/budget/amount";
-import {MAX_BUDGET_TEXT, receiptProblem, RECEIPT_TYPES, type TransactionValues, transactionValuesSchema} from "@/lib/budget/schema";
+import {
+    MAX_BUDGET_TEXT,
+    RECEIPT_TYPES,
+    receiptProblem,
+    type TransactionValues,
+    transactionValuesSchema
+} from "@/lib/budget/schema";
 import {track} from "@/utils/umami";
 
 export type BudgetLineOption = { id: string; description: string; category: { id: string } };
@@ -71,10 +77,14 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
     const [pending, startTransition] = useTransition();
     const [file, setFile] = useState<File | null>(null);
     const [fileError, setFileError] = useState<string | null>(null);
-    const form = useForm<TransactionValues>({resolver: zodResolver(transactionValuesSchema), defaultValues: initialValues(transaction)});
+    const form = useForm<TransactionValues>({
+        resolver: zodResolver(transactionValuesSchema),
+        defaultValues: initialValues(transaction)
+    });
     const categoryId = useWatch({control: form.control, name: "categoryId"});
     const {errors} = form.formState;
-    const error = (message?: string | null) => message && <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const error = (message?: string | null) => message &&
+        <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
     const category = categories.find(candidate => candidate.id === categoryId) ?? (transaction?.category.id === categoryId ? transaction.category : undefined);
     const cost = category?.kind === "COST";
     const categoryNames = new Map(categories.map(candidate => [candidate.id, catalogName(candidate, locale)]));
@@ -86,29 +96,36 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                     <SheetTitle>{transaction ? t("Budget.editTransaction") : t("Budget.newTransaction")}</SheetTitle>
                     <SheetDescription>{t("Budget.transactionDescription")}</SheetDescription>
                 </SheetHeader>
-                <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(values => startTransition(async () => {
-                    if (file && receiptProblem(file)) {
-                        return;
-                    }
+                <form className="flex min-h-0 flex-1 flex-col overflow-hidden"
+                      onSubmit={form.handleSubmit(values => startTransition(async () => {
+                          if (file && receiptProblem(file)) {
+                              return;
+                          }
 
-                    const result = transaction
-                        ? await updateTransactionAction({revivalId, id: transaction.id, version: transaction.version, cost, values})
-                        : await createTransactionAction({revivalId, cost, values});
+                          const result = transaction
+                              ? await updateTransactionAction({
+                                  revivalId,
+                                  id: transaction.id,
+                                  version: transaction.version,
+                                  cost,
+                                  values
+                              })
+                              : await createTransactionAction({revivalId, cost, values});
 
-                    if (!feedback(result, transaction ? t("Common.saved") : t("Budget.transactionCreated"))) {
-                        return;
-                    }
-                    if (!transaction) {
-                        track("transaction-create", {receipt: !!file});
-                    }
+                          if (!feedback(result, transaction ? t("Common.saved") : t("Budget.transactionCreated"))) {
+                              return;
+                          }
+                          if (!transaction) {
+                              track("transaction-create", {receipt: !!file});
+                          }
 
-                    const transactionId = transaction?.id ?? (result.data as { id: string } | null)?.id;
+                          const transactionId = transaction?.id ?? (result.data as { id: string } | null)?.id;
 
-                    if (file && transactionId) {
-                        receiptFeedback(await uploadReceipt(transactionId, file), t("Budget.receiptUploaded"));
-                    }
-                    onOpenChange(false);
-                }))}>
+                          if (file && transactionId) {
+                              receiptFeedback(await uploadReceipt(transactionId, file), t("Budget.receiptUploaded"));
+                          }
+                          onOpenChange(false);
+                      }))}>
                     <ScrollArea className="min-h-0 flex-1 border-t">
                         <div className="space-y-4 px-6 py-6 pb-12">
                             <div className="grid gap-4 sm:grid-cols-2">
@@ -119,20 +136,23 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-amount`}>{t("Budget.amount")}</Label>
-                                    <Input id={`${id}-amount`} inputMode="decimal" autoComplete="off" className="tabular-nums"
+                                    <Input id={`${id}-amount`} inputMode="decimal" autoComplete="off"
+                                           className="tabular-nums"
                                            aria-invalid={errors.amount ? true : undefined} {...form.register("amount")}/>
                                     {error(errors.amount?.message)}
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-category`}>{t("Budget.category")}</Label>
-                                <CategorySelect id={`${id}-category`} categories={categories} held={transaction?.category}
+                                <CategorySelect id={`${id}-category`} categories={categories}
+                                                held={transaction?.category}
                                                 aria-invalid={errors.categoryId ? true : undefined} {...form.register("categoryId")}/>
                                 {error(errors.categoryId?.message)}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-description`}>{t("Budget.description")}</Label>
-                                <Input id={`${id}-description`} maxLength={MAX_BUDGET_TEXT} aria-invalid={errors.description ? true : undefined}
+                                <Input id={`${id}-description`} maxLength={MAX_BUDGET_TEXT}
+                                       aria-invalid={errors.description ? true : undefined}
                                        {...form.register("description")}/>
                                 {error(errors.description?.message)}
                             </div>
@@ -141,7 +161,8 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                                 <NativeSelect className="w-full" id={`${id}-line`} {...form.register("budgetLineId")}>
                                     <option value="">{t("Budget.noBudgetLine")}</option>
                                     {transaction?.budgetLine && !lines.some(line => line.id === transaction.budgetLine?.id) && (
-                                        <option value={transaction.budgetLine.id}>{transaction.budgetLine.description}</option>
+                                        <option
+                                            value={transaction.budgetLine.id}>{transaction.budgetLine.description}</option>
                                     )}
                                     {lines.map(line => (
                                         <option key={line.id} value={line.id}>
@@ -153,7 +174,8 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                             {cost && (
                                 <Controller control={form.control} name="paidBy" render={({field}) => (
                                     <div className="space-y-1">
-                                        <OwnerField members={members} value={field.value ?? null} onChange={field.onChange} current={transaction?.paidBy?.person}
+                                        <OwnerField members={members} value={field.value ?? null}
+                                                    onChange={field.onChange} current={transaction?.paidBy?.person}
                                                     label={t("Budget.paidBy")} noneLabel={t("Budget.paidFromAccount")}/>
                                         <p className="text-xs text-muted-foreground">{t("Budget.paidByHelp")}</p>
                                         {error(errors.paidBy?.name?.message)}
@@ -165,7 +187,8 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                                 <FileInput id={`${id}-receipt`} accept={RECEIPT_TYPES.join(",")}
                                            chooseLabel={transaction?.receipt ? t("Budget.replaceReceiptChoose") : undefined}
                                            current={transaction?.receipt && (
-                                               <a href={receiptUrl(transaction.id)} download className="underline underline-offset-4 hover:text-primary"
+                                               <a href={receiptUrl(transaction.id)} download
+                                                  className="underline underline-offset-4 hover:text-primary"
                                                   aria-label={t("Budget.downloadReceipt", {filename: transaction.receipt.filename})}>
                                                    {transaction.receipt.filename}
                                                </a>
@@ -180,7 +203,8 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </SheetFooter>
                 </form>

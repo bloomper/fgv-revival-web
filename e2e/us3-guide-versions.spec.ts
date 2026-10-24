@@ -21,7 +21,10 @@ test.describe("Guide, user story 3: the super admin edits a draft and publishes 
         await page.getByRole("dialog").getByRole("button", {name: "Spara"}).click();
         await expect(chapterC.getByText("Budget ska vara klar innan första rephelgen.")).toBeVisible();
 
-        await page.getByRole("navigation", {name: "Kapitel", exact: true}).getByRole("link", {name: /Boka lokaler/}).click();
+        await page.getByRole("navigation", {
+            name: "Kapitel",
+            exact: true
+        }).getByRole("link", {name: /Boka lokaler/}).click();
         const tip = page.getByTestId(/draft-item-/).filter({hasText: "Kontrollera sprittillstånd"});
 
         await tip.getByRole("button", {name: "Redigera punkten"}).click();

@@ -4,8 +4,8 @@ import {useLocale, useTranslations} from "next-intl";
 import {Plus} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Card, CardAction, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import {pickText} from "@/components/guide/localized";
 import type {LocalizedTextValue} from "@/components/guide/localized";
+import {pickText} from "@/components/guide/localized";
 import {AmountText} from "@/components/budget/budget-labels";
 import {formatDate} from "@/utils/format";
 
@@ -27,7 +27,10 @@ export type BudgetLineProposal = {
  * The lines the revival's events' types propose and that have not been added for that event (M5-FR-9), one compact
  * card each. Adding one opens the line dialog filled in from it.
  */
-export function BudgetProposals({proposals, onAdd}: { proposals: BudgetLineProposal[]; onAdd: (proposal: BudgetLineProposal) => void }) {
+export function BudgetProposals({proposals, onAdd}: {
+    proposals: BudgetLineProposal[];
+    onAdd: (proposal: BudgetLineProposal) => void
+}) {
     const t = useTranslations("Budget");
     const locale = useLocale();
 
@@ -50,7 +53,8 @@ export function BudgetProposals({proposals, onAdd}: { proposals: BudgetLinePropo
                                 <CardHeader>
                                     <CardTitle>{description}</CardTitle>
                                     <CardDescription className="space-y-0.5">
-                                        <span className="block">{formatDate(proposal.event.startDate)} {proposal.event.title}</span>
+                                        <span
+                                            className="block">{formatDate(proposal.event.startDate)} {proposal.event.title}</span>
                                         <span className="block text-xs">
                                             {proposal.amount
                                                 ? <AmountText value={proposal.amount}/>
@@ -58,7 +62,8 @@ export function BudgetProposals({proposals, onAdd}: { proposals: BudgetLinePropo
                                         </span>
                                     </CardDescription>
                                     <CardAction>
-                                        <Button size="sm" variant="outline" aria-label={t("addProposal", {name})} onClick={() => onAdd(proposal)}>
+                                        <Button size="sm" variant="outline" aria-label={t("addProposal", {name})}
+                                                onClick={() => onAdd(proposal)}>
                                             <Plus/>{t("add")}
                                         </Button>
                                     </CardAction>

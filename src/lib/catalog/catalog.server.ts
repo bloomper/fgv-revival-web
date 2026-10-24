@@ -1,7 +1,12 @@
 import "server-only";
 
 import {graphql} from "@/gql";
-import type {CapabilityCreateInput, CapabilityUpdateInput, GuideItemTypeCreateInput, GuideItemTypeUpdateInput} from "@/gql/graphql";
+import type {
+    CapabilityCreateInput,
+    CapabilityUpdateInput,
+    GuideItemTypeCreateInput,
+    GuideItemTypeUpdateInput
+} from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
 const CapabilitiesQuery = graphql(`

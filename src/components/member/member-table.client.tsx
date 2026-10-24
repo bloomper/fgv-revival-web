@@ -110,13 +110,16 @@ function AddMemberButton({revivalId, role}: { revivalId: string; role: Assignabl
                         <SheetDescription>{t(role === "DIRECTEUR" ? "Members.addDirecteurDescription" : "Members.addMemberDescription")}</SheetDescription>
                     </SheetHeader>
                     <div className="min-h-0 flex-1 space-y-6 overflow-y-auto border-t px-6 py-6">
-                        {open && <AddMemberForm revivalId={revivalId} role={role} onAdded={name => setAdded(previous => [...previous, name])}/>}
+                        {open && <AddMemberForm revivalId={revivalId} role={role}
+                                                onAdded={name => setAdded(previous => [...previous, name])}/>}
                         {added.length > 0 && (
                             <div className="space-y-2">
                                 <h4 className="text-sm font-medium text-muted-foreground">{t("Members.addedSoFar", {count: added.length})}</h4>
-                                <ul className="space-y-1 text-sm" aria-label={t("Members.addedSoFar", {count: added.length})}>
+                                <ul className="space-y-1 text-sm"
+                                    aria-label={t("Members.addedSoFar", {count: added.length})}>
                                     {added.map((name, index) => (
-                                        <li key={index} className="flex items-center gap-2"><Check className="size-4 text-primary"/>{name}</li>
+                                        <li key={index} className="flex items-center gap-2"><Check
+                                            className="size-4 text-primary"/>{name}</li>
                                     ))}
                                 </ul>
                             </div>
@@ -167,13 +170,15 @@ export function MemberTable({revivalId, members, canManageDirecteurs, canManageS
             id: "name",
             accessorFn: member => memberName(member, fallback),
             sortFn: "alphanumeric",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Members.name")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Members.name")}/>,
             cell: ({row}) => (
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="font-medium">{memberName(row.original, fallback)}</span>
                     {row.original.state === "WAITING" && <Badge variant="outline">{t("MemberState.WAITING")}</Badge>}
                     {row.original.state === "WAITING" && row.original.invitedAt && (
-                        <span className="text-xs text-muted-foreground">{t("Members.invitedAt", {at: formatInstant(row.original.invitedAt)?.slice(0, 10) ?? ""})}</span>
+                        <span
+                            className="text-xs text-muted-foreground">{t("Members.invitedAt", {at: formatInstant(row.original.invitedAt)?.slice(0, 10) ?? ""})}</span>
                     )}
                 </div>
             ),
@@ -182,9 +187,11 @@ export function MemberTable({revivalId, members, canManageDirecteurs, canManageS
             id: "role",
             accessorFn: member => MEMBER_ROLES.indexOf(member.role as AssignableRole),
             sortFn: "basic",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Members.role")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Members.role")}/>,
             cell: ({row}) => (
-                <Badge variant={row.original.role === "DIRECTEUR" ? "default" : "secondary"}>{t(`Role.${row.original.role}`)}</Badge>
+                <Badge
+                    variant={row.original.role === "DIRECTEUR" ? "default" : "secondary"}>{t(`Role.${row.original.role}`)}</Badge>
             ),
             meta: {className: "w-36"},
         },
@@ -193,7 +200,8 @@ export function MemberTable({revivalId, members, canManageDirecteurs, canManageS
             accessorFn: (member: Member) => member.email ?? undefined,
             sortFn: "alphanumeric",
             sortUndefined: "last",
-            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("Members.email")}/>,
+            header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()}
+                                                  title={t("Members.email")}/>,
             cell: ({row}) => <span className="text-muted-foreground">{row.original.email}</span>,
             meta: {className: "hidden md:table-cell"},
         } satisfies DataTableColumnDef<Member>] : []),
@@ -216,7 +224,8 @@ export function MemberTable({revivalId, members, canManageDirecteurs, canManageS
 
                 return canManage(row.original) && (
                     <DropdownMenu>
-                        <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" aria-label={t("Members.openMenu", {name})}/>}>
+                        <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0"
+                                                             aria-label={t("Members.openMenu", {name})}/>}>
                             <MoreHorizontal className="h-4 w-4"/>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -251,23 +260,32 @@ export function MemberTable({revivalId, members, canManageDirecteurs, canManageS
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-wrap items-center gap-2">
                         <div className="relative w-full sm:w-75">
-                            <Input placeholder={t("Members.filterPlaceholder")} value={query} onChange={event => setQuery(event.target.value)}
+                            <Input placeholder={t("Members.filterPlaceholder")} value={query}
+                                   onChange={event => setQuery(event.target.value)}
                                    aria-label={t("Common.search")} className="h-8 pr-8"/>
                             {query && (
-                                <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                                <Button variant="ghost" size="icon"
+                                        className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
                                         aria-label={t("Common.clearSearch")} onClick={() => setQuery("")}>
                                     <X className="h-3 w-3"/>
                                 </Button>
                             )}
                         </div>
                         <DataFilter title={t("Members.role")}
-                                    options={MEMBER_ROLES.map((role, index) => ({label: t(`Role.${role}`), value: role, sortKey: String(index)}))}
+                                    options={MEMBER_ROLES.map((role, index) => ({
+                                        label: t(`Role.${role}`),
+                                        value: role,
+                                        sortKey: String(index)
+                                    }))}
                                     selectedValues={roles}
                                     onSelect={setRoles}
                                     onClear={() => setRoles(new Set(MEMBER_ROLES))}/>
                         {areaOptions.length > 0 && (
                             <DataFilter title={t("Members.capabilities")}
-                                        options={areaOptions.map(capability => ({label: catalogName(capability, locale), value: capability.id}))}
+                                        options={areaOptions.map(capability => ({
+                                            label: catalogName(capability, locale),
+                                            value: capability.id
+                                        }))}
                                         selectedValues={areas ?? new Set()}
                                         onSelect={values => setAreas(values.size > 0 ? values : null)}
                                         onClear={() => setAreas(null)}/>

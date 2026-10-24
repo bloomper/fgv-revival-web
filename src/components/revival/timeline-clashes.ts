@@ -26,7 +26,17 @@ export type TimelineRevival = {
 export type TimelineSpexDate = { id: string; date: string; label: string };
 
 export type CrossTimelineItem =
-    | { kind: "show"; key: string; date: string; week: string; revivalId: string; revivalTitle: string; time?: string | null; venue?: string | null; clash: boolean }
+    | {
+    kind: "show";
+    key: string;
+    date: string;
+    week: string;
+    revivalId: string;
+    revivalTitle: string;
+    time?: string | null;
+    venue?: string | null;
+    clash: boolean
+}
     | { kind: "spex"; key: string; date: string; week: string; label: string; clash: boolean };
 
 export type CrossTimelineMonth = { month: string; items: CrossTimelineItem[] };
@@ -41,13 +51,30 @@ const PLAYING = (revival: TimelineRevival) => revival.status !== "REJECTED";
  * The timeline by month in date order, and the weeks that clash: those where shows of two revivals fall, or a
  * revival's show and a Chalmersspex date.
  */
-export function buildCrossTimeline(revivals: TimelineRevival[], spexDates: TimelineSpexDate[]): { months: CrossTimelineMonth[]; clashes: Clash[] } {
+export function buildCrossTimeline(revivals: TimelineRevival[], spexDates: TimelineSpexDate[]): {
+    months: CrossTimelineMonth[];
+    clashes: Clash[]
+} {
     const items: CrossTimelineItem[] = [
         ...revivals.filter(PLAYING).flatMap(revival => revival.shows.map((show, index) => ({
-            kind: "show" as const, key: `show-${revival.id}-${index}`, date: show.date, week: isoWeek(show.date), revivalId: revival.id,
-            revivalTitle: revival.title, time: show.time, venue: show.venue, clash: false,
+            kind: "show" as const,
+            key: `show-${revival.id}-${index}`,
+            date: show.date,
+            week: isoWeek(show.date),
+            revivalId: revival.id,
+            revivalTitle: revival.title,
+            time: show.time,
+            venue: show.venue,
+            clash: false,
         }))),
-        ...spexDates.map(spex => ({kind: "spex" as const, key: `spex-${spex.id}`, date: spex.date, week: isoWeek(spex.date), label: spex.label, clash: false})),
+        ...spexDates.map(spex => ({
+            kind: "spex" as const,
+            key: `spex-${spex.id}`,
+            date: spex.date,
+            week: isoWeek(spex.date),
+            label: spex.label,
+            clash: false
+        })),
     ];
     const weeks = new Map<string, { revivals: Map<string, string>; spex: string[] }>();
 

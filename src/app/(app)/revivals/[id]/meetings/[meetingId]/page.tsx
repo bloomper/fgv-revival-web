@@ -42,7 +42,8 @@ export default async function MeetingPage({params}: { params: Promise<{ id: stri
         return (
             <div className="flex flex-1 flex-col gap-4">
                 <div className="space-y-1">
-                    <Link href={`/revivals/${revival.id}/meetings`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                    <Link href={`/revivals/${revival.id}/meetings`}
+                          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
                         <ArrowLeft className="size-4"/>
                         {t("title")}
                     </Link>
@@ -54,18 +55,22 @@ export default async function MeetingPage({params}: { params: Promise<{ id: stri
                 {meeting.minutes ? (
                     <div className="space-y-4">
                         <div className="flex flex-wrap items-center gap-2">
-                            {meeting.canEmailMinutes && <MinutesEmailDialog revivalId={revival.id} meetingId={meeting.id}/>}
-                            <Link href={`/revivals/${revival.id}/log?meeting=${meeting.id}`} className="text-sm hover:underline">{t("logRows")}</Link>
+                            {meeting.canEmailMinutes &&
+                                <MinutesEmailDialog revivalId={revival.id} meetingId={meeting.id}/>}
+                            <Link href={`/revivals/${revival.id}/log?meeting=${meeting.id}`}
+                                  className="text-sm hover:underline">{t("logRows")}</Link>
                         </div>
                         <MinutesView minutes={meeting.minutes}/>
                         {meeting.emails.length > 0 && (
-                            <MinutesEmailHistory revivalId={revival.id} meetingId={meeting.id} emails={meeting.emails} canSend={meeting.canEmailMinutes}/>
+                            <MinutesEmailHistory revivalId={revival.id} meetingId={meeting.id} emails={meeting.emails}
+                                                 canSend={meeting.canEmailMinutes}/>
                         )}
                     </div>
                 ) : meeting.status === "CANCELLED" ? (
                     <p className="text-sm text-muted-foreground">{t("wasCancelled")}</p>
                 ) : (
-                    <MeetingMode revivalId={revival.id} meeting={meeting} openEntries={meeting.openEntries} members={revival.ownerCandidates}
+                    <MeetingMode revivalId={revival.id} meeting={meeting} openEntries={meeting.openEntries}
+                                 members={revival.ownerCandidates}
                                  tags={tags} canWrite={canWrite} blocking={meeting.blockingEntries}/>
                 )}
             </div>

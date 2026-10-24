@@ -22,7 +22,8 @@ export function MemberSummary({revivalId, members}: { revivalId: string; members
             <CardHeader>
                 <CardTitle>{t("Revival.members")}</CardTitle>
                 <CardAction>
-                    <Link href={`/revivals/${revivalId}/members`} className={buttonVariants({variant: "outline", size: "sm"})}>
+                    <Link href={`/revivals/${revivalId}/members`}
+                          className={buttonVariants({variant: "outline", size: "sm"})}>
                         {t("Members.showAll")}
                         <ChevronRight/>
                     </Link>
@@ -32,23 +33,26 @@ export function MemberSummary({revivalId, members}: { revivalId: string; members
                 <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-2 text-sm">
                     <dt className="text-muted-foreground">{t("Revival.directeurs")}</dt>
                     <dd>
-                        {directeurs.length === 0 ? <span className="text-muted-foreground">{t("Members.noDirecteurs")}</span>
+                        {directeurs.length === 0 ?
+                            <span className="text-muted-foreground">{t("Members.noDirecteurs")}</span>
                             : directeurs.map(member => memberName(member, fallback)).join(", ")}
                     </dd>
                     <dt className="text-muted-foreground">{t("Revival.steeringGroup")}</dt>
                     <dd>
-                        {steeringGroup.length === 0 ? <span className="text-muted-foreground">{t("Members.noMembers")}</span> : (
-                            <ul className="space-y-0.5">
-                                {steeringGroup.map(member => (
-                                    <li key={member.id}>
-                                        {memberName(member, fallback)}
-                                        {(member.capabilities ?? []).length > 0 && (
-                                            <span className="text-muted-foreground"> · {(member.capabilities ?? []).map(capability => catalogName(capability, locale)).join(", ")}</span>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                        {steeringGroup.length === 0 ?
+                            <span className="text-muted-foreground">{t("Members.noMembers")}</span> : (
+                                <ul className="space-y-0.5">
+                                    {steeringGroup.map(member => (
+                                        <li key={member.id}>
+                                            {memberName(member, fallback)}
+                                            {(member.capabilities ?? []).length > 0 && (
+                                                <span
+                                                    className="text-muted-foreground"> · {(member.capabilities ?? []).map(capability => catalogName(capability, locale)).join(", ")}</span>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                     </dd>
                 </dl>
             </CardContent>

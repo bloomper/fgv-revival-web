@@ -20,7 +20,11 @@ export type BudgetCategoryValue = {
 /**
  * An amount in kronor, right-aligned in tables, never wrapping. A negative result is shown in the destructive colour.
  */
-export function AmountText({value, className, signed = false}: { value: string | null | undefined; className?: string; signed?: boolean }) {
+export function AmountText({value, className, signed = false}: {
+    value: string | null | undefined;
+    className?: string;
+    signed?: boolean
+}) {
     const negative = signed && !!value && value.startsWith("-") && !/^-0*(\.0*)?$/.test(value);
 
     return (

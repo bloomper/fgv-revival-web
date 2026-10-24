@@ -5,7 +5,15 @@ import {useLocale, useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {ScrollArea} from "@/components/ui/scroll-area";
-import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger
+} from "@/components/ui/sheet";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
@@ -40,7 +48,10 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
     const t = useTranslations();
     const locale = useLocale();
     const [chapterKey, setChapterKey] = useState(chapters[0]?.key ?? "");
-    const target: Place | undefined = place ?? (kind === "ADD" && chapterKey ? {chapterKey, sectionKey: null} : undefined);
+    const target: Place | undefined = place ?? (kind === "ADD" && chapterKey ? {
+        chapterKey,
+        sectionKey: null
+    } : undefined);
     const feedback = useActionFeedback();
     const [open, setOpen] = useState(false);
     const [pending, startTransition] = useTransition();
@@ -77,7 +88,11 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         const changedType = kind === "CHANGE" && values.proposedType === item?.type.id ? null : values.proposedType;
                         const result = await suggestAction({
-                            revivalId, versionId, itemKey: item?.key ?? null, chapterKey: target?.chapterKey ?? null, sectionKey: target?.sectionKey ?? null,
+                            revivalId,
+                            versionId,
+                            itemKey: item?.key ?? null,
+                            chapterKey: target?.chapterKey ?? null,
+                            sectionKey: target?.sectionKey ?? null,
                             values: {
                                 ...values,
                                 proposedType: changedType,
@@ -95,15 +110,18 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
                     <ScrollArea className="min-h-0 flex-1 border-t">
                         <div className="space-y-4 px-6 py-6 pb-12">
                             {item && (
-                                <div className="rounded-md border bg-muted/40 p-3 text-sm"><GuideMarkdown>{item.text.sv}</GuideMarkdown></div>
+                                <div className="rounded-md border bg-muted/40 p-3 text-sm">
+                                    <GuideMarkdown>{item.text.sv}</GuideMarkdown></div>
                             )}
                             {kind === "ADD" && !place && (
                                 <div className="space-y-2">
                                     <Label htmlFor="suggest-chapter">{t("Guide.suggest.chapter")}</Label>
                                     <NativeSelect className="w-full" id="suggest-chapter"
-                                            value={chapterKey} onChange={event => setChapterKey(event.target.value)}>
+                                                  value={chapterKey}
+                                                  onChange={event => setChapterKey(event.target.value)}>
                                         {chapters.map((chapter, index) => (
-                                            <option key={chapter.key} value={chapter.key}>{index + 1}. {pickText(chapter.title, locale).text}</option>
+                                            <option key={chapter.key}
+                                                    value={chapter.key}>{index + 1}. {pickText(chapter.title, locale).text}</option>
                                         ))}
                                     </NativeSelect>
                                 </div>
@@ -113,25 +131,31 @@ export function SuggestionDialog({trigger, children, revivalId, versionId, kind,
                                     <div className="space-y-2">
                                         <Label htmlFor="suggest-type">{t("Guide.editor.type")}</Label>
                                         <NativeSelect className="w-full" id="suggest-type"
-                                                {...form.register("proposedType")}>
+                                                      {...form.register("proposedType")}>
                                             <CatalogOptions entries={catalogChoices(types, [item?.type])}/>
                                         </NativeSelect>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="suggest-sv">{t("Guide.editor.swedish")}</Label>
-                                        <Textarea id="suggest-sv" rows={5} maxLength={MAX_ITEM_TEXT} {...form.register("proposedTextSv")}/>
-                                        {errors.proposedTextSv && <p className="text-sm text-destructive">{t(`Validation.${errors.proposedTextSv.message}`)}</p>}
+                                        <Textarea id="suggest-sv" rows={5}
+                                                  maxLength={MAX_ITEM_TEXT} {...form.register("proposedTextSv")}/>
+                                        {errors.proposedTextSv &&
+                                            <p className="text-sm text-destructive">{t(`Validation.${errors.proposedTextSv.message}`)}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="suggest-en">{t("Guide.editor.english")}</Label>
-                                        <Textarea id="suggest-en" rows={4} maxLength={MAX_ITEM_TEXT} {...form.register("proposedTextEn")}/>
+                                        <Textarea id="suggest-en" rows={4}
+                                                  maxLength={MAX_ITEM_TEXT} {...form.register("proposedTextEn")}/>
                                     </div>
                                 </>
                             )}
                             <div className="space-y-2">
-                                <Label htmlFor="suggest-reason">{t(kind === "ADD" ? "Guide.suggest.reasonOptional" : "Guide.suggest.reason")}</Label>
-                                <Textarea id="suggest-reason" rows={3} maxLength={MAX_REASON} {...form.register("reason")}/>
-                                {errors.reason && <p className="text-sm text-destructive">{t(`Validation.${errors.reason.message}`)}</p>}
+                                <Label
+                                    htmlFor="suggest-reason">{t(kind === "ADD" ? "Guide.suggest.reasonOptional" : "Guide.suggest.reason")}</Label>
+                                <Textarea id="suggest-reason" rows={3}
+                                          maxLength={MAX_REASON} {...form.register("reason")}/>
+                                {errors.reason &&
+                                    <p className="text-sm text-destructive">{t(`Validation.${errors.reason.message}`)}</p>}
                             </div>
                         </div>
                     </ScrollArea>

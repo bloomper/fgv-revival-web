@@ -17,7 +17,13 @@ import {NativeSelect} from "@/components/ui/native-select";
 import {OwnerField, type OwnerMember} from "@/components/owner/owner-field.client";
 import {createLogEntryAction, updateLogEntryAction} from "@/app/(app)/revivals/[id]/log/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {LOG_ENTRY_STATUSES, LOG_ENTRY_TYPES, type LogEntryValues, logEntryValuesSchema, MAX_LOG_TEXT} from "@/lib/decision-log/schema";
+import {
+    LOG_ENTRY_STATUSES,
+    LOG_ENTRY_TYPES,
+    type LogEntryValues,
+    logEntryValuesSchema,
+    MAX_LOG_TEXT
+} from "@/lib/decision-log/schema";
 
 function valuesOf(entry: LogEntryFieldsFragment | null, initial?: Partial<LogEntryValues>): LogEntryValues {
     return {
@@ -51,9 +57,13 @@ export function LogEntryDialog({revivalId, entry, initial, members, tags, meetin
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
     const [tagText, setTagText] = useState("");
-    const form = useForm<LogEntryValues>({resolver: zodResolver(logEntryValuesSchema), values: valuesOf(entry, initial)});
+    const form = useForm<LogEntryValues>({
+        resolver: zodResolver(logEntryValuesSchema),
+        values: valuesOf(entry, initial)
+    });
     const {errors} = form.formState;
-    const error = (message?: string) => message && <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const error = (message?: string) => message &&
+        <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -66,7 +76,13 @@ export function LogEntryDialog({revivalId, entry, initial, members, tags, meetin
                     className="flex min-h-0 flex-1 flex-col overflow-hidden"
                     onSubmit={form.handleSubmit(values => startTransition(async () => {
                         const result = entry
-                            ? await updateLogEntryAction({id: entry.id, version: entry.version, revivalId, meetingId, values})
+                            ? await updateLogEntryAction({
+                                id: entry.id,
+                                version: entry.version,
+                                revivalId,
+                                meetingId,
+                                values
+                            })
                             : await createLogEntryAction({revivalId, meetingId, values});
 
                         if (feedback(result, entry ? t("Common.saved") : t("Log.added"))) {
@@ -80,13 +96,15 @@ export function LogEntryDialog({revivalId, entry, initial, members, tags, meetin
                                 <div className="space-y-2">
                                     <Label htmlFor="log-type">{t("Log.typeLabel")}</Label>
                                     <NativeSelect className="w-full" id="log-type" {...form.register("type")}>
-                                        {LOG_ENTRY_TYPES.map(type => <option key={type} value={type}>{t(`Log.type.${type}`)}</option>)}
+                                        {LOG_ENTRY_TYPES.map(type => <option key={type}
+                                                                             value={type}>{t(`Log.type.${type}`)}</option>)}
                                     </NativeSelect>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="log-status">{t("Log.statusLabel")}</Label>
                                     <NativeSelect className="w-full" id="log-status" {...form.register("status")}>
-                                        {LOG_ENTRY_STATUSES.map(status => <option key={status} value={status}>{t(`Log.status.${status}`)}</option>)}
+                                        {LOG_ENTRY_STATUSES.map(status => <option key={status}
+                                                                                  value={status}>{t(`Log.status.${status}`)}</option>)}
                                     </NativeSelect>
                                 </div>
                             </div>
@@ -96,24 +114,30 @@ export function LogEntryDialog({revivalId, entry, initial, members, tags, meetin
                                 {error(errors.text?.message)}
                             </div>
                             <Controller control={form.control} name="owner" render={({field}) => (
-                                <OwnerField members={members} value={field.value ?? null} onChange={field.onChange} current={entry?.owner?.person}/>
+                                <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}
+                                            current={entry?.owner?.person}/>
                             )}/>
                             {error(errors.owner?.name?.message ?? errors.owner?.message)}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="log-date">{t("Log.dateLabel")}</Label>
-                                    <DateInput id="log-date" aria-describedby="log-date-hint" {...form.register("date", {setValueAs: value => value || undefined})}/>
-                                    <p id="log-date-hint" className="text-xs text-muted-foreground">{t("Log.dateHint")}</p>
+                                    <DateInput id="log-date"
+                                               aria-describedby="log-date-hint" {...form.register("date", {setValueAs: value => value || undefined})}/>
+                                    <p id="log-date-hint"
+                                       className="text-xs text-muted-foreground">{t("Log.dateHint")}</p>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="log-deadline">{t("Log.deadline")}</Label>
-                                    <DateInput id="log-deadline" aria-describedby="log-deadline-hint" {...form.register("deadline", {setValueAs: value => value || null})}/>
-                                    <p id="log-deadline-hint" className="text-xs text-muted-foreground">{t("Log.deadlineHint")}</p>
+                                    <DateInput id="log-deadline"
+                                               aria-describedby="log-deadline-hint" {...form.register("deadline", {setValueAs: value => value || null})}/>
+                                    <p id="log-deadline-hint"
+                                       className="text-xs text-muted-foreground">{t("Log.deadlineHint")}</p>
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="log-comment">{t("Log.comment")}</Label>
-                                <Textarea id="log-comment" rows={2} maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
+                                <Textarea id="log-comment" rows={2}
+                                          maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
                                 {error(errors.comment?.message)}
                             </div>
                             <Controller control={form.control} name="tags" render={({field}) => (
@@ -121,13 +145,15 @@ export function LogEntryDialog({revivalId, entry, initial, members, tags, meetin
                                     <Label htmlFor="log-tag">{t("Log.tags")}</Label>
                                     <div className="flex flex-wrap gap-1">
                                         {field.value.map(tag => (
-                                            <Button key={tag} type="button" size="sm" variant="secondary" aria-label={t("Log.removeTag", {tag})}
+                                            <Button key={tag} type="button" size="sm" variant="secondary"
+                                                    aria-label={t("Log.removeTag", {tag})}
                                                     onClick={() => field.onChange(field.value.filter(other => other !== tag))}>
                                                 {tag} ×
                                             </Button>
                                         ))}
                                     </div>
-                                    <Input id="log-tag" list="log-tag-options" value={tagText} placeholder={t("Log.addTag")}
+                                    <Input id="log-tag" list="log-tag-options" value={tagText}
+                                           placeholder={t("Log.addTag")}
                                            onChange={event => setTagText(event.target.value)}
                                            onKeyDown={(event) => {
                                                if (event.key === "Enter" && tagText.trim()) {
@@ -145,7 +171,8 @@ export function LogEntryDialog({revivalId, entry, initial, members, tags, meetin
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </SheetFooter>
                 </form>

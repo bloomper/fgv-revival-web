@@ -16,14 +16,60 @@ const VOCAL_PARTS = [
 /** Spexregister's people. The spex ids are those of the mock's SPEX list. */
 function spexare() {
     return [
-        {id: "501", firstName: "Anna", lastName: "Andersson", nickName: "Spexis", graduation: "F 1990", deceased: false, spex: ["1"], history: ["Ali Baba 2008", "Ali Baba 1956"],
-            contact: {email: "anna.andersson@example.org", phone: "070-111 22 33", streetAddress: "Spexgatan 1", postalCode: "412 58", city: "Göteborg"}, consent: null},
-        {id: "502", firstName: "Bertil", lastName: "Bengtsson", nickName: null, graduation: "K 1995", deceased: false, spex: ["1"], history: ["Ali Baba 2008"],
-            contact: {email: null, phone: "070-222 33 44"}, consent: null},
-        {id: "503", firstName: "Cecilia", lastName: "Carlsson", nickName: null, graduation: "E 1960", deceased: true, spex: ["1"], history: ["Ali Baba 1956"],
-            contact: {}, consent: null},
-        {id: "504", firstName: "Erik", lastName: "Eriksson", nickName: "Kalle", graduation: "M 2001", deceased: false, spex: ["2"], history: ["Nobel 1988"],
-            contact: {email: "erik@example.org"}, consent: null},
+        {
+            id: "501",
+            firstName: "Anna",
+            lastName: "Andersson",
+            nickName: "Spexis",
+            graduation: "F 1990",
+            deceased: false,
+            spex: ["1"],
+            history: ["Ali Baba 2008", "Ali Baba 1956"],
+            contact: {
+                email: "anna.andersson@example.org",
+                phone: "070-111 22 33",
+                streetAddress: "Spexgatan 1",
+                postalCode: "412 58",
+                city: "Göteborg"
+            },
+            consent: null
+        },
+        {
+            id: "502",
+            firstName: "Bertil",
+            lastName: "Bengtsson",
+            nickName: null,
+            graduation: "K 1995",
+            deceased: false,
+            spex: ["1"],
+            history: ["Ali Baba 2008"],
+            contact: {email: null, phone: "070-222 33 44"},
+            consent: null
+        },
+        {
+            id: "503",
+            firstName: "Cecilia",
+            lastName: "Carlsson",
+            nickName: null,
+            graduation: "E 1960",
+            deceased: true,
+            spex: ["1"],
+            history: ["Ali Baba 1956"],
+            contact: {},
+            consent: null
+        },
+        {
+            id: "504",
+            firstName: "Erik",
+            lastName: "Eriksson",
+            nickName: "Kalle",
+            graduation: "M 2001",
+            deceased: false,
+            spex: ["2"],
+            history: ["Nobel 1988"],
+            contact: {email: "erik@example.org"},
+            consent: null
+        },
     ];
 }
 
@@ -81,7 +127,12 @@ export function participantResolvers(ctx) {
         return participant;
     };
 
-    const settingsOf = revivalId => store().settings[revivalId] ?? {swishNumber: null, whatsappLink: null, terms: null, version: 0};
+    const settingsOf = revivalId => store().settings[revivalId] ?? {
+        swishNumber: null,
+        whatsappLink: null,
+        terms: null,
+        version: 0
+    };
     const revivalFee = revivalId => ctx.state().budget.settings[revivalId]?.participationFee ?? null;
     const loanOf = revivalId => ctx.state().budget.settings[revivalId]?.loanAmount ?? null;
     const feeOf = participant => participant.kind === "HELPER" ? null : participant.fee ?? revivalFee(participant.revivalId);
@@ -111,8 +162,15 @@ export function participantResolvers(ctx) {
             }
             const person = spexareById(participant.spexareId);
 
-            return {firstName: person.firstName, lastName: person.lastName, nickName: person.nickName, email: person.contact.email ?? null,
-                phone: person.contact.phone ?? null, contact: person.contact, consent: person.consent};
+            return {
+                firstName: person.firstName,
+                lastName: person.lastName,
+                nickName: person.nickName,
+                email: person.contact.email ?? null,
+                phone: person.contact.phone ?? null,
+                contact: person.contact,
+                consent: person.consent
+            };
         }
         return participant.pendingPerson
             ? {...participant.pendingPerson, nickName: null, contact: participant.pendingPerson}
@@ -162,11 +220,28 @@ export function participantResolvers(ctx) {
 
     function newParticipant(revival, values) {
         const participant = {
-            id: `p${store().nextId++}`, revivalId: revival.id, kind: values.kind ?? "PARTICIPANT", spexareId: values.spexareId ?? null,
-            pendingPerson: values.pendingPerson ?? null, memberId: null, positionId: values.positionId ?? null, roleName: values.roleName ?? null,
-            vocalPartId: values.vocalPartId ?? null, preferredPositionId: null, response: "PENDING", respondedAt: null, comment: null,
-            termsAcceptedAt: null, registerConsent: null, invitedAt: null, dietary: null, fee: null, feePaidAt: null,
-            compensationPerShift: values.compensationPerShift ?? null, removedAt: null, version: 0,
+            id: `p${store().nextId++}`,
+            revivalId: revival.id,
+            kind: values.kind ?? "PARTICIPANT",
+            spexareId: values.spexareId ?? null,
+            pendingPerson: values.pendingPerson ?? null,
+            memberId: null,
+            positionId: values.positionId ?? null,
+            roleName: values.roleName ?? null,
+            vocalPartId: values.vocalPartId ?? null,
+            preferredPositionId: null,
+            response: "PENDING",
+            respondedAt: null,
+            comment: null,
+            termsAcceptedAt: null,
+            registerConsent: null,
+            invitedAt: null,
+            dietary: null,
+            fee: null,
+            feePaidAt: null,
+            compensationPerShift: values.compensationPerShift ?? null,
+            removedAt: null,
+            version: 0,
         };
 
         store().participants.push(participant);
@@ -176,8 +251,14 @@ export function participantResolvers(ctx) {
     const activeIn = revival => store().participants.filter(participant => participant.revivalId === revival.id && !participant.removedAt);
     const isAdded = (revival, spexareId) => activeIn(revival).some(participant => participant.spexareId === String(spexareId));
     const toCandidate = (revival, person) => ({
-        __typename: "SpexareCandidate", spexareId: person.id, firstName: person.firstName, lastName: person.lastName, nickName: person.nickName,
-        graduation: person.graduation, history: person.history, added: isAdded(revival, person.id),
+        __typename: "SpexareCandidate",
+        spexareId: person.id,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        nickName: person.nickName,
+        graduation: person.graduation,
+        history: person.history,
+        added: isAdded(revival, person.id),
     });
     const byName = (a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName);
 
@@ -190,7 +271,11 @@ export function participantResolvers(ctx) {
         return {
             __typename: "ParticipantCounts",
             total: active.length,
-            byResponse: responses.map(response => ({__typename: "ResponseCount", response, count: active.filter(participant => participant.response === response).length}))
+            byResponse: responses.map(response => ({
+                __typename: "ResponseCount",
+                response,
+                count: active.filter(participant => participant.response === response).length
+            }))
                 .filter(entry => entry.count > 0),
             byPosition: positions.map(id => {
                 const holding = active.filter(participant => (participant.positionId ?? null) === id);
@@ -260,14 +345,22 @@ export function participantResolvers(ctx) {
                 ...(settings.terms ? [settings.terms] : []),
             ],
             contact: participant.spexareId && !up() ? null : {
-                __typename: "Contact", email: person.contact.email ?? null, phone: person.contact.phone ?? null,
-                streetAddress: person.contact.streetAddress ?? null, postalCode: person.contact.postalCode ?? null, city: person.contact.city ?? null,
+                __typename: "Contact",
+                email: person.contact.email ?? null,
+                phone: person.contact.phone ?? null,
+                streetAddress: person.contact.streetAddress ?? null,
+                postalCode: person.contact.postalCode ?? null,
+                city: person.contact.city ?? null,
             },
             dietary: participant.dietary,
             swish: swishOf(revival, participant),
             whatsappLink: participant.response === "YES" ? settings.whatsappLink : null,
             steeringGroup: members().filter(member => member.revivalId === revival.id && ["DIRECTEUR", "STEERING_GROUP"].includes(member.role) && member.sub)
-                .map(member => ({__typename: "PersonRef", id: member.sub, displayName: personas[member.sub]?.name ?? null})),
+                .map(member => ({
+                    __typename: "PersonRef",
+                    id: member.sub,
+                    displayName: personas[member.sub]?.name ?? null
+                })),
         };
     }
 
@@ -280,8 +373,11 @@ export function participantResolvers(ctx) {
                 revival: {
                     __typename: "Revival", id: revival.id, title: revival.title, status: revival.status,
                     permissions: {
-                        __typename: "RevivalPermissions", canReadParticipants: reads, canWriteParticipants: canWrite(persona, revival),
-                        canReadDietary: canReadDietary(persona, revival), canWriteBudget: canWriteBudget(persona, revival),
+                        __typename: "RevivalPermissions",
+                        canReadParticipants: reads,
+                        canWriteParticipants: canWrite(persona, revival),
+                        canReadDietary: canReadDietary(persona, revival),
+                        canWriteBudget: canWriteBudget(persona, revival),
                     },
                     participantCounts: reads ? counts(revival) : null,
                     participationSettings: reads ? toSettings(revival.id) : null,
@@ -302,7 +398,10 @@ export function participantResolvers(ctx) {
             if (!up()) {
                 throw unavailable();
             }
-            return {positions: POSITIONS.map(found => ({__typename: "Position", ...found})), vocalParts: VOCAL_PARTS.map(found => ({__typename: "VocalPart", ...found}))};
+            return {
+                positions: POSITIONS.map(found => ({__typename: "Position", ...found})),
+                vocalParts: VOCAL_PARTS.map(found => ({__typename: "VocalPart", ...found}))
+            };
         },
         ParticipantCandidates(persona, {revivalId}) {
             const revival = writable(persona, revivalId);
@@ -338,7 +437,12 @@ export function participantResolvers(ctx) {
                 if (!spexareById(input.spexareId) || spexareById(input.spexareId).deceased || isAdded(revival, input.spexareId)) {
                     throw badRequest("Spexaren kan inte läggas till.");
                 }
-                return {participantAdd: toParticipant(persona, revival, newParticipant(revival, {...input, spexareId: String(input.spexareId)}))};
+                return {
+                    participantAdd: toParticipant(persona, revival, newParticipant(revival, {
+                        ...input,
+                        spexareId: String(input.spexareId)
+                    }))
+                };
             }
             if (!input.firstName?.trim() || !input.lastName?.trim()) {
                 throw badRequest("Ange för- och efternamn.");
@@ -346,9 +450,19 @@ export function participantResolvers(ctx) {
             if (input.kind === "PARTICIPANT" && !input.email) {
                 throw badRequest("En deltagare behöver en e-postadress.");
             }
-            const pendingPerson = {firstName: input.firstName.trim(), lastName: input.lastName.trim(), email: input.email?.toLowerCase() ?? null, phone: input.phone ?? null};
+            const pendingPerson = {
+                firstName: input.firstName.trim(),
+                lastName: input.lastName.trim(),
+                email: input.email?.toLowerCase() ?? null,
+                phone: input.phone ?? null
+            };
 
-            return {participantAdd: toParticipant(persona, revival, newParticipant(revival, {...input, pendingPerson}))};
+            return {
+                participantAdd: toParticipant(persona, revival, newParticipant(revival, {
+                    ...input,
+                    pendingPerson
+                }))
+            };
         },
         ParticipantsAddSpexare(persona, {revivalId, spexareIds}) {
             const revival = writable(persona, revivalId);
@@ -374,7 +488,10 @@ export function participantResolvers(ctx) {
                     throw badRequest(participant.kind === "PARTICIPANT" ? "En deltagare behöver en e-postadress." : "Ange e-post eller telefon.");
                 }
                 Object.assign(participant.pendingPerson, {
-                    firstName: input.firstName || participant.pendingPerson.firstName, lastName: input.lastName || participant.pendingPerson.lastName, email, phone,
+                    firstName: input.firstName || participant.pendingPerson.firstName,
+                    lastName: input.lastName || participant.pendingPerson.lastName,
+                    email,
+                    phone,
                 });
             }
             if (input.clearPosition) {
@@ -410,7 +527,11 @@ export function participantResolvers(ctx) {
 
             input.participantIds.forEach(id => {
                 const participant = store().participants.find(candidate => candidate.id === String(id) && candidate.revivalId === revival.id);
-                const skip = reason => skipped.push({__typename: "ParticipantSkip", participant: toParticipant(persona, revival, participant), reason});
+                const skip = reason => skipped.push({
+                    __typename: "ParticipantSkip",
+                    participant: toParticipant(persona, revival, participant),
+                    reason
+                });
 
                 if (!participant) {
                     return;
@@ -433,7 +554,15 @@ export function participantResolvers(ctx) {
                     if (members().some(member => member.revivalId === revival.id && (member.email === email || (account && member.sub === account.sub)))) {
                         return skip("ALREADY_MEMBER");
                     }
-                    const member = {id: `m-p${participant.id}`, revivalId: revival.id, role: participant.kind, capabilities: [], email, sub: account?.sub ?? null, version: 0};
+                    const member = {
+                        id: `m-p${participant.id}`,
+                        revivalId: revival.id,
+                        role: participant.kind,
+                        capabilities: [],
+                        email,
+                        sub: account?.sub ?? null,
+                        version: 0
+                    };
 
                     members().push(member);
                     participant.memberId = member.id;
@@ -471,8 +600,12 @@ export function participantResolvers(ctx) {
             if (input.whatsappLink && !input.whatsappLink.startsWith("https://chat.whatsapp.com/")) {
                 throw badRequest("Länken ska börja med https://chat.whatsapp.com/.");
             }
-            store().settings[revival.id] = {swishNumber: input.swishNumber ?? null, whatsappLink: input.whatsappLink ?? null, terms: input.terms ?? null,
-                version: current.version + 1};
+            store().settings[revival.id] = {
+                swishNumber: input.swishNumber ?? null,
+                whatsappLink: input.whatsappLink ?? null,
+                terms: input.terms ?? null,
+                version: current.version + 1
+            };
             return {participationSettingsUpdate: toSettings(revival.id)};
         },
         ReferralHandle(persona, {id, outcome}) {
@@ -486,8 +619,10 @@ export function participantResolvers(ctx) {
 
                 created = newParticipant(revival, {
                     pendingPerson: {
-                        firstName: words.length > 1 ? words.slice(0, -1).join(" ") : words[0], lastName: words.length > 1 ? words.at(-1) : "—",
-                        email: contact.includes("@") ? contact : null, phone: contact && !contact.includes("@") ? contact : null,
+                        firstName: words.length > 1 ? words.slice(0, -1).join(" ") : words[0],
+                        lastName: words.length > 1 ? words.at(-1) : "—",
+                        email: contact.includes("@") ? contact : null,
+                        phone: contact && !contact.includes("@") ? contact : null,
                     },
                 });
             }
@@ -513,7 +648,10 @@ export function participantResolvers(ctx) {
                 throw badRequest("Svara på frågan om Spexregistret.");
             }
             Object.assign(participant, {
-                response: input.response, respondedAt: now, comment: input.comment ?? null, preferredPositionId: input.preferredPositionId ?? null,
+                response: input.response,
+                respondedAt: now,
+                comment: input.comment ?? null,
+                preferredPositionId: input.preferredPositionId ?? null,
                 termsAcceptedAt: input.response === "YES" ? now : participant.termsAcceptedAt,
                 registerConsent: input.registerConsent ?? participant.registerConsent,
             });
@@ -521,8 +659,10 @@ export function participantResolvers(ctx) {
                 const {firstName, lastName, email, phone} = participant.pendingPerson;
                 const id = String(600 + store().nextId++);
 
-                store().spexare.push({id, firstName, lastName, nickName: null, graduation: null, deceased: false, spex: [], history: [],
-                    contact: {email, phone}, consent: true});
+                store().spexare.push({
+                    id, firstName, lastName, nickName: null, graduation: null, deceased: false, spex: [], history: [],
+                    contact: {email, phone}, consent: true
+                });
                 participant.spexareId = id;
                 participant.pendingPerson = null;
             } else if (input.registerConsent != null && participant.spexareId) {
@@ -536,8 +676,10 @@ export function participantResolvers(ctx) {
         },
         ParticipationContactUpdate(persona, {input}) {
             const {revival, participant} = own(persona, input.revivalId);
-            const contact = {email: input.email ?? null, phone: input.phone ?? null, streetAddress: input.streetAddress ?? null,
-                postalCode: input.postalCode ?? null, city: input.city ?? null};
+            const contact = {
+                email: input.email ?? null, phone: input.phone ?? null, streetAddress: input.streetAddress ?? null,
+                postalCode: input.postalCode ?? null, city: input.city ?? null
+            };
 
             if (participant.pendingPerson) {
                 Object.assign(participant.pendingPerson, contact);
@@ -563,8 +705,16 @@ export function participantResolvers(ctx) {
         ReferralCreate(persona, {input}) {
             const {revival, participant} = own(persona, input.revivalId);
 
-            store().referrals.push({id: `r${store().nextId++}`, revivalId: revival.id, name: input.name, contact: input.contact ?? null, comment: input.comment ?? null,
-                referredBy: persona.name, referredByParticipant: participant.id, createdAt: new Date().toISOString()});
+            store().referrals.push({
+                id: `r${store().nextId++}`,
+                revivalId: revival.id,
+                name: input.name,
+                contact: input.contact ?? null,
+                comment: input.comment ?? null,
+                referredBy: persona.name,
+                referredByParticipant: participant.id,
+                createdAt: new Date().toISOString()
+            });
             return {referralCreate: null};
         },
     };
@@ -591,7 +741,13 @@ export function participantResolvers(ctx) {
             } catch {
                 name = "Okänd";
             }
-            return {__typename: "ParticipantRef", id: participant.id, displayName: name, kind: participant.kind, position: position(participant.positionId)};
+            return {
+                __typename: "ParticipantRef",
+                id: participant.id,
+                displayName: name,
+                kind: participant.kind,
+                position: position(participant.positionId)
+            };
         },
         /** The participant's email address for a mailing, or null. */
         emailOf(participant) {
@@ -611,18 +767,57 @@ export function participantResolvers(ctx) {
             const revival = ctx.state().revivals.find(candidate => candidate.id === "1");
             const budget = ctx.state().budget.settings;
 
-            budget["1"] = {participantsPlanned: 40, participationFee: "800", loanAmount: "10000", loanReceivedOn: null, loanRepaidOn: null, version: 1, ...budget["1"]};
-            store().settings["1"] = {swishNumber: "1234567890", whatsappLink: "https://chat.whatsapp.com/E2eGrupp", terms: "Repetitioner varje söndag.", version: 1};
+            budget["1"] = {
+                participantsPlanned: 40,
+                participationFee: "800",
+                loanAmount: "10000",
+                loanReceivedOn: null,
+                loanRepaidOn: null,
+                version: 1, ...budget["1"]
+            };
+            store().settings["1"] = {
+                swishNumber: "1234567890",
+                whatsappLink: "https://chat.whatsapp.com/E2eGrupp",
+                terms: "Repetitioner varje söndag.",
+                version: 1
+            };
             if (people) {
-                const disa = newParticipant(revival, {pendingPerson: {firstName: "Disa", lastName: "Deltagare", email: "disa@example.org", phone: null}});
-                const member = {id: "m-disa", revivalId: "1", role: "PARTICIPANT", capabilities: [], email: "disa@example.org", sub: "p-deltagare", version: 0};
+                const disa = newParticipant(revival, {
+                    pendingPerson: {
+                        firstName: "Disa",
+                        lastName: "Deltagare",
+                        email: "disa@example.org",
+                        phone: null
+                    }
+                });
+                const member = {
+                    id: "m-disa",
+                    revivalId: "1",
+                    role: "PARTICIPANT",
+                    capabilities: [],
+                    email: "disa@example.org",
+                    sub: "p-deltagare",
+                    version: 0
+                };
 
                 members().push(member);
                 disa.memberId = member.id;
                 disa.invitedAt = "2026-10-20T10:00:00Z";
-                newParticipant(revival, {spexareId: "501", positionId: "T-ENS", roleName: "Ali Baba", vocalPartId: "B1"});
-                store().referrals.push({id: "r0", revivalId: "1", name: "Gustav Gren", contact: "gustav@example.org", comment: "Spelade fiol 2008.",
-                    referredBy: "Disa Deltagare", createdAt: "2026-10-21T09:00:00Z"});
+                newParticipant(revival, {
+                    spexareId: "501",
+                    positionId: "T-ENS",
+                    roleName: "Ali Baba",
+                    vocalPartId: "B1"
+                });
+                store().referrals.push({
+                    id: "r0",
+                    revivalId: "1",
+                    name: "Gustav Gren",
+                    contact: "gustav@example.org",
+                    comment: "Spelade fiol 2008.",
+                    referredBy: "Disa Deltagare",
+                    createdAt: "2026-10-21T09:00:00Z"
+                });
             }
         },
         /** The participant's Swish QR code (M6-FR-19): only for the participant, with a Swish number and an unpaid fee. */
@@ -641,7 +836,10 @@ export function participantResolvers(ctx) {
                 res.writeHead(200, {"Content-Type": "image/svg+xml"})
                     .end("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"300\" height=\"300\"><rect width=\"300\" height=\"300\" fill=\"#fff\"/><rect x=\"20\" y=\"20\" width=\"60\" height=\"60\"/></svg>");
             } catch {
-                res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({code: "NOT_FOUND", message: "Not found"}));
+                res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({
+                    code: "NOT_FOUND",
+                    message: "Not found"
+                }));
             }
             return true;
         },

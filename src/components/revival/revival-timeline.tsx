@@ -34,7 +34,10 @@ export function RevivalTimeline({months, clashes}: { months: CrossTimelineMonth[
                         <ul className="list-disc pl-4">
                             {clashes.map(clash => (
                                 <li key={clash.week}>
-                                    {t("RevivalTimeline.clash", {...weekLabel(clash.week), names: [...clash.revivals, ...clash.spex].join(", ")})}
+                                    {t("RevivalTimeline.clash", {
+                                        ...weekLabel(clash.week),
+                                        names: [...clash.revivals, ...clash.spex].join(", ")
+                                    })}
                                 </li>
                             ))}
                         </ul>
@@ -51,18 +54,23 @@ export function RevivalTimeline({months, clashes}: { months: CrossTimelineMonth[
                         </h3>
                         <ol className="space-y-2 border-l pl-4">
                             {items.map(item => (
-                                <li key={item.key} className={cn("flex flex-col gap-1 rounded-md border p-3 text-sm sm:flex-row sm:items-center sm:gap-4",
-                                    item.clash && "border-destructive/60 bg-destructive/5")}>
-                                    <span className="flex items-center gap-2 font-medium tabular-nums sm:w-48 sm:shrink-0">
-                                        {item.kind === "show" ? <Drama className="size-4 text-muted-foreground" aria-hidden/> :
+                                <li key={item.key}
+                                    className={cn("flex flex-col gap-1 rounded-md border p-3 text-sm sm:flex-row sm:items-center sm:gap-4",
+                                        item.clash && "border-destructive/60 bg-destructive/5")}>
+                                    <span
+                                        className="flex items-center gap-2 font-medium tabular-nums sm:w-48 sm:shrink-0">
+                                        {item.kind === "show" ?
+                                            <Drama className="size-4 text-muted-foreground" aria-hidden/> :
                                             <PartyPopper className="size-4 text-muted-foreground" aria-hidden/>}
                                         {formatDate(item.date)}{item.kind === "show" && item.time ? ` ${item.time}` : ""}
                                     </span>
                                     <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
                                         {item.kind === "show" ? (
                                             <>
-                                                <Link href={`/revivals/${item.revivalId}`} className="font-medium hover:underline">{item.revivalTitle}</Link>
-                                                {item.venue && <span className="text-muted-foreground">{item.venue}</span>}
+                                                <Link href={`/revivals/${item.revivalId}`}
+                                                      className="font-medium hover:underline">{item.revivalTitle}</Link>
+                                                {item.venue &&
+                                                    <span className="text-muted-foreground">{item.venue}</span>}
                                             </>
                                         ) : (
                                             <>
@@ -70,9 +78,11 @@ export function RevivalTimeline({months, clashes}: { months: CrossTimelineMonth[
                                                 <Badge variant="secondary">{t("RevivalTimeline.chalmersspex")}</Badge>
                                             </>
                                         )}
-                                        {item.clash && <Badge variant="destructive">{t("RevivalTimeline.clashBadge")}</Badge>}
+                                        {item.clash &&
+                                            <Badge variant="destructive">{t("RevivalTimeline.clashBadge")}</Badge>}
                                     </span>
-                                    <span className="text-xs text-muted-foreground">{t("RevivalTimeline.week", {week: weekLabel(item.week).week})}</span>
+                                    <span
+                                        className="text-xs text-muted-foreground">{t("RevivalTimeline.week", {week: weekLabel(item.week).week})}</span>
                                 </li>
                             ))}
                         </ol>

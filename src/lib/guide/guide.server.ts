@@ -366,7 +366,13 @@ export async function getRemovedChapters(draft: { basedOn?: { id: string } | nul
     return Promise.all(removed.map(async chapter => {
         const impact = await getChapterRemovalImpact(chapter.key);
 
-        return {key: chapter.key, title: chapter.title, revivalCount: impact?.revivalCount ?? 0, itemCount: impact?.itemCount ?? 0, doneCount: impact?.doneCount ?? 0};
+        return {
+            key: chapter.key,
+            title: chapter.title,
+            revivalCount: impact?.revivalCount ?? 0,
+            itemCount: impact?.itemCount ?? 0,
+            doneCount: impact?.doneCount ?? 0
+        };
     }));
 }
 
@@ -374,7 +380,10 @@ export async function getRemovedChapters(draft: { basedOn?: { id: string } | nul
  * The revival's chapter checklists that moving to the version would delete.
  */
 export async function getGuideVersionChangeImpact(revivalId: string, toId: string) {
-    return (await runQuery(RevivalGuideVersionChangeImpactQuery, {id: revivalId, toId}))?.revival?.guideVersionChangeImpact ?? [];
+    return (await runQuery(RevivalGuideVersionChangeImpactQuery, {
+        id: revivalId,
+        toId
+    }))?.revival?.guideVersionChangeImpact ?? [];
 }
 
 export async function createGuideSection(input: GuideSectionCreateInput) {

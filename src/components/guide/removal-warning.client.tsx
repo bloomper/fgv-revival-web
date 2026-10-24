@@ -24,7 +24,8 @@ export function RemovalWarning({title, children, confirmLabel, confirmed, onConf
             <AlertDescription className="space-y-3">
                 <div>{children}</div>
                 <label htmlFor={id} className="flex items-start gap-2 font-medium">
-                    <Checkbox id={id} checked={confirmed} onCheckedChange={value => onConfirmedChange(!!value)} className="mt-0.5"/>
+                    <Checkbox id={id} checked={confirmed} onCheckedChange={value => onConfirmedChange(!!value)}
+                              className="mt-0.5"/>
                     <span>{confirmLabel}</span>
                 </label>
             </AlertDescription>

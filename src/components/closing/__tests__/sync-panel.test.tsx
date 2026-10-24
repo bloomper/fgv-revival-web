@@ -15,7 +15,11 @@ vi.mock("@/utils/umami", () => ({track}));
 const run = (status: "RUNNING" | "DONE" | "FAILED", done: number, failed = 0) => ({
     id: "run-1", status, startedBy: {id: "p1", displayName: "Dana Directeur"}, startedAt: "2026-10-23T10:00:00Z",
     finishedAt: status === "RUNNING" ? null : "2026-10-23T10:01:00Z", total: 3, done, failed,
-    failures: failed ? [{participant: {id: "1", displayName: "Anna Andersson"}, operation: "TASK" as const, reason: "REFUSED"}] : [],
+    failures: failed ? [{
+        participant: {id: "1", displayName: "Anna Andersson"},
+        operation: "TASK" as const,
+        reason: "REFUSED"
+    }] : [],
 });
 
 const preview = (lastRun: ReturnType<typeof run> | null = null) => ({
@@ -70,7 +74,10 @@ describe("SyncPanel", () => {
 
     it("polls a running run until it ends, then refreshes", async () => {
         vi.useFakeTimers({shouldAdvanceTime: true});
-        actions.syncRunAction.mockResolvedValueOnce({ok: true, data: run("RUNNING", 1)}).mockResolvedValueOnce({ok: true, data: run("FAILED", 2, 1)});
+        actions.syncRunAction.mockResolvedValueOnce({
+            ok: true,
+            data: run("RUNNING", 1)
+        }).mockResolvedValueOnce({ok: true, data: run("FAILED", 2, 1)});
         render(<SyncPanel revivalId="1" preview={preview(run("RUNNING", 0))} canSync/>);
 
         expect(screen.getByRole("button", {name: "start"})).toBeDisabled();

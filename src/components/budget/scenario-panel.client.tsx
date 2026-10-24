@@ -39,7 +39,13 @@ export type ScenarioResult = {
     partySubsidy: string;
 };
 
-export type SavedScenario = { id: string; name: string; parameters: ScenarioParameters; result: ScenarioResult; version: number };
+export type SavedScenario = {
+    id: string;
+    name: string;
+    parameters: ScenarioParameters;
+    result: ScenarioResult;
+    version: number
+};
 
 /**
  * A parameter as the form shows it: counts as they are, amounts with a decimal comma; blank when unset.
@@ -119,8 +125,18 @@ export function ScenarioPanel({revivalId, current, scenarios, canWrite}: {
 
     const save = (update: boolean) => form.handleSubmit(values => startTransition(async () => {
         if (update && loaded) {
-            feedback(await updateScenarioAction({revivalId, id: loaded.id, version: loaded.version, name: name.trim(), values}), t("Budget.scenarioSaved"));
-        } else if (feedback(await saveScenarioAction({revivalId, name: name.trim(), values}), t("Budget.scenarioSaved"))) {
+            feedback(await updateScenarioAction({
+                revivalId,
+                id: loaded.id,
+                version: loaded.version,
+                name: name.trim(),
+                values
+            }), t("Budget.scenarioSaved"));
+        } else if (feedback(await saveScenarioAction({
+            revivalId,
+            name: name.trim(),
+            values
+        }), t("Budget.scenarioSaved"))) {
             setLoaded(null);
         }
     }))();
@@ -134,10 +150,12 @@ export function ScenarioPanel({revivalId, current, scenarios, canWrite}: {
                         {SCENARIO_PARAMETERS.map(key => (
                             <div key={key} className="space-y-2">
                                 <Label htmlFor={`${id}-${key}`}>{t(`Budget.parameters.${key}`)}</Label>
-                                <Input id={`${id}-${key}`} inputMode={SCENARIO_COUNTS.has(key) ? "numeric" : "decimal"} autoComplete="off" className="tabular-nums"
+                                <Input id={`${id}-${key}`} inputMode={SCENARIO_COUNTS.has(key) ? "numeric" : "decimal"}
+                                       autoComplete="off" className="tabular-nums"
                                        placeholder={parameterText(key, current.baseline[key]) || t("Budget.notSet")}
                                        aria-invalid={errors[key] ? true : undefined} {...form.register(key)}/>
-                                {errors[key]?.message && <p className="text-sm text-destructive">{t(`Validation.${errors[key].message}`)}</p>}
+                                {errors[key]?.message &&
+                                    <p className="text-sm text-destructive">{t(`Validation.${errors[key].message}`)}</p>}
                             </div>
                         ))}
                     </div>
@@ -155,13 +173,16 @@ export function ScenarioPanel({revivalId, current, scenarios, canWrite}: {
                         <div className="flex flex-wrap items-end gap-2 border-t pt-4">
                             <div className="w-full space-y-2 sm:w-64">
                                 <Label htmlFor={`${id}-name`}>{t("Budget.scenarioName")}</Label>
-                                <Input id={`${id}-name`} maxLength={MAX_SCENARIO_NAME} value={name} onChange={change => setName(change.target.value)}/>
+                                <Input id={`${id}-name`} maxLength={MAX_SCENARIO_NAME} value={name}
+                                       onChange={change => setName(change.target.value)}/>
                             </div>
-                            <Button type="button" variant="outline" disabled={pending || !nameValid} onClick={() => save(false)}>
+                            <Button type="button" variant="outline" disabled={pending || !nameValid}
+                                    onClick={() => save(false)}>
                                 <Save/>{t("Budget.saveScenario")}
                             </Button>
                             {loaded && (
-                                <Button type="button" variant="outline" disabled={pending || !nameValid} onClick={() => save(true)}>
+                                <Button type="button" variant="outline" disabled={pending || !nameValid}
+                                        onClick={() => save(true)}>
                                     {t("Budget.updateScenario", {name: loaded.name})}
                                 </Button>
                             )}
@@ -169,7 +190,8 @@ export function ScenarioPanel({revivalId, current, scenarios, canWrite}: {
                     )}
                 </form>
                 <div aria-live="polite">
-                    <ResultCard result={result} title={calculated ? t("Budget.scenarioResult") : t("Budget.budgetResult")}/>
+                    <ResultCard result={result}
+                                title={calculated ? t("Budget.scenarioResult") : t("Budget.budgetResult")}/>
                 </div>
             </div>
             <section aria-labelledby="saved-scenarios" className="space-y-2">
@@ -182,23 +204,32 @@ export function ScenarioPanel({revivalId, current, scenarios, canWrite}: {
                             <li key={scenario.id} className="flex flex-col gap-2 rounded-lg border p-3 text-sm">
                                 <p className="font-medium">{scenario.name}</p>
                                 <p className="text-muted-foreground">
-                                    {t("Budget.result")} <AmountText value={scenario.result.result} signed className="text-foreground"/>
+                                    {t("Budget.result")} <AmountText value={scenario.result.result} signed
+                                                                     className="text-foreground"/>
                                     {scenario.result.breakEvenShowTickets !== null && scenario.result.breakEvenShowTickets !== undefined && (
                                         <> · {t("Budget.breakEvenShort", {count: scenario.result.breakEvenShowTickets})}</>
                                     )}
                                 </p>
                                 <div className="flex flex-wrap gap-1">
-                                    <Button size="sm" variant="outline" aria-label={t("Budget.loadScenario", {name: scenario.name})} onClick={() => {
-                                        form.reset(toScenarioValues(scenario.parameters));
-                                        setResult(scenario.result);
-                                        setCalculated(true);
-                                        setLoaded(scenario);
-                                        setName(scenario.name);
-                                    }}><FolderOpen/>{t("Budget.load")}</Button>
+                                    <Button size="sm" variant="outline"
+                                            aria-label={t("Budget.loadScenario", {name: scenario.name})}
+                                            onClick={() => {
+                                                form.reset(toScenarioValues(scenario.parameters));
+                                                setResult(scenario.result);
+                                                setCalculated(true);
+                                                setLoaded(scenario);
+                                                setName(scenario.name);
+                                            }}><FolderOpen/>{t("Budget.load")}</Button>
                                     {canWrite && (
-                                        <Button size="sm" variant="ghost" aria-label={t("Budget.removeScenario", {name: scenario.name})} disabled={pending}
+                                        <Button size="sm" variant="ghost"
+                                                aria-label={t("Budget.removeScenario", {name: scenario.name})}
+                                                disabled={pending}
                                                 onClick={() => startTransition(async () => {
-                                                    if (feedback(await removeScenarioAction({revivalId, id: scenario.id, version: scenario.version}), t("Budget.scenarioRemoved"))
+                                                    if (feedback(await removeScenarioAction({
+                                                            revivalId,
+                                                            id: scenario.id,
+                                                            version: scenario.version
+                                                        }), t("Budget.scenarioRemoved"))
                                                         && loaded?.id === scenario.id) {
                                                         setLoaded(null);
                                                     }

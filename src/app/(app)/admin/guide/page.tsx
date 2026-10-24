@@ -51,7 +51,8 @@ export default async function AdminGuidePage() {
                                         <PencilLine/>
                                         {t("admin.edit")}
                                     </Link>
-                                    <GuidePublishDialog draftId={draft.draft.id} version={draft.draft.version} removedChapters={removedChapters}/>
+                                    <GuidePublishDialog draftId={draft.draft.id} version={draft.draft.version}
+                                                        removedChapters={removedChapters}/>
                                     <GuideDiscardDialog draftId={draft.draft.id} version={draft.draft.version}
                                                         acceptedSuggestionCount={draft.acceptedSuggestionCount}/>
                                 </>

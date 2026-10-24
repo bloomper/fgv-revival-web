@@ -39,7 +39,8 @@ describe("OwnerLabel", () => {
 
 describe("OwnerField", () => {
     it("keeps a current owner who has left the steering group as the selected choice", () => {
-        render(<OwnerField members={members} value={{personId: "13"}} onChange={() => undefined} current={{id: "13", displayName: "Rut Borta"}}/>);
+        render(<OwnerField members={members} value={{personId: "13"}} onChange={() => undefined}
+                           current={{id: "13", displayName: "Rut Borta"}}/>);
 
         expect(screen.getByRole("combobox")).toHaveValue("13");
         expect(screen.getByRole("option", {name: "Rut Borta (formerMember)"})).toBeInTheDocument();

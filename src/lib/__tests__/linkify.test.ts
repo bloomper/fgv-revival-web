@@ -17,6 +17,9 @@ describe("linkify", () => {
     });
 
     it("never links other schemes", () => {
-        expect(linkify("javascript:alert(1) mailto:a@b.c")).toEqual([{kind: "text", text: "javascript:alert(1) mailto:a@b.c"}]);
+        expect(linkify("javascript:alert(1) mailto:a@b.c")).toEqual([{
+            kind: "text",
+            text: "javascript:alert(1) mailto:a@b.c"
+        }]);
     });
 });

@@ -9,7 +9,13 @@ import type {PositionValue} from "@/components/participant/participant-labels";
 import {hostOf} from "@/lib/material/hosts";
 import {cn} from "@/utils/utils";
 
-export type LinkServiceValue = { id: string; name: LocalizedTextValue; hosts: string[]; homeUrl?: string | null; retired: boolean };
+export type LinkServiceValue = {
+    id: string;
+    name: LocalizedTextValue;
+    hosts: string[];
+    homeUrl?: string | null;
+    retired: boolean
+};
 
 /**
  * Where a link leads: the service's name, or the link's host when no service recognises it.
@@ -24,7 +30,8 @@ export function ServiceBadge({service, url}: { service?: { name: LocalizedTextVa
 
     const host = hostOf(url);
 
-    return <Badge variant="outline" className="font-mono" title={t("unknownService")}>{host ?? t("unknownService")}</Badge>;
+    return <Badge variant="outline" className="font-mono"
+                  title={t("unknownService")}>{host ?? t("unknownService")}</Badge>;
 }
 
 export function CategoryBadge({category}: { category: MaterialCategory }) {
@@ -36,7 +43,10 @@ export function CategoryBadge({category}: { category: MaterialCategory }) {
 /**
  * Who sees a material: the steering group, every participant, or the named positions.
  */
-export function VisibilityLabel({visibility, positions}: { visibility: MaterialVisibility; positions: readonly PositionValue[] }) {
+export function VisibilityLabel({visibility, positions}: {
+    visibility: MaterialVisibility;
+    positions: readonly PositionValue[]
+}) {
     const t = useTranslations("Material");
 
     if (visibility === "POSITIONS") {
@@ -59,7 +69,8 @@ export function MaterialLink({title, url, className, onClick}: {
     const t = useTranslations("Material");
 
     return (
-        <a href={url} target="_blank" rel="noopener noreferrer" className={cn("inline-flex items-center gap-1 font-medium underline-offset-2 hover:underline", className)}
+        <a href={url} target="_blank" rel="noopener noreferrer"
+           className={cn("inline-flex items-center gap-1 font-medium underline-offset-2 hover:underline", className)}
            onClick={onClick}>
             <span className="break-words">{title}</span>
             <ExternalLink aria-hidden className="size-3.5 shrink-0"/>

@@ -5,7 +5,13 @@ import {MyMaterials} from "@/components/participation/my-materials";
 describe("MyMaterials", () => {
     it("groups the materials by category in a fixed order, with the service or the host, opening in a new tab", () => {
         render(<MyMaterials materials={[
-            {id: "1", title: "Inspelning 1988", url: "https://www.youtube.com/watch?v=1", service: {name: {sv: "YouTube", en: null}}, category: "RECORDING"},
+            {
+                id: "1",
+                title: "Inspelning 1988",
+                url: "https://www.youtube.com/watch?v=1",
+                service: {name: {sv: "YouTube", en: null}},
+                category: "RECORDING"
+            },
             {id: "2", title: "Manus", url: "https://example.org/manus.pdf", category: "SCRIPT", comment: "Version 3"},
         ]}/>);
 

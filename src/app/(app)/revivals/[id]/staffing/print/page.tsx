@@ -65,28 +65,30 @@ export default async function StaffingPrintPage({params, searchParams}: {
 
                         return (
                             <section key={date} className="break-inside-avoid">
-                                <h4 className="mb-2 font-semibold"><span className="capitalize">{weekday(date)}</span> {formatDate(date)}</h4>
+                                <h4 className="mb-2 font-semibold"><span
+                                    className="capitalize">{weekday(date)}</span> {formatDate(date)}</h4>
                                 {daySlots.length === 0 ? (
                                     <p className="text-sm text-muted-foreground">{t("noSlots")}</p>
                                 ) : (
                                     <table className="w-full border-collapse text-sm">
                                         <thead>
-                                            <tr className="border-b text-left">
-                                                <th scope="col" className="w-28 py-1 pr-3 font-medium">{t("time")}</th>
-                                                <th scope="col" className="py-1 pr-3 font-medium">{t("task")}</th>
-                                                <th scope="col" className="w-20 py-1 pr-3 font-medium">{t("needed")}</th>
-                                                <th scope="col" className="py-1 font-medium">{t("people")}</th>
-                                            </tr>
+                                        <tr className="border-b text-left">
+                                            <th scope="col" className="w-28 py-1 pr-3 font-medium">{t("time")}</th>
+                                            <th scope="col" className="py-1 pr-3 font-medium">{t("task")}</th>
+                                            <th scope="col" className="w-20 py-1 pr-3 font-medium">{t("needed")}</th>
+                                            <th scope="col" className="py-1 font-medium">{t("people")}</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            {daySlots.map(slot => (
-                                                <tr key={slot.id} className="border-b align-top">
-                                                    <td className="py-1 pr-3 tabular-nums">{slot.startTime}–{slot.endTime}</td>
-                                                    <td className="py-1 pr-3">{slot.task}{slot.comment && <span className="block text-xs text-muted-foreground">{slot.comment}</span>}</td>
-                                                    <td className="py-1 pr-3 tabular-nums">{slot.assigned.length}/{slot.needed}</td>
-                                                    <td className="py-1">{slot.assigned.map(assignment => assignment.participant.displayName).join(", ") || "—"}</td>
-                                                </tr>
-                                            ))}
+                                        {daySlots.map(slot => (
+                                            <tr key={slot.id} className="border-b align-top">
+                                                <td className="py-1 pr-3 tabular-nums">{slot.startTime}–{slot.endTime}</td>
+                                                <td className="py-1 pr-3">{slot.task}{slot.comment && <span
+                                                    className="block text-xs text-muted-foreground">{slot.comment}</span>}</td>
+                                                <td className="py-1 pr-3 tabular-nums">{slot.assigned.length}/{slot.needed}</td>
+                                                <td className="py-1">{slot.assigned.map(assignment => assignment.participant.displayName).join(", ") || "—"}</td>
+                                            </tr>
+                                        ))}
                                         </tbody>
                                     </table>
                                 )}
@@ -115,22 +117,23 @@ export default async function StaffingPrintPage({params, searchParams}: {
                 </header>
                 <table className="w-full border-collapse text-sm">
                     <thead>
-                        <tr className="border-b text-left">
-                            <th scope="col" className="py-1 pr-3 font-medium">{t("day")}</th>
-                            <th scope="col" className="w-28 py-1 pr-3 font-medium">{t("time")}</th>
-                            <th scope="col" className="py-1 pr-3 font-medium">{t("task")}</th>
-                            <th scope="col" className="py-1 font-medium">{t("event")}</th>
-                        </tr>
+                    <tr className="border-b text-left">
+                        <th scope="col" className="py-1 pr-3 font-medium">{t("day")}</th>
+                        <th scope="col" className="w-28 py-1 pr-3 font-medium">{t("time")}</th>
+                        <th scope="col" className="py-1 pr-3 font-medium">{t("task")}</th>
+                        <th scope="col" className="py-1 font-medium">{t("event")}</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {held.map(slot => (
-                            <tr key={slot.id} className="border-b align-top">
-                                <td className="py-1 pr-3 tabular-nums"><span className="capitalize">{weekday(slot.date)}</span> {formatDate(slot.date)}</td>
-                                <td className="py-1 pr-3 tabular-nums">{slot.startTime}–{slot.endTime}</td>
-                                <td className="py-1 pr-3">{slot.task}</td>
-                                <td className="py-1">{[slot.event.title, slot.event.location].filter(Boolean).join(" · ")}</td>
-                            </tr>
-                        ))}
+                    {held.map(slot => (
+                        <tr key={slot.id} className="border-b align-top">
+                            <td className="py-1 pr-3 tabular-nums"><span
+                                className="capitalize">{weekday(slot.date)}</span> {formatDate(slot.date)}</td>
+                            <td className="py-1 pr-3 tabular-nums">{slot.startTime}–{slot.endTime}</td>
+                            <td className="py-1 pr-3">{slot.task}</td>
+                            <td className="py-1">{[slot.event.title, slot.event.location].filter(Boolean).join(" · ")}</td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
             </article>

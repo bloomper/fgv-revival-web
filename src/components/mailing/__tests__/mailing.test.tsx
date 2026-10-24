@@ -6,7 +6,8 @@ import {filterMailings, type MailingRow} from "@/components/mailing/mailing-tabl
 
 vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn(), push: vi.fn()})}));
 vi.mock("next/link", () => ({
-    default: ({children, href, ...props}: { children?: ReactNode; href: string }) => <a href={href} {...props}>{children}</a>,
+    default: ({children, href, ...props}: { children?: ReactNode; href: string }) => <a
+        href={href} {...props}>{children}</a>,
 }));
 
 const template = (id: string, sv: string) => ({id, name: {sv, en: null}, audience: "EVENT_ATTENDEES" as const});
@@ -15,7 +16,13 @@ const rephelg = {id: "7", title: "Rephelg 1", startDate: "2028-01-15"};
 describe("MailingPlan", () => {
     const entries = [
         {template: template("t1", "Allergier"), event: rephelg, dueDate: "2028-01-03", mailing: null, due: true},
-        {template: template("t2", "Biljetter"), event: null, dueDate: "2028-02-01", mailing: {id: "m1", status: "SENT" as const, subject: "Biljetter", sentAt: "2028-02-01T10:00:00Z"}, due: false},
+        {
+            template: template("t2", "Biljetter"),
+            event: null,
+            dueDate: "2028-02-01",
+            mailing: {id: "m1", status: "SENT" as const, subject: "Biljetter", sentAt: "2028-02-01T10:00:00Z"},
+            due: false
+        },
     ];
 
     it("highlights what is due and drafts it from the template; a sent one links to its mailing", () => {

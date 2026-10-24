@@ -46,7 +46,16 @@ export function checklistResolvers(ctx) {
         const version = chapters(revival);
 
         for (const chapter of version.filter(candidate => !chapterChecklists(revival).some(checklist => checklist.chapterKey === candidate.key))) {
-            const checklist = {id: String(store().nextId++), revivalId: revival.id, kind: "CHAPTER", chapterKey: chapter.key, name: null, date: null, cancelled: false, version: 0};
+            const checklist = {
+                id: String(store().nextId++),
+                revivalId: revival.id,
+                kind: "CHAPTER",
+                chapterKey: chapter.key,
+                name: null,
+                date: null,
+                cancelled: false,
+                version: 0
+            };
             const template = activeTemplates().find(candidate => candidate.kind === "CHAPTER" && candidate.chapterKey === chapter.key);
 
             store().checklists.push(checklist);
@@ -65,8 +74,17 @@ export function checklistResolvers(ctx) {
 
                 if (!existing) {
                     store().items.push({
-                        id: String(store().nextId++), checklistId: target.id, required: true, guideItemKey: requirement.key, text: null, state: "OPEN",
-                        reason: null, owner: null, deadline: null, comment: null, version: 0,
+                        id: String(store().nextId++),
+                        checklistId: target.id,
+                        required: true,
+                        guideItemKey: requirement.key,
+                        text: null,
+                        state: "OPEN",
+                        reason: null,
+                        owner: null,
+                        deadline: null,
+                        comment: null,
+                        version: 0,
                     });
                 } else if (existing.checklistId !== target.id) {
                     existing.checklistId = target.id;
@@ -94,17 +112,34 @@ export function checklistResolvers(ctx) {
             const owners = templateItem.defaultCapability ? holders(templateItem.defaultCapability) : [];
 
             store().items.push({
-                id: String(store().nextId++), checklistId: checklist.id, required: false, guideItemKey: templateItem.guideItemKey, text: templateItem.text.sv,
-                state: "OPEN", reason: null, owner: owners.length === 1 ? {personId: owners[0].sub} : null, deadline: deadlineFor(templateItem, checklist.date),
-                deadlineManual: false, comment: null, version: 0, templateItemId: templateItem.id, defaultCapability: templateItem.defaultCapability,
+                id: String(store().nextId++),
+                checklistId: checklist.id,
+                required: false,
+                guideItemKey: templateItem.guideItemKey,
+                text: templateItem.text.sv,
+                state: "OPEN",
+                reason: null,
+                owner: owners.length === 1 ? {personId: owners[0].sub} : null,
+                deadline: deadlineFor(templateItem, checklist.date),
+                deadlineManual: false,
+                comment: null,
+                version: 0,
+                templateItemId: templateItem.id,
+                defaultCapability: templateItem.defaultCapability,
             });
         }
     };
-    const templateSummary = template => ({__typename: "ChecklistTemplateSummary", id: template.id, kind: template.kind, chapterKey: template.chapterKey,
+    const templateSummary = template => ({
+        __typename: "ChecklistTemplateSummary", id: template.id, kind: template.kind, chapterKey: template.chapterKey,
         chapterTitle: localized(latestChapters().find(chapter => chapter.key === template.chapterKey)?.title),
-        name: template.name ? {__typename: "LocalizedText", ...template.name} : null, retired: template.retired});
-    const toTemplateItem = item => ({__typename: "ChecklistTemplateItem", ...item, text: {__typename: "LocalizedText", ...item.text},
-        guideItem: null, deadline: item.deadline ? {__typename: "RelativeDeadline", amount: null, weekday: null, ...item.deadline} : null});
+        name: template.name ? {__typename: "LocalizedText", ...template.name} : null, retired: template.retired
+    });
+    const toTemplateItem = item => ({
+        __typename: "ChecklistTemplateItem", ...item,
+        text: {__typename: "LocalizedText", ...item.text},
+        guideItem: null,
+        deadline: item.deadline ? {__typename: "RelativeDeadline", amount: null, weekday: null, ...item.deadline} : null
+    });
     // Retired items only for super admins, the most recently retired first, as on the server.
     const toTemplate = (template, persona) => ({
         ...templateSummary(template), __typename: "ChecklistTemplate", version: template.version,
@@ -170,23 +205,48 @@ export function checklistResolvers(ctx) {
         const revival = ctx.state().revivals.find(candidate => candidate.id === checklist.revivalId);
 
         return {
-            __typename: "ChecklistSummary", id: checklist.id, kind: checklist.kind, chapterKey: checklist.chapterKey ?? null,
-            chapterTitle: checklist.kind === "CHAPTER" ? chapterTitle(revival, checklist) : null, name: checklist.name, date: checklist.date,
-            cancelled: checklist.cancelled, openCount: items.filter(item => item.state === "OPEN").length,
-            overdueCount: items.filter(overdue).length, totalCount: items.length,
+            __typename: "ChecklistSummary",
+            id: checklist.id,
+            kind: checklist.kind,
+            chapterKey: checklist.chapterKey ?? null,
+            chapterTitle: checklist.kind === "CHAPTER" ? chapterTitle(revival, checklist) : null,
+            name: checklist.name,
+            date: checklist.date,
+            cancelled: checklist.cancelled,
+            openCount: items.filter(item => item.state === "OPEN").length,
+            overdueCount: items.filter(overdue).length,
+            totalCount: items.length,
         };
     };
-    const toGuideItem = item => item ? {__typename: "GuideItem", ...item, text: {__typename: "LocalizedText", ...item.text}} : null;
+    const toGuideItem = item => item ? {
+        __typename: "GuideItem", ...item,
+        text: {__typename: "LocalizedText", ...item.text}
+    } : null;
     const toItem = (revival, item) => {
         const checklist = store().checklists.find(candidate => candidate.id === item.checklistId);
         const linked = item.guideItemKey ? guideItem(revival, item.guideItemKey) : null;
 
         return {
             __typename: "ChecklistItem", ...item,
-            text: {__typename: "LocalizedText", ...(item.required ? linked?.text ?? {sv: "", en: null} : {sv: item.text, en: null})},
-            stateChangedBy: item.stateChangedBy ? {__typename: "PersonRef", id: item.stateChangedBy, displayName: personas[item.stateChangedBy]?.name ?? null} : null,
-            stateChangedAt: null, owner: log.toOwner(revival, item.owner), deadlineManual: item.deadlineManual ?? !!item.deadline, overdue: overdue(item),
-            guideItem: toGuideItem(linked), defaultCapability: item.defaultCapability ?? null, logEntries: [], checklist: summary(checklist),
+            text: {
+                __typename: "LocalizedText", ...(item.required ? linked?.text ?? {sv: "", en: null} : {
+                    sv: item.text,
+                    en: null
+                })
+            },
+            stateChangedBy: item.stateChangedBy ? {
+                __typename: "PersonRef",
+                id: item.stateChangedBy,
+                displayName: personas[item.stateChangedBy]?.name ?? null
+            } : null,
+            stateChangedAt: null,
+            owner: log.toOwner(revival, item.owner),
+            deadlineManual: item.deadlineManual ?? !!item.deadline,
+            overdue: overdue(item),
+            guideItem: toGuideItem(linked),
+            defaultCapability: item.defaultCapability ?? null,
+            logEntries: [],
+            checklist: summary(checklist),
         };
     };
     const findItem = (persona, id, version) => {
@@ -219,7 +279,11 @@ export function checklistResolvers(ctx) {
     };
     const revivalHeader = (persona, revival) => ({
         __typename: "Revival", id: revival.id, title: revival.title,
-        permissions: {__typename: "RevivalPermissions", canWriteLog: canWrite(persona, revival), canWaiveRequirement: canWaive(persona, revival)},
+        permissions: {
+            __typename: "RevivalPermissions",
+            canWriteLog: canWrite(persona, revival),
+            canWaiveRequirement: canWaive(persona, revival)
+        },
         ownerCandidates: log.candidates(revival),
     });
 
@@ -244,7 +308,14 @@ export function checklistResolvers(ctx) {
             if (input.kind === "CHAPTER" && activeTemplates().some(template => template.chapterKey === input.chapterKey)) {
                 throw new GraphQLError("CONFLICT", "Kapitlet har redan en mall.");
             }
-            const template = {id: `t${store().nextId++}`, kind: input.kind, chapterKey: input.chapterKey ?? null, name: input.name ?? null, retired: false, version: 0};
+            const template = {
+                id: `t${store().nextId++}`,
+                kind: input.kind,
+                chapterKey: input.chapterKey ?? null,
+                name: input.name ?? null,
+                retired: false,
+                version: 0
+            };
 
             store().templates.push(template);
             return {checklistTemplateCreate: {__typename: "ChecklistTemplate", id: template.id}};
@@ -283,8 +354,15 @@ export function checklistResolvers(ctx) {
             superAdmin(persona);
             const template = findTemplate(input.templateId);
             const item = {
-                id: `ti${store().nextId++}`, templateId: template.id, position: templateItemsOf(template).length, text: input.text,
-                guideItemKey: input.guideItemKey ?? null, defaultCapability: input.defaultCapability ?? null, deadline: input.deadline ?? null, retired: false, version: 0,
+                id: `ti${store().nextId++}`,
+                templateId: template.id,
+                position: templateItemsOf(template).length,
+                text: input.text,
+                guideItemKey: input.guideItemKey ?? null,
+                defaultCapability: input.defaultCapability ?? null,
+                deadline: input.deadline ?? null,
+                retired: false,
+                version: 0,
             };
 
             store().templateItems.push(item);
@@ -335,7 +413,12 @@ export function checklistResolvers(ctx) {
             if (template.retired) {
                 throw new GraphQLError("BAD_REQUEST", "Mallen är avvecklad och kan inte ändras.");
             }
-            Object.assign(item, {retired: false, retiredAt: null, position: templateItemsOf(template).length, version: item.version + 1});
+            Object.assign(item, {
+                retired: false,
+                retiredAt: null,
+                position: templateItemsOf(template).length,
+                version: item.version + 1
+            });
             return {checklistTemplateItemRestore: {__typename: "ChecklistTemplate", id: template.id}};
         },
         EventChecklistCreate(persona, {input}) {
@@ -346,8 +429,15 @@ export function checklistResolvers(ctx) {
             }
             checklistsOf(revival);
             const checklist = {
-                id: String(store().nextId++), revivalId: revival.id, kind: "EVENT", chapterKey: null, name: text(input.name), date: input.date ?? null,
-                cancelled: false, version: 0, templateId: input.templateId ?? null,
+                id: String(store().nextId++),
+                revivalId: revival.id,
+                kind: "EVENT",
+                chapterKey: null,
+                name: text(input.name),
+                date: input.date ?? null,
+                cancelled: false,
+                version: 0,
+                templateId: input.templateId ?? null,
             };
 
             store().checklists.push(checklist);
@@ -436,7 +526,10 @@ export function checklistResolvers(ctx) {
 
             return {
                 guideChapterRemovalImpact: {
-                    __typename: "GuideChapterRemovalImpact", chapterKey, revivalCount: checklists.length, itemCount: items.length,
+                    __typename: "GuideChapterRemovalImpact",
+                    chapterKey,
+                    revivalCount: checklists.length,
+                    itemCount: items.length,
                     doneCount: items.filter(item => item.state === "DONE").length,
                 },
             };
@@ -461,8 +554,12 @@ export function checklistResolvers(ctx) {
                         const ids = new Set(items.map(item => item.id));
 
                         return {
-                            __typename: "ChecklistRemoval", checklistId: checklist.id, chapterKey: checklist.chapterKey, chapterTitle: chapterTitle(revival, checklist),
-                            itemCount: items.length, doneCount: items.filter(item => item.state === "DONE").length,
+                            __typename: "ChecklistRemoval",
+                            checklistId: checklist.id,
+                            chapterKey: checklist.chapterKey,
+                            chapterTitle: chapterTitle(revival, checklist),
+                            itemCount: items.length,
+                            doneCount: items.filter(item => item.state === "DONE").length,
                             linkedLogEntryCount: ctx.state().log.entries.filter(entry => ids.has(entry.checklistItemId)).length,
                         };
                     }),
@@ -481,8 +578,17 @@ export function checklistResolvers(ctx) {
                 throw forbidden();
             }
             const item = {
-                id: String(store().nextId++), checklistId: checklist.id, required: false, guideItemKey: input.guideItemKey ?? null, text: text(input.text),
-                state: "OPEN", reason: null, owner: log.owner(revival, input.owner), deadline: input.deadline ?? null, comment: input.comment?.trim() || null, version: 0,
+                id: String(store().nextId++),
+                checklistId: checklist.id,
+                required: false,
+                guideItemKey: input.guideItemKey ?? null,
+                text: text(input.text),
+                state: "OPEN",
+                reason: null,
+                owner: log.owner(revival, input.owner),
+                deadline: input.deadline ?? null,
+                comment: input.comment?.trim() || null,
+                version: 0,
             };
 
             store().items.push(item);
@@ -522,7 +628,12 @@ export function checklistResolvers(ctx) {
                     throw new GraphQLError("BAD_REQUEST", "Skriv varför kravet inte gäller.");
                 }
             }
-            Object.assign(item, {state: input.state, reason: input.state === "NOT_APPLICABLE" ? reason : null, stateChangedBy: persona.sub, version: item.version + 1});
+            Object.assign(item, {
+                state: input.state,
+                reason: input.state === "NOT_APPLICABLE" ? reason : null,
+                stateChangedBy: persona.sub,
+                version: item.version + 1
+            });
             return {checklistItemSetState: {__typename: "ChecklistItem", id: item.id, state: item.state}};
         },
     };

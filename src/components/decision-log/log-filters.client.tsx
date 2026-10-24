@@ -48,10 +48,12 @@ export function LogFilters({filter, tags, meetings}: {
                 event.preventDefault();
                 search(text);
             }}>
-                <Input value={text} onChange={event => setText(event.target.value)} onBlur={() => text.trim() !== (filter.text ?? "") && search(text)}
+                <Input value={text} onChange={event => setText(event.target.value)}
+                       onBlur={() => text.trim() !== (filter.text ?? "") && search(text)}
                        placeholder={t("Log.searchPlaceholder")} aria-label={t("Log.search")} className="h-8 pr-8"/>
                 {text && (
-                    <Button type="button" variant="ghost" size="icon" className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
+                    <Button type="button" variant="ghost" size="icon"
+                            className="absolute top-0 right-0 h-8 w-8 hover:bg-transparent"
                             aria-label={t("Common.clearSearch")} onClick={() => {
                         setText("");
                         search("");
@@ -61,15 +63,28 @@ export function LogFilters({filter, tags, meetings}: {
                 )}
             </form>
             <DataFilter title={t("Log.filter.show")}
-                        options={QUICK.map((key, index) => ({label: t(`Log.filter.${key}`), value: key, sortKey: String(index)}))}
+                        options={QUICK.map((key, index) => ({
+                            label: t(`Log.filter.${key}`),
+                            value: key,
+                            sortKey: String(index)
+                        }))}
                         selectedValues={quick}
-                        onSelect={values => apply({...filter, mine: values.has("mine") || undefined, open: values.has("open") || undefined,
-                            overdue: values.has("overdue") || undefined})}
+                        onSelect={values => apply({
+                            ...filter, mine: values.has("mine") || undefined, open: values.has("open") || undefined,
+                            overdue: values.has("overdue") || undefined
+                        })}
                         onClear={() => apply({...filter, mine: undefined, open: undefined, overdue: undefined})}/>
             <DataFilter title={t("Log.typeLabel")}
-                        options={LOG_ENTRY_TYPES.map((type, index) => ({label: t(`Log.type.${type}`), value: type, sortKey: String(index)}))}
+                        options={LOG_ENTRY_TYPES.map((type, index) => ({
+                            label: t(`Log.type.${type}`),
+                            value: type,
+                            sortKey: String(index)
+                        }))}
                         selectedValues={new Set(filter.types)}
-                        onSelect={values => apply({...filter, types: listOrUndefined(values as Set<(typeof LOG_ENTRY_TYPES)[number]>)})}
+                        onSelect={values => apply({
+                            ...filter,
+                            types: listOrUndefined(values as Set<(typeof LOG_ENTRY_TYPES)[number]>)
+                        })}
                         onClear={() => apply({...filter, types: undefined})}/>
             {tags.length > 0 && (
                 <DataFilter title={t("Log.tags")} options={tags.map(tag => ({label: tag, value: tag}))}
@@ -85,8 +100,11 @@ export function LogFilters({filter, tags, meetings}: {
                                 sortKey: meeting.date,
                             }))}
                             selectedValues={new Set(filter.meetingId ? [filter.meetingId] : [])}
-                            // One meeting at a time: the one just ticked replaces the one before
-                            onSelect={values => apply({...filter, meetingId: [...values].find(id => id !== filter.meetingId)})}
+                    // One meeting at a time: the one just ticked replaces the one before
+                            onSelect={values => apply({
+                                ...filter,
+                                meetingId: [...values].find(id => id !== filter.meetingId)
+                            })}
                             onClear={() => apply({...filter, meetingId: undefined})}/>
             )}
             {isLogFiltered(filter) && (

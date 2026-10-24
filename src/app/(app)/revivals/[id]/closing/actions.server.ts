@@ -14,7 +14,9 @@ function revalidate(revivalId: string) {
     revalidatePath(`/revivals/${revivalId}`, "layout");
 }
 
-export async function setMembershipAction(input: z.input<typeof membershipSetSchema>): Promise<ActionResult<{ count: number }>> {
+export async function setMembershipAction(input: z.input<typeof membershipSetSchema>): Promise<ActionResult<{
+    count: number
+}>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const parsed = membershipSetSchema.parse(input);
         const updated = await setMembership(parsed);

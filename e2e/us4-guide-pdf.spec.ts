@@ -13,7 +13,11 @@ test.describe("Guide, user story 4: export the guide to PDF", () => {
         expect((await download).suggestedFilename()).toBe("nyuppsattningsguide-ali-baba-2028-en.pdf");
     });
 
-    test("a steering group member gets a published version's PDF but not the draft's", async ({page, mock, loginAs}) => {
+    test("a steering group member gets a published version's PDF but not the draft's", async ({
+                                                                                                  page,
+                                                                                                  mock,
+                                                                                                  loginAs
+                                                                                              }) => {
         await mock.guide("draft");
         await mock.setStatus("1", "ORGANISING");
         await loginAs("styrgrupp");

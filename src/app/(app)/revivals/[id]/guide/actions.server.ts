@@ -53,7 +53,9 @@ export async function suggestAction(input: z.input<typeof guideSuggestionCreateS
     }));
 }
 
-export async function withdrawSuggestionAction(input: z.input<typeof guideRemoveSchema> & { revivalId: string }): Promise<ActionResult<null>> {
+export async function withdrawSuggestionAction(input: z.input<typeof guideRemoveSchema> & {
+    revivalId: string
+}): Promise<ActionResult<null>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const parsed = guideRemoveSchema.parse(input);
 

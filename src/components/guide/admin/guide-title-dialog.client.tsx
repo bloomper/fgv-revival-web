@@ -60,12 +60,14 @@ export function GuideTitleDialog({trigger, children, heading, initial, onSave}: 
                             <div className="space-y-2">
                                 <Label htmlFor="guide-title-sv">{t("Guide.editor.swedish")}</Label>
                                 <Input id="guide-title-sv" {...form.register("sv")}/>
-                                {errors.sv && <p className="text-sm text-destructive">{t(`Validation.${errors.sv.message}`)}</p>}
+                                {errors.sv &&
+                                    <p className="text-sm text-destructive">{t(`Validation.${errors.sv.message}`)}</p>}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="guide-title-en">{t("Guide.editor.english")}</Label>
                                 <Input id="guide-title-en" {...form.register("en")}/>
-                                {errors.en && <p className="text-sm text-destructive">{t(`Validation.${errors.en.message}`)}</p>}
+                                {errors.en &&
+                                    <p className="text-sm text-destructive">{t(`Validation.${errors.en.message}`)}</p>}
                             </div>
                         </div>
                     </ScrollArea>

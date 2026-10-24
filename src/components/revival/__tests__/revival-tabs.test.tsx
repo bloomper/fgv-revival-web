@@ -8,7 +8,8 @@ vi.mock("next/navigation", () => ({
     useSelectedLayoutSegment: () => segment,
 }));
 vi.mock("next/link", () => ({
-    default: ({children, href, ...props}: { children?: ReactNode; href: string }) => <a href={href} {...props}>{children}</a>,
+    default: ({children, href, ...props}: { children?: ReactNode; href: string }) => <a
+        href={href} {...props}>{children}</a>,
 }));
 
 const work = {openEntries: 3, overdueEntries: 1, openRequiredItems: 5, overdueChecklistItems: 0};
@@ -68,7 +69,8 @@ describe("RevivalTabs", () => {
     });
 
     it("orders the tabs: the steering group, its work, the budget, the ensemble and the closing", () => {
-        render(<RevivalTabs revivalId="7" work={null} canReadBudget canReadParticipants canReadStaffing canReadMailings canReadMaterials/>);
+        render(<RevivalTabs revivalId="7" work={null} canReadBudget canReadParticipants canReadStaffing canReadMailings
+                            canReadMaterials/>);
 
         expect(screen.getAllByRole("link").map(link => link.textContent)).toEqual([
             "overview", "members", "events", "meetings", "log", "checklists", "guide",

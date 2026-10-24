@@ -96,15 +96,27 @@ const ChecklistItemSetStateMutation = graphql(`
 `);
 
 export async function getRevivalChecklists(revivalId: string, filter: ChecklistItemFilter | null, includeCancelled = false) {
-    const data = await runQuery(RevivalChecklistsQuery, {id: revivalId, filter, filtered: filter !== null, includeCancelled});
+    const data = await runQuery(RevivalChecklistsQuery, {
+        id: revivalId,
+        filter,
+        filtered: filter !== null,
+        includeCancelled
+    });
 
-    return data?.revival ? {revival: data.revival, checklists: data.checklists, items: data.checklistItems ?? null} : null;
+    return data?.revival ? {
+        revival: data.revival,
+        checklists: data.checklists,
+        items: data.checklistItems ?? null
+    } : null;
 }
 
 export async function getChecklist(revivalId: string, id: string) {
     const data = await runQuery(ChecklistQuery, {id, revivalId});
 
-    return data?.revival && data.checklist && data.checklist.revivalId === revivalId ? {revival: data.revival, checklist: data.checklist} : null;
+    return data?.revival && data.checklist && data.checklist.revivalId === revivalId ? {
+        revival: data.revival,
+        checklist: data.checklist
+    } : null;
 }
 
 export async function createChecklistItem(input: ChecklistItemCreateInput) {

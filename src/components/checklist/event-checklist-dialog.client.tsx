@@ -58,16 +58,21 @@ export function EventChecklistDialog({revivalId, templates, checklist, compact =
                     <SheetTitle>{checklist ? t("Checklist.editEvent") : t("Checklist.newEvent")}</SheetTitle>
                     <SheetDescription>{t("Checklist.eventDescription")}</SheetDescription>
                 </SheetHeader>
-                <form className="flex min-h-0 flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(values => startTransition(async () => {
-                    const result = await saveEventChecklistAction({revivalId, checklist: checklist ? {id: checklist.id, version: checklist.version} : null, values});
+                <form className="flex min-h-0 flex-1 flex-col overflow-hidden"
+                      onSubmit={form.handleSubmit(values => startTransition(async () => {
+                          const result = await saveEventChecklistAction({
+                              revivalId,
+                              checklist: checklist ? {id: checklist.id, version: checklist.version} : null,
+                              values
+                          });
 
-                    if (feedback(result, t("Common.saved"))) {
-                        setOpen(false);
-                        if (!checklist) {
-                            router.push(`/revivals/${revivalId}/checklists/${result.data.id}`);
-                        }
-                    }
-                }))}>
+                          if (feedback(result, t("Common.saved"))) {
+                              setOpen(false);
+                              if (!checklist) {
+                                  router.push(`/revivals/${revivalId}/checklists/${result.data.id}`);
+                              }
+                          }
+                      }))}>
                     <ScrollArea className="min-h-0 flex-1 border-t">
                         <div className="space-y-4 px-6 py-6 pb-12">
                             <div className="space-y-2">
@@ -77,16 +82,18 @@ export function EventChecklistDialog({revivalId, templates, checklist, compact =
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-date`}>{t("Checklist.eventDate")}</Label>
-                                <DateInput id={`${id}-date`} {...form.register("date", {setValueAs: value => value || null})}/>
+                                <DateInput
+                                    id={`${id}-date`} {...form.register("date", {setValueAs: value => value || null})}/>
                             </div>
                             {!checklist && (
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-template`}>{t("Checklist.template")}</Label>
                                     <NativeSelect className="w-full" id={`${id}-template`}
-                                            {...form.register("templateId", {setValueAs: value => value || null})}>
+                                                  {...form.register("templateId", {setValueAs: value => value || null})}>
                                         <option value="">{t("Checklist.noTemplate")}</option>
                                         {templates.map(template => (
-                                            <option key={template.id} value={template.id}>{template.name ? pickText(template.name, locale).text : template.id}</option>
+                                            <option key={template.id}
+                                                    value={template.id}>{template.name ? pickText(template.name, locale).text : template.id}</option>
                                         ))}
                                     </NativeSelect>
                                 </div>
@@ -94,7 +101,8 @@ export function EventChecklistDialog({revivalId, templates, checklist, compact =
                         </div>
                     </ScrollArea>
                     <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>{t("Common.cancel")}</Button>
+                        <Button type="button" variant="outline"
+                                onClick={() => setOpen(false)}>{t("Common.cancel")}</Button>
                         <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
                     </SheetFooter>
                 </form>

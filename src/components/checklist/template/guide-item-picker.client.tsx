@@ -48,16 +48,19 @@ export function GuideItemPicker({value, label, onChange}: {
             {value ? (
                 <div className="flex items-center gap-2 rounded-md border p-2 text-sm">
                     <span className="flex-1">{label ?? value}</span>
-                    <Button type="button" size="icon" variant="ghost" aria-label={t("clear")} onClick={() => onChange(null, null)}><X/></Button>
+                    <Button type="button" size="icon" variant="ghost" aria-label={t("clear")}
+                            onClick={() => onChange(null, null)}><X/></Button>
                 </div>
             ) : (
                 <>
-                    <Input type="search" aria-label={t("search")} placeholder={t("search")} value={query} onChange={event => setQuery(event.target.value)}/>
+                    <Input type="search" aria-label={t("search")} placeholder={t("search")} value={query}
+                           onChange={event => setQuery(event.target.value)}/>
                     {query.trim().length >= MIN_QUERY && hits.length > 0 && (
                         <ul className="max-h-48 divide-y overflow-y-auto rounded-md border" aria-label={t("results")}>
                             {hits.map(hit => (
                                 <li key={hit.itemKey}>
-                                    <button type="button" className="flex w-full items-start gap-2 p-2 text-left text-sm hover:bg-accent"
+                                    <button type="button"
+                                            className="flex w-full items-start gap-2 p-2 text-left text-sm hover:bg-accent"
                                             onClick={() => {
                                                 onChange(hit.itemKey ?? null, hit.snippet);
                                                 setQuery("");
