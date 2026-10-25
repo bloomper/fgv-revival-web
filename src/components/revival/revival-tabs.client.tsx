@@ -177,8 +177,9 @@ export function RevivalTabs({
             {overflow.start && <ScrollButton side="start" onClick={() => scrollBy(-1)}/>}
             {overflow.end && <ScrollButton side="end" onClick={() => scrollBy(1)}/>}
             <div ref={scroller}
-                 className="overflow-x-auto overflow-y-hidden px-4 [scrollbar-width:none] md:px-0 [&::-webkit-scrollbar]:hidden">
-                <ul className="flex min-w-max gap-1 border-b">
+                 className="scroll-px-10 overflow-x-auto overflow-y-hidden px-4 [scrollbar-width:none] md:px-0 [&::-webkit-scrollbar]:hidden">
+                {/* Relative, so the counts' absolute sr-only labels stay inside the scroller instead of widening the page */}
+                <ul className="relative flex min-w-max gap-1 border-b">
                     {tabs.map(tab => {
                         const active = tab.segment === segment;
                         return (

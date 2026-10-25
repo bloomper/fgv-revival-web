@@ -75,7 +75,8 @@ function useColumns(onDelete: (version: GuideVersion) => void): DataTableColumnD
             enableSorting: false,
             header: () => t("Guide.admin.note"),
             cell: ({row}) => <span className="line-clamp-1 text-muted-foreground">{row.original.note}</span>,
-            meta: {className: "max-w-0 w-full"},
+            // Truncated to whatever room is left, which on a phone is none
+            meta: {className: "hidden max-w-0 w-full sm:table-cell"},
         },
         {
             id: "publishedAt",

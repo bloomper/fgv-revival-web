@@ -28,7 +28,7 @@ function CopyRow({label, value, shown}: { label: string; value: string; shown?: 
         <div className="flex items-center justify-between gap-3 py-1">
             <div className="flex min-w-0 flex-col">
                 <dt className="text-sm text-muted-foreground">{label}</dt>
-                <dd className="font-mono text-base break-all">{shown ?? value}</dd>
+                <dd className="font-mono text-base wrap-anywhere">{shown ?? value}</dd>
             </div>
             <Button type="button" variant="outline" className="size-11 shrink-0" aria-label={t("copy", {label})}
                     onClick={copy}>

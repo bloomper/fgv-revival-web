@@ -103,7 +103,7 @@ describe("EventTable", () => {
         expect(first.getByText("cancelledBadge")).toBeInTheDocument();
         const second = within(rows[2]);
 
-        expect(second.getByText("2028-01-01 – 2028-01-02")).toBeInTheDocument();
+        expect(second.getAllByRole("cell")[0]).toHaveTextContent("2028-01-01 – 2028-01-02");
         expect(second.getByText("Rephelg 1", {selector: "[data-slot=badge]"})).toBeInTheDocument();
         expect(second.getAllByText(/weeksBefore.*"weeks":9/).length).toBeGreaterThan(0);
         expect(second.getAllByRole("link", {name: /checklistLink.*"open":3,"total":4/})[0]).toHaveAttribute("href", "/revivals/1/checklists/9");

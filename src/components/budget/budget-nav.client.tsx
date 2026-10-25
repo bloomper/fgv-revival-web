@@ -22,17 +22,19 @@ export function BudgetNav({revivalId}: { revivalId: string }) {
     const base = `/revivals/${revivalId}/budget`;
 
     return (
-        <nav aria-label={t("views")} className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1">
+        // On phones only the active view is labelled, so all four fit; relative keeps the sr-only labels inside the nav
+        <nav aria-label={t("views")}
+             className="relative flex w-fit max-w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1">
             {VIEWS.map(view => {
                 const active = view.segment === segment;
 
                 return (
                     <Link key={view.key} href={view.segment ? `${base}/${view.segment}` : base}
-                          aria-current={active ? "page" : undefined}
+                          aria-current={active ? "page" : undefined} title={t(view.key)}
                           className={cn("inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-medium whitespace-nowrap [&_svg]:size-4",
                               active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
                         <view.icon/>
-                        {t(view.key)}
+                        <span className={cn(!active && "max-sm:sr-only")}>{t(view.key)}</span>
                     </Link>
                 );
             })}

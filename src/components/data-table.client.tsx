@@ -168,10 +168,13 @@ export function DataTable<TData extends { id: string }>({
                             </TableRow>
                         )) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    {filtered ? <DataEmpty title={t("noFilterMatchHeading")}
-                                                           description={t("noFilterMatchDescription")}/> : empty ??
-                                        <DataEmpty/>}
+                                <TableCell colSpan={columns.length} className="h-24 text-center whitespace-normal">
+                                    {/* Kept within the visible part of a table wider than the phone's screen */}
+                                    <div className="sticky left-0 max-w-[calc(100vw-3.5rem)]">
+                                        {filtered ? <DataEmpty title={t("noFilterMatchHeading")}
+                                                               description={t("noFilterMatchDescription")}/> : empty ??
+                                            <DataEmpty/>}
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         )}

@@ -201,8 +201,17 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (event: EventR
             accessorFn: event => `${event.startDate} ${event.startTime ?? ""}`,
             sortFn: "alphanumeric",
             header: ({column}) => <SortableHeader column={column} sorted={column.getIsSorted()} title={t("dates")}/>,
-            cell: ({row}) => <span
-                className="whitespace-nowrap font-medium tabular-nums">{formatEventDates(row.original)}</span>,
+            // On phones a range wraps between its start and end, never inside a date
+            cell: ({row}) => {
+                const [start, end] = formatEventDates(row.original).split(" – ");
+
+                return (
+                    <span className="whitespace-normal font-medium tabular-nums sm:whitespace-nowrap">
+                        <span className="whitespace-nowrap">{start}</span>
+                        {end && <> <span className="whitespace-nowrap">– {end}</span></>}
+                    </span>
+                );
+            },
             meta: {className: "w-48"},
         },
         {
