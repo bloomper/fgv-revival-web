@@ -7,6 +7,7 @@ import {RevivalPoster} from "@/components/revival/revival-poster.client";
 import {ContactForm} from "@/components/participation/contact-form.client";
 import {DietaryForm} from "@/components/participation/dietary-form.client";
 import {FeeDetails} from "@/components/participation/fee-details.client";
+import {MyChecklistItems} from "@/components/participation/my-checklist-items.client";
 import {MyMaterials} from "@/components/participation/my-materials";
 import {ParticipationSection} from "@/components/participation/participation-section";
 import {ReferralForm} from "@/components/participation/referral-form.client";
@@ -136,6 +137,13 @@ export default async function MyParticipationPage({params}: { params: Promise<{ 
                                           description={t("openShiftsDescription")}>
                         <ShiftList revivalId={revival.id} participantId={participant.id}
                                    slots={participation.openShifts} mode="open"/>
+                    </ParticipationSection>
+                )}
+
+                {participation.checklistItems.length > 0 && (
+                    <ParticipationSection id="participation-tasks" title={t("tasksTitle")}
+                                          description={t("tasksDescription")}>
+                        <MyChecklistItems revivalId={revival.id} items={participation.checklistItems}/>
                     </ParticipationSection>
                 )}
 

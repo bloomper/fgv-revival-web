@@ -6,6 +6,7 @@ export const GuideItemFields = graphql(`
         key
         type { ...GuideItemTypeFields }
         text { sv en }
+        libraryEntries { id kind name { sv en } retired }
         version
     }
 `);

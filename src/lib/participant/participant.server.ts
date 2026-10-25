@@ -95,6 +95,7 @@ const MyParticipationQuery = graphql(`
                 permissions { canSubscribeCalendar }
             }
             terms
+            checklistItems { id text { sv en } checklistName chapterTitle { sv en } checklistDate deadline overdue done comment version }
             contact { email phone streetAddress postalCode city }
             dietary
             swish { number amount message qrAvailable }
@@ -256,4 +257,17 @@ export async function setParticipationDietary(revivalId: string, text: string | 
 
 export async function createReferral(input: ReferralInput) {
     await runMutation(ReferralCreateMutation, {input});
+}
+
+const AssignedChecklistItemSetDoneMutation = graphql(`
+    mutation AssignedChecklistItemSetDone($id: ID!, $version: Int!, $done: Boolean!) {
+        assignedChecklistItemSetDone(id: $id, version: $version, done: $done) { id }
+    }
+`);
+
+/**
+ * Marks a checklist item assigned to the caller done, or not done.
+ */
+export async function setAssignedChecklistItemDone(id: string, version: number, done: boolean) {
+    await runMutation(AssignedChecklistItemSetDoneMutation, {id, version, done});
 }

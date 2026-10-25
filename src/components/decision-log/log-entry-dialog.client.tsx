@@ -17,6 +17,7 @@ import {NativeSelect} from "@/components/ui/native-select";
 import {OwnerField, type OwnerMember} from "@/components/owner/owner-field.client";
 import {createLogEntryAction, updateLogEntryAction} from "@/app/(app)/revivals/[id]/log/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
+import {formatDate} from "@/utils/format";
 import {
     LOG_ENTRY_STATUSES,
     LOG_ENTRY_TYPES,
@@ -25,7 +26,12 @@ import {
     MAX_LOG_TEXT
 } from "@/lib/decision-log/schema";
 
-function valuesOf(entry: LogEntryFieldsFragment | null, initial?: Partial<LogEntryValues>): LogEntryValues {
+/**
+ * An event a row can link to.
+ */
+export type LogEventOption = { id: string; title: string; startDate: string; cancelled: boolean };
+
+function valuesOf(entry: LogEntryFieldsFragment | null, initial: Partial<LogEntryValues> | undefined, withEvents: boolean): LogEntryValues {
     return {
         type: entry?.type ?? initial?.type ?? "TODO",
         text: entry?.text ?? initial?.text ?? "",
@@ -35,6 +41,7 @@ function valuesOf(entry: LogEntryFieldsFragment | null, initial?: Partial<LogEnt
         date: entry?.date,
         comment: entry?.comment ?? "",
         tags: entry?.tags ?? initial?.tags ?? [],
+        eventId: withEvents ? entry?.event?.id ?? initial?.eventId ?? "" : undefined,
     };
 }
 
@@ -43,12 +50,14 @@ function valuesOf(entry: LogEntryFieldsFragment | null, initial?: Partial<LogEnt
  * With a meeting in progress, the change is recorded as made in it. A new row can start from `initial`, e.g.
  * the closing page's surplus decision: a DECISION tagged "överskott".
  */
-export function LogEntryDialog({revivalId, entry, initial, members, tags, meetingId, open, onOpenChange}: {
+export function LogEntryDialog({revivalId, entry, initial, members, tags, events, meetingId, open, onOpenChange}: {
     revivalId: string;
     entry: LogEntryFieldsFragment | null;
     initial?: Partial<LogEntryValues>;
     members: OwnerMember[];
     tags: string[];
+    /** The revival's events, to link the row to one; without them the link is left as it is. */
+    events?: LogEventOption[];
     meetingId?: string | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -59,7 +68,7 @@ export function LogEntryDialog({revivalId, entry, initial, members, tags, meetin
     const [tagText, setTagText] = useState("");
     const form = useForm<LogEntryValues>({
         resolver: zodResolver(logEntryValuesSchema),
-        values: valuesOf(entry, initial)
+        values: valuesOf(entry, initial, events !== undefined)
     });
     const {errors} = form.formState;
     const error = (message?: string) => message &&
@@ -134,6 +143,19 @@ export function LogEntryDialog({revivalId, entry, initial, members, tags, meetin
                                        className="text-xs text-muted-foreground">{t("Log.deadlineHint")}</p>
                                 </div>
                             </div>
+                            {events && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="log-event">{t("Log.event")}</Label>
+                                    <NativeSelect className="w-full" id="log-event" {...form.register("eventId")}>
+                                        <option value="">{t("Log.noEvent")}</option>
+                                        {events.map(event => (
+                                            <option key={event.id} value={event.id}>
+                                                {`${formatDate(event.startDate)} ${event.title}`}{event.cancelled ? ` (${t("Log.cancelledEvent")})` : ""}
+                                            </option>
+                                        ))}
+                                    </NativeSelect>
+                                </div>
+                            )}
                             <div className="space-y-2">
                                 <Label htmlFor="log-comment">{t("Log.comment")}</Label>
                                 <Textarea id="log-comment" rows={2}

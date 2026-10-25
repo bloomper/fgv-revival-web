@@ -16,6 +16,7 @@ const item = (en: string | null = null) => ({
     key: "k1",
     type: ITEM_TYPES.REQUIREMENT,
     text: {sv: "Budget ska upprättas.", en},
+    libraryEntries: [] as { id: string; kind: "VENUE" | "TICKET_SERVICE" | "ROLE_DESCRIPTION" | "CONTACT_ROLE"; name: { sv: string; en: string | null }; retired: boolean }[],
     version: 0,
 });
 
@@ -57,5 +58,12 @@ describe("GuideItem", () => {
         render(<GuideItem item={{...item(), type: ITEM_TYPES.TEXT}}/>);
 
         expect(screen.queryByText("Text")).not.toBeInTheDocument();
+    });
+
+    it("links to the library entries it names", () => {
+        useLocale.mockReturnValue("sv");
+        render(<GuideItem item={{...item(), libraryEntries: [{id: "7", kind: "VENUE", name: {sv: "RunAn", en: null}, retired: false}]}}/>);
+
+        expect(screen.getByRole("link", {name: /RunAn/})).toHaveAttribute("href", "/library#entry-7");
     });
 });

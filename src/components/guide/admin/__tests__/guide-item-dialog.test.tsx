@@ -43,8 +43,29 @@ describe("GuideItemDialog", () => {
 
         await waitFor(() => expect(onSave).toHaveBeenCalledWith({
             type: "REQUIREMENT",
-            text: {sv: "Ett **tips**.", en: null}
+            text: {sv: "Ett **tips**.", en: null},
+            libraryEntryIds: [],
         }));
+    });
+
+    it("links library entries, keeping a retired one the item already links to", async () => {
+        const onSave = vi.fn().mockResolvedValue({ok: true, data: null});
+        const runan = {id: "1", kind: "VENUE", name: {sv: "RunAn", en: null}, retired: false} as const;
+        const old = {id: "2", kind: "VENUE", name: {sv: "Gamla salen", en: null}, retired: true} as const;
+
+        render(
+            <CatalogProvider itemTypes={types} library={[runan]}>
+                <GuideItemDialog trigger={<Button/>} heading="Edit"
+                                 initial={{type: ITEM_TYPES.TIP, text: {sv: "Boka lokal.", en: null}, libraryEntries: [old]}}
+                                 onSave={onSave}>Open</GuideItemDialog>
+            </CatalogProvider>,
+        );
+        fireEvent.click(screen.getByRole("button", {name: "Open"}));
+        expect(screen.getByRole("checkbox", {name: /Gamla salen/})).toBeChecked();
+        fireEvent.click(screen.getByRole("checkbox", {name: /RunAn/}));
+        fireEvent.click(screen.getByRole("button", {name: "Common.save"}));
+
+        await waitFor(() => expect(onSave).toHaveBeenCalledWith(expect.objectContaining({libraryEntryIds: ["2", "1"]})));
     });
 
     it("opens blank again after adding an item", async () => {

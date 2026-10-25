@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import {useMemo} from "react";
-import {BookOpen, Drama, House, type LucideIcon, Settings, Theater, Wrench} from "lucide-react";
+import {BookMarked, BookOpen, Drama, House, type LucideIcon, Settings, Theater, Wrench} from "lucide-react";
 
 import {NavMain} from "@/components/nav-main.client";
 import {NavSecondary} from "@/components/nav-secondary.client";
@@ -82,6 +82,12 @@ export function AppSidebar({roles, accountUrl, guideReadable, ...props}: AppSide
                 icon: BookOpen,
                 isActive: pathname.startsWith("/guide"),
             });
+            mainItems.push({
+                title: t("Nav.library"),
+                url: "/library",
+                icon: BookMarked,
+                isActive: pathname.startsWith("/library"),
+            });
         }
 
         if (isSuperAdmin(roles)) {
@@ -91,18 +97,20 @@ export function AppSidebar({roles, accountUrl, guideReadable, ...props}: AppSide
                 icon: Settings,
                 isActive: pathname.startsWith("/admin/"),
                 items: [
-                    // Under "Administration" the short name suffices; the command palette keeps "Nav.adminGuide"
+                    // Under "Administration" the short name suffices; the command palette keeps "Nav.adminGuide".
+                    // Grouped: the guide, then what revivals start from, the budget, and the rest.
                     {title: t("Nav.adminGuideShort"), url: "/admin/guide"},
-                    {title: t("Nav.adminChecklistTemplates"), url: "/admin/checklist-templates"},
-                    {title: t("Nav.adminEventTypes"), url: "/admin/event-types"},
-                    {title: t("Nav.adminMailingTemplates"), url: "/admin/mailing-templates"},
                     {title: t("Nav.adminGuideItemTypes"), url: "/admin/guide-item-types"},
+                    {title: t("Nav.adminEventTypes"), url: "/admin/event-types"},
+                    {title: t("Nav.adminChecklistTemplates"), url: "/admin/checklist-templates"},
+                    {title: t("Nav.adminMailingTemplates"), url: "/admin/mailing-templates"},
                     {title: t("Nav.adminCapabilities"), url: "/admin/capabilities"},
                     {title: t("Nav.adminBudgetCategories"), url: "/admin/budget-categories"},
-                    {title: t("Nav.adminLinkServices"), url: "/admin/link-services"},
                     {title: t("Nav.adminReferenceFigures"), url: "/admin/reference-figures"},
+                    {title: t("Nav.adminLinkServices"), url: "/admin/link-services"},
                     {title: t("Nav.adminSpexCalendar"), url: "/admin/spex-calendar"},
                     {title: t("Nav.adminNews"), url: "/admin/news"},
+                    {title: t("Nav.adminSettings"), url: "/admin/settings"},
                 ],
             });
         }

@@ -17,6 +17,7 @@ const RevivalLogQuery = graphql(`
         logEntries(revivalId: $id, filter: $filter) { ...LogEntryFields }
         logTags(revivalId: $id)
         meetings(revivalId: $id) { id date title }
+        events(revivalId: $id, includeCancelled: true) { id title startDate cancelled }
     }
 `);
 
@@ -48,7 +49,8 @@ export async function getRevivalLog(revivalId: string, filter: LogEntryFilter) {
         revival: data.revival,
         entries: data.logEntries,
         tags: data.logTags,
-        meetings: data.meetings
+        meetings: data.meetings,
+        events: data.events,
     } : null;
 }
 

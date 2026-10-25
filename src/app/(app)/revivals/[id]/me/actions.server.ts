@@ -6,10 +6,11 @@ import {type ActionResult, toActionResult} from "@/lib/graphql.server";
 import {
     createReferral,
     respondToParticipation,
+    setAssignedChecklistItemDone,
     setParticipationDietary,
     updateParticipationContact,
 } from "@/lib/participant/participant.server";
-import {contactSchema, dietarySchema, referralSchema, respondSchema} from "@/lib/participant/schema";
+import {assignedItemDoneSchema, contactSchema, dietarySchema, referralSchema, respondSchema} from "@/lib/participant/schema";
 import {setAvailability, signUpForShift, withdrawFromShift} from "@/lib/staffing/staffing.server";
 import {availabilitySchema, shiftOwnSchema} from "@/lib/staffing/schema";
 import {Policies} from "@/utils/policy.server";
@@ -118,6 +119,19 @@ export async function withdrawFromShiftAction(input: z.input<typeof shiftOwnSche
         const {revivalId, slotId} = shiftOwnSchema.parse(input);
 
         await withdrawFromShift(slotId);
+        revalidate(revivalId);
+        return null;
+    }));
+}
+
+/**
+ * A checklist item the steering group assigned to the participant, marked done or not done.
+ */
+export async function setAssignedItemDoneAction(input: z.input<typeof assignedItemDoneSchema>): Promise<ActionResult<null>> {
+    return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
+        const {revivalId, id, version, done} = assignedItemDoneSchema.parse(input);
+
+        await setAssignedChecklistItemDone(id, version, done);
         revalidate(revivalId);
         return null;
     }));

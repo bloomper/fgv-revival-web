@@ -153,6 +153,8 @@ export function logResolvers(ctx) {
                 },
                 logEntries: entries.filter(matches(persona, filter)).sort((a, b) => a.number - b.number).map(toEntry),
                 logTags: [...new Set(entries.flatMap(entry => entry.tags))].sort(),
+                events: ctx.state().event.events.filter(event => event.revivalId === revival.id)
+                    .map(event => ({__typename: "Event", id: event.id, title: event.title, startDate: event.startDate, cancelled: !!event.cancelled})),
                 meetings: ctx.state().meeting.meetings.filter(meeting => meeting.revivalId === revival.id).reverse()
                     .map(meeting => ({
                         __typename: "MeetingSummary",

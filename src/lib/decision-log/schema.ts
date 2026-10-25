@@ -24,6 +24,8 @@ export const logEntryValuesSchema = z.object({
     date: date.optional(),
     comment: z.string().trim().max(MAX_LOG_TEXT, "logCommentTooLong").optional(),
     tags: z.array(z.string().trim().min(1, "logTagInvalid").max(MAX_TAG, "logTagInvalid")),
+    /** An event of the revival, blank for none; left out where the form offers no events. */
+    eventId: z.string().optional(),
 });
 
 export type LogEntryValues = z.infer<typeof logEntryValuesSchema>;

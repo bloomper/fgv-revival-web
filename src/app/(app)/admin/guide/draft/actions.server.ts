@@ -124,6 +124,7 @@ export async function createItemAction(input: z.input<typeof guideItemCreateSche
         position: parsed.position ?? null,
         type: parsed.type,
         text: {sv: parsed.text.sv, en: en(parsed.text)},
+        libraryEntryIds: parsed.libraryEntryIds ?? null,
     }));
 }
 
@@ -133,7 +134,8 @@ export async function updateItemAction(input: z.input<typeof guideItemUpdateSche
             id: parsed.id,
             version: parsed.version,
             type: parsed.type,
-            text: {sv: parsed.text.sv, en: en(parsed.text)}
+            text: {sv: parsed.text.sv, en: en(parsed.text)},
+            libraryEntryIds: parsed.libraryEntryIds ?? null,
         }));
 }
 

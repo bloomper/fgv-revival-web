@@ -44,6 +44,7 @@ export async function createLogEntryAction(input: z.input<typeof logEntryCreateS
             date: values.date || null,
             comment: values.comment || null,
             tags: values.tags,
+            eventId: values.eventId || null,
         });
 
         revalidate(revivalId);
@@ -93,6 +94,13 @@ export async function updateLogEntryAction(input: z.input<typeof logEntryUpdateS
         }
         if (values.tags !== undefined) {
             update.tags = values.tags;
+        }
+        if (values.eventId !== undefined) {
+            if (values.eventId) {
+                update.eventId = values.eventId;
+            } else {
+                update.clearEvent = true;
+            }
         }
         await updateLogEntry(update);
         revalidate(revivalId);

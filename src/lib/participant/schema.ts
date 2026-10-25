@@ -223,3 +223,10 @@ export const referralValuesSchema = z.object({
 export type ReferralValues = z.infer<typeof referralValuesSchema>;
 
 export const referralSchema = z.object({revivalId: id, values: referralValuesSchema});
+
+export const assignedItemDoneSchema = z.object({
+    revivalId: z.string().min(1),
+    id: z.string().min(1),
+    version: z.number().int().nonnegative(),
+    done: z.boolean(),
+});

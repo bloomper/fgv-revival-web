@@ -36,6 +36,8 @@ export const guideIntroductionSchema = z.object({
 export const guideItemSchema = z.object({
     type: catalogId,
     text: guideItemTextSchema,
+    /** The reference library entries it links to; left out, an update keeps them. */
+    libraryEntryIds: z.array(z.string().min(1)).optional(),
 });
 
 export type GuideItemValues = z.infer<typeof guideItemSchema>;

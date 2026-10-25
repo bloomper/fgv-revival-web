@@ -24,6 +24,8 @@ export const LogEntryFields = graphql(`
         guideItemKey
         guideItem { id key type { ...GuideItemTypeFields } text { sv en } version }
         checklistItem { id checklistId state text { sv en } }
+        event { id title startDate cancelled }
+        budgetLines { id description amount }
         answers { id number type status }
         answeredBy { id number type status }
         origin

@@ -5,6 +5,7 @@ import {navChapters} from "@/components/guide/chapters";
 import {GuideChapterPager} from "@/components/guide/guide-chapter-pager";
 import {loadGuideDraft} from "@/app/(app)/admin/guide/draft/load.server";
 import {getGuideItemTypes} from "@/lib/catalog/catalog.server";
+import {getLibraryEntries} from "@/lib/library/library.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
@@ -16,7 +17,7 @@ export default async function GuideDraftChapterPage({params}: { params: Promise<
     const {chapterKey} = await params;
 
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {
-        const [draft, itemTypes] = await Promise.all([loadGuideDraft(), getGuideItemTypes()]);
+        const [draft, itemTypes, library] = await Promise.all([loadGuideDraft(), getGuideItemTypes(), getLibraryEntries()]);
         const key = decodeURIComponent(chapterKey);
 
         if (!draft || !draft.draft.chapters.some(chapter => chapter.key === key)) {
@@ -25,7 +26,7 @@ export default async function GuideDraftChapterPage({params}: { params: Promise<
 
         return (
             <>
-                <CatalogProvider itemTypes={itemTypes}>
+                <CatalogProvider itemTypes={itemTypes} library={library}>
                     <GuideDraftEditor draft={draft.draft} chapterKey={key}/>
                 </CatalogProvider>
                 <GuideChapterPager chapters={navChapters(draft.draft)} current={key} basePath="/admin/guide/draft"/>

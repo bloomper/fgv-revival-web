@@ -35,6 +35,7 @@ import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {GuideTypeBadge} from "@/components/guide/guide-type-badge";
 import {catalogName} from "@/components/catalog/catalog";
 import {pickText} from "@/components/guide/localized";
+import {LibraryLinks} from "@/components/library/library-links";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import type {ActionResult} from "@/lib/graphql.server";
 
@@ -155,7 +156,7 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                         trigger={<Button variant="ghost" size="icon-sm" aria-label={t("Guide.editor.editItem")}
                                          title={t("Guide.editor.editItem")}/>}
                         heading={t("Guide.editor.editItem")}
-                        initial={{type: item.type, text: item.text}}
+                        initial={{type: item.type, text: item.text, libraryEntries: item.libraryEntries}}
                         onSave={values => updateItemAction({id: item.id, version: item.version, ...values})}
                     >
                         <PencilLine/>
@@ -209,6 +210,7 @@ export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionField
                 </div>
             </div>
             <GuideMarkdown>{item.text.sv}</GuideMarkdown>
+            <LibraryLinks entries={item.libraryEntries}/>
         </li>
     );
 

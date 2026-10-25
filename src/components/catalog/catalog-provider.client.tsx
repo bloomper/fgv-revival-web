@@ -3,22 +3,29 @@
 import {createContext, type ReactNode, useContext} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {type CatalogEntryValue, catalogName, type GuideItemTypeValue} from "@/components/catalog/catalog";
+import type {LibraryLinkValue} from "@/components/library/library";
 
 const CatalogContext = createContext<{
     capabilities: CatalogEntryValue[];
-    itemTypes: GuideItemTypeValue[]
-}>({capabilities: [], itemTypes: []});
+    itemTypes: GuideItemTypeValue[];
+    library: LibraryLinkValue[];
+}>({capabilities: [], itemTypes: [], library: []});
 
 /**
- * The active areas of responsibility and guide item types, for the pickers below it. Pages that offer a picker fetch
- * the lists and wrap their content in this.
+ * The active areas of responsibility, guide item types and reference library entries, for the pickers below it. Pages
+ * that offer a picker fetch the lists and wrap their content in this.
  */
-export function CatalogProvider({capabilities = [], itemTypes = [], children}: {
+export function CatalogProvider({capabilities = [], itemTypes = [], library = [], children}: {
     capabilities?: CatalogEntryValue[];
     itemTypes?: GuideItemTypeValue[];
+    library?: LibraryLinkValue[];
     children: ReactNode;
 }) {
-    return <CatalogContext.Provider value={{capabilities, itemTypes}}>{children}</CatalogContext.Provider>;
+    return <CatalogContext.Provider value={{capabilities, itemTypes, library}}>{children}</CatalogContext.Provider>;
+}
+
+export function useLibraryEntries(): LibraryLinkValue[] {
+    return useContext(CatalogContext).library;
 }
 
 export function useCapabilities(): CatalogEntryValue[] {

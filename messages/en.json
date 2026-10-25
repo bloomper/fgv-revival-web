@@ -69,7 +69,9 @@
     "revivalTimeline": "Timeline of all revivals",
     "adminMailingTemplates": "Mailing plan",
     "adminLinkServices": "Link services",
-    "adminNews": "News"
+    "adminNews": "News",
+    "library": "The library",
+    "adminSettings": "Settings"
   },
   "Home": {
     "title": "Nyuppsättning",
@@ -411,7 +413,10 @@
     "newsSubjectTooLong": "The subject can be at most 255 characters.",
     "newsTextRequired": "Write a text.",
     "newsTextTooLong": "The text can be at most 10,000 characters.",
-    "newsDates": "The last day cannot be before the first day, and needs a first day."
+    "newsDates": "The last day cannot be before the first day, and needs a first day.",
+    "libraryTextTooLong": "At most 4,000 characters.",
+    "libraryUrlTooLong": "At most 500 characters.",
+    "settingsTermsTooLong": "At most 4,000 characters."
   },
   "About": {
     "title": "About",
@@ -731,7 +736,14 @@
     "dateLabel": "Entered",
     "dateHint": "When the row came into the log. Left empty, it is today.",
     "deadlineHint": "When it must be done. An open row past it shows as overdue.",
-    "rowTitle": "Row {number}"
+    "rowTitle": "Row {number}",
+    "event": "Event",
+    "noEvent": "No event",
+    "cancelledEvent": "cancelled",
+    "eventLink": "Event: {title}, {date}",
+    "checklistItemLink": "Checklist item: {text}",
+    "guideItemLink": "Guide: {text}",
+    "budgetLineLink": "Budget line: {description}, {amount}"
   },
   "Meeting": {
     "title": "Meetings",
@@ -1594,7 +1606,13 @@
     "openShiftsTitle": "Open shifts",
     "openShiftsDescription": "Shifts that need more people. Take one that suits you.",
     "materialsTitle": "Materials",
-    "materialsDescription": "Scripts, scores, recordings and more that the steering group shares with you. The links open in a new tab."
+    "materialsDescription": "Scripts, scores, recordings and more that the steering group shares with you. The links open in a new tab.",
+    "tasksTitle": "My tasks",
+    "tasksDescription": "Checklist items the steering group gave you. Tick them off when they are done.",
+    "taskDone": "Marked as done",
+    "taskOpen": "Marked as not done",
+    "taskDeadline": "Due {date}",
+    "taskOverdue": "Overdue"
   },
   "Availability": {
     "answers": {
@@ -2060,7 +2078,8 @@
         "owner": "Owner",
         "deadline": "Deadline",
         "comment": "Comment",
-        "tags": "Tags"
+        "tags": "Tags",
+        "eventId": "Event"
       },
       "CHECKLIST_ITEM": {
         "text": "Text",
@@ -2149,5 +2168,52 @@
     "deleteTitle": "Delete “{subject}”?",
     "deleteDescription": "The piece leaves the start page for good. Its history is kept.",
     "deleted": "The news was deleted"
+  },
+  "Library": {
+    "title": "Reference library",
+    "intro": "Venues, ticket services, role descriptions and roles to contact, gathered from earlier revivals. The guide's items link here. Contacts are roles that change every year, never named people.",
+    "showRetired": "Show retired",
+    "create": "New entry",
+    "editTitle": "Change the entry",
+    "edit": "Change {name}",
+    "dialogDescription": "The texts are in Swedish, with English if you like. The kind cannot change once the entry is made.",
+    "kind": "Kind",
+    "kindFixed": "The kind is set when the entry is made.",
+    "allKinds": "All kinds",
+    "kinds": {
+      "VENUE": "Venue",
+      "TICKET_SERVICE": "Ticket service",
+      "ROLE_DESCRIPTION": "Role description",
+      "CONTACT_ROLE": "Role to contact"
+    },
+    "kindsPlural": {
+      "VENUE": "Venues",
+      "TICKET_SERVICE": "Ticket services",
+      "ROLE_DESCRIPTION": "Role descriptions",
+      "CONTACT_ROLE": "Roles to contact"
+    },
+    "texts": {
+      "description": "Description",
+      "pros": "Pros",
+      "cons": "Cons",
+      "booking": "Booking",
+      "prices": "Prices from earlier revivals",
+      "contact": "How to reach the role"
+    },
+    "swedish": "Swedish",
+    "english": "English (optional)",
+    "url": "Link",
+    "open": "Open {name}",
+    "empty": "No entries.",
+    "linkedEntries": "Links to the library",
+    "linkHelp": "Library entries the item refers to. Retired entries stay on items that already link to them."
+  },
+  "Settings": {
+    "title": "Settings",
+    "intro": "These apply to every revival.",
+    "terms": "Terms for participants",
+    "termsHelp": "Every participant accepts them when saying yes, after the fee and the liability for the loan and before the revival's own terms.",
+    "defaultFee": "Participation fee for new revivals (kr)",
+    "defaultFeeHelp": "A new revival's budget starts with this fee. The directeur or whoever has Finance can change it. Leave blank for no fee."
   }
 }

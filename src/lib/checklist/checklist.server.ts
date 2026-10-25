@@ -19,7 +19,7 @@ const RevivalChecklistsQuery = graphql(`
             title
             status
             permissions { canWriteLog }
-            ownerCandidates { id displayName }
+            ownerCandidates(includeParticipants: true) { id displayName }
         }
         checklists(revivalId: $id, includeCancelled: $includeCancelled) { id kind chapterKey chapterTitle { sv en } name date cancelled openCount overdueCount totalCount }
         checklistItems(revivalId: $id, filter: $filter) @include(if: $filtered) { ...ChecklistItemFields }
@@ -32,7 +32,7 @@ const ChecklistQuery = graphql(`
             id
             title
             permissions { canWriteLog canWaiveRequirement }
-            ownerCandidates { id displayName }
+            ownerCandidates(includeParticipants: true) { id displayName }
         }
         checklist(id: $id) {
             id

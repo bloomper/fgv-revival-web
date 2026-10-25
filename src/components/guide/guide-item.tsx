@@ -4,6 +4,7 @@ import type {GuideItemFieldsFragment} from "@/gql/graphql";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {GuideTypeBadge} from "@/components/guide/guide-type-badge";
 import {pickText} from "@/components/guide/localized";
+import {LibraryLinks} from "@/components/library/library-links";
 
 /**
  * One item: its type, unless it is plain text, and its Markdown in the reader's language.
@@ -21,6 +22,7 @@ export function GuideItem({item, actions}: { item: GuideItemFieldsFragment, acti
                 {actions && <div className="ml-auto flex gap-1">{actions}</div>}
             </div>
             <GuideMarkdown>{text}</GuideMarkdown>
+            <LibraryLinks entries={item.libraryEntries}/>
         </div>
     );
 }

@@ -5,6 +5,7 @@ import {useCallback, useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
 import {
+    BookMarked,
     BookOpen,
     BookOpenCheck,
     CalendarDays,
@@ -20,6 +21,7 @@ import {
     type LucideIcon,
     Mail,
     Plus,
+    SlidersHorizontal,
     Tags,
     Theater,
     Users,
@@ -86,9 +88,11 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
 
         if (guideReadable) {
             navigationEntries.push({id: "guide", label: t("Nav.guide"), href: "/guide", icon: BookOpen});
+            navigationEntries.push({id: "library", label: t("Nav.library"), href: "/library", icon: BookMarked});
         }
 
         if (isSuperAdmin(roles)) {
+            // In the same order as Administration in the sidebar
             navigationEntries.push({
                 id: "admin-guide",
                 label: t("Nav.adminGuide"),
@@ -96,10 +100,10 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
                 icon: BookOpenCheck
             });
             navigationEntries.push({
-                id: "admin-checklist-templates",
-                label: t("Nav.adminChecklistTemplates"),
-                href: "/admin/checklist-templates",
-                icon: ClipboardList
+                id: "admin-guide-item-types",
+                label: t("Nav.adminGuideItemTypes"),
+                href: "/admin/guide-item-types",
+                icon: Tags
             });
             navigationEntries.push({
                 id: "admin-event-types",
@@ -108,16 +112,16 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
                 icon: CalendarDays
             });
             navigationEntries.push({
+                id: "admin-checklist-templates",
+                label: t("Nav.adminChecklistTemplates"),
+                href: "/admin/checklist-templates",
+                icon: ClipboardList
+            });
+            navigationEntries.push({
                 id: "admin-mailing-templates",
                 label: t("Nav.adminMailingTemplates"),
                 href: "/admin/mailing-templates",
                 icon: Mail
-            });
-            navigationEntries.push({
-                id: "admin-guide-item-types",
-                label: t("Nav.adminGuideItemTypes"),
-                href: "/admin/guide-item-types",
-                icon: Tags
             });
             navigationEntries.push({
                 id: "admin-capabilities",
@@ -132,16 +136,16 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
                 icon: Wallet
             });
             navigationEntries.push({
-                id: "admin-link-services",
-                label: t("Nav.adminLinkServices"),
-                href: "/admin/link-services",
-                icon: Link2
-            });
-            navigationEntries.push({
                 id: "admin-reference-figures",
                 label: t("Nav.adminReferenceFigures"),
                 href: "/admin/reference-figures",
                 icon: History
+            });
+            navigationEntries.push({
+                id: "admin-link-services",
+                label: t("Nav.adminLinkServices"),
+                href: "/admin/link-services",
+                icon: Link2
             });
             navigationEntries.push({
                 id: "admin-spex-calendar",
@@ -154,6 +158,12 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
                 label: t("Nav.adminNews"),
                 href: "/admin/news",
                 icon: Newspaper
+            });
+            navigationEntries.push({
+                id: "admin-settings",
+                label: t("Nav.adminSettings"),
+                href: "/admin/settings",
+                icon: SlidersHorizontal
             });
         }
 

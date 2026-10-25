@@ -69,7 +69,9 @@
     "revivalTimeline": "Tidslinje för alla nyuppsättningar",
     "adminMailingTemplates": "Utskicksplan",
     "adminLinkServices": "Länktjänster",
-    "adminNews": "Nyheter"
+    "adminNews": "Nyheter",
+    "library": "Biblioteket",
+    "adminSettings": "Inställningar"
   },
   "Home": {
     "title": "Nyuppsättning",
@@ -411,7 +413,10 @@
     "newsSubjectTooLong": "Rubriken får vara högst 255 tecken.",
     "newsTextRequired": "Skriv en text.",
     "newsTextTooLong": "Texten får vara högst 10 000 tecken.",
-    "newsDates": "Sista dagen kan inte vara före första dagen, och kräver en första dag."
+    "newsDates": "Sista dagen kan inte vara före första dagen, och kräver en första dag.",
+    "libraryTextTooLong": "Högst 4 000 tecken.",
+    "libraryUrlTooLong": "Högst 500 tecken.",
+    "settingsTermsTooLong": "Högst 4 000 tecken."
   },
   "About": {
     "title": "Om",
@@ -731,7 +736,14 @@
     "dateLabel": "Noterad",
     "dateHint": "När raden kom in i loggen. Lämnas det tomt blir det i dag.",
     "deadlineHint": "När det ska vara klart. En öppen rad efter det visas som försenad.",
-    "rowTitle": "Rad {number}"
+    "rowTitle": "Rad {number}",
+    "event": "Händelse",
+    "noEvent": "Ingen händelse",
+    "cancelledEvent": "inställd",
+    "eventLink": "Händelse: {title}, {date}",
+    "checklistItemLink": "Checklistpunkt: {text}",
+    "guideItemLink": "Guiden: {text}",
+    "budgetLineLink": "Budgetrad: {description}, {amount}"
   },
   "Meeting": {
     "title": "Möten",
@@ -1594,7 +1606,13 @@
     "openShiftsTitle": "Lediga pass",
     "openShiftsDescription": "Pass som behöver fler. Ta ett pass som passar dig.",
     "materialsTitle": "Material",
-    "materialsDescription": "Manus, noter, inspelningar och annat som direktionen delar med dig. Länkarna öppnas i en ny flik."
+    "materialsDescription": "Manus, noter, inspelningar och annat som direktionen delar med dig. Länkarna öppnas i en ny flik.",
+    "tasksTitle": "Mina uppgifter",
+    "tasksDescription": "Punkter i checklistorna som direktionen har gett dig. Bocka av dem när de är gjorda.",
+    "taskDone": "Markerad som gjord",
+    "taskOpen": "Markerad som inte gjord",
+    "taskDeadline": "Senast {date}",
+    "taskOverdue": "Försenad"
   },
   "Availability": {
     "answers": {
@@ -2060,7 +2078,8 @@
         "owner": "Ansvarig",
         "deadline": "Senast",
         "comment": "Kommentar",
-        "tags": "Taggar"
+        "tags": "Taggar",
+        "eventId": "Händelse"
       },
       "CHECKLIST_ITEM": {
         "text": "Text",
@@ -2149,5 +2168,52 @@
     "deleteTitle": "Radera ”{subject}”?",
     "deleteDescription": "Nyheten försvinner från startsidan för gott. Historiken finns kvar.",
     "deleted": "Nyheten raderades"
+  },
+  "Library": {
+    "title": "Referensbiblioteket",
+    "intro": "Lokaler, biljettförsäljning, rollbeskrivningar och roller att kontakta, samlade från tidigare nyuppsättningar. Guidens punkter länkar hit. Kontakter är roller som byts varje år, aldrig namngivna personer.",
+    "showRetired": "Visa avvecklade",
+    "create": "Ny post",
+    "editTitle": "Ändra posten",
+    "edit": "Ändra {name}",
+    "dialogDescription": "Texterna är på svenska, med engelska om ni vill. Typen kan inte ändras när posten är skapad.",
+    "kind": "Typ",
+    "kindFixed": "Typen bestäms när posten skapas.",
+    "allKinds": "Alla typer",
+    "kinds": {
+      "VENUE": "Lokal",
+      "TICKET_SERVICE": "Biljettförsäljning",
+      "ROLE_DESCRIPTION": "Rollbeskrivning",
+      "CONTACT_ROLE": "Kontaktroll"
+    },
+    "kindsPlural": {
+      "VENUE": "Lokaler",
+      "TICKET_SERVICE": "Biljettförsäljning",
+      "ROLE_DESCRIPTION": "Rollbeskrivningar",
+      "CONTACT_ROLE": "Kontaktroller"
+    },
+    "texts": {
+      "description": "Beskrivning",
+      "pros": "Fördelar",
+      "cons": "Nackdelar",
+      "booking": "Bokning",
+      "prices": "Priser från tidigare nyuppsättningar",
+      "contact": "Så når ni rollen"
+    },
+    "swedish": "Svenska",
+    "english": "Engelska (frivilligt)",
+    "url": "Länk",
+    "open": "Öppna {name}",
+    "empty": "Inga poster.",
+    "linkedEntries": "Länkar till biblioteket",
+    "linkHelp": "Biblioteksposter som punkten hänvisar till. Avvecklade poster finns kvar på punkter som redan länkar dit."
+  },
+  "Settings": {
+    "title": "Inställningar",
+    "intro": "Gäller alla nyuppsättningar.",
+    "terms": "Villkor för deltagare",
+    "termsHelp": "Varje deltagare godkänner dem när den tackar ja, efter avgiften och ansvaret för lånet och före nyuppsättningens egna villkor.",
+    "defaultFee": "Deltagaravgift för nya nyuppsättningar (kr)",
+    "defaultFeeHelp": "Nya nyuppsättningars budget börjar med avgiften. Directeuren eller den som har Ekonomi kan ändra den. Lämna tomt för ingen avgift."
   }
 }

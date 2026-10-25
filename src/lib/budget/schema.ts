@@ -38,7 +38,7 @@ const amount = (minOre = 0) => z.string().trim().min(1, "amountRequired")
     .refine(value => parseAmount(value) === null || within(value, minOre), "amountOutOfRange");
 
 /** As {@link amount}, or blank for none. */
-const optionalAmount = z.string().trim()
+export const optionalAmount = z.string().trim()
     .refine(value => !value || parseAmount(value) !== null, "amountInvalid")
     .refine(value => !value || parseAmount(value) === null || within(value, 0), "amountOutOfRange");
 

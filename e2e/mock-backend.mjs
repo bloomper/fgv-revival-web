@@ -15,6 +15,7 @@ import {createParticipantState, participantResolvers, POSITIONS} from "./mock-pa
 import {createStaffingState, staffingResolvers} from "./mock-staffing.mjs";
 import {createMaterialState, materialResolvers} from "./mock-material.mjs";
 import {closingResolvers, createClosingState} from "./mock-closing.mjs";
+import {createLibraryState, libraryResolvers} from "./mock-library.mjs";
 import {createNewsState, newsResolvers} from "./mock-news.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 4101);
@@ -71,6 +72,7 @@ function resetState(guideSeed = "none") {
         material: createMaterialState(),
         closing: createClosingState(),
         news: createNewsState(),
+        library: createLibraryState(),
         nextId: 100,
         revivals: [
             {
@@ -665,6 +667,11 @@ Object.assign(resolvers, closing.resolvers);
 
 // News on the start page, kept by the super admin, and its history
 Object.assign(resolvers, newsResolvers({state: () => state, GraphQLError, forbidden, isSuperAdmin}).resolvers);
+
+// The reference library, the application settings and the checklist items assigned to a participant
+Object.assign(resolvers, libraryResolvers({
+    state: () => state, GraphQLError, forbidden, isSuperAdmin, roleIn, participants, resolvers,
+}));
 
 // What revivals announce anyway: those being organised or open, with a premiere, until their last show
 resolvers.UpcomingRevivals = () => {

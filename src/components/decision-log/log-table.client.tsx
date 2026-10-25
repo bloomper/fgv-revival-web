@@ -3,7 +3,7 @@
 import * as React from "react";
 import {useState, useTransition} from "react";
 import Link from "next/link";
-import {useTranslations} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import {Check, CircleDashed, History, MessageSquareReply, MoreHorizontal, Pencil, Plus, RotateCcw, X} from "lucide-react";
 import type {SortingState} from "@tanstack/react-table";
 import type {LogEntryFieldsFragment, LogEntryStatus} from "@/gql/graphql";
@@ -24,14 +24,15 @@ import {OwnerLabel} from "@/components/owner/owner-label";
 import type {OwnerMember} from "@/components/owner/owner-field.client";
 import {PlainText} from "@/components/plain-text";
 import {LogAnswerDialog} from "@/components/decision-log/log-answer-dialog.client";
-import {LogEntryDialog} from "@/components/decision-log/log-entry-dialog.client";
+import {LogEntryDialog, type LogEventOption} from "@/components/decision-log/log-entry-dialog.client";
 import {LogStatusBadge} from "@/components/decision-log/log-status-badge";
 import {LogTypeBadge} from "@/components/decision-log/log-type-badge";
 import {OverdueBadge} from "@/components/decision-log/overdue-badge";
 import {updateLogEntryAction} from "@/app/(app)/revivals/[id]/log/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {LOG_ENTRY_STATUSES, LOG_ENTRY_TYPES} from "@/lib/decision-log/schema";
-import {formatDate} from "@/utils/format";
+import {pickText} from "@/components/guide/localized";
+import {formatAmount, formatDate} from "@/utils/format";
 
 type Entry = LogEntryFieldsFragment;
 
@@ -52,6 +53,7 @@ function answerable(entry: Entry) {
 
 function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
     const t = useTranslations("Log");
+    const locale = useLocale();
 
     return (
         <>
@@ -59,6 +61,32 @@ function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
                 className="text-xs text-muted-foreground">{t("answersRow", {number: entry.answers.number})}</span>}
             {entry.answeredBy && <span
                 className="text-xs text-muted-foreground">{t("answeredByRow", {number: entry.answeredBy.number})}</span>}
+            {entry.event && (
+                <Link href={`/revivals/${revivalId}/events${entry.event.cancelled ? "?cancelled=1" : ""}`}
+                      className="text-xs text-muted-foreground hover:underline"
+                      onClick={event => event.stopPropagation()}>
+                    {t("eventLink", {title: entry.event.title, date: formatDate(entry.event.startDate) ?? entry.event.startDate})}
+                </Link>
+            )}
+            {entry.checklistItem && (
+                <Link href={`/revivals/${revivalId}/checklists/${entry.checklistItem.checklistId}`}
+                      className="text-xs text-muted-foreground hover:underline"
+                      onClick={event => event.stopPropagation()}>
+                    {t("checklistItemLink", {text: pickText(entry.checklistItem.text, locale).text})}
+                </Link>
+            )}
+            {entry.guideItem && (
+                <span className="line-clamp-1 text-xs text-muted-foreground">
+                    {t("guideItemLink", {text: pickText(entry.guideItem.text, locale).text})}
+                </span>
+            )}
+            {entry.budgetLines?.map(line => (
+                <Link key={line.id} href={`/revivals/${revivalId}/budget/lines`}
+                      className="text-xs text-muted-foreground hover:underline"
+                      onClick={event => event.stopPropagation()}>
+                    {t("budgetLineLink", {description: line.description, amount: formatAmount(line.amount) ?? line.amount})}
+                </Link>
+            ))}
             {entry.meeting && (
                 <Link href={`/revivals/${revivalId}/log?meeting=${entry.meeting.id}`}
                       className="text-xs text-muted-foreground hover:underline"
@@ -255,6 +283,7 @@ export function LogTable({
                              entries,
                              members,
                              tags,
+                             events,
                              canWrite,
                              meetingId,
                              emptyMessage,
@@ -269,6 +298,8 @@ export function LogTable({
     entries: Entry[];
     members: OwnerMember[];
     tags: string[];
+    /** The revival's events, for linking rows to them. */
+    events?: LogEventOption[];
     canWrite: boolean;
     meetingId?: string | null;
     emptyMessage?: string;
@@ -306,7 +337,7 @@ export function LogTable({
                 )}
             </DataTable>
             {(adding || editing) && (
-                <LogEntryDialog revivalId={revivalId} entry={editing} members={members} tags={tags}
+                <LogEntryDialog revivalId={revivalId} entry={editing} members={members} tags={tags} events={events}
                                 meetingId={meetingId} open
                                 onOpenChange={(open) => {
                                     if (!open) {

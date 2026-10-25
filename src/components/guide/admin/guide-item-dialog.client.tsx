@@ -1,8 +1,8 @@
 "use client";
 
 import {type ReactElement, type ReactNode, useState, useTransition} from "react";
-import {useTranslations} from "next-intl";
-import {useForm, useWatch} from "react-hook-form";
+import {useLocale, useTranslations} from "next-intl";
+import {Controller, useForm, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
@@ -12,7 +12,10 @@ import {Textarea} from "@/components/ui/textarea";
 import {NativeSelect} from "@/components/ui/native-select";
 import type {ActionResult} from "@/lib/graphql.server";
 import {catalogChoices, defaultItemType, type GuideItemTypeValue} from "@/components/catalog/catalog";
-import {CatalogOptions, useGuideItemTypes} from "@/components/catalog/catalog-provider.client";
+import {CatalogOptions, useGuideItemTypes, useLibraryEntries} from "@/components/catalog/catalog-provider.client";
+import {Checkbox} from "@/components/ui/checkbox";
+import {pickText} from "@/components/guide/localized";
+import type {LibraryLinkValue} from "@/components/library/library";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {guideItemSchema, type GuideItemValues, MAX_ITEM_TEXT} from "@/lib/guide/schema";
@@ -25,20 +28,26 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
     trigger: ReactElement;
     children: ReactNode;
     heading: string;
-    initial?: { type: GuideItemTypeValue; text: { sv: string; en?: string | null } };
+    initial?: { type: GuideItemTypeValue; text: { sv: string; en?: string | null }; libraryEntries?: readonly LibraryLinkValue[] };
     onSave: (values: GuideItemValues) => Promise<ActionResult<null>>;
 }) {
     const t = useTranslations();
+    const locale = useLocale();
     const feedback = useActionFeedback();
     const [open, setOpen] = useState(false);
     const [preview, setPreview] = useState(false);
     const [pending, startTransition] = useTransition();
     const types = useGuideItemTypes();
+    const library = useLibraryEntries();
+    const linked = initial?.libraryEntries ?? [];
+    // The active entries, and the item's own if they are retired
+    const libraryChoices = [...library, ...linked.filter(entry => !library.some(active => active.id === entry.id))];
     const form = useForm<GuideItemValues>({
         resolver: zodResolver(guideItemSchema),
         values: {
             type: initial?.type.id ?? defaultItemType(types),
-            text: {sv: initial?.text.sv ?? "", en: initial?.text.en ?? ""}
+            text: {sv: initial?.text.sv ?? "", en: initial?.text.en ?? ""},
+            libraryEntryIds: linked.map(entry => entry.id),
         },
     });
     const {errors} = form.formState;
@@ -113,6 +122,33 @@ export function GuideItemDialog({trigger, children, heading, initial, onSave}: {
                                     </div>
                                     <p className="text-xs text-muted-foreground">{t("Guide.editor.markdownHelp")}</p>
                                 </>
+                            )}
+                            {libraryChoices.length > 0 && (
+                                <Controller control={form.control} name="libraryEntryIds" render={({field}) => (
+                                    <fieldset className="space-y-2">
+                                        <legend className="text-sm font-medium">{t("Library.linkedEntries")}</legend>
+                                        <p className="text-xs text-muted-foreground">{t("Library.linkHelp")}</p>
+                                        <ul className="max-h-56 space-y-2 overflow-y-auto rounded-md border p-3">
+                                            {libraryChoices.map(entry => {
+                                                const checked = field.value?.includes(entry.id) ?? false;
+                                                const name = pickText(entry.name, locale).text;
+
+                                                return (
+                                                    <li key={entry.id} className="flex items-center gap-2">
+                                                        <Checkbox id={`library-${entry.id}`} checked={checked}
+                                                                  onCheckedChange={next => field.onChange(next
+                                                                      ? [...(field.value ?? []), entry.id]
+                                                                      : (field.value ?? []).filter(id => id !== entry.id))}/>
+                                                        <Label htmlFor={`library-${entry.id}`} className="font-normal">
+                                                            {entry.retired ? t("Catalog.retiredName", {name}) : name}
+                                                            <span className="text-muted-foreground">· {t(`Library.kinds.${entry.kind}`)}</span>
+                                                        </Label>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </fieldset>
+                                )}/>
                             )}
                         </div>
                     </ScrollArea>

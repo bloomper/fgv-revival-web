@@ -150,7 +150,8 @@ changing routing or data fetching; this area differs sharply from older Next.
   `contact.ts` beside it builds `wa.me` links and names) and `src/lib/material/material.server.ts` (materials, the
   inventory and link services) and `src/lib/closing/closing.server.ts` (closing signals, membership, the sync to
   Spexregister and anonymization) and `src/lib/audit/audit.server.ts` (a record's history) and
-  `src/lib/news/news.server.ts` (news).
+  `src/lib/news/news.server.ts` (news) and `src/lib/library/library.server.ts` (the reference library) and
+  `src/lib/settings/settings.server.ts` (application settings).
 - **Events (M4)** live on the revival's Events tab (`/revivals/[id]/events`, `?view=timeline` for the timeline of
   events, shows and meetings, `?cancelled=1` for cancelled ones); event types are a super admin list
   (`/admin/event-types`) that is retired, never deleted. Proposals (`Revival.eventProposals`) and the distance from the
@@ -219,6 +220,21 @@ changing routing or data fetching; this area differs sharply from older Next.
   `/admin/news` (`NewsTable`, `NewsDialog`). A piece is published from `visibleFrom` up to and including `visibleTo`;
   without `visibleFrom` it is a draft. The server works out `published` from the dates, so nothing publishes it.
   News is plain text rendered through `PlainText`, and is deleted for real (its history stays).
+- **The reference library** (`/library`) holds venues, ticket services, role descriptions and roles to contact (roles,
+  never named people), read by whoever reads the guide and kept on the same page by super admins (retired, never
+  deleted). An entry's kind is fixed on create and decides its texts (`LIBRARY_TEXTS` in `src/lib/library/schema.ts`).
+  Guide items link to entries (`GuideItem.libraryEntries`, picked in `GuideItemDialog` from `CatalogProvider`'s
+  `library`) and show them through `LibraryLinks`, which point at `/library#entry-<id>`.
+- **Application settings** (`/admin/settings`, super admin): the terms every participant accepts, shown after the fee
+  and the loan and before the revival's own terms, and the participation fee a new revival's budget starts with. The
+  server applies both; the web only edits them.
+- **Participants own checklist items too.** The checklist pages ask `ownerCandidates(includeParticipants: true)`, so a
+  participant who has logged in can be given an item; decision log rows stay with the steering group. The participant
+  sees their items under "My tasks" on `/me` (`Participation.checklistItems`) and ticks them off with
+  `assignedChecklistItemSetDone`; helpers own none.
+- **Decision log rows** show their links: the event (picked in `LogEntryDialog` when the page passes `events`; cleared
+  with `clearEvent`), the checklist item, the guide item and, for budget readers, the budget lines that refer to a
+  decision (`LogEntry.budgetLines`).
 - **Areas of responsibility (`Capability`) and guide item types are lists the super admin keeps** under Administration
   (`/admin/capabilities`, `/admin/guide-item-types`), not enums. Rows hold an entry's id (the four original ones keep
   `FINANCE`… and `TIP`…; new ones get a UUID) and GraphQL returns the entry, so show `name` with `catalogName` and

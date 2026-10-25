@@ -38,14 +38,14 @@ export default async function RevivalLogPage({params, searchParams}: {
         }
 
         const t = await getTranslations("Log");
-        const {revival, entries, tags, meetings} = loaded;
+        const {revival, entries, tags, meetings, events} = loaded;
 
         return (
             <div className="flex flex-1 flex-col gap-4">
                 <h3 className="sr-only">{t("title")}</h3>
                 <ReadOnlyNotice revivalId={revival.id} status={revival.status}
                                 canWrite={revival.permissions.canWriteLog} roles={roles}/>
-                <LogTable revivalId={revival.id} entries={entries} members={revival.ownerCandidates} tags={tags}
+                <LogTable revivalId={revival.id} entries={entries} members={revival.ownerCandidates} tags={tags} events={events}
                           canWrite={revival.permissions.canWriteLog} filtered={isLogFiltered(filter)}
                           initialSorting={[{id: "number", desc: true}]}
                           toolbar={<LogFilters key={JSON.stringify(filter)} filter={filter} tags={tags}
