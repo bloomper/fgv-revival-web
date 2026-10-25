@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Guide, user story 2: a steering group member reads the guide for their revival", () => {
+test.describe("Guide: a steering group member reads the guide for their revival", () => {
     test.beforeEach(async ({mock, loginAs}) => {
         await mock.guide("published");
         await mock.setStatus("1", "ORGANISING");

@@ -1,6 +1,6 @@
 import {expect, openRevival, test} from "./fixtures";
 
-test.describe("User story 1: the super admin records and approves a revival", () => {
+test.describe("The super admin records and approves a revival", () => {
     test.beforeEach(async ({loginAs}) => {
         await loginAs("superadmin");
     });

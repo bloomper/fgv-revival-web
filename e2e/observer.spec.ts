@@ -1,6 +1,6 @@
 import {expect, openRevival, test} from "./fixtures";
 
-test("User story 3: the observer sees every revival and no edit controls", async ({page, loginAs}) => {
+test("the observer sees every revival and no edit controls", async ({page, loginAs}) => {
     await loginAs("observer");
     await page.goto("/revivals/manage");
 

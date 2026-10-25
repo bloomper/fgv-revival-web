@@ -1,6 +1,6 @@
 import {expect, openRevival, test} from "./fixtures";
 
-test.describe("User story 4: the directeur builds the steering group", () => {
+test.describe("The directeur builds the steering group", () => {
     test("adds a member with FINANCE, shown as waiting for access", async ({page, loginAs}) => {
         await loginAs("directeur");
         await page.goto("/revivals");

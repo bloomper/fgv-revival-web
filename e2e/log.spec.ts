@@ -29,7 +29,7 @@ async function addRow(page: Page, {type, text, owner, ownerName, deadline, tag}:
     await expect(dialog).toBeHidden();
 }
 
-test.describe("Decision log, user story 1: the steering group keeps the decision log", () => {
+test.describe("Decision log: the steering group keeps the decision log", () => {
     test.beforeEach(async ({mock, loginAs}) => {
         await mock.setStatus("1", "ORGANISING");
         await loginAs("styrgrupp");

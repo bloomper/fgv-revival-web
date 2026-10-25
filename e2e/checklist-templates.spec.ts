@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Decision log, user story 5: checklist templates and event checklists", () => {
+test.describe("Decision log: checklist templates and event checklists", () => {
     test("a super admin builds an event template with relative deadlines", async ({page, loginAs}) => {
         await loginAs("superadmin");
         await page.goto("/admin/checklist-templates");

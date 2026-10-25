@@ -335,7 +335,7 @@ emails, revival or member ids or typed text; Umami cannot remove a single field 
 
 - Unit: Vitest, tests in `__tests__/` beside the code.
 - E2E: Playwright against a real `next build && next start` on port 3100, with
-  `e2e/mock-backend.mjs` standing in for the backend on 4100, one spec per user story (wired through `API_*` env in
+  `e2e/mock-backend.mjs` standing in for the backend on 4100, one spec per feature area (wired through `API_*` env in
   `playwright.config.ts`). The same mock also acts as a **mini-Keycloak** (discovery, authorize,
   token, JWKS, userinfo, logout), and `e2e/auth.setup.ts` signs in through a real OIDC
   authorization-code round-trip before saving `storageState`. Better Auth's cookies are encrypted

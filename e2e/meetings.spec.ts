@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Decision log, user story 3: the steering group runs a meeting from the log", () => {
+test.describe("Decision log: the steering group runs a meeting from the log", () => {
     test.beforeEach(async ({mock, loginAs}) => {
         await mock.setStatus("1", "ORGANISING");
         await mock.logRow({revivalId: "1", type: "TODO", text: "Boka RunAn"});

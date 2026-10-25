@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Guide, user story 3: the super admin edits a draft and publishes a new version", () => {
+test.describe("Guide: the super admin edits a draft and publishes a new version", () => {
     test.beforeEach(async ({mock, loginAs}) => {
         await mock.guide("published");
         await loginAs("superadmin");
@@ -79,7 +79,7 @@ test.describe("Guide, user story 3: the super admin edits a draft and publishes 
     });
 });
 
-test.describe("Guide, user story 3: the directeur moves the revival to a newer version", () => {
+test.describe("Guide: the directeur moves the revival to a newer version", () => {
     test.beforeEach(async ({mock, loginAs}) => {
         await mock.guide("two");
         await loginAs("directeur");

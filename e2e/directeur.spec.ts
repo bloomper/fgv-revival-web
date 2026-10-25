@@ -1,6 +1,6 @@
 import {expect, openRevival, test} from "./fixtures";
 
-test.describe("User story 2: the directeur runs their revival", () => {
+test.describe("The directeur runs their revival", () => {
     test.beforeEach(async ({loginAs}) => {
         await loginAs("directeur");
     });

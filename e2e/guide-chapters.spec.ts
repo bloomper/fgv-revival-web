@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Guide, user story 1: the super admin writes the first version chapter by chapter", () => {
+test.describe("Guide: the super admin writes the first version chapter by chapter", () => {
     test.beforeEach(async ({loginAs}) => {
         await loginAs("superadmin");
     });

@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Guide, user story 4: export the guide to PDF", () => {
+test.describe("Guide: export the guide to PDF", () => {
     test("a directeur downloads the revival's guide as a PDF", async ({page, mock, loginAs}) => {
         await mock.guide("published");
         await loginAs("directeur");

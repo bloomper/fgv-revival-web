@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Guide, user story 5: the steering group suggests changes", () => {
+test.describe("Guide: the steering group suggests changes", () => {
     test.beforeEach(async ({mock, loginAs}) => {
         await mock.guide("published");
         await mock.setStatus("1", "ORGANISING");
@@ -45,7 +45,7 @@ test.describe("Guide, user story 5: the steering group suggests changes", () => 
     });
 });
 
-test.describe("Guide, user story 5: the super admin decides", () => {
+test.describe("Guide: the super admin decides", () => {
     test("accepts one suggestion into a new draft, rejects another, and a discarded draft reopens the accepted one", async ({
                                                                                                                                 page,
                                                                                                                                 mock,
