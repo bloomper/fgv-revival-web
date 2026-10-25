@@ -666,6 +666,22 @@ Object.assign(resolvers, closing.resolvers);
 // News on the start page, kept by the super admin, and its history
 Object.assign(resolvers, newsResolvers({state: () => state, GraphQLError, forbidden, isSuperAdmin}).resolvers);
 
+// What revivals announce anyway: those being organised or open, with a premiere, until their last show
+resolvers.UpcomingRevivals = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const lastDay = revival => [revival.premiereDate, ...revival.shows.map(show => show.date)].sort().at(-1);
+
+    return {
+        upcomingRevivals: state.revivals
+            .filter(revival => ["ORGANISING", "OPEN"].includes(revival.status) && revival.premiereDate && lastDay(revival) >= today)
+            .sort((a, b) => a.premiereDate.localeCompare(b.premiereDate))
+            .map(revival => ({
+                __typename: "UpcomingRevival", id: revival.id, title: revival.title, year: revival.year,
+                premiereDate: revival.premiereDate, shows: revival.shows.map(show => ({__typename: "RevivalShow", time: null, venue: null, ...show})),
+            })),
+    };
+};
+
 const eventTypesResolver = resolvers.EventTypes;
 
 resolvers.EventTypes = (persona, variables) => {
@@ -957,6 +973,10 @@ const server = createServer((req, res) => {
             res.writeHead(204).end();
         } else if (req.method === "POST" && path === "/__spexregister") {
             state.spexregisterUp = JSON.parse(body).up;
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__premiere") {
+            const {id, date} = JSON.parse(body);
+            state.revivals.find(candidate => candidate.id === id).premiereDate = date;
             res.writeHead(204).end();
         } else if (req.method === "POST" && path === "/__status") {
             const {id, status} = JSON.parse(body);

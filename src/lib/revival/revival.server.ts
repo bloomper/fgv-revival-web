@@ -40,6 +40,13 @@ export const RevivalDetail = graphql(`
     }
 `);
 
+// What revivals announce anyway, for the start page; everyone with access reads it
+const UpcomingRevivalsQuery = graphql(`
+    query UpcomingRevivals {
+        upcomingRevivals { id title year premiereDate shows { date time venue } }
+    }
+`);
+
 const MeQuery = graphql(`
     query Me {
         me {
@@ -117,6 +124,13 @@ const RevivalDeleteMutation = graphql(`
         revivalDelete(id: $id, version: $version)
     }
 `);
+
+/**
+ * The revivals being organised or open that have not played their last show, soonest first.
+ */
+export async function getUpcomingRevivals() {
+    return (await runQuery(UpcomingRevivalsQuery, {}))?.upcomingRevivals ?? [];
+}
 
 export async function getMe() {
     return (await runQuery(MeQuery, {}))?.me;

@@ -113,7 +113,7 @@ export function newsResolvers(ctx) {
                 if (revisions.length === 0) {
                     throw new GraphQLError("NOT_FOUND", "Nyheten finns inte.");
                 }
-                return {revisions: revisions.toReversed().map(({id: _, ...revision}) => ({__typename: "Revision", ...revision}))};
+                return {revisions: revisions.toReversed().map(revision => ({__typename: "Revision", ...revision, id: undefined}))};
             },
         },
     };

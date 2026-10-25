@@ -211,6 +211,10 @@ changing routing or data fetching; this area differs sharply from older Next.
   to names; `historyValue` only formats dates, instants, amounts and booleans and translates enum values through the
   labels the page already uses (`ENUM_LABELS`). Field labels live under `History.fields.<TYPE>`. Nothing is restored
   from the history.
+- **Upcoming revivals** are on the start page for everyone with access (`upcomingRevivals`, `UpcomingRevivals` in
+  `src/components/revival/upcoming-revivals.tsx`): revivals being organised or open whose last show has not passed,
+  with only their title, premiere and shows, since participants and plain users may not read the revivals
+  themselves. Proposed, approved and rejected ones are never there.
 - **News** is shown on the start page (the latest six published, `NewsList`) and kept by super admins under
   `/admin/news` (`NewsTable`, `NewsDialog`). A piece is published from `visibleFrom` up to and including `visibleTo`;
   without `visibleFrom` it is a draft. The server works out `published` from the dates, so nothing publishes it.

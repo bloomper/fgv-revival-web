@@ -82,7 +82,10 @@
     "empty": "Du har ingen roll i någon nyuppsättning som syns just nu.",
     "yourRole": "Din roll",
     "participationTitle": "Din medverkan",
-    "participationText": "Svara, se villkor, spexpengar och kontaktuppgifter för {title}."
+    "participationText": "Svara, se villkor, spexpengar och kontaktuppgifter för {title}.",
+    "upcoming": "Kommande nyuppsättningar",
+    "premiere": "Premiär {date}",
+    "shows": "{count, plural, =1 {# föreställning} other {# föreställningar}}"
   },
   "NoAccess": {
     "title": "Du har inte åtkomst",

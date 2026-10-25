@@ -241,6 +241,7 @@ type Documents = {
     "\n    mutation ReferralCreate($input: ReferralInput!) {\n        referralCreate(input: $input)\n    }\n": typeof types.ReferralCreateDocument,
     "\n    fragment RevivalSummary on Revival {\n        id\n        year\n        title\n        premiereDate\n        status\n        version\n        anonymizedAt\n        spex { id title year available }\n        members { id role state displayName email invitedAt }\n        permissions { canEditCore canEditDetails allowedStatuses canManageDirecteurs canManageSteeringGroup canDelete canReadBudget canWriteBudget }\n    }\n": typeof types.RevivalSummaryFragmentDoc,
     "\n    fragment RevivalDetail on Revival {\n        ...RevivalSummary\n        shows { date time venue }\n        createdBy\n        createdAt\n        lastModifiedBy\n        lastModifiedAt\n        members { id role capabilities { ...CapabilityFields } state displayName email version }\n        statusHistory { from to changedBy changedAt }\n        guideVersion { id label }\n    }\n": typeof types.RevivalDetailFragmentDoc,
+    "\n    query UpcomingRevivals {\n        upcomingRevivals { id title year premiereDate shows { date time venue } }\n    }\n": typeof types.UpcomingRevivalsDocument,
     "\n    query Me {\n        me {\n            id\n            displayName\n            email\n            globalRoles\n            revivalRoles { role capabilities { id } revival { id title } }\n        }\n    }\n": typeof types.MeDocument,
     "\n    query Revivals($status: [RevivalStatus!]) {\n        revivals(status: $status) { ...RevivalSummary }\n    }\n": typeof types.RevivalsDocument,
     "\n    query Revival($id: ID!) {\n        revival(id: $id) { ...RevivalDetail }\n    }\n": typeof types.RevivalDocument,
@@ -498,6 +499,7 @@ const documents: Documents = {
     "\n    mutation ReferralCreate($input: ReferralInput!) {\n        referralCreate(input: $input)\n    }\n": types.ReferralCreateDocument,
     "\n    fragment RevivalSummary on Revival {\n        id\n        year\n        title\n        premiereDate\n        status\n        version\n        anonymizedAt\n        spex { id title year available }\n        members { id role state displayName email invitedAt }\n        permissions { canEditCore canEditDetails allowedStatuses canManageDirecteurs canManageSteeringGroup canDelete canReadBudget canWriteBudget }\n    }\n": types.RevivalSummaryFragmentDoc,
     "\n    fragment RevivalDetail on Revival {\n        ...RevivalSummary\n        shows { date time venue }\n        createdBy\n        createdAt\n        lastModifiedBy\n        lastModifiedAt\n        members { id role capabilities { ...CapabilityFields } state displayName email version }\n        statusHistory { from to changedBy changedAt }\n        guideVersion { id label }\n    }\n": types.RevivalDetailFragmentDoc,
+    "\n    query UpcomingRevivals {\n        upcomingRevivals { id title year premiereDate shows { date time venue } }\n    }\n": types.UpcomingRevivalsDocument,
     "\n    query Me {\n        me {\n            id\n            displayName\n            email\n            globalRoles\n            revivalRoles { role capabilities { id } revival { id title } }\n        }\n    }\n": types.MeDocument,
     "\n    query Revivals($status: [RevivalStatus!]) {\n        revivals(status: $status) { ...RevivalSummary }\n    }\n": types.RevivalsDocument,
     "\n    query Revival($id: ID!) {\n        revival(id: $id) { ...RevivalDetail }\n    }\n": types.RevivalDocument,
@@ -1450,6 +1452,10 @@ export function graphql(source: "\n    fragment RevivalSummary on Revival {\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    fragment RevivalDetail on Revival {\n        ...RevivalSummary\n        shows { date time venue }\n        createdBy\n        createdAt\n        lastModifiedBy\n        lastModifiedAt\n        members { id role capabilities { ...CapabilityFields } state displayName email version }\n        statusHistory { from to changedBy changedAt }\n        guideVersion { id label }\n    }\n"): (typeof documents)["\n    fragment RevivalDetail on Revival {\n        ...RevivalSummary\n        shows { date time venue }\n        createdBy\n        createdAt\n        lastModifiedBy\n        lastModifiedAt\n        members { id role capabilities { ...CapabilityFields } state displayName email version }\n        statusHistory { from to changedBy changedAt }\n        guideVersion { id label }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query UpcomingRevivals {\n        upcomingRevivals { id title year premiereDate shows { date time venue } }\n    }\n"): (typeof documents)["\n    query UpcomingRevivals {\n        upcomingRevivals { id title year premiereDate shows { date time venue } }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

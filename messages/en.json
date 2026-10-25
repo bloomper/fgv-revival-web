@@ -82,7 +82,10 @@
     "empty": "You hold no role in a revival that is visible right now.",
     "yourRole": "Your role",
     "participationTitle": "Your participation",
-    "participationText": "Answer, and see the terms, fee and contact details for {title}."
+    "participationText": "Answer, and see the terms, fee and contact details for {title}.",
+    "upcoming": "Upcoming revivals",
+    "premiere": "Premiere {date}",
+    "shows": "{count, plural, =1 {# show} other {# shows}}"
   },
   "NoAccess": {
     "title": "You do not have access",

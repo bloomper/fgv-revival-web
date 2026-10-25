@@ -5,7 +5,8 @@ import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getGuideReadable} from "@/lib/guide/guide.server";
 import {getPublishedNews} from "@/lib/news/news.server";
-import {getMe} from "@/lib/revival/revival.server";
+import {getMe, getUpcomingRevivals} from "@/lib/revival/revival.server";
+import {UpcomingRevivals} from "@/components/revival/upcoming-revivals";
 import {NewsList} from "@/components/news/news-list.client";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
@@ -49,13 +50,25 @@ async function loadNews() {
 
 const NEWS_SHOWN = 6;
 
+// Spexregister names the revivals; without it, or the server, the section is left out
+async function loadUpcoming() {
+    try {
+        return await getUpcomingRevivals();
+    } catch (error) {
+        if (error instanceof GraphQLRequestError) {
+            return [];
+        }
+        throw error;
+    }
+}
+
 /**
- * The start page: shortcuts onwards, and below them the latest published news, as in Spexregister. Participants and
+ * The start page: shortcuts onwards, the revivals coming up, and the latest published news, as in Spexregister. Participants and
  * helpers get a shortcut straight to their own page in each revival.
  */
 export default async function HomePage() {
     return withPolicyPage(Policies.app.requireAccess, async () => {
-        const [t, me, guideReadable, news] = await Promise.all([getTranslations(), loadMe(), getGuideReadable(), loadNews()]);
+        const [t, me, guideReadable, news, upcoming] = await Promise.all([getTranslations(), loadMe(), getGuideReadable(), loadNews(), loadUpcoming()]);
         const participations = (me?.revivalRoles ?? []).filter(assignment => assignment.role === "PARTICIPANT" || assignment.role === "HELPER");
 
         return (
@@ -74,6 +87,12 @@ export default async function HomePage() {
                     {guideReadable &&
                         <Shortcut href="/guide" icon={BookOpen} title={t("Nav.guide")} text={t("Home.guideText")}/>}
                 </div>
+                {upcoming.length > 0 && (
+                    <section className="space-y-3" aria-labelledby="home-upcoming">
+                        <h2 id="home-upcoming" className="text-lg font-bold tracking-tight">{t("Home.upcoming")}</h2>
+                        <UpcomingRevivals revivals={upcoming}/>
+                    </section>
+                )}
                 <section className="space-y-3" aria-labelledby="home-news">
                     <h2 id="home-news" className="text-lg font-bold tracking-tight">{t("News.latest")}</h2>
                     {news.length > 0
