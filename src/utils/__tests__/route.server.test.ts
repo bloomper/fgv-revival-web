@@ -6,7 +6,13 @@ vi.mock("next/navigation", () => ({
     redirect: vi.fn((path: string) => {
         throw new Error(`redirect:${path}`);
     }),
+    forbidden: vi.fn(() => {
+        throw new Error("forbidden");
+    }),
 }));
+
+const requireUserMock = vi.fn(async () => ({session: {}, roles: ["USER"]}));
+vi.mock("@/utils/auth.server", () => ({requireUser: () => requireUserMock()}));
 
 const ok = async () => ({ok: true as const, roles: ["USER" as const]});
 const unauthenticated = async () => ({ok: false as const, status: 401 as const, message: "Not authenticated"});
@@ -23,9 +29,17 @@ describe("route.server", () => {
         await expect(withPolicyAction(forbidden, async () => "x")).rejects.toThrow("Not authorized");
     });
 
-    it("sends a page to login or to the no-access page", async () => {
+    it("sends a page without a session to login and shows the forbidden page to a user who lacks the role", async () => {
         await expect(withPolicyPage(unauthenticated, async () => "x")).rejects.toThrow("redirect:/api/auth/login");
-        await expect(withPolicyPage(forbidden, async () => "x")).rejects.toThrow("redirect:/no-access");
+        await expect(withPolicyPage(forbidden, async () => "x")).rejects.toThrow(/^forbidden$/);
+    });
+
+    it("sends a page to the no-access page when the user has no access at all", async () => {
+        requireUserMock.mockResolvedValueOnce({session: {}, roles: []});
+        const handler = vi.fn();
+
+        await expect(withPolicyPage(forbidden, handler)).rejects.toThrow("redirect:/no-access");
+        expect(handler).not.toHaveBeenCalled();
     });
 
     it("answers a refused route with the status", async () => {

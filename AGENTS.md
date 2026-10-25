@@ -103,6 +103,8 @@ changing routing or data fetching; this area differs sharply from older Next.
   `requireUser` / `requireAnyRole` are in `src/utils/auth.server.ts`. Roles: `USER | SUPER_ADMIN | OBSERVER`. `USER` is
   required for
   any access; without it the `(app)` layout redirects to `/no-access`.
+- A page refused by its policy shows `src/app/forbidden.tsx` (Next's `forbidden()`, enabled by
+  `experimental.authInterrupts`); a user without `USER` is redirected to `/no-access` instead.
 - Where the server refuses writes (super admins and observers only read a revival's log, meetings, checklists and
   suggestions), `ReadOnlyNotice` (`src/components/revival/read-only-notice.tsx`) says why instead of hiding the
   controls silently.

@@ -138,5 +138,6 @@ test("the guide's admin page is not offered to a directeur", async ({page, login
     await loginAs("directeur");
     await page.goto("/admin/guide");
 
-    await expect(page).toHaveURL(/no-access/);
+    await expect(page).toHaveURL(/\/admin\//);
+    await expect(page.getByRole("heading", {name: "Du har inte behörighet"})).toBeVisible();
 });

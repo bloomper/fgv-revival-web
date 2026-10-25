@@ -59,6 +59,7 @@ const nextConfig: NextConfig = {
     cacheComponents: true,
     partialPrefetching: true,
     experimental: {
+        authInterrupts: true,
         instantInsights: {
             validationLevel: "manual-warning",
         },

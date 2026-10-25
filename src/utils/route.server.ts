@@ -3,7 +3,9 @@ import "server-only";
 import type {NextRequest} from "next/server";
 import {NextResponse} from "next/server";
 import type {AuthzFail, AuthzOk, AuthzResult} from "@/types/auth";
-import {redirect} from "next/navigation";
+import {forbidden, redirect} from "next/navigation";
+import {requireUser} from "@/utils/auth.server";
+import {hasAccess} from "@/utils/auth";
 
 const LOGIN_PATH = "/api/auth/login";
 const NO_ACCESS_PATH = "/no-access";
@@ -50,16 +52,19 @@ export async function withPolicyAction<T>(
 }
 
 /**
- * As {@link withPolicyAction}, but a user who is logged in without the right role is sent to the no-access page
- * instead of an error.
+ * As {@link withPolicyAction}, but a user who is logged in without access to Nyuppsättning at all is sent to the
+ * no-access page, and one who lacks the page's role gets the forbidden page instead of an error.
  */
 export async function withPolicyPage<T>(
     policy: () => Promise<AuthzResult>,
     handler: (authz: AuthzOk) => Promise<T>
 ): Promise<T> {
     const authz = await policy();
-    if (!authz.ok) {
-        redirect(authz.status === 401 ? LOGIN_PATH : NO_ACCESS_PATH);
+    if (!authz.ok && authz.status === 403 && !hasAccess((await requireUser()).roles)) {
+        redirect(NO_ACCESS_PATH);
     }
-    return handler(authz);
+    if (!authz.ok && authz.status === 403) {
+        forbidden();
+    }
+    return withPolicyAction(async () => authz, handler);
 }

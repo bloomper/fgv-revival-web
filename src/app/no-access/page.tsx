@@ -1,10 +1,19 @@
+import {redirect} from "next/navigation";
 import {getTranslations} from "next-intl/server";
 import {LogoutButton} from "@/components/logout-button.client";
+import {requireUser} from "@/utils/auth.server";
+import {hasAccess} from "@/utils/auth";
 
 /**
  * Shown to someone who is logged in without the `USER` role on `fgv-revival`. Shows no revival data.
  */
 export default async function NoAccessPage() {
+    const {session, roles} = await requireUser();
+
+    if (!session || hasAccess(roles)) {
+        redirect("/");
+    }
+
     const t = await getTranslations();
 
     return (
@@ -14,10 +23,10 @@ export default async function NoAccessPage() {
                     {t("NoAccess.title")}
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                    {t("NoAccess.text")}
+                    {t("NoAccess.text", {email: session.user.email})}
                 </p>
                 <div className="flex justify-center gap-2 pt-2">
-                    <LogoutButton variant="outline"/>
+                    <LogoutButton variant="default"/>
                 </div>
             </div>
         </div>

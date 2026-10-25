@@ -164,6 +164,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await loginAs("styrgrupp");
         await page.goto("/admin/checklist-templates");
 
-        await expect(page).toHaveURL(/no-access/);
+        await expect(page).toHaveURL(/\/admin\//);
+        await expect(page.getByRole("heading", {name: "Du har inte behörighet"})).toBeVisible();
     });
 });

@@ -85,13 +85,18 @@
   },
   "NoAccess": {
     "title": "You do not have access",
-    "text": "Your FGV account does not have access to Nyuppsättning. Ask a super admin for access.",
+    "text": "Your FGV account ({email}) does not have access to Nyuppsättning. Ask a super admin for access, or log out and log in with another account.",
     "logout": "Log out"
   },
   "LoginError": {
     "title": "Login failed",
     "text": "Something went wrong while logging in. Please try again.",
     "retry": "Try again"
+  },
+  "Forbidden": {
+    "title": "You do not have permission",
+    "text": "You do not have permission to see this page. Ask a super admin if you need it.",
+    "home": "Go to the start page"
   },
   "NotFound": {
     "title": "Page not found",

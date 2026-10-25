@@ -85,13 +85,18 @@
   },
   "NoAccess": {
     "title": "Du har inte åtkomst",
-    "text": "Ditt FGV-konto har inte åtkomst till Nyuppsättning. Be en superadministratör om åtkomst.",
+    "text": "Ditt FGV-konto ({email}) har inte åtkomst till Nyuppsättning. Be en superadministratör om åtkomst, eller logga ut och logga in med ett annat konto.",
     "logout": "Logga ut"
   },
   "LoginError": {
     "title": "Inloggningen misslyckades",
     "text": "Något gick fel vid inloggningen. Försök igen.",
     "retry": "Försök igen"
+  },
+  "Forbidden": {
+    "title": "Du har inte behörighet",
+    "text": "Du har inte behörighet till den här sidan. Be en superadministratör om du behöver den.",
+    "home": "Till startsidan"
   },
   "NotFound": {
     "title": "Sidan finns inte",
