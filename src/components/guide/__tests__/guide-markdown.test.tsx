@@ -38,4 +38,16 @@ describe("GuideMarkdown", () => {
         expect(container.querySelectorAll("li")).toHaveLength(2);
         expect(screen.getByRole("link", {name: "fgv.nu"})).toHaveAttribute("rel", "noopener noreferrer");
     });
+
+    it("shows links that are not http(s) or mailto as text", () => {
+        const {container} = render(
+            <GuideMarkdown>{"[ett](javascript:alert(1)) [två](data:text/html,x) [tre](/relativ) [fyra](mailto:a@example.org)"}</GuideMarkdown>,
+        );
+
+        expect(container.querySelectorAll("a")).toHaveLength(1);
+        expect(screen.getByRole("link", {name: "fyra"})).toHaveAttribute("href", "mailto:a@example.org");
+        expect(container.innerHTML).not.toContain("javascript:");
+        expect(container.innerHTML).not.toContain("data:");
+        expect(container.textContent).toContain("ett");
+    });
 });

@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {apiFetch} from "@/lib/api.server";
 import {receiptProblem} from "@/lib/budget/schema";
 
-const ID = /^[A-Za-z0-9-]{1,64}$/;
+const ID = /^\d{1,19}$/;
 
 type Params = { params: Promise<{ transactionId: string }> };
 
@@ -13,6 +13,27 @@ async function transactionPath({params}: Params): Promise<string | null> {
 }
 
 const invalid = () => NextResponse.json({code: "BAD_REQUEST", message: "Invalid request"}, {status: 400});
+const forbidden = () => NextResponse.json({code: "FORBIDDEN", message: "Cross-site request"}, {status: 403});
+
+/**
+ * Whether a request that changes something comes from this application's own pages. Route handlers get none of the
+ * origin check server actions have, and the session cookie is sent from sibling subdomains too.
+ */
+function sameOrigin(request: NextRequest): boolean {
+    const origin = request.headers.get("origin");
+
+    if (!origin) {
+        return true;
+    }
+
+    const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "").split(",")[0].trim();
+
+    try {
+        return new URL(origin).host === host;
+    } catch {
+        return false;
+    }
+}
 
 /**
  * The server's error as JSON ({code, message}), so the page can show its localised message.
@@ -60,6 +81,9 @@ export async function POST(request: NextRequest, context: Params) {
     if (!path) {
         return invalid();
     }
+    if (!sameOrigin(request)) {
+        return forbidden();
+    }
 
     const form = await request.formData().catch(() => null);
     const file = form?.get("file");
@@ -90,11 +114,14 @@ export async function POST(request: NextRequest, context: Params) {
     return NextResponse.json(await response.json().catch(() => ({})), {headers: {"Cache-Control": "no-store"}});
 }
 
-export async function DELETE(_request: NextRequest, context: Params) {
+export async function DELETE(request: NextRequest, context: Params) {
     const path = await transactionPath(context);
 
     if (!path) {
         return invalid();
+    }
+    if (!sameOrigin(request)) {
+        return forbidden();
     }
 
     const response = await apiFetch(path, {method: "DELETE"});

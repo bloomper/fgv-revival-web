@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {apiFetch} from "@/lib/api.server";
 
-const ID = /^[A-Za-z0-9-]{1,64}$/;
+const ID = /^\d{1,19}$/;
 const LANGUAGES = new Set(["sv", "en"]);
 
 /**

@@ -96,4 +96,23 @@ describe("/api/receipts/[transactionId]", () => {
         expect(apiFetch).toHaveBeenCalledWith("/api/transactions/7/receipt", {method: "DELETE"});
         expect(response.status).toBe(204);
     });
+
+    it("refuses an upload or removal from another site", async () => {
+        const headers = {origin: "https://evil.example.org", host: "localhost"};
+        const body = new FormData();
+
+        body.append("file", new File(["%PDF"], "kvitto.pdf", {type: "application/pdf"}));
+        expect((await POST(new NextRequest(url("7"), {method: "POST", body, headers}), context("7"))).status).toBe(403);
+        expect((await DELETE(new NextRequest(url("7"), {method: "DELETE", headers}), context("7"))).status).toBe(403);
+        expect(apiFetch).not.toHaveBeenCalled();
+    });
+
+    it("accepts a removal from the application's own origin", async () => {
+        apiFetch.mockResolvedValue(new Response(null, {status: 204}));
+
+        const headers = {origin: "https://revival.example.org", "x-forwarded-host": "revival.example.org", host: "web:3000"};
+        const response = await DELETE(new NextRequest(url("7"), {method: "DELETE", headers}), context("7"));
+
+        expect(response.status).toBe(204);
+    });
 });
