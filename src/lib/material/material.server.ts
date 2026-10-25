@@ -4,7 +4,7 @@ import {graphql} from "@/gql";
 import type {InventoryItemInput, LinkServiceInput, MaterialInput} from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
-// Materials, the inventory and the link services they are recognised by (M8, contract material.graphqls). Positions
+// Materials, the inventory and the link services they are recognised by (material.graphqls). Positions
 // come from Spexregister and are fetched on their own (getPositions), so the lists work while it is down.
 
 const MaterialsAccessQuery = graphql(`

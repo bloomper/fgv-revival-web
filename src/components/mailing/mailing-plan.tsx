@@ -23,7 +23,7 @@ export function planEntryHref(revivalId: string, entry: { template: { id: string
 }
 
 /**
- * The revival's mailing plan (M6B-FR-10): each planned mailing with its due date, the event it belongs to (or the
+ * The revival's mailing plan: each planned mailing with its due date, the event it belongs to (or the
  * premiere), and the mailing made from it. Entries due within a week with nothing sent are highlighted, with a button
  * that drafts the mailing from the template.
  */

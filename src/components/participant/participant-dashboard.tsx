@@ -35,7 +35,7 @@ export function participantTiles(counts: ParticipantCountsValue): { key: string;
 }
 
 /**
- * The participants at a glance (5.6): counts by answer, invitations, fees and helpers, and how each position is filled.
+ * The participants at a glance: counts by answer, invitations, fees and helpers, and how each position is filled.
  */
 export function ParticipantDashboard({counts}: { counts: ParticipantCountsValue }) {
     const t = useTranslations("Participants");

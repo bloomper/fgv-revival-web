@@ -27,7 +27,7 @@ const REMOVED = ["participants", "pending", "dietary", "staffing", "owners", "me
 const KEPT = ["guide", "log", "checklists", "events", "budget", "materials", "sync"] as const;
 
 /**
- * What anonymizing removes and keeps (section 7, M7-FR-10..13), when it happens by itself, and the button that does it
+ * What anonymizing removes and keeps, when it happens by itself, and the button that does it
  * now. It cannot be undone, so the revival's title must be typed to confirm, as when a guide chapter is removed.
  */
 export function AnonymizeCard({revival, anonymizedAt, autoAnonymizeOn, canAnonymize, syncIncomplete = false}: {
@@ -35,7 +35,7 @@ export function AnonymizeCard({revival, anonymizedAt, autoAnonymizeOn, canAnonym
     anonymizedAt: string | null;
     autoAnonymizeOn: string | null;
     canAnonymize: boolean;
-    /** The participants are gone afterwards, so a sync not yet completed never can be (M7-FR-14). */
+    /** The participants are gone afterwards, so a sync not yet completed never can be. */
     syncIncomplete?: boolean;
 }) {
     const t = useTranslations("Closing.anonymize");

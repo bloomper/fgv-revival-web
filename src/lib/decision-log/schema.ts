@@ -1,8 +1,5 @@
 import {z} from "zod";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
-// (M3 FR-008, FR-009, FR-014, data-model.md).
-
 export const MAX_LOG_TEXT = 5000;
 export const MAX_TAG = 50;
 export const MAX_OWNER_NAME = 100;

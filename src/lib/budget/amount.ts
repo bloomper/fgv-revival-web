@@ -1,4 +1,4 @@
-// Kronor as the server sends them: a decimal string with at most two decimals ("1200", "1200.50", "-35.5"). Sums and
+// Kronor as the server sends them: a decimal string with at most two decimals. Sums and
 // differences are done in whole öre so no öre is lost to floating point.
 
 const SPACES = /[\s  ]/g;
@@ -71,7 +71,7 @@ export function parseQuantity(input: string | null | undefined): number | null {
 }
 
 /**
- * quantity × unit amount rounded half up to öre, as the server computes a line's amount (M5).
+ * quantity × unit amount rounded half up to öre, as the server computes a line's amount.
  */
 export function lineAmount(quantity: string | number | null | undefined, unitAmount: string | null | undefined): string | null {
     const parsed = typeof quantity === "number" ? quantity : parseQuantity(quantity);

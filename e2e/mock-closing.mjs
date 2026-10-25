@@ -1,4 +1,4 @@
-// The closing part of the mock backend (M7): the closing signals, FGV membership marks, the participation sync to
+// The closing part of the mock backend: the closing signals, FGV membership marks, the participation sync to
 // Spexregister and anonymization, with the server's rules (fgv-revival-server/src/main/resources/graphql/closing.graphqls).
 // Spexregister's side is a set of what already exists there; a run writes two steps per poll, so the web sees it
 // progress. Test data is fictitious.
@@ -349,9 +349,9 @@ export function closingResolvers(ctx) {
             },
         },
         /**
-         * Puts revival 1 in SETTLING with Anna Andersson (Ensemble, the role Ali Baba), Bertil Bengtsson (Orchestra) and the
-         * pending Disa Deltagare all answering yes, after {@code participants({people: true})}. {@code failOnce} makes the
-         * first step of each listed operation fail.
+         * Puts revival 1 in SETTLING with Anna Andersson (Ensemble, the role Ali Baba), Bertil Bengtsson (Orchestra)
+         * and the pending Disa Deltagare all answering yes, after {@code participants({people: true})}. {@code
+         * failOnce} makes the first step of each listed operation fail.
          */
         seed({failOnce = []} = {}) {
             const revival = ctx.state().revivals.find(candidate => candidate.id === "1");

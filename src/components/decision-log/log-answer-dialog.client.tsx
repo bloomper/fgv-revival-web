@@ -24,7 +24,7 @@ const answerValuesSchema = logEntryAnswerSchema.pick({text: true, owner: true, d
 type AnswerValues = z.infer<typeof answerValuesSchema>;
 
 /**
- * Answers an open question with a decision: both rows stay, linked, and the question is done (M3 FR-013).
+ * Answers an open question with a decision: both rows stay, linked, and the question is done.
  */
 export function LogAnswerDialog({revivalId, question, members, meetingId, open, onOpenChange}: {
     revivalId: string;

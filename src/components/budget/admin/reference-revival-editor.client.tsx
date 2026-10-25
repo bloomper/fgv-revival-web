@@ -210,7 +210,7 @@ function ReferenceSheet({reference, categories, onOpenChange}: {
 }
 
 /**
- * The reference library (M5-FR-2): each earlier revival with its participants and totals, added, changed and deleted
+ * The reference library: each earlier revival with its participants and totals, added, changed and deleted
  * by the super admin. Those made automatically from a deleted revival are marked.
  */
 export function ReferenceRevivalEditor({references, categories}: {

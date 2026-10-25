@@ -23,7 +23,7 @@ async function load(revivalId: string, id: string) {
 }
 
 /**
- * One meeting: meeting mode while planned or in progress, the minutes once closed (M3 FR-016–FR-021).
+ * One meeting: meeting mode while planned or in progress, the minutes once closed.
  */
 export default async function MeetingPage({params}: { params: Promise<{ id: string; meetingId: string }> }) {
     const {id, meetingId} = await params;

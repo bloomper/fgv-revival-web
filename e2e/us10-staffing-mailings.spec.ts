@@ -5,7 +5,7 @@ const day = (offset: number) => new Date(Date.now() + offset * 24 * 60 * 60 * 10
 const first = day(5);
 const second = day(6);
 
-test.describe("Staffing and mailings, M6b: availability, shifts, the mailing plan and sending", () => {
+test.describe("Staffing and mailings: availability, shifts, the mailing plan and sending", () => {
     test.beforeEach(async ({mock}) => {
         await mock.setStatus("1", "OPEN");
         await mock.participants({people: true});

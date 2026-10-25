@@ -18,7 +18,7 @@ async function load(id: string, includeCancelled: boolean) {
 }
 
 /**
- * The budget's transactions with their receipts (M5). Cancelled ones only with {@code ?cancelled=1}.
+ * The budget's transactions with their receipts. Cancelled ones only with {@code ?cancelled=1}.
  */
 export default async function BudgetTransactionsPage({params, searchParams}: {
     params: Promise<{ id: string }>;

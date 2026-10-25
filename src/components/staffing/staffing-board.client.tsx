@@ -367,7 +367,7 @@ function RemoveSlotDialog({revivalId, slot, onOpenChange}: {
 }
 
 /**
- * One event's staffing (M6b): per day its slots by time, each with the task, how many it needs and has, and who holds
+ * One event's staffing: per day its slots by time, each with the task, how many it needs and has, and who holds
  * it. Writers add, change and remove slots and assign people with a picker that lists everyone's answer for the day.
  * The schedule and each person's shifts print from their own pages, opened in a new tab.
  */

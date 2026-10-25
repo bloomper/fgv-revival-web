@@ -1,5 +1,5 @@
 // Mock Keycloak (OIDC) and Nyuppsättning's GraphQL API for the Playwright tests. The GraphQL side keeps state in
-// memory and applies the same visibility and permission rules as the server (data-model.md, contracts/README.md),
+// memory and applies the same visibility and permission rules as the server,
 // so each persona sees what the real server would show. Test data is fictitious.
 import {createServer} from "node:http";
 import {randomUUID} from "node:crypto";
@@ -33,7 +33,7 @@ const PERSONAS = {
     directeur: {sub: "p-directeur", name: "Dana Directeur", email: "dana@example.org", roles: ["USER"]},
     styrgrupp: {sub: "p-styrgrupp", name: "Stina Styrgrupp", email: "stina@example.org", roles: ["USER"]},
     noaccess: {sub: "p-noaccess", name: "Nils Nekad", email: "nils@example.org", roles: []},
-    // A participant (M6a): holds no role until invited by this address
+    // A participant: holds no role until invited by this address
     deltagare: {sub: "p-deltagare", name: "Disa Deltagare", email: "disa@example.org", roles: ["USER"]},
 };
 const bySub = Object.fromEntries(Object.values(PERSONAS).map(persona => [persona.sub, persona]));
@@ -231,7 +231,7 @@ function visibleRevival(persona, id) {
 function toRevival(persona, revival) {
     const spex = SPEX.find(candidate => candidate.id === revival.spexId);
     const showEmails = isSuperAdmin(persona) || isVisibleDirecteur(persona, revival);
-    // Participants see the steering group through their own page only (M6a)
+    // Participants see the steering group through their own page only
     const participantOnly = participants.isParticipant(persona, revival);
 
     return {
@@ -567,7 +567,7 @@ const events = {upcomingEvents, eventOfChecklist};
 
 Object.assign(resolvers, eventOperations);
 
-// A checklist links to the event it belongs to (M4-FR-4)
+// A checklist links to the event it belongs to
 const checklistResolver = resolvers.Checklist;
 
 resolvers.Checklist = (persona, variables) => {
@@ -579,7 +579,7 @@ resolvers.Checklist = (persona, variables) => {
     } : result;
 };
 
-// The budget (M5); an event type carries the budget lines it proposes
+// The budget; an event type carries the budget lines it proposes
 const budget = budgetResolvers({
     state: () => state,
     GraphQLError,
@@ -594,7 +594,7 @@ const budget = budgetResolvers({
 
 Object.assign(resolvers, budget.resolvers);
 
-// Participants, invitations and the participant's own page (M6a)
+// Participants, invitations and the participant's own page
 const participants = participantResolvers({
     state: () => state,
     GraphQLError,
@@ -609,7 +609,7 @@ const participants = participantResolvers({
 
 Object.assign(resolvers, participants.resolvers);
 
-// Availability, staffing and mailings (M6b); it adds the participant page's events, availability and shifts
+// Availability, staffing and mailings; it adds the participant page's events, availability and shifts
 const staffing = staffingResolvers({
     state: () => state,
     GraphQLError,
@@ -625,7 +625,7 @@ const staffing = staffingResolvers({
 
 Object.assign(resolvers, staffing.resolvers);
 
-// Materials, the inventory and the link services (M8); it adds the participant page's materials
+// Materials, the inventory and the link services; it adds the participant page's materials
 const material = materialResolvers({
     state: () => state,
     GraphQLError,
@@ -643,7 +643,7 @@ const material = materialResolvers({
 
 Object.assign(resolvers, material.resolvers);
 
-// Closing: membership marks, the sync to Spexregister and anonymization (M7)
+// Closing: membership marks, the sync to Spexregister and anonymization
 const closing = closingResolvers({
     state: () => state,
     GraphQLError,
@@ -910,7 +910,7 @@ const server = createServer((req, res) => {
         } else if (path.startsWith("/api/") && budget.handleHttp(personaOf(req), req, path, url, rawBody, res)) {
             // A receipt or the budget's Excel export
         } else if (req.method === "GET" && /^\/api\/calendar\/[^/]+\.ics$/.test(path)) {
-            // No token: the link is the credential (M4-FR-6)
+            // No token: the link is the credential
             const ics = calendarFeed(path.slice("/api/calendar/".length, -".ics".length), url.searchParams.get("lang"), sub => bySub[sub]);
             if (ics) {
                 res.writeHead(200, {

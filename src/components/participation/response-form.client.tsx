@@ -42,7 +42,7 @@ export function responseDefaults(participant: ResponseValue): RespondValues {
 }
 
 /**
- * The participant's answer (5.6): yes, maybe or no as large choices, a preferred position, a comment, the terms to
+ * The participant's answer: yes, maybe or no as large choices, a preferred position, a comment, the terms to
  * accept (required for yes) and whether Spexregister may keep their details (asked for yes and maybe). Errors are shown
  * by the field they belong to and read out with it.
  */

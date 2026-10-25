@@ -11,7 +11,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * Suggestions for super admins to accept into the draft or reject (US5, FR-033).
+ * Suggestions for super admins to accept into the draft or reject.
  */
 export default async function AdminGuideSuggestionsPage({searchParams}: {
     searchParams: Promise<{ status?: string }>

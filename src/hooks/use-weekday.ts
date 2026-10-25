@@ -2,7 +2,7 @@ import {useTranslations} from "next-intl";
 import {weekdayOf} from "@/lib/staffing/staffing";
 
 /**
- * The weekday's name for an ISO date ("måndag", "Monday"), from the messages rather than Intl, so it reads the same
+ * The weekday's name for an ISO date, from the messages rather than Intl, so it reads the same
  * on the server and in the browser.
  */
 export function useWeekday() {

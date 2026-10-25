@@ -110,16 +110,16 @@ export function RevivalTabs({
                             }: {
     revivalId: string;
     work: RevivalWork | null;
-    /** Only those who may read the budget see its tab (M5-FR-6). */
+    /** Only those who may read the budget see its tab. */
     canReadBudget?: boolean;
-    /** Only the directeurs, the steering group and super admins see the participants (M6a). */
+    /** Only the directeurs, the steering group and super admins see the participants. */
     canReadParticipants?: boolean;
-    /** Staffing and mailings (M6b): super admins, directeurs and the steering group. */
+    /** Staffing and mailings: super admins, directeurs and the steering group. */
     canReadStaffing?: boolean;
     canReadMailings?: boolean;
-    /** Materials and inventory (M8): super admins, directeurs and the steering group. */
+    /** Materials and inventory: super admins, directeurs and the steering group. */
     canReadMaterials?: boolean;
-    /** From CLOSING onwards the Closing tab (M7), always last, is marked so it stands out. */
+    /** From CLOSING onwards the Closing tab, always last, is marked so it stands out. */
     closingProminent?: boolean;
 }) {
     const t = useTranslations("Revival");

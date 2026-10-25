@@ -16,7 +16,7 @@ import {closeMeetingAction} from "@/app/(app)/revivals/[id]/meetings/actions.ser
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 
 /**
- * Closes a meeting once every open or waiting to-do has an owner (M3 FR-019); lists those that don't, each opening the
+ * Closes a meeting once every open or waiting to-do has an owner; lists those that don't, each opening the
  * row to give it one.
  */
 export function MeetingCloseDialog({revivalId, meeting, blocking, onOpenRow}: {

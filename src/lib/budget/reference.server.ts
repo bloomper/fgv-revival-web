@@ -9,7 +9,7 @@ import type {
 } from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
-// The lists the super admin keeps for budgets (M5): categories, reference figures from earlier revivals and the lines
+// The lists the super admin keeps for budgets: categories, reference figures from earlier revivals and the lines
 // an event type proposes.
 
 const BudgetCategoriesQuery = graphql(`

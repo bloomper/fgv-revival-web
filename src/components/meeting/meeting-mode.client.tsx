@@ -21,7 +21,7 @@ export function MeetingStatusBadge({status}: { status: MeetingStatus }) {
 }
 
 /**
- * Meeting mode (M3 FR-018): the agenda is the open rows, then the extra points. While the meeting is in progress, every
+ * Meeting mode: the agenda is the open rows, then the extra points. While the meeting is in progress, every
  * row change made here is recorded as made in it; while it is planned, none is.
  */
 export function MeetingMode({revivalId, meeting, openEntries, members, tags, canWrite, blocking}: {

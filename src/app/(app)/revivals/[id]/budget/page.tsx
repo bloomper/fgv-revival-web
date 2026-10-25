@@ -21,7 +21,7 @@ async function load(id: string) {
 }
 
 /**
- * The budget's overview (M5-FR-7, FR-8): the totals, the categories with earlier revivals' figures, the settings and
+ * The budget's overview: the totals, the categories with earlier revivals' figures, the settings and
  * the Excel export.
  */
 export default async function BudgetOverviewPage({params}: { params: Promise<{ id: string }> }) {

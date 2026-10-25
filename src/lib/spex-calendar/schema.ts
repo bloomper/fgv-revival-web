@@ -1,7 +1,5 @@
 import {z} from "zod";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json; the server checks the same rules.
-
 export const MAX_SPEX_DATE_LABEL = 100;
 
 export const spexCalendarDateValuesSchema = z.object({

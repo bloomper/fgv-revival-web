@@ -23,7 +23,7 @@ import {
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
 
-// Mailings (M6b). The plan on the tab shows each entry's mailing, so the whole revival's mailings are revalidated.
+// The plan on the tab shows each entry's mailing, so the whole revival's mailings are revalidated.
 function revalidate(revivalId: string) {
     revalidatePath(`/revivals/${revivalId}/mailings`, "layout");
 }
@@ -83,7 +83,7 @@ export async function cancelMailingAction(input: z.input<typeof mailingTransitio
     }));
 }
 
-/** Sends the draft to its audience as it is now (M6B-FR-9); returns how it went per status. */
+/** Sends the draft to its audience as it is now; returns how it went per status. */
 export async function sendMailingAction(input: z.input<typeof mailingTransitionSchema>): Promise<ActionResult<ReturnType<typeof counts>>> {
     return withPolicyAction(Policies.app.requireAccess, () => toActionResult(async () => {
         const {revivalId, id, version} = mailingTransitionSchema.parse(input);

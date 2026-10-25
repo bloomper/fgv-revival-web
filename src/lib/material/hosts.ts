@@ -1,4 +1,4 @@
-// Recognising the service a material's link belongs to (M8-FR-2). The server decides at save; this mirror of its rule
+// Recognising the service a material's link belongs to. The server decides at save; this mirror of its rule
 // only drives the hint shown while typing, so a link the web recognises differently is saved as the server says.
 
 export const MAX_URL = 2000;

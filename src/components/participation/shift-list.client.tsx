@@ -18,7 +18,7 @@ function selfSignedUp(slot: ShiftSlotFieldsFragment, participantId: string) {
 }
 
 /**
- * The participant's shifts (M6B-FR-4/7), or the open ones they may take, as a list of large rows: the task, the day
+ * The participant's shifts, or the open ones they may take, as a list of large rows: the task, the day
  * and time, the event and its place, and one button. Shifts the steering group gave them cannot be withdrawn here.
  */
 export function ShiftList({revivalId, participantId, slots, mode}: {

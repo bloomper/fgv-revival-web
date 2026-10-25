@@ -35,8 +35,8 @@ async function loadWorkSummary(id: string) {
 
 /**
  * Everything under one revival: its title and a tab per section, so the sections are one click apart. A
- * revival the user cannot see is shown as not found (FR-017). Participants and helpers see only their own page
- * (`/me`, M6a), without the steering group's tabs; it shows the title itself.
+ * revival the user cannot see is shown as not found. Participants and helpers see only their own page
+ * (`/me`), without the steering group's tabs; it shows the title itself.
  */
 export default async function RevivalLayout({children, params}: {
     children: React.ReactNode;

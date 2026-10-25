@@ -108,7 +108,7 @@ export function AudiencePreview({preview}: { preview: ReturnType<typeof useAudie
 }
 
 /**
- * Writing a mailing (M6b): whom it goes to — with a position or an event where the audience needs one, and a live
+ * Writing a mailing: whom it goes to — with a position or an event where the audience needs one, and a live
  * count and names of who it reaches now — the subject, and the body in Markdown with a preview rendered as the email
  * will be (the guide's safe Markdown, no raw HTML, no images). Saves a draft; sending happens on the mailing's page.
  */

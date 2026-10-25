@@ -1,4 +1,4 @@
-// The staffing and mailing part of the mock backend (M6b): availability per event day, shift slots with assignments
+// The staffing and mailing part of the mock backend: availability per event day, shift slots with assignments
 // and sign-ups, the participant page's additions, mailings with audiences resolved at send time, the mailing plan and
 // its templates, with the server's rules (fgv-revival-server/src/main/resources/graphql/staffing.graphqls,
 // mailing.graphqls). Recipients are names only; addresses come from the participant mock at send time. Test data is
@@ -173,7 +173,7 @@ export function staffingResolvers(ctx) {
     };
     const takesShifts = participant => !participant.removedAt && (participant.kind === "HELPER" ? participant.response !== "NO" : ["YES", "MAYBE"].includes(participant.response));
 
-    /** The caller's additions to their Participation (M6B-FR-7): helpers see only the events they hold shifts in. */
+    /** The caller's additions to their Participation: helpers see only the events they hold shifts in. */
     function participationExtras(revival, participant) {
         const held = store().slots.filter(slot => store().assignments.some(assignment => assignment.slotId === slot.id && assignment.participantId === participant.id));
         const heldEvents = new Set(held.map(slot => slot.eventId));
@@ -255,7 +255,7 @@ export function staffingResolvers(ctx) {
         };
     };
 
-    /** Who an audience reaches now (M6B-FR-8), by name, with whether an address can be found. */
+    /** Who an audience reaches now, by name, with whether an address can be found. */
     function recipientsOf(revival, audience) {
         const active = participants.activeIn(revival);
         const named = participant => ({
@@ -323,7 +323,7 @@ export function staffingResolvers(ctx) {
         };
     };
 
-    /** One plan entry (M6B-FR-10); the mailing is the latest one made from it that is not cancelled. */
+    /** One plan entry; the mailing is the latest one made from it that is not cancelled. */
     function planEntry(persona, revival, template, event, withMailing = true) {
         const dueDate = applyDue(template.due, event ? event.startDate : revival.premiereDate);
         const made = store().mailings.filter(mailing => mailing.templateId === template.id && (mailing.planEventId ?? null) === (event?.id ?? null)
@@ -706,10 +706,10 @@ export function staffingResolvers(ctx) {
         permissions,
         /**
          * Revival 1 gets a premiere, a "Rephelg 1" event five days from now (so its allergy mailing is due) with a slot
-         * "Biljettkontroll" on its first day, and two mailing templates: the allergy reminder the Monday the week before
-         * each "Rephelg 1", and the tickets mailing 14 days before the premiere. {@code capabilities} replaces the
-         * steering group member's areas; {@code answered} makes Disa (the "deltagare" persona) answer yes, available on
-         * the event's second day, and Anna Andersson answer maybe without saying when she can.
+         * "Biljettkontroll" on its first day, and two mailing templates: the allergy reminder the Monday the week
+         * before each "Rephelg 1", and the tickets mailing 14 days before the premiere. {@code capabilities} replaces
+         * the steering group member's areas; {@code answered} makes Disa (the "deltagare" persona) answer yes,
+         * available on the event's second day, and Anna Andersson answer maybe without saying when she can.
          */
         seed({capabilities, answered = false} = {}) {
             const revival = ctx.state().revivals.find(candidate => candidate.id === "1");

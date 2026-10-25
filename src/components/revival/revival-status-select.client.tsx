@@ -22,8 +22,8 @@ import {track} from "@/utils/umami";
 
 /**
  * Offers exactly the statuses the server allows (`permissions.allowedStatuses`) and sends the status shown as `from`,
- * so a change someone else made in between is refused as a conflict (research R12). Archiving a revival whose
- * participation sync never completed, or failed, asks first (M7-FR-14).
+ * so a change someone else made in between is refused as a conflict. Archiving a revival whose
+ * participation sync never completed, or failed, asks first.
  */
 export function RevivalStatusSelect({revivalId, status, allowedStatuses, syncIncomplete = false}: {
     revivalId: string;

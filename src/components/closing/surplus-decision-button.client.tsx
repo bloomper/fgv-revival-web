@@ -9,7 +9,7 @@ import type {OwnerMember} from "@/components/owner/owner-field.client";
 
 /**
  * Opens the log entry dialog for a new DECISION tagged "överskott" (or "surplus" in English), which the closing summary
- * then finds as the surplus decision (M7-FR-9).
+ * then finds as the surplus decision.
  */
 export function SurplusDecisionButton({revivalId, members}: { revivalId: string; members: OwnerMember[] }) {
     const t = useTranslations("Closing");

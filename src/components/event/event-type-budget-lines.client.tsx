@@ -140,7 +140,7 @@ function LineSheet({eventTypeId, line, categories, onOpenChange}: {
 }
 
 /**
- * The budget lines an event type proposes when a revival has an event of it (M5-FR-3, FR-9): each with its category,
+ * The budget lines an event type proposes when a revival has an event of it: each with its category,
  * a fixed quantity or one per planned participant, and the unit amount.
  */
 export function EventTypeBudgetLines({eventTypeId, typeName, lines, categories}: {

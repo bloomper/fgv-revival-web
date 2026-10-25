@@ -5,7 +5,7 @@ const ID = /^\d+$/;
 const LANGUAGES = new Set(["sv", "en"]);
 
 /**
- * Downloads a guide PDF with the user's token, so the browser never holds it (contracts/http.md):
+ * Downloads a guide PDF with the user's token, so the browser never holds it:
  * {@code ?version=<id>} or {@code ?revival=<id>}, and {@code lang=sv|en}.
  */
 export async function GET(request: NextRequest) {

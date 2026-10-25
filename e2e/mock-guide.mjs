@@ -1,5 +1,5 @@
-// The guide part of the mock backend: versions, the draft and the PDF, with the server's rules
-// (specs/003-m2-guide/contracts/README.md). The guide content is fictitious. Chapters are keyed A–J in the fixture.
+// The guide part of the mock backend: versions, the draft and the PDF, with the server's rules.
+// The guide content is fictitious. Chapters are keyed A–J in the fixture.
 
 const KEYS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 const TITLES = {

@@ -12,7 +12,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * Editing the draft (US3, FR-013): its introduction and its chapters, each opened on its own page. Super admins only.
+ * Editing the draft: its introduction and its chapters, each opened on its own page. Super admins only.
  * Without a draft (discarded, published, or the URL typed by hand) it sends you to the guide admin page, which explains
  * drafts and offers to start one.
  */

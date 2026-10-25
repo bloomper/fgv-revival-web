@@ -17,9 +17,6 @@ import {MAX_TEMPLATE_NAME} from "@/lib/checklist/schema";
 
 type Template = { id: string; version: number; retired: boolean; name?: { sv: string; en?: string | null } | null };
 
-/**
- * An event template's name (FR-030).
- */
 export function TemplateNameForm({template}: { template: Template }) {
     const t = useTranslations();
     const id = useId();
@@ -53,7 +50,7 @@ export function TemplateNameForm({template}: { template: Template }) {
 }
 
 /**
- * Retiring a template, which leaves checklists made from it as they are, or restoring a retired one (FR-030).
+ * Retiring a template, which leaves checklists made from it as they are, or restoring a retired one.
  */
 export function TemplateRetirement({template}: { template: Template }) {
     const t = useTranslations("ChecklistTemplate");

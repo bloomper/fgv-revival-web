@@ -7,7 +7,7 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {track} from "@/utils/umami";
 
 /**
- * Downloads the guide as a PDF in Swedish or English (FR-028, FR-030): a version, or a revival's guide.
+ * Downloads the guide as a PDF in Swedish or English: a version, or a revival's guide.
  */
 export function GuidePdfButton({versionId, revivalId}: { versionId?: string; revivalId?: string }) {
     const t = useTranslations("Guide.pdf");

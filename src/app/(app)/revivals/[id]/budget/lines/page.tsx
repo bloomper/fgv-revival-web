@@ -18,7 +18,7 @@ async function load(id: string, includeRemoved: boolean) {
 }
 
 /**
- * The budget's lines with the events' proposals (M5-FR-4, FR-9). Removed lines only with {@code ?removed=1}.
+ * The budget's lines with the events' proposals. Removed lines only with {@code ?removed=1}.
  */
 export default async function BudgetLinesPage({params, searchParams}: {
     params: Promise<{ id: string }>;

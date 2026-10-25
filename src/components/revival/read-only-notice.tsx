@@ -8,7 +8,7 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
 
 /**
  * Says why a revival's work is read-only when the server does not let the caller change it: only its directeurs and
- * steering group write the log, meetings, checklists and guide suggestions (M3 FR-001, FR-002). Super admins are told
+ * steering group write the log, meetings, checklists and guide suggestions. Super admins are told
  * how to join the steering group. Renders nothing when the caller may write.
  */
 export async function ReadOnlyNotice({revivalId, status, canWrite, roles}: {

@@ -4,7 +4,7 @@ import {graphql} from "@/gql";
 import type {EventCreateInput, EventTypeInput, EventUpdateInput} from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
-// A revival's events, its proposals and the caller's calendar link (M4). The meetings only for the timeline.
+// A revival's events, its proposals and the caller's calendar link. The meetings only for the timeline.
 const RevivalEventsQuery = graphql(`
     query RevivalEvents($id: ID!, $includeCancelled: Boolean!, $withMeetings: Boolean!) {
         revival(id: $id) {
@@ -107,7 +107,7 @@ export async function getRevivalEvents(revivalId: string, {includeCancelled = fa
 }
 
 /**
- * The event types in the super admin's order, with the budget lines each proposes (M5). Retired ones only when asked
+ * The event types in the super admin's order, with the budget lines each proposes. Retired ones only when asked
  * for: pickers offer the active ones.
  */
 export async function getEventTypes(includeRetired = false) {

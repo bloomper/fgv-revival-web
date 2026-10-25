@@ -137,7 +137,7 @@ function AddMemberButton({revivalId, role}: { revivalId: string; role: Assignabl
 /**
  * A revival's directeurs and steering group in one table, as the other lists are: search, a filter per role and per
  * area of responsibility, and a row menu. Everyone who can see the revival sees names, roles and areas; email addresses
- * only arrive for super admins and directeurs (FR-019c). Controls show only when the server says the user may manage
+ * only arrive for super admins and directeurs. Controls show only when the server says the user may manage
  * that role.
  */
 export function MemberTable({revivalId, members, canManageDirecteurs, canManageSteeringGroup}: {

@@ -6,7 +6,7 @@ import {buttonVariants} from "@/components/ui/button";
 import {track} from "@/utils/umami";
 
 /**
- * Downloads the budget as an Excel workbook through the route handler, which adds the token (M5-FR-11).
+ * Downloads the budget as an Excel workbook through the route handler, which adds the token.
  */
 export function BudgetExportButton({revivalId}: { revivalId: string }) {
     const t = useTranslations("Budget");

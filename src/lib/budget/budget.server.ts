@@ -12,7 +12,7 @@ import type {
 } from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
-// A revival's budget (M5, contract budget.graphqls). Revival.budget is null for callers who may not read it.
+// A revival's budget (budget.graphqls). Revival.budget is null for callers who may not read it.
 
 const BudgetAccessQuery = graphql(`
     query BudgetAccess($id: ID!) {

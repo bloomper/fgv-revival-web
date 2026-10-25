@@ -5,7 +5,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * Earlier revivals' budgets and outcomes, kept as reference by the super admin (M5-FR-2): every revival's budget shows
+ * Earlier revivals' budgets and outcomes, kept as reference by the super admin: every revival's budget shows
  * them beside its categories. Revivals that were deleted are added here automatically.
  */
 export default async function ReferenceFiguresPage() {

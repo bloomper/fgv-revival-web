@@ -80,7 +80,7 @@ function Section({title, description, children}: { title: string; description?: 
 }
 
 /**
- * Closing a revival (product spec 5.11, section 7): where it stands, FGV membership, the participation sync to
+ * Closing a revival: where it stands, FGV membership, the participation sync to
  * Spexregister, and anonymization. Readers of the revival's work find it; each part shows its controls only with the
  * permission the server gives for it.
  */

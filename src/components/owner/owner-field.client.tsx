@@ -15,7 +15,7 @@ const NAME_MAX_LENGTH = 100;
 
 /**
  * Picks an owner: an active directeur or steering group member, or someone outside the steering group by name, or
- * nobody (M3 FR-009). Produces the server's `OwnerInput`. A current owner who has left the steering group stays a choice,
+ * nobody. Produces the server's `OwnerInput`. A current owner who has left the steering group stays a choice,
  * so the row keeps them until someone picks another owner.
  */
 export function OwnerField({members, value, onChange, disabled, current, label, noneLabel}: {

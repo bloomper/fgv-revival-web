@@ -2,8 +2,7 @@ import {z} from "zod";
 import {parseAmount, parseQuantity, toOre} from "@/lib/budget/amount";
 import {ownerSchema} from "@/lib/decision-log/schema";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
-// (budget.graphqls). Amounts and numbers are kept as the typed text and converted when sent.
+// Amounts and numbers are kept as the typed text and converted when sent.
 
 export const MAX_BUDGET_TEXT = 255;
 export const MAX_BUDGET_COMMENT = 1000;
@@ -57,8 +56,6 @@ export const toAmount = (value: string): string | null => value.trim() ? parseAm
 /** A typed whole number, or null when blank. */
 export const toWholeNumber = (value: string): number | null => value.trim() ? Number(value.trim()) : null;
 
-// --- Settings -----------------------------------------------------------------------------------------------------
-
 export const budgetSettingsValuesSchema = z.object({
     participantsPlanned: wholeNumber(MAX_PARTICIPANTS),
     participationFee: optionalAmount,
@@ -74,8 +71,6 @@ export const budgetSettingsValuesSchema = z.object({
 export type BudgetSettingsValues = z.infer<typeof budgetSettingsValuesSchema>;
 
 export const budgetSettingsSchema = z.object({revivalId: id, version, values: budgetSettingsValuesSchema});
-
-// --- Lines --------------------------------------------------------------------------------------------------------
 
 export const budgetLineValuesSchema = z.object({
     categoryId: z.string().min(1, "budgetCategoryRequired"),
@@ -96,8 +91,6 @@ export const budgetLineCreateSchema = z.object({
 });
 export const budgetLineUpdateSchema = z.object({revivalId: id, id, version, values: budgetLineValuesSchema});
 export const budgetTransitionSchema = z.object({revivalId: id, id, version});
-
-// --- Transactions -------------------------------------------------------------------------------------------------
 
 export const transactionValuesSchema = z.object({
     date,
@@ -139,8 +132,6 @@ export function receiptProblem(file: {
     }
     return (RECEIPT_TYPES as readonly string[]).includes(file.type) ? null : "receiptType";
 }
-
-// --- Scenarios ----------------------------------------------------------------------------------------------------
 
 export const SCENARIO_PARAMETERS = [
     "participants", "participationFee", "showTicketPrice", "showTickets", "partyTicketPrice", "partyTickets", "venueCost", "partyCost",
@@ -187,8 +178,6 @@ export function toScenarioInput(values: ScenarioValues) {
         partyCost: toAmount(values.partyCost),
     };
 }
-
-// --- Administration -----------------------------------------------------------------------------------------------
 
 export const budgetCategoryRole = z.union([z.literal(""), z.enum(BUDGET_CATEGORY_ROLES)]);
 

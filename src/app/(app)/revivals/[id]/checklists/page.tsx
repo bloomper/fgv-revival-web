@@ -19,8 +19,8 @@ async function load(id: string, filter: ChecklistFilterValues) {
 }
 
 /**
- * A revival's checklists (M3 US4). The list is in the layout; with a filter, this is the matching items across every
- * checklist (FR-028), otherwise, from {@code lg}, the room beside the list until a checklist is picked.
+ * A revival's checklists. The list is in the layout; with a filter, this is the matching items across every
+ * checklist, otherwise, from {@code lg}, the room beside the list until a checklist is picked.
  */
 export default async function ChecklistsPage({params, searchParams}: {
     params: Promise<{ id: string }>;

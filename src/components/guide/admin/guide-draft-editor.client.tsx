@@ -111,7 +111,7 @@ export function GuideDraftIntroduction({draft}: { draft: GuideVersionFieldsFragm
 }
 
 /**
- * One chapter of the draft as an outline, editable in place (FR-013, research R9). Items and sections can be moved to
+ * One chapter of the draft as an outline, editable in place. Items and sections can be moved to
  * any chapter. Every change sends the row's version, so a concurrent edit is refused with "reload" (edge case).
  */
 export function GuideDraftEditor({draft, chapterKey}: { draft: GuideVersionFieldsFragment; chapterKey: string }) {

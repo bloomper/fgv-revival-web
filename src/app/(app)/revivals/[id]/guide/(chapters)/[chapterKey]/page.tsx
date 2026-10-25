@@ -9,7 +9,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * One chapter of the version a revival is pinned to, with suggestion controls for those who may suggest (FR-031). The
+ * One chapter of the version a revival is pinned to, with suggestion controls for those who may suggest. The
  * heading, search and chapter list are in the layout.
  */
 export default async function RevivalGuideChapterPage({params}: {

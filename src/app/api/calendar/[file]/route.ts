@@ -13,7 +13,7 @@ function notFound() {
 }
 
 /**
- * A calendar feed by its secret link (M4-FR-5, FR-6). Calendar apps have no session, so the request is forwarded
+ * A calendar feed by its secret link. Calendar apps have no session, so the request is forwarded
  * without a token; the server answers 404 for a link that is unknown, turned off or no longer the person's.
  */
 export async function GET(request: NextRequest, {params}: { params: Promise<{ file: string }> }) {

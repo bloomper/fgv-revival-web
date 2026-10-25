@@ -91,7 +91,7 @@ function ResultCard({result, title}: { result: ScenarioResult; title: string }) 
 }
 
 /**
- * The scenario calculator (M5-FR-10): eight parameters, each showing the budget's value until changed; "Calculate" asks
+ * The scenario calculator: eight parameters, each showing the budget's value until changed; "Calculate" asks
  * the server what the result would be. Writers save a calculation as a named scenario, load one back, update or
  * remove it.
  */

@@ -15,7 +15,7 @@ import {availabilitySchema, shiftOwnSchema} from "@/lib/staffing/schema";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
 
-// The participant's own page (M6a). The steering group's list shows the same answers, so the whole revival is
+// The participant's own page. The steering group's list shows the same answers, so the whole revival is
 // revalidated.
 function revalidate(revivalId: string) {
     revalidatePath(`/revivals/${revivalId}`, "layout");
@@ -82,7 +82,7 @@ export async function createReferralAction(input: z.input<typeof referralSchema>
 }
 
 /**
- * The participant's availability for the days of one event (M6B-FR-1): each day sent is set, or cleared without an
+ * The participant's availability for the days of one event: each day sent is set, or cleared without an
  * answer. Only the days the form changed are sent, one call each, as the contract sets one day at a time.
  */
 export async function setAvailabilityAction(input: z.input<typeof availabilitySchema>): Promise<ActionResult<null>> {

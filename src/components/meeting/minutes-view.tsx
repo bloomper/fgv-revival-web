@@ -35,7 +35,7 @@ function Section({title, rows, render}: {
 }
 
 /**
- * A closed meeting's minutes, as they were produced (M3 FR-020): rows as text, owners by display name.
+ * A closed meeting's minutes, as they were produced: rows as text, owners by display name.
  */
 export function MinutesView({minutes}: { minutes: MinutesValue }) {
     const t = useTranslations("Meeting");

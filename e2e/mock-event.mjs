@@ -1,4 +1,4 @@
-// The event part of the mock backend (M4): event types, a revival's events with their proposals and checklists, and
+// The event part of the mock backend: event types, a revival's events with their proposals and checklists, and
 // calendar links, with the server's rules (fgv-revival-server/src/main/resources/graphql/event.graphqls). An event
 // whose type has a checklist template gets an EVENT checklist through the checklist mock, as EventService does.
 import {randomBytes} from "node:crypto";
@@ -48,7 +48,7 @@ const isSunday = date => new Date(`${date}T00:00:00Z`).getUTCDay() === 0;
 const today = () => new Date().toISOString().slice(0, 10);
 
 /**
- * M4-FR-7: the midpoint of the allowed range, rounded toward the earliest, moved to the nearest start whose last day is a
+ * The midpoint of the allowed range, rounded toward the earliest, moved to the nearest start whose last day is a
  * Sunday for a type of two days or more.
  */
 export function proposalFor(premiere, eventType) {

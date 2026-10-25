@@ -52,7 +52,7 @@ export function TemplatePageHeader() {
 /**
  * The templates beside the one being edited: a row per chapter of the latest published guide version in the guide's
  * order, creating the missing ones in one click, then templates for chapters the guide no longer has, then event
- * templates by name (FR-030). It lives in the layout, so it stays put while the template beside it loads. Retired
+ * templates by name. It lives in the layout, so it stays put while the template beside it loads. Retired
  * templates only with {@code ?retired=1}; the layout cannot read the query, so it passes them all and they are hidden
  * here. On the list page it is the whole page on phones; beside a template, only from {@code lg}.
  */

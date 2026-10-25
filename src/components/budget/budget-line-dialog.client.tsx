@@ -58,7 +58,7 @@ function initialValues(line: EditableBudgetLine | null, prefill: BudgetLinePrefi
 }
 
 /**
- * Adds a budget line, freely or from an event's proposal, or changes one (M5-FR-4). The amount follows quantity × unit
+ * Adds a budget line, freely or from an event's proposal, or changes one. The amount follows quantity × unit
  * amount as typed; a line may name the event it belongs to and the DECISION row behind it.
  */
 export function BudgetLineDialog({revivalId, categories, events, decisions, line, prefill = null, onOpenChange}: {

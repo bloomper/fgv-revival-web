@@ -40,7 +40,7 @@ function move<T>(list: T[], index: number, by: number): T[] {
 
 /**
  * Plans a meeting or changes one: date, title, attendees from the steering group, others present, and extra agenda
- * points after the open rows (M3 FR-016).
+ * points after the open rows.
  */
 export function MeetingDialog({revivalId, meeting, members, open, onOpenChange}: {
     revivalId: string;

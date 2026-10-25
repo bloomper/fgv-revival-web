@@ -7,7 +7,7 @@ import {toast} from "sonner";
 import type {ActionResult} from "@/lib/graphql.server";
 
 /**
- * Shows the outcome of a server action. A conflict offers to reload (research R12); a validation error shows the
+ * Shows the outcome of a server action. A conflict offers to reload; a validation error shows the
  * server's own, already localised, message.
  */
 export function useActionFeedback() {

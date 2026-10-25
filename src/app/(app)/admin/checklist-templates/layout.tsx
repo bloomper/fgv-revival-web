@@ -9,8 +9,8 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * Checklist templates (M3 US5). Super admins get the list of templates beside the one they edit, kept here so moving
- * between templates only reloads the template; others who may read a template see it on its own (FR-003).
+ * Checklist templates. Super admins get the list of templates beside the one they edit, kept here so moving
+ * between templates only reloads the template; others who may read a template see it on its own.
  */
 export default async function ChecklistTemplatesLayout({children}: { children: React.ReactNode }) {
     return withPolicyPage(Policies.app.requireAccess, async ({roles}) => {

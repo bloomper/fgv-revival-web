@@ -31,7 +31,7 @@ type Version = { id: string; label?: string | null };
 type Removal = NonNullable<RevivalGuideVersionChangeImpactQuery["revival"]>["guideVersionChangeImpact"][number];
 
 /**
- * Moves the revival to another published version, after showing what changed (FR-020). When the version lacks
+ * Moves the revival to another published version, after showing what changed. When the version lacks
  * chapters the revival has checklists for, those checklists are deleted with the move, so they are listed and the user
  * must confirm. Offered only with versions the server allows.
  */

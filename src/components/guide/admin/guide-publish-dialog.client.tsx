@@ -33,7 +33,7 @@ export type RemovedChapter = {
 };
 
 /**
- * Publishes the draft as the next version, which the server labels v1, v2, … (FR-014), with an optional note on what
+ * Publishes the draft as the next version, which the server labels v1, v2, …, with an optional note on what
  * changed. Chapters the draft has
  * removed are listed with the checklists revivals lose when they move to the new version, and must be confirmed.
  */

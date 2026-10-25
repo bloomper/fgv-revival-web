@@ -11,7 +11,7 @@ import {SuggestionList} from "@/components/guide/suggestion/suggestion-list.clie
 export type DraftItems = Record<string, { type: GuideItemTypeValue; text: { sv: string; en?: string | null } }>;
 
 /**
- * Every suggestion, with accept and reject on the open ones (FR-033). {@code draftItems} are the draft's items by key,
+ * Every suggestion, with accept and reject on the open ones. {@code draftItems} are the draft's items by key,
  * shown next to a suggestion whose item has changed since.
  */
 export function AdminSuggestionList({suggestions, draftItems}: {

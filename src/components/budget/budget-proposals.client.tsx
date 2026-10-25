@@ -24,7 +24,7 @@ export type BudgetLineProposal = {
 };
 
 /**
- * The lines the revival's events' types propose and that have not been added for that event (M5-FR-9), one compact
+ * The lines the revival's events' types propose and that have not been added for that event, one compact
  * card each. Adding one opens the line dialog filled in from it.
  */
 export function BudgetProposals({proposals, onAdd}: {

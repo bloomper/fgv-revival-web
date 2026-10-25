@@ -26,7 +26,7 @@ async function load(revivalId: string, id: string) {
 }
 
 /**
- * One checklist: a guide chapter's with the chapter's tips (M3 FR-029), or an event's. The list of checklists beside it
+ * One checklist: a guide chapter's with the chapter's tips, or an event's. The list of checklists beside it
  * is in the layout.
  */
 export default async function ChecklistPage({params}: { params: Promise<{ id: string; checklistId: string }> }) {

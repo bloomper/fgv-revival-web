@@ -20,7 +20,7 @@ const STATUS_VARIANTS = {
 } as const;
 
 /**
- * Suggestions with their outcome (FR-035). The author may withdraw their own open ones; {@code actions} adds the super
+ * Suggestions with their outcome. The author may withdraw their own open ones; {@code actions} adds the super
  * admin's controls.
  */
 export function SuggestionList({suggestions, actions, showRevival = false}: {

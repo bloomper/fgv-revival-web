@@ -69,7 +69,7 @@ function ShowCancelledSwitch({shown}: { shown: boolean }) {
 /**
  * A revival's checklists beside the one open, as the checklist templates are under Administration: one per chapter
  * of the pinned guide version, numbered in the guide's order, then the event checklists, and the filters that find
- * items across all of them (M3 FR-022, FR-023, FR-028). It lives in the layout, so it stays put while a checklist
+ * items across all of them. It lives in the layout, so it stays put while a checklist
  * loads. Cancelled event checklists only with {@code ?cancelled=1}. On the list page it is the whole page on phones;
  * beside a checklist, only from {@code lg}.
  */

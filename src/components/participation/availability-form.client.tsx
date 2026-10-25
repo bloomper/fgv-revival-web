@@ -46,7 +46,7 @@ export function availabilityDefaults(event: AvailabilityEvent, answers: Availabi
 }
 
 /**
- * The participant's availability for one event (M6B-FR-1): per day yes, maybe or no as large native radio buttons, and
+ * The participant's availability for one event: per day yes, maybe or no as large native radio buttons, and
  * a short comment ("bad back, OK to do other things"). Saving sends only the days that changed.
  */
 export function AvailabilityForm({revivalId, event, answers}: {

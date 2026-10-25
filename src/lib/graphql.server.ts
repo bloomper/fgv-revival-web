@@ -5,7 +5,7 @@ import type {TypedDocumentNode} from "@graphql-typed-document-node/core";
 import {getClient} from "@/lib/urql.server";
 
 /**
- * The error codes the server returns in `extensions.classification` (contracts/README.md, Errors).
+ * The error codes the server returns in `extensions.classification`.
  */
 export type ErrorCode =
     | "UNAUTHORIZED"

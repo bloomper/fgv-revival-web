@@ -40,7 +40,7 @@ interface NavSecondaryItem extends Omit<NavItem, "icon"> {
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     roles: Role[];
     accountUrl: string;
-    /** The server decides who reads the guide (FR-001–FR-004). */
+    /** The server decides who reads the guide. */
     guideReadable: boolean;
 }
 

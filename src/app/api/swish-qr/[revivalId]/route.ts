@@ -5,9 +5,9 @@ const ID = /^\d+$/;
 const SANDBOX = "default-src 'none'; style-src 'unsafe-inline'; sandbox";
 
 /**
- * The participant's pre-filled Swish QR code for their fee (M6-FR-19), fetched with the user's token so the browser
- * never holds it. The server answers 404 unless the caller is a participant of an open revival with an unpaid fee and a
- * Swish number, so an {@code <img>} then hides itself. The SVG is sandboxed, since opened on its own it could run script.
+ * The participant's pre-filled Swish QR code for their fee, fetched with the user's token so the browser never holds
+ * it. The server answers 404 unless the caller is a participant of an open revival with an unpaid fee and a Swish
+ * number, so an {@code <img>} then hides itself. The SVG is sandboxed, since opened on its own it could run script.
  */
 export async function GET(_request: NextRequest, {params}: { params: Promise<{ revivalId: string }> }) {
     const {revivalId} = await params;

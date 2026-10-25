@@ -26,7 +26,7 @@ async function load(revivalId: string, id: string) {
 }
 
 /**
- * One mailing (M6b). A draft is edited here by those who draft, and sent after a confirmation by the directeur or
+ * One mailing. A draft is edited here by those who draft, and sent after a confirmation by the directeur or
  * COMMS; a sent mailing shows its text and each recipient's status by name, and sends again to those it failed for.
  */
 export default async function MailingPage({params}: { params: Promise<{ id: string; mailingId: string }> }) {

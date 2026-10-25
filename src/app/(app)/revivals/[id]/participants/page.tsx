@@ -20,7 +20,7 @@ async function loadOverview(id: string) {
     }
 }
 
-// Names come from Spexregister: without it the list says so, and the counts and settings still show (constitution VI)
+// Names come from Spexregister: without it the list says so, and the counts and settings still show
 async function loadParticipants(id: string, includeRemoved: boolean) {
     try {
         return {participants: await getParticipants(id, includeRemoved), unavailable: false};
@@ -44,7 +44,7 @@ async function loadPositions() {
 }
 
 /**
- * A revival's participants and helpers (M6a, 5.6): the counts, the list with its actions and the participants'
+ * A revival's participants and helpers: the counts, the list with its actions and the participants'
  * suggestions. Only the directeurs, the steering group and super admins find it; everyone else is shown not found.
  */
 export default async function ParticipantsPage({params, searchParams}: {

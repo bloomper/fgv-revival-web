@@ -1,6 +1,6 @@
 import Markdown, {type Components} from "react-markdown";
 
-// FR-010: paragraphs, lists, emphasis and links only. Raw HTML stays text (no rehype-raw), anything else is unwrapped to
+// Paragraphs, lists, emphasis and links only. Raw HTML stays text (no rehype-raw), anything else is unwrapped to
 // its text, and images are dropped so guide text never makes the browser load an outside URL.
 const ALLOWED_ELEMENTS = ["p", "ul", "ol", "li", "strong", "em", "a", "br"];
 

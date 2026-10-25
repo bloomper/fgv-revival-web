@@ -21,7 +21,7 @@ function listOrUndefined<T>(values: Set<T>): T[] | undefined {
 
 /**
  * The log's filters, as on the other list pages: a search field and a filter per kind — mine, open and overdue; type;
- * tag; meeting — in any combination (M3 FR-012). They live in the URL, so a filtered view can be reloaded and shared,
+ * tag; meeting — in any combination. They live in the URL, so a filtered view can be reloaded and shared,
  * and the server does the filtering.
  */
 export function LogFilters({filter, tags, meetings}: {

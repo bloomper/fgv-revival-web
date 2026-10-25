@@ -3,7 +3,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * The guide's start page for a version picked in the version selector (FR-002, FR-003).
+ * The guide's start page for a version picked in the version selector.
  */
 export default async function GuideVersionPage({params}: { params: Promise<{ versionId: string }> }) {
     const {versionId} = await params;

@@ -5,8 +5,8 @@ import {pickText} from "@/components/guide/localized";
 import {PlainText} from "@/components/plain-text";
 
 /**
- * A required item's text is the guide's Markdown in the reader's language (M3 FR-035); any other item's is the
- * steering group's plain text (FR-015).
+ * A required item's text is the guide's Markdown in the reader's language; any other item's is the
+ * steering group's plain text.
  */
 export function ChecklistItemText({item}: { item: Pick<ChecklistItemFieldsFragment, "required" | "text"> }) {
     const t = useTranslations("Guide");

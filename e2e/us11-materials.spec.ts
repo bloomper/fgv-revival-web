@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Materials and inventory, M8: links to where files are kept, shown to the right participants", () => {
+test.describe("Materials and inventory: links to where files are kept, shown to the right participants", () => {
     test.beforeEach(async ({mock}) => {
         await mock.setStatus("1", "OPEN");
         await mock.participants({people: true});

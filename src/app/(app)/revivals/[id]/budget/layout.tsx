@@ -20,8 +20,8 @@ async function load(id: string) {
 }
 
 /**
- * A revival's budget (M5): overview, lines, transactions and scenarios, each its own route. Only those who may read the
- * budget find it (M5-FR-6); everyone else is shown not found, as for a revival they cannot see.
+ * A revival's budget: overview, lines, transactions and scenarios, each its own route. Only those who may read the
+ * budget find it; everyone else is shown not found, as for a revival they cannot see.
  */
 export default async function BudgetLayout({children, params}: {
     children: React.ReactNode;

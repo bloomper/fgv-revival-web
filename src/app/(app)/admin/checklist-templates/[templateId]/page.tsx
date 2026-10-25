@@ -27,8 +27,8 @@ async function load(id: string) {
 }
 
 /**
- * One checklist template and its items (M3 US5). Super admins edit it; others who may read templates see it read-only
- * (FR-003). The list of templates beside it is in the layout.
+ * One checklist template and its items. Super admins edit it; others who may read templates see it read-only.
+ * The list of templates beside it is in the layout.
  */
 export default async function ChecklistTemplatePage({params, searchParams}: {
     params: Promise<{ templateId: string }>;

@@ -26,7 +26,7 @@ function dayAfter(date: string): string {
 }
 
 /**
- * Premiere date and the shows, each a date at a venue (FR-009, FR-011). The same rules are checked here and on the
+ * Premiere date and the shows, each a date at a venue. The same rules are checked here and on the
  * server; the server's message is shown when it refuses.
  */
 export function RevivalDetailsForm({revival, onDone}: {

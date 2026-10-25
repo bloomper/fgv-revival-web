@@ -23,7 +23,7 @@ async function load(id: string) {
 }
 
 /**
- * A new mailing (M6b). From a plan entry (`?template=&event=`, M6B-FR-12) the audience, subject and body are filled
+ * A new mailing. From a plan entry (`?template=&event=`) the audience, subject and body are filled
  * from the template in the reader's language, and the draft remembers the entry; the server prefills nothing.
  */
 export default async function NewMailingPage({params, searchParams}: {

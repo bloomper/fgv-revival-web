@@ -25,7 +25,7 @@ async function load(id: string, includeCancelled: boolean, withMeetings: boolean
 }
 
 /**
- * A revival's events (M4): the list with the proposals from the premiere, or the timeline of events, shows and
+ * A revival's events: the list with the proposals from the premiere, or the timeline of events, shows and
  * meetings with {@code ?view=timeline}. Cancelled events only with {@code ?cancelled=1}.
  */
 export default async function EventsPage({params, searchParams}: {

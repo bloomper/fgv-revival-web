@@ -80,7 +80,7 @@ function SyncRunStatus({run}: { run: SyncRunFieldsFragment }) {
 }
 
 /**
- * The participation sync to Spexregister (M7-FR-2..8): what would be written per participant, with what is already there
+ * The participation sync to Spexregister: what would be written per participant, with what is already there
  * marked, who is left out and why, and the latest run. Starting sends the preview's hash, so the server refuses when
  * the preview has changed since; a run in progress is polled every two seconds, and a run that failed is resumed by
  * starting again, which writes only what is still missing.

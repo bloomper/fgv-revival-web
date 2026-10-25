@@ -3,7 +3,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * Checklist templates for super admins (M3 US5). The list is in the layout; from {@code lg} this is the room beside it
+ * Checklist templates for super admins. The list is in the layout; from {@code lg} this is the room beside it
  * until a template is picked.
  */
 export default async function ChecklistTemplatesPage() {

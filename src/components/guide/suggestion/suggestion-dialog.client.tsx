@@ -31,7 +31,7 @@ type Place = { chapterKey: string; sectionKey: string | null };
 type Chapter = { key: string; title: { sv: string; en?: string | null } };
 
 /**
- * Suggests new text or type for an item, removing it, or a new item in a chapter or section (FR-031). The super admin
+ * Suggests new text or type for an item, removing it, or a new item in a chapter or section. The super admin
  * decides; nothing in the guide changes now. A new item without a {@code place} is suggested for one of
  * {@code chapters}, picked in the form.
  */

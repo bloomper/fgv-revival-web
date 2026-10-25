@@ -28,7 +28,7 @@ function chaptersOf(changes: Changes): { key: string; title: Text | null }[] {
 }
 
 /**
- * What changed between two versions, grouped by chapter (FR-016, research R5).
+ * What changed between two versions, grouped by chapter.
  */
 export function GuideChanges({changes}: { changes: Changes }) {
     const t = useTranslations("Guide.changes");

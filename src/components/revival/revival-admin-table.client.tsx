@@ -116,7 +116,7 @@ function useColumns(onEdit: (revival: Revival) => void, onDelete: (revivals: Rev
 }
 
 /**
- * Every revival, filterable and sortable (FR-021, FR-022), with editing and deleting as in Spexregister's tables. A row
+ * Every revival, filterable and sortable, with editing and deleting as in Spexregister's tables. A row
  * opens the revival, where status and members are managed.
  */
 export function RevivalAdminTable({revivals, actions}: { revivals: Revival[]; actions?: React.ReactNode }) {

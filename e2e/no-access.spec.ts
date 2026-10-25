@@ -8,7 +8,7 @@ test("a visitor who is not logged in gets the login screen and no app", async ({
     await expect(page.locator('[data-slot="sidebar"]')).toHaveCount(0);
 });
 
-test("a user without USER sees the no-access page and no revival data (US6, scenario 4)", async ({page, loginAs}) => {
+test("a user without USER sees the no-access page and no revival data", async ({page, loginAs}) => {
     await loginAs("noaccess");
     await page.goto("/");
 

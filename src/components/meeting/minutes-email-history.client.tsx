@@ -19,7 +19,7 @@ type Email = {
 
 /**
  * Earlier sends of the minutes, with who did not get each. Only the latest send can be sent again, to those it did not
- * reach, so a retry that reached everyone settles the earlier failures (M3 FR-021).
+ * reach, so a retry that reached everyone settles the earlier failures.
  */
 export function MinutesEmailHistory({revivalId, meetingId, emails, canSend}: {
     revivalId: string;

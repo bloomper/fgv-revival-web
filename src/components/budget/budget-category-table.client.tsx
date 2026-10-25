@@ -80,7 +80,7 @@ function References({references}: { references: ReferenceFigureView[] }) {
 }
 
 /**
- * Per category (M5-FR-8): budgeted, actual and the difference, income first and then costs, each with a subtotal. A
+ * Per category: budgeted, actual and the difference, income first and then costs, each with a subtotal. A
  * row opens to show earlier revivals' figures for the category, in total and per participant.
  */
 export function BudgetCategoryTable({categories}: { categories: BudgetCategorySummary[] }) {

@@ -21,9 +21,9 @@ import {withPolicyPage} from "@/utils/route.server";
 const SUGGESTION_STATUSES = ["OPEN", "ACCEPTED", "REJECTED", "WITHDRAWN"] as const;
 
 /**
- * A revival's guide tab: the version it follows with the way to change it and see what changed (FR-019, FR-020), a
- * way into the guide itself, read one chapter per page under this revival, and its suggestions (FR-031, FR-035). A
- * revival the user cannot see is not found (M1 FR-017).
+ * A revival's guide tab: the version it follows with the way to change it and see what changed, a
+ * way into the guide itself, read one chapter per page under this revival, and its suggestions. A
+ * revival the user cannot see is not found.
  */
 export default async function RevivalGuidePage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;

@@ -61,7 +61,7 @@ function initialValues(item: EditableInventoryItem | null): InventoryValues {
 }
 
 /**
- * Adds an item to the inventory or changes one (M8-FR-4): what it is, how many, whether it is there or must be found,
+ * Adds an item to the inventory or changes one: what it is, how many, whether it is there or must be found,
  * borrowed, bought or built, where it is kept, who has it, and the material describing it.
  */
 export function InventoryDialog({revivalId, members, materials, item, onOpenChange}: {

@@ -8,8 +8,8 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * The kinds of events the guide's example timeline names, for super admins (M4-FR-1): what each is, when it is
- * proposed relative to the premiere, the checklist its events get and the budget lines it proposes. Retired ones only when asked for.
+ * The kinds of events the guide's example timeline names, for super admins: what each is, when it is proposed relative
+ * to the premiere, the checklist its events get and the budget lines it proposes. Retired ones only when asked for.
  */
 export default async function EventTypesPage({searchParams}: {
     searchParams: Promise<Record<string, string | string[] | undefined>>

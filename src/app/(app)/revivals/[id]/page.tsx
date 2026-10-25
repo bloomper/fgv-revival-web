@@ -46,7 +46,7 @@ async function loadUpcoming(id: string) {
     }
 }
 
-// Null for callers who may not read the budget (M5-FR-6); without it the overview still shows the rest
+// Null for callers who may not read the budget; without it the overview still shows the rest
 async function loadBudget(id: string, canRead: boolean) {
     if (!canRead) {
         return null;
@@ -77,9 +77,9 @@ async function loadSyncIncomplete(id: string, canArchive: boolean) {
 }
 
 /**
- * A revival's overview: details, status, the next events, the budget's position and who leads it. The layout fetches the same revival, which urql answers from
- * its request cache; both show a revival the user cannot see as not found (FR-017). Participants and helpers are sent to
- * their own page (M6a).
+ * A revival's overview: details, status, the next events, the budget's position and who leads it. The layout fetches
+ * the same revival, which urql answers from its request cache; both show a revival the user cannot see as not found.
+ * Participants and helpers are sent to their own page.
  */
 export default async function RevivalPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;

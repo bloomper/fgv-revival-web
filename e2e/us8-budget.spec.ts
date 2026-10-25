@@ -3,7 +3,7 @@ import {expect, test} from "./fixtures";
 
 const budgetNav = (page: Page) => page.getByRole("navigation", {name: "Budgetens delar"});
 
-test.describe("Budget, M5: lines from proposals, transactions with receipts, scenarios and reference figures", () => {
+test.describe("Budget: lines from proposals, transactions with receipts, scenarios and reference figures", () => {
     test.beforeEach(async ({mock}) => {
         await mock.setStatus("1", "ORGANISING");
         await mock.events();

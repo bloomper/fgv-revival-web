@@ -46,11 +46,11 @@ async function loadPositions() {
 }
 
 /**
- * The participant's (or helper's) own page (M6a, 5.6), made for a phone: the revival, their answer with the terms and
- * consent, contact details, dietary needs, the fee with Swish, the WhatsApp group, the steering group, a referral form
- * and the calendar link. Each section is its own component so later milestones can add theirs. M6b adds the schedule,
- * availability per event day, the caller's shifts and the open shifts they may sign up for. M8 adds the materials meant
- * for them: those for every participant and those for their position.
+ * The participant's (or helper's) own page, made for a phone: the revival, their answer with the terms and consent,
+ * contact details, dietary needs, the fee with Swish, the WhatsApp group, the steering group, a referral form and the
+ * calendar link. Each section is its own component: also the schedule, availability per event day, the caller's shifts,
+ * the open shifts they may sign up for, and the materials meant for them: those for every participant and those for
+ * their position.
  */
 export default async function MyParticipationPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
@@ -66,7 +66,7 @@ export default async function MyParticipationPage({params}: { params: Promise<{ 
         const {participant, revival} = participation;
         const isHelper = participant.kind === "HELPER";
         const contactEditable = participant.pending || participant.registerConsent === true;
-        // Participants answer for every event day unless they said no (M6B-FR-1); helpers are only given shifts
+        // Participants answer for every event day unless they said no; helpers are only given shifts
         const asksAvailability = !isHelper && participant.response !== "NO" && participation.events.length > 0;
         const takesShifts = participant.response === "YES" || participant.response === "MAYBE";
 

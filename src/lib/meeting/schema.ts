@@ -1,8 +1,5 @@
 import {z} from "zod";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
-// (M3 FR-016, data-model.md).
-
 export const MAX_MEETING_TITLE = 255;
 export const MAX_OTHERS_PRESENT = 1000;
 export const MAX_AGENDA_POINT = 1000;

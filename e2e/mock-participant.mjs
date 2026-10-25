@@ -1,4 +1,4 @@
-// The participant part of the mock backend (M6a): Spexregister's spexare, positions and vocal parts, a revival's
+// The participant part of the mock backend: Spexregister's spexare, positions and vocal parts, a revival's
 // participants and helpers with invitations, responses, fees, dietary needs and referrals, and the participant's own
 // page, with the server's rules (fgv-revival-server/src/main/resources/graphql/participant.graphqls). Participants log
 // in with their FGV account: inviting gives them a participant role waiting on their email address, claimed by the
@@ -730,7 +730,7 @@ export function participantResolvers(ctx) {
         }),
         isParticipant,
         own,
-        /** A participant by name and position only (ParticipantRef, M6b); the name falls back while Spexregister is down. */
+        /** A participant by name and position only (ParticipantRef); the name falls back while Spexregister is down. */
         ref(participant) {
             let name;
 
@@ -759,9 +759,9 @@ export function participantResolvers(ctx) {
         },
         activeIn,
         /**
-         * Gives revival 1 a fee of 800 kr with a loan of 10 000 kr, a Swish number, a WhatsApp link and extra terms; with
-         * {@code people}, also the pending participant Disa Deltagare (the "deltagare" persona) invited and logged in, the
-         * spexare Anna Andersson not invited, and a referral.
+         * Gives revival 1 a fee of 800 kr with a loan of 10 000 kr, a Swish number, a WhatsApp link and extra terms;
+         * with {@code people}, also the pending participant Disa Deltagare (the "deltagare" persona) invited and logged
+         * in, the spexare Anna Andersson not invited, and a referral.
          */
         seed({people = false} = {}) {
             const revival = ctx.state().revivals.find(candidate => candidate.id === "1");
@@ -820,7 +820,7 @@ export function participantResolvers(ctx) {
                 });
             }
         },
-        /** The participant's Swish QR code (M6-FR-19): only for the participant, with a Swish number and an unpaid fee. */
+        /** The participant's Swish QR code: only for the participant, with a Swish number and an unpaid fee. */
         handleHttp(persona, req, path, res) {
             const match = /^\/api\/revivals\/([^/]+)\/swish-qr$/.exec(path);
 

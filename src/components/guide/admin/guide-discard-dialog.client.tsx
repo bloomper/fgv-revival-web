@@ -20,7 +20,7 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {track} from "@/utils/umami";
 
 /**
- * Discards the draft after explicit confirmation, saying how many accepted suggestions will reopen (FR-015).
+ * Discards the draft after explicit confirmation, saying how many accepted suggestions will reopen.
  */
 export function GuideDiscardDialog({draftId, version, acceptedSuggestionCount}: {
     draftId: string;

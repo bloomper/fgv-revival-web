@@ -1,4 +1,4 @@
-// The cross-revival timeline (product spec 5.1): every revival's shows and the Chalmersspex's dates by month, with the
+// The cross-revival timeline: every revival's shows and the Chalmersspex's dates by month, with the
 // show weekends that clash flagged. A show weekend is an ISO week.
 
 const DAY = 24 * 60 * 60 * 1000;

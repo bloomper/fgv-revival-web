@@ -28,7 +28,7 @@ export function hrefOf(hit: GuideSearchHit, basePath: string) {
 }
 
 /**
- * Searches the version shown (FR-021). Results link to the matching place, in its chapter. Above the chapters it stays
+ * Searches the version shown. Results link to the matching place, in its chapter. Above the chapters it stays
  * while moving between them, so following a result clears the search.
  */
 export function GuideSearch({versionId, basePath, chapterNumbers}: {

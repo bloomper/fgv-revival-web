@@ -1,5 +1,5 @@
-// The checklist part of the mock backend, with the server's rules (specs/004-m3-log/contracts/README.md). A revival's
-// chapter checklists follow its pinned version on every read, as RevivalGuideSync does: one per chapter, with the
+// The checklist part of the mock backend, with the server's rules. A revival's chapter
+// checklists follow its pinned version on every read, as RevivalGuideSync does: one per chapter, with the
 // requirements, and none for chapters the version no longer has.
 
 export function createChecklistState() {

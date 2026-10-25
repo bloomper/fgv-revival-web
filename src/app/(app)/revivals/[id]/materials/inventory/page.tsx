@@ -18,7 +18,7 @@ async function load(id: string, includeRemoved: boolean) {
 }
 
 /**
- * The revival's inventory (M8-FR-4). Removed items only with {@code ?removed=1}.
+ * The revival's inventory. Removed items only with {@code ?removed=1}.
  */
 export default async function InventoryPage({params, searchParams}: {
     params: Promise<{ id: string }>;

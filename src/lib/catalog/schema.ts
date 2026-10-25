@@ -1,7 +1,5 @@
 import {z} from "zod";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules.
-
 export const MAX_CATALOG_NAME = 100;
 
 export const GUIDE_ITEM_KINDS = ["TIP", "REQUIREMENT", "QUESTION", "TEXT"] as const;

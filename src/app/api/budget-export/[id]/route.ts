@@ -5,7 +5,7 @@ const ID = /^[A-Za-z0-9-]{1,64}$/;
 const LANGUAGES = new Set(["sv", "en"]);
 
 /**
- * A revival's budget as an Excel workbook (M5-FR-11), fetched with the user's token so the browser never holds it.
+ * A revival's budget as an Excel workbook, fetched with the user's token so the browser never holds it.
  * The workbook's language follows the locale cookie, as the pages do.
  */
 export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {

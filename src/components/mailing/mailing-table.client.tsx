@@ -37,7 +37,7 @@ export function filterMailings(rows: MailingRow[], query: string, statuses: Set<
 }
 
 /**
- * The revival's mailings (M6b), newest first: subject, audience, status, when it was sent and to how many. A row opens
+ * The revival's mailings, newest first: subject, audience, status, when it was sent and to how many. A row opens
  * the mailing; drafts are edited and sent there.
  */
 export function MailingTable({revivalId, mailings, canDraft}: {

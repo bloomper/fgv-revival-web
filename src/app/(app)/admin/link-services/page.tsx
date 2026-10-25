@@ -6,7 +6,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * The services materials' links lead to, for super admins (M8-FR-1): FGV's own applications and services such as
+ * The services materials' links lead to, for super admins: FGV's own applications and services such as
  * Google Drive, with the hosts that recognise them. Retired ones only when asked for.
  */
 export default async function LinkServicesPage({searchParams}: {

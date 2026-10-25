@@ -107,7 +107,7 @@ export async function updateEventTypeBudgetLineAction(input: z.input<typeof even
 }
 
 /**
- * Removes a line from the type; budget lines already added from it keep their history (M5-FR-3).
+ * Removes a line from the type; budget lines already added from it keep their history.
  */
 export async function removeEventTypeBudgetLineAction(input: z.input<typeof eventTypeBudgetLineRemoveSchema>): Promise<ActionResult<null>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {

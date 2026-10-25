@@ -26,7 +26,7 @@ async function load(id: string) {
 type Person = Omit<StaffingCandidate, "answer" | "comment">;
 
 /**
- * Who may be given a shift (M6B-FR-3): participants who said yes or maybe and helpers who did not say no. Names come
+ * Who may be given a shift: participants who said yes or maybe and helpers who did not say no. Names come
  * from Spexregister; without it, those who answered for a day are still offered, by the names the answers carry.
  */
 async function loadCandidates(id: string, fallback: Person[]): Promise<{ people: Person[]; unavailable: boolean }> {
@@ -55,7 +55,7 @@ async function loadCandidates(id: string, fallback: Person[]): Promise<{ people:
 }
 
 /**
- * A revival's staffing (M6b, 5.7): pick an event, then per day its shift slots with who holds them, or everyone's
+ * A revival's staffing: pick an event, then per day its shift slots with who holds them, or everyone's
  * availability as a matrix. Writers (the directeur, or STAFFING) add, change and remove slots and assign people.
  */
 export default async function StaffingPage({params, searchParams}: {

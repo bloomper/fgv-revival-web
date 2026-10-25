@@ -7,7 +7,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * What changed between two versions, {@code ?from=&to=} (FR-016).
+ * What changed between two versions, {@code ?from=&to=}.
  */
 export default async function GuideChangesPage({searchParams}: {
     searchParams: Promise<{ from?: string; to?: string }>

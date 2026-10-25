@@ -230,12 +230,12 @@ function TypeSheet({type, templates, onOpenChange}: {
 
 /**
  * The event types in the order proposals and pickers show them: added, changed, moved, retired and restored, with the
- * budget lines each proposes. Types are never deleted, since events keep theirs (M4-FR-1).
+ * budget lines each proposes. Types are never deleted, since events keep theirs.
  */
 export function EventTypeEditor({types, templates, categories = []}: {
     types: EventTypeRow[];
     templates: Template[];
-    /** The budget categories, for the lines a type proposes (M5). */
+    /** The budget categories, for the lines a type proposes. */
     categories?: BudgetCategoryValue[];
 }) {
     const t = useTranslations();

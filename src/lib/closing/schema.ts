@@ -1,8 +1,5 @@
 import {z} from "zod";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
-// (closing.graphqls).
-
 const id = z.string().min(1);
 
 /** The membership year as typed: four digits. */
@@ -34,7 +31,7 @@ export function confirmsRevival(typed: string, revival: { id: string; title: str
     return value.length > 0 && (value === revival.title.trim().toLocaleLowerCase("sv") || value === revival.id);
 }
 
-/** A sync run's state as the archive warning needs it (M7-FR-14): never completed, or with failures. */
+/** A sync run's state as the archive warning needs it: never completed, or with failures. */
 export function syncIncomplete(lastSync: { status: string; failed: number } | null | undefined): boolean {
     return !lastSync || lastSync.status !== "DONE" || lastSync.failed > 0;
 }

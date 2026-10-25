@@ -13,7 +13,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * The suggestions made from a revival, with their outcome (FR-035).
+ * The suggestions made from a revival, with their outcome.
  */
 export default async function RevivalGuideSuggestionsPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;

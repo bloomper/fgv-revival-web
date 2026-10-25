@@ -40,7 +40,7 @@ const NBSP = " ";
 
 /**
  * Formats kronor the Swedish way in every language, as dates are: "12 345,50 kr", whole kronor without decimals
- * ("1 200 kr") and a minus sign for negative amounts. The value is the server's decimal string ("12345.5"), read as text
+ * and a minus sign for negative amounts. The value is the server's decimal string, read as text
  * so no öre is lost to floating point. Anything else is shown as it is.
  */
 export function formatAmount(value: string | number | null | undefined): string | null {

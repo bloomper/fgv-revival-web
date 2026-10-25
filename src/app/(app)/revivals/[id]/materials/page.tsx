@@ -31,7 +31,7 @@ async function loadPositions() {
 }
 
 /**
- * The revival's materials (M8-FR-3): links to where its files are kept. Removed ones only with {@code ?removed=1}.
+ * The revival's materials: links to where its files are kept. Removed ones only with {@code ?removed=1}.
  */
 export default async function MaterialsPage({params, searchParams}: {
     params: Promise<{ id: string }>;

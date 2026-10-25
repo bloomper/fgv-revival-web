@@ -24,7 +24,7 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
 
 /**
  * Emails a closed meeting's minutes to the steering group, in Swedish or English, and shows who did not get them,
- * with a way to send again to those only (M3 FR-021).
+ * with a way to send again to those only.
  */
 export function MinutesEmailDialog({revivalId, meetingId}: { revivalId: string; meetingId: string }) {
     const t = useTranslations("Meeting");

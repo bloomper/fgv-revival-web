@@ -169,7 +169,7 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (line: BudgetL
 }
 
 /**
- * The budget's lines (M5-FR-4): search, a filter by category, removed ones on request, and a menu per row to edit,
+ * The budget's lines: search, a filter by category, removed ones on request, and a menu per row to edit,
  * remove or restore. Lines are never deleted. Above the table, the lines the events propose for those who may write.
  */
 export function BudgetLineTable({revivalId, lines, proposals, categories, events, decisions, canWrite, showRemoved}: {

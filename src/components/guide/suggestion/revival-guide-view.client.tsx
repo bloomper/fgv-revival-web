@@ -8,7 +8,7 @@ import {GuideChapterView} from "@/components/guide/guide-view.client";
 import {SuggestionDialog} from "@/components/guide/suggestion/suggestion-dialog.client";
 
 /**
- * A chapter of a revival's guide, with suggestion controls for those who may suggest (FR-031).
+ * A chapter of a revival's guide, with suggestion controls for those who may suggest.
  */
 export function RevivalGuideChapter({chapter, number, versionId, revivalId, canSuggest}: {
     chapter: GuideVersionFieldsFragment["chapters"][number];

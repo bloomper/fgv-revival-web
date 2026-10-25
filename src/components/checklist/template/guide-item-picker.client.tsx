@@ -11,7 +11,7 @@ import {GuideTypeBadge} from "@/components/guide/guide-type-badge";
 const MIN_QUERY = 2;
 
 /**
- * Picks a guide item in the latest published version through M2's search.
+ * Picks a guide item in the latest published version through the guide's search.
  */
 export function GuideItemPicker({value, label, onChange}: {
     value: string | null;

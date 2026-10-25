@@ -1,8 +1,6 @@
 import {z} from "zod";
 import {catalogId} from "@/lib/catalog/schema";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json, translated where they are shown.
-
 export const MIN_YEAR = 1948;
 export const MAX_YEAR = 2100;
 export const MAX_SHOWS = 50;
@@ -40,7 +38,7 @@ export function revivalYears(originalYear: number | null | undefined, options: {
 }
 
 /**
- * The directeur's details, checked against the revival's year (FR-011): the premiere, and each show as a date, a start
+ * The directeur's details, checked against the revival's year: the premiere, and each show as a date, a start
  * time and a venue, the last two left blank until they are decided. A matinée and an evening show on the same day are
  * two shows. The server checks the same rules.
  */

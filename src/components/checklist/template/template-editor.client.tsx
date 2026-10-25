@@ -16,7 +16,7 @@ import {
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 
 /**
- * A template's items in order, moved up and down, edited or retired (FR-031). Retiring keeps checklist items' links;
+ * A template's items in order, moved up and down, edited or retired. Retiring keeps checklist items' links;
  * with {@code showRetired}, the retired items follow, to be restored at the end of the list.
  */
 export function TemplateEditor({templateId, kind, items, retiredItems, showRetired, readOnly}: {

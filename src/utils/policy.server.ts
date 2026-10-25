@@ -4,8 +4,8 @@ import {requireAllRoles, requireAnyRole} from "@/utils/auth.server";
 import {AuthzResult} from "@/types/auth";
 
 /**
- * Page and action guards by global role. They only decide which pages to show; the server enforces every rule
- * (constitution III), and what a user may do with a revival comes from `Revival.permissions`.
+ * Page and action guards by global role. They only decide which pages to show; the server enforces every rule,
+ * and what a user may do with a revival comes from `Revival.permissions`.
  */
 export const Policies = {
     app: {

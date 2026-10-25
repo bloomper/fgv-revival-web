@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Closing, M7: the directeur records the surplus, marks memberships, syncs to Spexregister and anonymizes", () => {
+test.describe("Closing: the directeur records the surplus, marks memberships, syncs to Spexregister and anonymizes", () => {
     test.beforeEach(async ({mock}) => {
         await mock.participants({people: true});
     });

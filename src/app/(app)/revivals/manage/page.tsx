@@ -12,9 +12,9 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * All revivals: super admins create revivals here and open one to manage it; observers see the same list read-only
- * (FR-021, FR-021a). With {@code ?view=timeline}, every revival's shows and the Chalmersspex dates by month, with
- * clashing show weekends flagged (product spec 5.1).
+ * All revivals: super admins create revivals here and open one to manage it; observers see the same list read-only.
+ * With {@code ?view=timeline}, every revival's shows and the Chalmersspex dates by month, with
+ * clashing show weekends flagged.
  */
 export default async function ManageRevivalsPage({searchParams}: {
     searchParams: Promise<{ create?: string; view?: string }>

@@ -3,7 +3,7 @@ import type {GuideItemFieldsFragment} from "@/gql/graphql";
 import {GuideItem} from "@/components/guide/guide-item";
 
 /**
- * The chapter's tips from the pinned guide version, shown with its chapter checklist (M3 FR-029). Collapsed by default.
+ * The chapter's tips from the pinned guide version, shown with its chapter checklist. Collapsed by default.
  */
 export function ChecklistTips({tips}: { tips: GuideItemFieldsFragment[] }) {
     const t = useTranslations("Checklist");

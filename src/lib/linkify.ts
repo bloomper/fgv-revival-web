@@ -5,7 +5,7 @@ const TRAILING_PUNCTUATION = /[.,;:!?)\]]+$/;
 
 /**
  * Splits plain text into text and http(s) links, so steering group text can show clickable links without ever being
- * read as Markdown or HTML (M3 FR-015). Anything else, `javascript:` included, stays text.
+ * read as Markdown or HTML. Anything else, `javascript:` included, stays text.
  */
 export function linkify(text: string): TextPart[] {
     const parts: TextPart[] = [];

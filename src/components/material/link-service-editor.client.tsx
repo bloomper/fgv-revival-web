@@ -43,7 +43,7 @@ const ACTIONS = {
 
 /**
  * The link services as the other lists the super admin keeps, each with the hosts its links are recognised by and an
- * optional start page (M8-FR-1). A service a material holds is retired rather than deleted.
+ * optional start page. A service a material holds is retired rather than deleted.
  */
 export function LinkServiceEditor({entries}: { entries: LinkServiceRow[] }) {
     const t = useTranslations();

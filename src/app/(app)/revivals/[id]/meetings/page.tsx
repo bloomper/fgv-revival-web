@@ -20,7 +20,7 @@ async function load(id: string) {
 }
 
 /**
- * A revival's meetings, newest first (M3 US3).
+ * A revival's meetings, newest first.
  */
 export default async function MeetingsPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;

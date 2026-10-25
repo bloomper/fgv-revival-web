@@ -9,7 +9,7 @@ import {pickText} from "@/components/guide/localized";
 import {formatDate} from "@/utils/format";
 
 /**
- * Items from several checklists, each with a link to its own checklist, where it is changed (M3 FR-028).
+ * Items from several checklists, each with a link to its own checklist, where it is changed.
  */
 export function ChecklistItemList({revivalId, items}: { revivalId: string; items: ChecklistItemFieldsFragment[] }) {
     const t = useTranslations("Checklist");

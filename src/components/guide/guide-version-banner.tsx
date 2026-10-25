@@ -4,7 +4,7 @@ import {Info} from "lucide-react";
 import {Alert, AlertDescription} from "@/components/ui/alert";
 
 /**
- * Tells readers a newer version exists, with a link to what changed (FR-019).
+ * Tells readers a newer version exists, with a link to what changed.
  */
 export function GuideVersionBanner({current, newer}: {
     current: { id: string; label?: string | null };

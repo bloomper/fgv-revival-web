@@ -13,7 +13,7 @@ import type {
 } from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
-// Participants, invitations and the participant's own page (M6a, contract participant.graphqls). Names and contact
+// Participants, invitations and the participant's own page (participant.graphqls). Names and contact
 // details come from Spexregister, so the list, the candidates and the positions are fetched on their own: one of them
 // failing with SPEXREGISTER_UNAVAILABLE leaves the rest of the page working.
 

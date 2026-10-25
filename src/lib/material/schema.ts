@@ -4,8 +4,6 @@ import {catalogId, catalogNameSchema} from "@/lib/catalog/schema";
 import {ownerSchema} from "@/lib/decision-log/schema";
 import {isHostName, MAX_HOSTS, MAX_URL, parseHttpsUrl} from "@/lib/material/hosts";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules (M8).
-
 export const MAX_MATERIAL_TITLE = 200;
 export const MAX_MATERIAL_COMMENT = 1000;
 export const MAX_INVENTORY_NAME = 200;

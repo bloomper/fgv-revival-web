@@ -200,7 +200,7 @@ function TemplateSheet({template, eventTypes, onOpenChange}: {
 }
 
 /**
- * The mailing plan's templates in order (M6b): added, changed, moved, retired and restored. Each says when it is due,
+ * The mailing plan's templates in order: added, changed, moved, retired and restored. Each says when it is due,
  * relative to every event of a type or to the premiere, and whom it goes to. Templates are never deleted.
  */
 export function MailingTemplateEditor({templates, eventTypes}: {

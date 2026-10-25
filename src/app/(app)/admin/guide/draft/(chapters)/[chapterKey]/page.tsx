@@ -9,7 +9,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * Editing one chapter of the draft: its title, sections and items (US3, FR-013). Super admins only. The chapter list is
+ * Editing one chapter of the draft: its title, sections and items. Super admins only. The chapter list is
  * in the layout.
  */
 export default async function GuideDraftChapterPage({params}: { params: Promise<{ chapterKey: string }> }) {

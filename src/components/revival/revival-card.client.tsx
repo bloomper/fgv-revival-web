@@ -14,7 +14,7 @@ import {formatDate} from "@/utils/format";
 const STEERING_ROLES: RevivalRole[] = ["DIRECTEUR", "STEERING_GROUP"];
 
 /**
- * A revival as a card linking to it. Participants and helpers go straight to their own page (M6a), and do not see the
+ * A revival as a card linking to it. Participants and helpers go straight to their own page, and do not see the
  * steering group's size.
  */
 export function RevivalCard({revival, role}: { revival: RevivalSummaryFragment; role: RevivalRole | null }) {

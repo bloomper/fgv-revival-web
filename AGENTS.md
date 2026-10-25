@@ -222,6 +222,14 @@ changing routing or data fetching; this area differs sharply from older Next.
 - Calendar feeds are the exception: calendar apps have no session, so `/api/calendar/[file]` forwards
   `<token>.ics` (and `?lang=`) to the server with `apiFetchPublic`, without a token. The secret link is the credential;
   the web never stores it and shows it only once, right after `calendarFeedCreate`.
+- **The guide** is read at `/guide` and `/revivals/[id]/guide` (the introduction and the chapters), one chapter at
+  `/guide/[chapterKey]` and `/revivals/[id]/guide/[chapterKey]`, with search, the changes between versions
+  (`/guide/changes`), suggestions and a PDF (`/api/guide-pdf`). Super admins edit and publish it under `/admin/guide`:
+  the draft's chapters at `/admin/guide/draft`, each at `/admin/guide/draft/[chapterKey]`.
+- **The decision log, meetings and checklists** are a revival's `/log` (filters in the URL), `/meetings` (a meeting in
+  progress records what was done to each row; closed minutes can be emailed) and `/checklists` (one per chapter of
+  the revival's guide version, and dated event checklists) tabs. Super admins keep checklist templates under
+  `/admin/checklist-templates`. Nothing on them is deleted: rows are cancelled, items marked not applicable.
 - **Guide chapters are free-form.** A version has any number of chapters, each with a `key` that stays the same
   across versions, ordered by place and numbered from 1 in the UI; there is no `Phase` enum any more. Reading is one
   chapter per page (`[chapterKey]` routes) with `GuideChapterNav` (a bar and bottom sheet on phones, a list beside the
@@ -232,7 +240,7 @@ changing routing or data fetching; this area differs sharply from older Next.
   `guideChapterRemovalImpact`), publishing a draft that removed chapters, and changing a revival's version
   (`Revival.guideVersionChangeImpact`), each through `RemovalWarning`.
 - Guide Markdown is rendered only through `src/components/guide/guide-markdown.tsx`: no `rehype-raw`, and only the
-  elements FR-010 allows, so raw HTML stays text and images are never loaded. Guide text has a Swedish and an optional
+  elements the guide allows (paragraphs, lists, emphasis and links), so raw HTML stays text and images are never loaded. Guide text has a Swedish and an optional
   English version; pick with `pickText` from `src/components/guide/localized.ts`.
 - Free text the steering group writes (log rows, comments, meeting notes, checklist items, owner names) is rendered
   only through `src/components/plain-text.tsx`: plain text with line breaks and linkified http (s) URLs, never Markdown
@@ -241,13 +249,14 @@ changing routing or data fetching; this area differs sharply from older Next.
   in
   `src/app/(app)/<entity>/actions.server.ts` and validate input with the entity's Zod schema
   (`src/lib/<entity>/schema.ts`) before calling the lib.
-- Codegen has two targets (`codegen.ts`): `src/gql/schema.ts` for domain types/enums, and the
-  client preset in `src/gql/` for typed `graphql()` documents. Fragment masking is off, and enums
-  are re-used from `./schema` so identities match.
-- Errors carry `extensions.code`: `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND` (also for revivals the
-  caller may not see), `BAD_REQUEST`, `CONFLICT` (someone else changed it: ask to reload) and
-  `SPEXREGISTER_UNAVAILABLE` (show "temporarily unavailable", keep everything else working) and
-  `DIRECTORY_UNAVAILABLE` (the FGV accounts cannot be searched).
+- Codegen (`codegen.ts`) runs the client preset into `src/gql/` for typed `graphql()` documents, from the schema
+  files of a sibling `fgv-revival-server` checkout. Fragment masking is off, and enums are string unions
+  (`enumsAsTypes`).
+- Errors carry `extensions.classification`: `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND` (also for revivals the
+  caller may not see), `BAD_REQUEST`, `CONFLICT` (someone else changed it: ask to reload),
+  `SPEXREGISTER_UNAVAILABLE` (show "temporarily unavailable", keep everything else working),
+  `DIRECTORY_UNAVAILABLE` (the FGV accounts cannot be searched) and `MAIL_UNAVAILABLE`. `GraphQLRequestError` in
+  `src/lib/graphql.server.ts` carries the code.
 - Mutations send the `version` (or, for status, the `from` status) the user saw.
 
 ## Tables and forms
@@ -260,7 +269,8 @@ previously hit in `spexregister-web`:
 - Under React Compiler, a memoized cell reading live `row`/`table` methods off an otherwise stable
   object never updates. Pass primitives as props.
 
-Forms use `react-hook-form` + `zodResolver`.
+Forms use `react-hook-form` + `zodResolver`. Zod messages are keys under `Validation` in `messages/{sv,en}.json`,
+translated where they are shown. The server checks the same rules; the schemas only give quicker feedback.
 
 List pages follow one pattern, as in Spexregister: `DataTable` (`src/components/data-table.client.tsx`) with the
 toolbar as its children — a search field, a `DataFilter` popover per kind, a reset button, actions on the right — and

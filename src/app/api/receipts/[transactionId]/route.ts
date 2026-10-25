@@ -24,7 +24,7 @@ async function failure(response: Response) {
 }
 
 /**
- * A transaction's receipt (M5-FR-12), downloaded with the user's token so the browser never holds it. Always an
+ * A transaction's receipt, downloaded with the user's token so the browser never holds it. Always an
  * attachment and sandboxed, since a PDF or image opened on its own could run script.
  */
 export async function GET(_request: NextRequest, context: Params) {

@@ -1,4 +1,4 @@
-// The budget part of the mock backend (M5): categories, reference figures, event type budget lines, a revival's
+// The budget part of the mock backend: categories, reference figures, event type budget lines, a revival's
 // budget with its lines, transactions, receipts and scenarios, and the Chalmersspex dates, with the server's rules
 // (fgv-revival-server/src/main/resources/graphql/budget.graphqls, spex-calendar.graphqls). Amounts are kept in öre and
 // returned as the server's decimal strings. Test data is fictitious.
@@ -918,7 +918,7 @@ export function budgetResolvers(ctx) {
                 return {spexCalendarDateDelete: null};
             },
         },
-        /** Receipts and the Excel export over plain HTTP (M5-FR-11, FR-12). Returns false when the path is not one of them. */
+        /** Receipts and the Excel export over plain HTTP. Returns false when the path is not one of them. */
         handleHttp(persona, req, path, url, rawBody, res) {
             const json = (status, body) => res.writeHead(status, {"Content-Type": "application/json"}).end(JSON.stringify(body));
             const fail = error => error instanceof GraphQLError
@@ -1003,9 +1003,9 @@ export function budgetResolvers(ctx) {
             return false;
         },
         /**
-         * Revival 1 gets planned participants, a fee, two lines and a "Rephelg 1" event, whose type proposes a food line
-         * per participant, and the library a reference revival with figures. Without finance, the steering group member
-         * loses the FINANCE area.
+         * Revival 1 gets planned participants, a fee, two lines and a "Rephelg 1" event, whose type proposes a food
+         * line per participant, and the library a reference revival with figures. Without finance, the steering group
+         * member loses the FINANCE area.
          */
         seed({finance = true} = {}) {
             store().settings["1"] = {

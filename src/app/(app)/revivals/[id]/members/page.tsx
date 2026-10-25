@@ -21,7 +21,7 @@ async function loadRevival(id: string) {
 
 /**
  * A revival's directeurs and steering group. The layout fetches the same revival, which urql answers from its request
- * cache; both show a revival the user cannot see as not found (FR-017).
+ * cache; both show a revival the user cannot see as not found.
  */
 export default async function RevivalMembersPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;

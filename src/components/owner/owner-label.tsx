@@ -7,7 +7,7 @@ export type OwnerValue = {
 } | null | undefined;
 
 /**
- * Who owns a row or an item: a member by display name, or a free-text name marked as not a member (M3 FR-009).
+ * Who owns a row or an item: a member by display name, or a free-text name marked as not a member.
  */
 export function OwnerLabel({owner}: { owner: OwnerValue }) {
     const t = useTranslations("Owner");

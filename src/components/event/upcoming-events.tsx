@@ -6,7 +6,7 @@ import {Card, CardAction, CardContent, CardHeader, CardTitle} from "@/components
 import {type EventDates, formatEventDates} from "@/components/event/timeline";
 
 /**
- * The revival's next three events that have not ended, on its overview (M4-FR-8), with a link to all of them.
+ * The revival's next three events that have not ended, on its overview, with a link to all of them.
  */
 export function UpcomingEvents({revivalId, events}: {
     revivalId: string;

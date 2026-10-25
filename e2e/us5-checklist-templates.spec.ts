@@ -55,7 +55,7 @@ test.describe("Decision log, user story 5: checklist templates and event checkli
         await dialog.getByRole("button", {name: "Spara"}).click();
 
         await expect(page.getByRole("heading", {level: 3, name: /Rephelg 2/})).toBeVisible();
-        // Not the revival's "Utskick" tab (M6b), which is a list item too
+        // Not the revival's "Utskick" tab, which is a list item too
         const row = (text: string) => page.getByRole("listitem").filter({hasText: text}).filter({hasNotText: /^Utskick$/});
 
         await expect(row("Utskick")).toContainText("Klart senast: 2027-11-08");

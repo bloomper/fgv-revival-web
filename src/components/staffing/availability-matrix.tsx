@@ -18,7 +18,7 @@ type MatrixRow = {
 };
 
 /**
- * Everyone's availability for one event (M6b): a row per person who answered, a column per day, each cell the answer
+ * Everyone's availability for one event: a row per person who answered, a column per day, each cell the answer
  * as an icon and a word with the comment below it. Days nobody answered are blank.
  */
 export function AvailabilityMatrix({event, availability}: {

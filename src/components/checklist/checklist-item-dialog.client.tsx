@@ -26,7 +26,7 @@ import {
 } from "@/lib/checklist/schema";
 
 /**
- * Adds an item or edits one: text (not for a guide requirement, FR-025), owner, deadline and comment.
+ * Adds an item or edits one: text (not for a guide requirement), owner, deadline and comment.
  */
 export function ChecklistItemDialog({revivalId, checklistId, item, members, open, onOpenChange}: {
     revivalId: string;

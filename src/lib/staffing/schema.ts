@@ -1,8 +1,5 @@
 import {z} from "zod";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
-// (staffing.graphqls, M6B-FR-1/2); these only give quicker feedback.
-
 export const MAX_TASK = 100;
 export const MAX_NEEDED = 100;
 export const MAX_SLOT_COMMENT = 1000;
@@ -40,7 +37,6 @@ export const shiftSlotRemoveSchema = z.object({revivalId: id, id, version});
 export const shiftAssignmentSchema = z.object({revivalId: id, slotId: id, participantId: id});
 export const shiftOwnSchema = z.object({revivalId: id, slotId: id});
 
-/** The GraphQL input for validated slot values. */
 export function toShiftSlotInput(values: ShiftSlotValues, eventId?: string) {
     return {
         ...(eventId ? {eventId} : {}),

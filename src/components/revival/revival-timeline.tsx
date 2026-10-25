@@ -14,7 +14,7 @@ function weekLabel(week: string) {
 }
 
 /**
- * Every revival's shows and the Chalmersspex's dates by month (product spec 5.1), for super admins and observers. Weeks
+ * Every revival's shows and the Chalmersspex's dates by month, for super admins and observers. Weeks
  * where two revivals play, or a revival plays when the Chalmersspex does, are flagged and summed up on top.
  */
 export function RevivalTimeline({months, clashes}: { months: CrossTimelineMonth[]; clashes: Clash[] }) {

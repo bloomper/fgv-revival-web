@@ -23,7 +23,7 @@ import {formatInstant} from "@/utils/format";
 import {track} from "@/utils/umami";
 
 /**
- * The caller's secret calendar link for the revival (M4-FR-5): created, replaced or turned off here. The address is
+ * The caller's secret calendar link for the revival: created, replaced or turned off here. The address is
  * shown once, right after it is created, since only its hash is kept.
  */
 export function CalendarLinkDialog({revivalId, feed, triggerClassName}: {

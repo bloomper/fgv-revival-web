@@ -20,7 +20,7 @@ type DraftItem = { type: GuideItemTypeValue; text: { sv: string; en?: string | n
 
 /**
  * Accepts a suggestion into the draft. When the item has changed in the draft since, the server answers CONFLICT and
- * the super admin chooses what the draft gets (FR-033).
+ * the super admin chooses what the draft gets.
  */
 export function SuggestionAcceptDialog({suggestion, draftItem}: {
     suggestion: GuideSuggestionFieldsFragment;

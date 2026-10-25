@@ -1,7 +1,7 @@
 import type {AvailabilityAnswer, ParticipantKind, Weekday} from "@/gql/graphql";
 import {addDays, daysBetween} from "@/lib/event/dates";
 
-// Pure helpers for availability and staffing (M6b), shared by the participant's page, the staffing tab and its prints.
+// Pure helpers for availability and staffing, shared by the participant's page, the staffing tab and its prints.
 
 export type EventSpan = { startDate: string; endDate: string };
 export type AvailabilityDayValue = {
@@ -12,7 +12,7 @@ export type AvailabilityDayValue = {
 };
 export type SlotTime = { date: string; startTime: string; endTime: string };
 
-/** Every day of an event, first to last; an event lasts at most 32 days (M4). */
+/** Every day of an event, first to last; an event lasts at most 32 days. */
 export function eventDays(event: EventSpan): string[] {
     const span = Math.min(Math.max(daysBetween(event.startDate, event.endDate), 0), 31);
 
@@ -55,7 +55,7 @@ export type StaffingCandidate = {
 const ANSWER_ORDER: Record<string, number> = {YES: 0, MAYBE: 1, unknown: 2, NO: 3};
 
 /**
- * Whom to offer for a slot (M6b): those who said yes that day first, then maybe, then those who have not answered, and
+ * Whom to offer for a slot: those who said yes that day first, then maybe, then those who have not answered, and
  * those who said no last; by name within each.
  */
 export function rankCandidates(candidates: StaffingCandidate[]): StaffingCandidate[] {

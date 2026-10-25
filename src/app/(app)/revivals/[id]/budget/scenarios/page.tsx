@@ -18,7 +18,7 @@ async function load(id: string) {
 }
 
 /**
- * What-if over the budget (M5-FR-10): the calculator and the saved scenarios.
+ * What-if over the budget: the calculator and the saved scenarios.
  */
 export default async function BudgetScenariosPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;

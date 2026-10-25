@@ -33,7 +33,7 @@ export function scheduleEntries(events: ScheduleEvent[], shows: Show[], shifts: 
 }
 
 /**
- * The participant's schedule (M6B-FR-7): the revival's events and shows by date, with their own shifts under the event.
+ * The participant's schedule: the revival's events and shows by date, with their own shifts under the event.
  * A helper's events are only those they hold shifts in, as the server returns them.
  */
 export function Schedule({events, shows, shifts}: {

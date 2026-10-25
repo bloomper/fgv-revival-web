@@ -14,7 +14,7 @@ import {track} from "@/utils/umami";
 export type MembershipParticipant = { id: string; name: string; membershipPaid: boolean };
 
 /**
- * The year the revival pays FGV membership for and for whom (M7-FR-1): a checklist of the participants who answered
+ * The year the revival pays FGV membership for and for whom: a checklist of the participants who answered
  * yes. Saving replaces the marks, so everyone left unticked is unmarked. Read-only without `canWrite`.
  */
 export function MembershipForm({revivalId, year, participants, canWrite}: {

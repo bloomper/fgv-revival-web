@@ -39,9 +39,9 @@ function valuesOf(entry: LogEntryFieldsFragment | null, initial?: Partial<LogEnt
 }
 
 /**
- * Adds or edits a decision log row (M3 FR-008–FR-014). There is no delete: a row is closed or cancelled instead.
- * With a meeting in progress, the change is recorded as made in it (FR-018). A new row can start from `initial`, e.g.
- * the closing page's surplus decision: a DECISION tagged "överskott" (M7-FR-9).
+ * Adds or edits a decision log row. There is no delete: a row is closed or cancelled instead.
+ * With a meeting in progress, the change is recorded as made in it. A new row can start from `initial`, e.g.
+ * the closing page's surplus decision: a DECISION tagged "överskott".
  */
 export function LogEntryDialog({revivalId, entry, initial, members, tags, meetingId, open, onOpenChange}: {
     revivalId: string;

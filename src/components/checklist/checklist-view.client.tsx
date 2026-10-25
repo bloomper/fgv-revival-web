@@ -12,7 +12,7 @@ import {ChecklistItemRow} from "@/components/checklist/checklist-item-row.client
 import {ChecklistStateDialog} from "@/components/checklist/checklist-state-dialog.client";
 
 /**
- * A checklist's items, guide requirements first (M3 FR-022). Items are never deleted (FR-026).
+ * A checklist's items, guide requirements first. Items are never deleted.
  */
 export function ChecklistView({revivalId, checklistId, items, members, canWrite, canWaive, cancelled, actions}: {
     revivalId: string;

@@ -86,7 +86,7 @@ function initialValues(event: EditableEvent | null, prefill: EventPrefill | null
 }
 
 /**
- * Adds an event, from a type or freely, or changes one (M4). The type's name is the default title and its length the
+ * Adds an event, from a type or freely, or changes one. The type's name is the default title and its length the
  * default end date; both follow the type and start date until changed by hand. An event's type cannot change.
  */
 export function EventDialog({revivalId, types, event, prefill = null, open, onOpenChange}: {

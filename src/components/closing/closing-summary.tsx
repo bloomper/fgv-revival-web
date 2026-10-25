@@ -53,7 +53,7 @@ function OpenLink({href, children}: { href: string; children: ReactNode }) {
 }
 
 /**
- * Where the revival stands on closing (5.11), as a checklist of cards: the financial result and the loan, the surplus
+ * Where the revival stands on closing, as a checklist of cards: the financial result and the loan, the surplus
  * decision in the log, the lessons learned for the guide, and the chapter checklists.
  */
 export function ClosingSummary({revivalId, closing, canReadBudget, canWriteLog, members}: {

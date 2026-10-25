@@ -4,7 +4,7 @@ import {getLocale} from "next-intl/server";
 import {getAccessToken} from "@/utils/auth.server";
 
 /**
- * The server's plain HTTP endpoints (contracts/http.md) live next to GraphQL, so their base comes from
+ * The server's plain HTTP endpoints live next to GraphQL, so their base comes from
  * API_GRAPHQL_ENDPOINT and no other variable is needed.
  */
 export function apiUrl(path: string): string {

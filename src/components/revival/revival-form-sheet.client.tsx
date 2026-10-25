@@ -102,7 +102,7 @@ function SpexPicker({value, onChange}: { value: SpexOption | null; onChange: (sp
 }
 
 /**
- * Creates a revival in PROPOSED (FR-006), or with {@code revival} changes its spex and year. The year is chosen from
+ * Creates a revival in PROPOSED, or with {@code revival} changes its spex and year. The year is chosen from
  * the years the spex allows.
  */
 export function RevivalFormSheet({revival, open, onOpenChange, trigger}: {

@@ -58,7 +58,7 @@ function initialValues(transaction: EditableTransaction | null): TransactionValu
 }
 
 /**
- * Adds a transaction or changes one (M5): a cost or income on a date, in a category, optionally against a budget line.
+ * Adds a transaction or changes one: a cost or income on a date, in a category, optionally against a budget line.
  * For a cost, who paid it out of their own pocket; a receipt can be chosen here and is uploaded right after saving.
  */
 export function TransactionDialog({revivalId, categories, lines, members, transaction, onOpenChange}: {

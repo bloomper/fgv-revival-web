@@ -24,8 +24,8 @@ function nextSaturday(today = new Date()) {
 }
 
 /**
- * A template item's deadline relative to the checklist's date (FR-031), with a live example so the rule can be checked
- * while it is written. A mailing template's due date (M6b) uses it too, with a label of its own and no "none".
+ * A template item's deadline relative to the checklist's date, with a live example so the rule can be checked
+ * while it is written. A mailing template's due date uses it too, with a label of its own and no "none".
  */
 export function RelativeDeadlineField({value, onChange, exampleDate, label, required = false}: {
     value: RelativeDeadlineValue | null;

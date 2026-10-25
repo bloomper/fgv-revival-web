@@ -21,7 +21,7 @@ async function load(id: string, filter: ReturnType<typeof parseLogFilter>) {
 }
 
 /**
- * A revival's decision log, filtered by the URL query (M3 FR-012). A revival the user cannot see is not found.
+ * A revival's decision log, filtered by the URL query. A revival the user cannot see is not found.
  */
 export default async function RevivalLogPage({params, searchParams}: {
     params: Promise<{ id: string }>;

@@ -1,4 +1,4 @@
-// The materials part of the mock backend (M8): the link services the super admin keeps, a revival's materials (links,
+// The materials part of the mock backend: the link services the super admin keeps, a revival's materials (links,
 // recognised by their host) and its inventory, with the server's rules (fgv-revival-server/src/main/resources/graphql/
 // material.graphqls). Materials and items are removed, never deleted. Test data is fictitious.
 
@@ -71,7 +71,7 @@ export function materialResolvers(ctx) {
         return found ? {__typename: "Position", ...found} : null;
     };
 
-    // The URL rules of M8-FR-3: an absolute https URL with a host and no credentials
+    // The server's URL rules: an absolute https URL with a host and no credentials
     const checkUrl = url => {
         let parsed;
 
@@ -375,7 +375,7 @@ export function materialResolvers(ctx) {
         },
     };
 
-    // The participant sees the materials for every participant and those for their position (M8-FR-5, FR-6)
+    // The participant sees the materials for every participant and those for their position
     const myParticipation = ctx.resolvers.MyParticipation;
 
     resolvers.MyParticipation = (persona, variables) => {

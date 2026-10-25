@@ -20,7 +20,7 @@ import {cn} from "@/utils/utils";
 
 /**
  * One checklist item: a done box, its text, owner, deadline, comment and links. Controls only for those who may write;
- * not applicable on a guide requirement only for directeurs (M3 FR-025).
+ * not applicable on a guide requirement only for directeurs.
  */
 export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, onNotApplicable}: {
     revivalId: string;

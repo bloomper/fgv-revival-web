@@ -21,7 +21,7 @@ import {MAX_REASON} from "@/lib/checklist/schema";
 
 /**
  * Marks an item not applicable, which is how it is cancelled. A guide requirement needs a reason, and only a directeur
- * may waive one (M3 FR-025).
+ * may waive one.
  */
 export function ChecklistStateDialog({revivalId, item, open, onOpenChange}: {
     revivalId: string;

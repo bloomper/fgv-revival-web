@@ -167,7 +167,7 @@
     --viz-series-7: #9085e9;
 }
 
-/* Print views (M6b staffing): only the page's own content, without the app's sidebar (header and tabs carry print:hidden).
+/* Print views (staffing): only the page's own content, without the app's sidebar (header and tabs carry print:hidden).
    Unlayered, so it wins over the sidebar's Tailwind utilities. */
 @media print {
     [data-slot="sidebar-gap"],

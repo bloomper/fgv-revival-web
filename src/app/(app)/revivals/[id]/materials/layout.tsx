@@ -20,7 +20,7 @@ async function load(id: string) {
 }
 
 /**
- * A revival's materials and inventory (M8), each its own route. Only those the server lets read them (`canReadMaterials`:
+ * A revival's materials and inventory, each its own route. Only those the server lets read them (`canReadMaterials`:
  * super admins, directeurs and the steering group, not observers) find them;
  * participants see the materials meant for them on their own page.
  */

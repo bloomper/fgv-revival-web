@@ -24,7 +24,7 @@ export type TemplateItem = NonNullable<ChecklistTemplateQuery["checklistTemplate
 
 /**
  * Adds or edits a template item: Swedish and English text, a guide item, a default capability and, for event
- * templates, a relative deadline (FR-031). The capabilities are the active ones, and the item's own if it is retired.
+ * templates, a relative deadline. The capabilities are the active ones, and the item's own if it is retired.
  */
 export function TemplateItemDialog({templateId, kind, item, open, onOpenChange}: {
     templateId: string;

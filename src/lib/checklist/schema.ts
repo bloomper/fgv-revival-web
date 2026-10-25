@@ -1,9 +1,6 @@
 import {z} from "zod";
 import {catalogId} from "@/lib/catalog/schema";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
-// (M3 FR-024–FR-026, data-model.md).
-
 export const MAX_ITEM_TEXT = 1000;
 export const MAX_ITEM_COMMENT = 2000;
 export const MAX_REASON = 1000;

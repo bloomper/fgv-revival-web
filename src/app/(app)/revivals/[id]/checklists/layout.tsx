@@ -34,9 +34,9 @@ async function load(id: string) {
 }
 
 /**
- * A revival's checklists (M3 US4): the list of checklists beside the one open, as the checklist templates are under
+ * A revival's checklists: the list of checklists beside the one open, as the checklist templates are under
  * Administration, kept here so moving between checklists only reloads the checklist. The layout cannot read the query,
- * so it fetches the cancelled event checklists too and the list hides them unless asked for (FR-023).
+ * so it fetches the cancelled event checklists too and the list hides them unless asked for.
  */
 export default async function ChecklistsLayout({children, params}: {
     children: React.ReactNode;

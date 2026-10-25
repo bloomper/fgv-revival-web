@@ -191,7 +191,7 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (item: Invento
 const NO_FILTERS: InventoryFilters = {kinds: new Set(), statuses: new Set(), locations: new Set()};
 
 /**
- * A revival's inventory (M8-FR-4): the props, costumes, scores and technology it has or needs, where each is kept and
+ * A revival's inventory: the props, costumes, scores and technology it has or needs, where each is kept and
  * who has it. Items that must be found, bought or built stand out. Search, filters by kind, status and location,
  * removed items on request, and a menu per row to edit, remove or restore. Items are never deleted.
  */

@@ -360,7 +360,7 @@ export type GuideItemCreateInput = {
 };
 
 /**
- * What the application does with an item of a type (product spec 5.2). Each kind drives behaviour, so the kinds are
+ * What the application does with an item of a type. Each kind drives behaviour, so the kinds are
  * fixed while the types are not.
  */
 export type GuideItemKind =
@@ -561,7 +561,7 @@ export type LogEntryCreateInput = {
     date?: string | null | undefined;
     deadline?: string | null | undefined;
     guideItemKey?: string | number | null | undefined;
-    /** A meeting IN_PROGRESS in the same revival (FR-018). */
+    /** A meeting IN_PROGRESS in the same revival. */
     meetingId?: string | number | null | undefined;
     owner?: OwnerInput | null | undefined;
     revivalId: string | number;

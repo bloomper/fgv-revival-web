@@ -17,7 +17,7 @@ export type MyMaterial = {
 };
 
 /**
- * The materials the participant may see (M8-FR-6), grouped by category in a fixed order, each a link large enough for
+ * The materials the participant may see, grouped by category in a fixed order, each a link large enough for
  * a finger that opens in a new tab and says where it leads.
  */
 export function MyMaterials({materials}: { materials: MyMaterial[] }) {

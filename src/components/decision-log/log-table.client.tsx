@@ -236,7 +236,7 @@ function useColumns({revivalId, canWrite, meetingId, onEdit, onAnswer}: {
 
 /**
  * The decision log as the other tables are: sortable columns, pages, a toolbar and a menu per row. A closed row is
- * greyed, as in the Excel log, and clicking a row edits it. There is no delete (M3 FR-010). The page filters the rows;
+ * greyed, as in the Excel log, and clicking a row edits it. There is no delete. The page filters the rows;
  * its filters go in {@code toolbar} and other buttons in {@code actions}.
  */
 export function LogTable({

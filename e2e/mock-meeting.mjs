@@ -1,5 +1,5 @@
-// The meeting part of the mock backend, with the server's rules (specs/004-m3-log/contracts/README.md). Rows changed
-// with a meetingId are recorded by mock-log.mjs in the meeting's `changes`.
+// The meeting part of the mock backend, with the server's rules. Rows changed with
+// a meetingId are recorded by mock-log.mjs in the meeting's `changes`.
 
 export function createMeetingState() {
     return {meetings: [], nextId: 1, emails: [], failOnce: []};

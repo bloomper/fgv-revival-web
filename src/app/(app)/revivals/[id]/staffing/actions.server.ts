@@ -20,7 +20,7 @@ import {
 import {Policies} from "@/utils/policy.server";
 import {withPolicyAction} from "@/utils/route.server";
 
-// Staffing (M6b). Participants see their shifts on their own page, so the whole revival is revalidated.
+// Participants see their shifts on their own page, so the whole revival is revalidated.
 function revalidate(revivalId: string) {
     revalidatePath(`/revivals/${revivalId}`, "layout");
 }

@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Participants, M6a: the steering group adds and invites, the participant answers on their own page", () => {
+test.describe("Participants: the steering group adds and invites, the participant answers on their own page", () => {
     test.beforeEach(async ({mock}) => {
         await mock.setStatus("1", "OPEN");
     });

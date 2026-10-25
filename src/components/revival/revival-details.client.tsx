@@ -18,7 +18,7 @@ import {formatDate, formatInstant} from "@/utils/format";
  */
 export function RevivalDetails({revival, syncIncomplete = false}: {
     revival: RevivalDetailFragment;
-    /** Archiving warns when the participation sync never completed or has failures (M7-FR-14). */
+    /** Archiving warns when the participation sync never completed or has failures. */
     syncIncomplete?: boolean;
 }) {
     const t = useTranslations();

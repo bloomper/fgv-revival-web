@@ -370,7 +370,7 @@ function useColumns({revivalId, canWrite, canWriteBudget, canReadDietary, action
 }
 
 /**
- * The revival's participants and helpers (M6a, 5.6) in one table: search, a filter per answer, kind, position and
+ * The revival's participants and helpers in one table: search, a filter per answer, kind, position and
  * invitation, removed ones on request, and the steering group's actions — adding from Spexregister or as pending
  * people, inviting, the Swish and WhatsApp settings, and a row menu to edit, remind or remove.
  */

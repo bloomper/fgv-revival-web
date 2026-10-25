@@ -6,7 +6,7 @@ import {withPolicyPage} from "@/utils/route.server";
 
 /**
  * The current Chalmersspex's show dates, for super admins, so the timeline of all revivals flags revivals playing the
- * same weekend (product spec 5.1).
+ * same weekend.
  */
 export default async function SpexCalendarPage() {
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {

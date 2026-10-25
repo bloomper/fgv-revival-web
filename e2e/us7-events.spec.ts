@@ -1,6 +1,6 @@
 import {expect, test} from "./fixtures";
 
-test.describe("Events, M4: the timeline, proposals from the premiere and calendar links", () => {
+test.describe("Events: the timeline, proposals from the premiere and calendar links", () => {
     test.beforeEach(async ({mock}) => {
         await mock.setStatus("1", "ORGANISING");
         await mock.events();

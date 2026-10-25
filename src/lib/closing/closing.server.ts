@@ -4,7 +4,7 @@ import {graphql} from "@/gql";
 import type {MembershipSetInput} from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
-// Closing a revival (M7, contract closing.graphqls): the closing signals, FGV membership marks, the participation sync
+// Closing a revival (closing.graphqls): the closing signals, FGV membership marks, the participation sync
 // to Spexregister and anonymization. The preview and the participants' names come from Spexregister, so they are
 // fetched on their own: SPEXREGISTER_UNAVAILABLE there leaves the rest of the page working.
 
@@ -49,7 +49,7 @@ const RevivalClosingQuery = graphql(`
     }
 `);
 
-// Only what the status select needs to warn before archiving (M7-FR-14)
+// Only what the status select needs to warn before archiving
 const RevivalSyncSignalQuery = graphql(`
     query RevivalSyncSignal($id: ID!) {
         revival(id: $id) {

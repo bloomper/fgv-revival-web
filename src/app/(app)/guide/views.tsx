@@ -40,7 +40,7 @@ async function title(shown: { label?: string | null; status: string }) {
 }
 
 /**
- * The start page: the version's introduction and chapters (FR-001–FR-003, US2). Each chapter is read on its own page.
+ * The start page: the version's introduction and chapters. Each chapter is read on its own page.
  */
 export async function GuideStart({version}: { version?: string }) {
     const t = await getTranslations("Guide");

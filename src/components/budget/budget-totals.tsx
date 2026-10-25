@@ -25,7 +25,7 @@ function Row({label, budgeted, actual}: { label: string; budgeted: string; actua
 }
 
 /**
- * The budget's position (M5-FR-7): the result budgeted and so far, income and costs, what people are owed and how many
+ * The budget's position: the result budgeted and so far, income and costs, what people are owed and how many
  * transactions lack a receipt. The loan is neither income nor cost.
  */
 export function BudgetTotals({totals}: { totals: BudgetTotalsValue }) {

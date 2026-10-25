@@ -7,7 +7,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 type Version = { id: string; label: string | null };
 
 /**
- * Picks the published version to read, newest first (FR-002, FR-003). The latest is the guide's own address, an older
+ * Picks the published version to read, newest first. The latest is the guide's own address, an older
  * one is under {@code /guide/versions/<id>}.
  */
 export function GuideVersionSelect({versions, current}: { versions: Version[]; current: string }) {

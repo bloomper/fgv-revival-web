@@ -25,7 +25,7 @@ import type {AudienceValues} from "@/lib/mailing/schema";
 import {track} from "@/utils/umami";
 
 /**
- * The confirmation before a draft goes out (M6B-FR-9): how many it reaches now and who has no address, from the same
+ * The confirmation before a draft goes out: how many it reaches now and who has no address, from the same
  * preview the editor shows. Nothing is sent without this confirmation.
  */
 function SendDialog({revivalId, mailing, audience, onOpenChange}: {

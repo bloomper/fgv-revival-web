@@ -23,7 +23,7 @@ function isoWeekday(date: Date) {
 }
 
 /**
- * The same computation as the server's RelativeDeadline.apply (research R11), for the live example while editing.
+ * The same computation as the server's RelativeDeadline.apply, for the live example while editing.
  */
 export function applyRelativeDeadline(deadline: RelativeDeadlineValue, date: string): string {
     const start = parse(date);

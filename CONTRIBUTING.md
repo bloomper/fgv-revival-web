@@ -52,7 +52,7 @@ Use `npm ci` rather than `npm install` so the lockfile is respected.
 $ npm run dev
 ```
 
-This serves the app on <http://localhost:3000>.
+This serves the app on <http://localhost:3001>, next to Spexregister Web on 3000.
 
 ### Checks
 
@@ -80,13 +80,14 @@ pointing into `.next/dev/types/`, remove `.next` and build again.
 
 ### Regenerating the GraphQL client
 
-`src/gql/` is generated from the live backend schema and is committed. After a schema change:
+`src/gql/` is generated from the backend's schema and is committed. After a schema change:
 
 ```
 $ npm run gql-codegen
 ```
 
-This reads `API_GRAPHQL_ENDPOINT` from `.env.local`, so the backend must be reachable.
+Introspection is off on the server, so this reads the schema files of a sibling `fgv-revival-server` checkout
+(`GRAPHQL_SCHEMA` points elsewhere).
 
 [1]: CODE_OF_CONDUCT.md
 

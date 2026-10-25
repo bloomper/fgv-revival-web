@@ -170,7 +170,7 @@ function GuideVersionViewDialog({version, onClose}: { version: GuideVersion | nu
 }
 
 /**
- * The published versions of the guide, newest first, with how many revivals follow each (US3). A row opens the version's
+ * The published versions of the guide, newest first, with how many revivals follow each. A row opens the version's
  * summary; its menu opens the whole version in the guide, or deletes a version nothing uses.
  */
 export function GuideVersionTable({versions}: { versions: GuideVersion[] }) {

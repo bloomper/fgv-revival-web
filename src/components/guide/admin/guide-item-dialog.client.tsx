@@ -18,7 +18,7 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {guideItemSchema, type GuideItemValues, MAX_ITEM_TEXT} from "@/lib/guide/schema";
 
 /**
- * Edits an item's type and its Swedish and English Markdown, with a preview rendered as readers see it (research R9).
+ * Edits an item's type and its Swedish and English Markdown, with a preview rendered as readers see it.
  * The types are the active ones, and the item's own if it is retired.
  */
 export function GuideItemDialog({trigger, children, heading, initial, onSave}: {

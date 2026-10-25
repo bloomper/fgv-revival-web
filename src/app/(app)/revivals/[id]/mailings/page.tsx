@@ -19,7 +19,7 @@ async function load(id: string) {
 }
 
 /**
- * A revival's mailings (M6b, 5.8): the mailing plan from the super admin's templates, with what is due highlighted,
+ * A revival's mailings: the mailing plan from the super admin's templates, with what is due highlighted,
  * and the mailings themselves. Directeurs and the steering group draft; the directeur and COMMS send.
  */
 export default async function MailingsPage({params}: { params: Promise<{ id: string }> }) {

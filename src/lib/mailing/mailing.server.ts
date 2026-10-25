@@ -4,7 +4,7 @@ import {graphql} from "@/gql";
 import type {MailingAudienceInput, MailingInput, MailingTemplateInput} from "@/gql/graphql";
 import {GraphQLRequestError, runMutation, runQuery} from "@/lib/graphql.server";
 
-// Mailings, the mailing plan and its templates (M6b, contract mailing.graphqls). Nothing is sent without a person
+// Mailings, the mailing plan and its templates (mailing.graphqls). Nothing is sent without a person
 // confirming; recipients are names only, and their addresses are looked up by the server at send time.
 
 const MailingsQuery = graphql(`

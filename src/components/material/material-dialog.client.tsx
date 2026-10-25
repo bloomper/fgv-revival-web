@@ -56,7 +56,7 @@ function initialValues(material: EditableMaterial | null): MaterialValues {
         };
     }
 
-    // A recognised service stays blank ("recognise it from the link"), so changing the link follows it
+    // A recognised service stays blank, so changing the link follows it
     return {
         title: material.title,
         url: material.url,
@@ -138,7 +138,7 @@ function PositionsField({id, positions, value, onChange, error, unavailable}: {
 }
 
 /**
- * Adds a material or changes one (M8-FR-3): a title and a link, the service it is recognised as (shown while typing,
+ * Adds a material or changes one: a title and a link, the service it is recognised as (shown while typing,
  * and choosable when the host says nothing), its category, and who sees it. Nothing is uploaded.
  */
 export function MaterialDialog({revivalId, services, positions, positionsUnavailable = false, material, onOpenChange}: {

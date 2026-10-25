@@ -14,7 +14,7 @@ type Text = { sv: string; en?: string | null };
 type Template = { id: string; kind: "CHAPTER" | "EVENT"; chapterTitle?: Text | null; name?: Text | null };
 
 /**
- * Adding the items a template has and the checklist lacks (M3 FR-032a), and cancelling an event checklist.
+ * Adding the items a template has and the checklist lacks, and cancelling an event checklist.
  */
 export function ChecklistActions({revivalId, checklist, templates}: {
     revivalId: string;

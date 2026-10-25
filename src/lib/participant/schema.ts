@@ -2,9 +2,6 @@ import {z} from "zod";
 import {parseAmount, toOre} from "@/lib/budget/amount";
 import {normalizeSwishNumber, SWISH_NUMBER, WHATSAPP_LINK_PREFIX} from "@/lib/participant/contact";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
-// (participant.graphqls); these only give quicker feedback.
-
 export const MAX_PERSON_NAME = 100;
 export const MAX_EMAIL = 255;
 export const MAX_PHONE = 50;
@@ -49,8 +46,6 @@ const optionalAmount = (maxOre: number) => z.string().trim()
         return !value || ore === null || ore <= maxOre;
     }, "amountOutOfRange");
 
-// --- Adding -------------------------------------------------------------------------------------------------------
-
 /**
  * A pending person or helper, not in Spexregister: a participant needs an email address to be invited, a helper an
  * email address or a phone number.
@@ -80,8 +75,6 @@ export const spexareSearchSchema = z.object({
     revivalId: id,
     query: z.string().trim().min(MIN_SPEXARE_QUERY).max(MAX_PERSON_NAME * 2)
 });
-
-// --- Editing ------------------------------------------------------------------------------------------------------
 
 /**
  * The row's edit dialog. The fee is the participant's own amount (`feeOverride`): {@code revivalFee}, or a blank
@@ -153,16 +146,12 @@ export const participantUpdateSchema = z.object({
 export const participantTransitionSchema = z.object({revivalId: id, id, version});
 export const participantFeePaidSchema = z.object({revivalId: id, id, version, paid: z.boolean()});
 
-// --- Inviting -----------------------------------------------------------------------------------------------------
-
 export const participantsInviteSchema = z.object({
     revivalId: id,
     participantIds: z.array(id).min(1).max(MAX_BULK_ADD),
     email: z.string().trim().refine(value => !value || EMAIL.test(value), "emailInvalid"),
     language: z.enum(INVITATION_LANGUAGES),
 });
-
-// --- Settings -----------------------------------------------------------------------------------------------------
 
 export const participationSettingsValuesSchema = z.object({
     swishNumber: z.string().trim().refine(value => !value || SWISH_NUMBER.test(normalizeSwishNumber(value)), "swishNumberInvalid"),
@@ -181,10 +170,8 @@ export const participationSettingsSchema = z.object({
 
 export const referralHandleSchema = z.object({revivalId: id, id, outcome: z.enum(["ADDED", "DISMISSED"])});
 
-// --- The participant's own ----------------------------------------------------------------------------------------
-
 /**
- * The participant's response (5.6): yes requires accepting the terms, and yes or maybe asks whether Spexregister may
+ * The participant's response: yes requires accepting the terms, and yes or maybe asks whether Spexregister may
  * keep their details. "" stands for not chosen yet.
  */
 export const respondValuesSchema = z.object({

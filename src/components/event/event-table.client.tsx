@@ -273,7 +273,7 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (event: EventR
 
 /**
  * A revival's events as the other tables are: search, a filter by type, cancelled ones on request, and a menu per row
- * to edit, open the checklist, cancel or restore. Events are never deleted (M4-FR-3). Above the table, the proposals
+ * to edit, open the checklist, cancel or restore. Events are never deleted. Above the table, the proposals
  * from the premiere for those who may add events.
  */
 export function EventTable({revivalId, events, types, proposals, canWrite, showCancelled, actions}: {

@@ -1,5 +1,5 @@
-// The decision log part of the mock backend, with the server's rules (specs/004-m3-log/contracts/README.md). The
-// rows are fictitious.
+// The decision log part of the mock backend, with the server's rules. The rows
+// are fictitious.
 import {recordMeetingChange} from "./mock-meeting.mjs";
 
 const OPEN = ["OPEN", "WAITING"];

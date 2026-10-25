@@ -20,7 +20,7 @@ async function load(id: string) {
 }
 
 /**
- * Printable staffing (M6b, M6B-FR-15: the web prints, the server makes no PDF): `?event=` gives an event's schedule
+ * Printable staffing, since the server makes no PDF: `?event=` gives an event's schedule
  * day by day with everyone's names, `?person=` one person's shifts across the revival. The app's frame, the tabs and
  * the print button are left out of the print by print CSS.
  */

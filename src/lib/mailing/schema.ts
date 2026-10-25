@@ -1,8 +1,5 @@
 import {z} from "zod";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules
-// (mailing.graphqls); these only give quicker feedback.
-
 export const MAX_SUBJECT = 200;
 export const MAX_BODY = 20000;
 export const MAX_TEMPLATE_NAME = 100;
@@ -54,8 +51,6 @@ export const mailingUpdateSchema = z.object({revivalId: id, id, version, planned
 export const mailingTransitionSchema = z.object({revivalId: id, id, version});
 export const mailingRetrySchema = z.object({revivalId: id, id});
 export const audiencePreviewSchema = z.object({revivalId: id, audience: audienceValuesSchema});
-
-// --- Templates (the super admin's mailing plan) --------------------------------------------------------------------
 
 const localized = (max: number, required: string, tooLong: string) => z.object({
     sv: z.string().trim().min(1, required).max(max, tooLong),

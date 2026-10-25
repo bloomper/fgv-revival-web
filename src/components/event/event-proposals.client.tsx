@@ -18,7 +18,7 @@ export type EventProposal = {
 };
 
 /**
- * The events the guide's example timeline proposes from the premiere that the revival has not added yet (M4-FR-7), one
+ * The events the guide's example timeline proposes from the premiere that the revival has not added yet, one
  * compact card each. Adding one opens the event dialog with its type and dates.
  */
 export function EventProposals({proposals, onAdd}: {

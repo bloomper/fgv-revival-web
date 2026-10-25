@@ -12,7 +12,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * The guide for super admins: the draft, the suggestions waiting for it, and the published versions (US1, US3, US5).
+ * The guide for super admins: the draft, the suggestions waiting for it, and the published versions.
  */
 export default async function AdminGuidePage() {
     return withPolicyPage(Policies.admin.requireSuperAdmin, async () => {

@@ -1,8 +1,6 @@
 import {z} from "zod";
 import {daysBetween} from "@/lib/event/dates";
 
-// Validation messages are keys under "Validation" in messages/{sv,en}.json. The server checks the same rules (M4).
-
 export const MAX_EVENT_TITLE = 255;
 export const MAX_EVENT_LOCATION = 255;
 export const MAX_EVENT_DESCRIPTION = 4000;

@@ -14,7 +14,7 @@ import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {guideTitleSchema, type GuideTitleValues} from "@/lib/guide/schema";
 
 /**
- * A Swedish and an optional English title, for renaming chapters and sections and adding sections (FR-009a).
+ * A Swedish and an optional English title, for renaming chapters and sections and adding sections.
  */
 export function GuideTitleDialog({trigger, children, heading, initial, onSave}: {
     trigger: ReactElement;

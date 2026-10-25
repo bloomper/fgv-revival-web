@@ -1,4 +1,4 @@
-// Receipts go through the route handler /api/receipts/[transactionId], which adds the token (M5-FR-12).
+// Receipts go through the route handler /api/receipts/[transactionId], which adds the token.
 
 export type ReceiptResult = { ok: true } | { ok: false; status: number; code: string | null; message: string | null };
 

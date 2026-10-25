@@ -2,7 +2,7 @@ import {getTranslations} from "next-intl/server";
 import {LogoutButton} from "@/components/logout-button.client";
 
 /**
- * Shown to someone who is logged in without the `USER` role on `fgv-revival` (FR-001). Shows no revival data.
+ * Shown to someone who is logged in without the `USER` role on `fgv-revival`. Shows no revival data.
  */
 export default async function NoAccessPage() {
     const t = await getTranslations();

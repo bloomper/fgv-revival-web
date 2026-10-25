@@ -6,7 +6,7 @@ import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 
 /**
- * The budget categories every revival's budget uses, for super admins (M5): income or cost, fixed at creation, and the
+ * The budget categories every revival's budget uses, for super admins: income or cost, fixed at creation, and the
  * role a category plays in scenarios. Retired ones only when asked for.
  */
 export default async function BudgetCategoriesPage({searchParams}: {

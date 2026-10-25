@@ -326,7 +326,7 @@ function ToggleFilter({pressed, onChange, children}: {
 }
 
 /**
- * The budget's transactions (M5): costs and income with who paid, whether they are reimbursed and their receipts. Filters
+ * The budget's transactions: costs and income with who paid, whether they are reimbursed and their receipts. Filters
  * by category and kind, costs not reimbursed and missing receipts; cancelled ones on request. Transactions are never
  * deleted, only cancelled.
  */

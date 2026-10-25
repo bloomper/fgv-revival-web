@@ -177,7 +177,7 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (material: Mat
 const NO_FILTERS: MaterialFilters = {categories: new Set(), services: new Set(), visibilities: new Set()};
 
 /**
- * A revival's materials (M8): links to where scripts, scores, recordings and pictures are kept. Search, filters by
+ * A revival's materials: links to where scripts, scores, recordings and pictures are kept. Search, filters by
  * category, service and visibility, removed ones on request for writers, and a menu per row to edit, open, remove or
  * restore. Materials are never deleted.
  */

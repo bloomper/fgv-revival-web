@@ -23,7 +23,7 @@ export type EventTemplate = { id: string; name?: { sv: string; en?: string | nul
 
 /**
  * Creates an event checklist, from a template or empty, or changes its name and date, which recomputes deadlines not
- * set by hand (M3 FR-023).
+ * set by hand.
  */
 export function EventChecklistDialog({revivalId, templates, checklist, compact = false}: {
     revivalId: string;

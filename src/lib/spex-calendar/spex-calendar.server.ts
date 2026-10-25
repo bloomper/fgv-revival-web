@@ -5,7 +5,7 @@ import type {SpexCalendarDateInput} from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
 // The current Chalmersspex's show dates (spex-calendar.graphqls), kept by the super admin, and the cross-revival
-// timeline that flags clashes with them (product spec 5.1).
+// timeline that flags clashes with them.
 
 const SpexCalendarDatesQuery = graphql(`
     query SpexCalendarDates {

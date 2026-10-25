@@ -4,7 +4,7 @@ import {graphql} from "@/gql";
 import type {AvailabilityInput, ShiftSlotInput} from "@/gql/graphql";
 import {runMutation, runQuery} from "@/lib/graphql.server";
 
-// Availability and staffing (M6b, contract staffing.graphqls). The slots and answers carry participants by name only
+// Availability and staffing (staffing.graphqls). The slots and answers carry participants by name only
 // (ParticipantRef); the full list of participants, for picking whom to assign, comes from Spexregister and is fetched
 // apart so its being unavailable leaves the slots working.
 

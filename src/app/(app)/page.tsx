@@ -35,7 +35,7 @@ async function loadMe() {
 
 /**
  * The start page. It only points onwards for now; news, as in Spexregister, may come here later. Participants and
- * helpers get a shortcut straight to their own page in each revival (M6a).
+ * helpers get a shortcut straight to their own page in each revival.
  */
 export default async function HomePage() {
     return withPolicyPage(Policies.app.requireAccess, async () => {
