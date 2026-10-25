@@ -149,7 +149,8 @@ changing routing or data fetching; this area differs sharply from older Next.
   `src/lib/participant/participant.server.ts` (participants, invitations, referrals and the participant's own page;
   `contact.ts` beside it builds `wa.me` links and names) and `src/lib/material/material.server.ts` (materials, the
   inventory and link services) and `src/lib/closing/closing.server.ts` (closing signals, membership, the sync to
-  Spexregister and anonymization).
+  Spexregister and anonymization) and `src/lib/audit/audit.server.ts` (a record's history) and
+  `src/lib/news/news.server.ts` (news).
 - **Events (M4)** live on the revival's Events tab (`/revivals/[id]/events`, `?view=timeline` for the timeline of
   events, shows and meetings, `?cancelled=1` for cancelled ones); event types are a super admin list
   (`/admin/event-types`) that is retired, never deleted. Proposals (`Revival.eventProposals`) and the distance from the
@@ -202,6 +203,18 @@ changing routing or data fetching; this area differs sharply from older Next.
   revival is deleted or anonymized; archived and rejected revivals are anonymized automatically 36 months after that
   status was set (`closing.autoAnonymizeOn`). `Revival.anonymizedAt` puts a banner on every revival page and a badge on
   `/revivals/manage`; the page then hides membership and sync.
+- **History** is read only and comes from the server's Envers audit trail (`revisions(type, id)`, audit.graphqls):
+  decision log rows, checklist items, events, budget lines, transactions, materials and news. Every row menu (and
+  each checklist item) has a History item for whoever reads the record, so the actions column is shown to readers
+  too, with the write items behind `canWrite`. `HistoryDialog` (`src/components/history/`) fetches through
+  `getRevisionsAction` when it opens. The server sends values already shaped by `FieldKind` and ids already resolved
+  to names; `historyValue` only formats dates, instants, amounts and booleans and translates enum values through the
+  labels the page already uses (`ENUM_LABELS`). Field labels live under `History.fields.<TYPE>`. Nothing is restored
+  from the history.
+- **News** is shown on the start page (the latest six published, `NewsList`) and kept by super admins under
+  `/admin/news` (`NewsTable`, `NewsDialog`). A piece is published from `visibleFrom` up to and including `visibleTo`;
+  without `visibleFrom` it is a draft. The server works out `published` from the dates, so nothing publishes it.
+  News is plain text rendered through `PlainText`, and is deleted for real (its history stays).
 - **Areas of responsibility (`Capability`) and guide item types are lists the super admin keeps** under Administration
   (`/admin/capabilities`, `/admin/guide-item-types`), not enums. Rows hold an entry's id (the four original ones keep
   `FINANCE`… and `TIP`…; new ones get a UUID) and GraphQL returns the entry, so show `name` with `catalogName` and

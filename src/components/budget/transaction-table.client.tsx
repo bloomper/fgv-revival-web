@@ -3,7 +3,8 @@
 import * as React from "react";
 import {useMemo, useRef, useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
-import {Ban, FileText, FileUp, FileX, MoreHorizontal, Pencil, Plus, X} from "lucide-react";
+import {Ban, FileText, FileUp, FileX, History, MoreHorizontal, Pencil, Plus, X} from "lucide-react";
+import {HistoryDialog} from "@/components/history/history-dialog.client";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -142,18 +143,23 @@ function ReceiptCell({transaction}: { transaction: TransactionRow }) {
     );
 }
 
-function RowActions({transaction, onEdit, onCancel, onUpload, onRemoveReceipt}: {
+/**
+ * A transaction's menu: its history for every reader; editing, the receipt and cancelling for those who write, while
+ * it is not cancelled.
+ */
+function RowActions({transaction, canWrite, onEdit, onCancel, onUpload, onRemoveReceipt, onHistory}: {
     transaction: TransactionRow;
+    canWrite: boolean;
     onEdit: (transaction: TransactionRow) => void;
     onCancel: (transaction: TransactionRow) => void;
     onUpload: (transaction: TransactionRow) => void;
     onRemoveReceipt: (transaction: TransactionRow) => void;
+    onHistory: (transaction: TransactionRow) => void;
 }) {
     const t = useTranslations("Budget");
+    const tHistory = useTranslations("History");
+    const writable = canWrite && !transaction.cancelled;
 
-    if (transaction.cancelled) {
-        return null;
-    }
     return (
         <DropdownMenu>
             <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0"
@@ -161,17 +167,24 @@ function RowActions({transaction, onEdit, onCancel, onUpload, onRemoveReceipt}: 
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onEdit(transaction)}><Pencil/>{t("edit")}</DropdownMenuItem>
-                <DropdownMenuItem
-                    onClick={() => onUpload(transaction)}><FileUp/>{transaction.receipt ? t("replaceReceipt") : t("uploadReceipt")}
-                </DropdownMenuItem>
-                {transaction.receipt &&
+                {writable && <DropdownMenuItem onClick={() => onEdit(transaction)}><Pencil/>{t("edit")}</DropdownMenuItem>}
+                {writable && (
+                    <DropdownMenuItem
+                        onClick={() => onUpload(transaction)}><FileUp/>{transaction.receipt ? t("replaceReceipt") : t("uploadReceipt")}
+                    </DropdownMenuItem>
+                )}
+                {writable && transaction.receipt &&
                     <DropdownMenuItem onClick={() => onRemoveReceipt(transaction)}><FileX/>{t("removeReceipt")}
                     </DropdownMenuItem>}
-                <DropdownMenuSeparator/>
-                <DropdownMenuItem variant="destructive"
-                                  onClick={() => onCancel(transaction)}><Ban/>{t("cancelTransaction")}
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onHistory(transaction)}><History/>{tHistory("menu")}</DropdownMenuItem>
+                {writable && (
+                    <>
+                        <DropdownMenuSeparator/>
+                        <DropdownMenuItem variant="destructive"
+                                          onClick={() => onCancel(transaction)}><Ban/>{t("cancelTransaction")}
+                        </DropdownMenuItem>
+                    </>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );
@@ -213,7 +226,7 @@ function CancelDialog({transaction, revivalId, onOpenChange}: {
     );
 }
 
-function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.ComponentProps<typeof RowActions>, "transaction">) {
+function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.ComponentProps<typeof RowActions>, "transaction" | "canWrite">) {
     const t = useTranslations("Budget");
     const locale = useLocale();
 
@@ -301,14 +314,12 @@ function useColumns(revivalId: string, canWrite: boolean, actions: Omit<React.Co
         },
     ];
 
-    if (canWrite) {
-        columns.push({
-            id: "actions",
-            header: () => <span className="sr-only">{t("actions")}</span>,
-            cell: ({row}) => <RowActions transaction={row.original} {...actions}/>,
-            meta: {className: "w-12 text-right"},
-        });
-    }
+    columns.push({
+        id: "actions",
+        header: () => <span className="sr-only">{t("actions")}</span>,
+        cell: ({row}) => <RowActions transaction={row.original} canWrite={canWrite} {...actions}/>,
+        meta: {className: "w-12 text-right"},
+    });
     return columns;
 }
 
@@ -347,6 +358,7 @@ export function TransactionTable({revivalId, transactions, categories, lines, me
     const [editing, setEditing] = useState<TransactionRow | null>(null);
     const [adding, setAdding] = useState(false);
     const [cancelling, setCancelling] = useState<TransactionRow | null>(null);
+    const [history, setHistory] = useState<TransactionRow | null>(null);
     const [, startTransition] = useTransition();
     const fileInput = useRef<HTMLInputElement>(null);
     const uploadFor = useRef<TransactionRow | null>(null);
@@ -356,6 +368,7 @@ export function TransactionTable({revivalId, transactions, categories, lines, me
     const columns = useColumns(revivalId, canWrite, {
         onEdit: setEditing,
         onCancel: setCancelling,
+        onHistory: setHistory,
         onUpload: transaction => {
             uploadFor.current = transaction;
             fileInput.current?.click();
@@ -450,6 +463,10 @@ export function TransactionTable({revivalId, transactions, categories, lines, me
             )}
             {cancelling && <CancelDialog transaction={cancelling} revivalId={revivalId}
                                          onOpenChange={open => !open && setCancelling(null)}/>}
+            {history && (
+                <HistoryDialog key={history.id} target={{type: "BUDGET_TRANSACTION", id: history.id, title: history.description}}
+                               onOpenChange={open => !open && setHistory(null)}/>
+            )}
         </div>
     );
 }

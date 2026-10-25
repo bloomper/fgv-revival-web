@@ -5,7 +5,8 @@ import {useId, useMemo, useOptimistic, useState, useTransition} from "react";
 import Link from "next/link";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {useLocale, useTranslations} from "next-intl";
-import {Ban, ClipboardCheck, MoreHorizontal, Pencil, Plus, RotateCcw, X} from "lucide-react";
+import {Ban, ClipboardCheck, History, MoreHorizontal, Pencil, Plus, RotateCcw, X} from "lucide-react";
+import {HistoryDialog} from "@/components/history/history-dialog.client";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -99,13 +100,16 @@ function ShowCancelledSwitch({shown}: { shown: boolean }) {
     );
 }
 
-function RowActions({event, revivalId, onEdit, onCancel}: {
+function RowActions({event, revivalId, canWrite, onEdit, onCancel, onHistory}: {
     event: EventRow;
     revivalId: string;
+    canWrite: boolean;
     onEdit: (event: EventRow) => void;
     onCancel: (event: EventRow) => void;
+    onHistory: (event: EventRow) => void;
 }) {
     const t = useTranslations("Event");
+    const tHistory = useTranslations("History");
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
 
@@ -116,15 +120,16 @@ function RowActions({event, revivalId, onEdit, onCancel}: {
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {!event.cancelled &&
+                {canWrite && !event.cancelled &&
                     <DropdownMenuItem onClick={() => onEdit(event)}><Pencil/>{t("edit")}</DropdownMenuItem>}
                 {event.checklist && (
                     <DropdownMenuItem render={<Link href={`/revivals/${revivalId}/checklists/${event.checklist.id}`}/>}>
                         <ClipboardCheck/>{t("openChecklist")}
                     </DropdownMenuItem>
                 )}
-                <DropdownMenuSeparator/>
-                {event.cancelled ? (
+                <DropdownMenuItem onClick={() => onHistory(event)}><History/>{tHistory("menu")}</DropdownMenuItem>
+                {canWrite && <DropdownMenuSeparator/>}
+                {!canWrite ? null : event.cancelled ? (
                     <DropdownMenuItem onClick={() => startTransition(async () => {
                         feedback(await restoreEventAction({
                             id: event.id,
@@ -191,7 +196,8 @@ function ChecklistLink({revivalId, checklist}: { revivalId: string; checklist: N
     );
 }
 
-function useColumns(revivalId: string, canWrite: boolean, onEdit: (event: EventRow) => void, onCancel: (event: EventRow) => void) {
+function useColumns(revivalId: string, canWrite: boolean, onEdit: (event: EventRow) => void, onCancel: (event: EventRow) => void,
+                    onHistory: (event: EventRow) => void) {
     const t = useTranslations("Event");
     const locale = useLocale();
 
@@ -268,15 +274,13 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (event: EventR
         },
     ];
 
-    if (canWrite) {
-        columns.push({
-            id: "actions",
-            header: () => <span className="sr-only">{t("actions")}</span>,
-            cell: ({row}) => <RowActions event={row.original} revivalId={revivalId} onEdit={onEdit}
-                                         onCancel={onCancel}/>,
-            meta: {className: "w-12 text-right"},
-        });
-    }
+    columns.push({
+        id: "actions",
+        header: () => <span className="sr-only">{t("actions")}</span>,
+        cell: ({row}) => <RowActions event={row.original} revivalId={revivalId} canWrite={canWrite} onEdit={onEdit}
+                                     onCancel={onCancel} onHistory={onHistory}/>,
+        meta: {className: "w-12 text-right"},
+    });
     return columns;
 }
 
@@ -302,9 +306,10 @@ export function EventTable({revivalId, events, types, proposals, canWrite, showC
     const [editing, setEditing] = useState<EventRow | null>(null);
     const [adding, setAdding] = useState<{ prefill: EventPrefill | null } | null>(null);
     const [cancelling, setCancelling] = useState<EventRow | null>(null);
+    const [history, setHistory] = useState<EventRow | null>(null);
     const filtered = useMemo(() => filterEvents(events, query, typeFilter, locale), [events, query, typeFilter, locale]);
     const active = query.trim() !== "" || typeFilter.size > 0;
-    const columns = useColumns(revivalId, canWrite, setEditing, setCancelling);
+    const columns = useColumns(revivalId, canWrite, setEditing, setCancelling, setHistory);
     const typeOptions = useMemo(() => {
         const held = new Map(events.filter(event => event.type).map(event => [event.type!.id, event.type!]));
 
@@ -373,6 +378,10 @@ export function EventTable({revivalId, events, types, proposals, canWrite, showC
             )}
             {cancelling && <CancelDialog event={cancelling} revivalId={revivalId}
                                          onOpenChange={open => !open && setCancelling(null)}/>}
+            {history && (
+                <HistoryDialog key={history.id} target={{type: "EVENT", id: history.id, title: history.title}}
+                               onOpenChange={open => !open && setHistory(null)}/>
+            )}
         </div>
     );
 }

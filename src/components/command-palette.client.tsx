@@ -13,6 +13,7 @@ import {
     Command as CommandIcon,
     Drama,
     History,
+    Newspaper,
     House,
     Link2,
     ListChecks,
@@ -147,6 +148,12 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
                 label: t("Nav.adminSpexCalendar"),
                 href: "/admin/spex-calendar",
                 icon: CalendarRange
+            });
+            navigationEntries.push({
+                id: "admin-news",
+                label: t("Nav.adminNews"),
+                href: "/admin/news",
+                icon: Newspaper
             });
         }
 

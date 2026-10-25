@@ -68,7 +68,8 @@
     "adminSpexCalendar": "Chalmersspexet",
     "revivalTimeline": "Tidslinje för alla nyuppsättningar",
     "adminMailingTemplates": "Utskicksplan",
-    "adminLinkServices": "Länktjänster"
+    "adminLinkServices": "Länktjänster",
+    "adminNews": "Nyheter"
   },
   "Home": {
     "title": "Nyuppsättning",
@@ -402,7 +403,12 @@
     "hostInvalid": "Ange ett värdnamn som drive.google.com.",
     "hostDuplicate": "Värdnamnet finns redan i listan.",
     "hostsTooMany": "Högst 10 värdnamn.",
-    "membershipYearInvalid": "Ange ett år med fyra siffror."
+    "membershipYearInvalid": "Ange ett år med fyra siffror.",
+    "newsSubjectRequired": "Skriv en rubrik.",
+    "newsSubjectTooLong": "Rubriken får vara högst 255 tecken.",
+    "newsTextRequired": "Skriv en text.",
+    "newsTextTooLong": "Texten får vara högst 10 000 tecken.",
+    "newsDates": "Sista dagen kan inte vara före första dagen, och kräver en första dag."
   },
   "About": {
     "title": "Om",
@@ -721,7 +727,8 @@
     "emptyReadOnly": "Rader visas här när direktionen lägger till dem.",
     "dateLabel": "Noterad",
     "dateHint": "När raden kom in i loggen. Lämnas det tomt blir det i dag.",
-    "deadlineHint": "När det ska vara klart. En öppen rad efter det visas som försenad."
+    "deadlineHint": "När det ska vara klart. En öppen rad efter det visas som försenad.",
+    "rowTitle": "Rad {number}"
   },
   "Meeting": {
     "title": "Möten",
@@ -2016,5 +2023,128 @@
       "anonymized": "Nyuppsättningen anonymiserades",
       "syncIncomplete": "Synkningen till Spexregistret är inte klar. Efter anonymiseringen går den inte att göra."
     }
+  },
+  "History": {
+    "title": "Historik",
+    "menu": "Historik",
+    "titleOf": "Historik: {title}",
+    "description": "Vem som ändrade vad och när, senaste först.",
+    "empty": "Ingen historik.",
+    "failed": "Historiken kunde inte hämtas. Försök igen.",
+    "field": "Fält",
+    "before": "Före",
+    "after": "Efter",
+    "value": "Värde",
+    "emptyValue": "(tomt)",
+    "yes": "Ja",
+    "no": "Nej",
+    "revisionTypes": {
+      "ADD": "Skapad",
+      "MOD": "Ändrad",
+      "DEL": "Raderad"
+    },
+    "sources": {
+      "MCP": "Via AI-assistent",
+      "SYSTEM": "Automatiskt",
+      "WEB": "Webben"
+    },
+    "fields": {
+      "LOG_ENTRY": {
+        "date": "Datum",
+        "type": "Typ",
+        "text": "Text",
+        "status": "Status",
+        "owner": "Ansvarig",
+        "deadline": "Senast",
+        "comment": "Kommentar",
+        "tags": "Taggar"
+      },
+      "CHECKLIST_ITEM": {
+        "text": "Text",
+        "state": "Status",
+        "reason": "Skäl",
+        "owner": "Ansvarig",
+        "deadline": "Senast",
+        "comment": "Kommentar"
+      },
+      "EVENT": {
+        "title": "Titel",
+        "startDate": "Första dag",
+        "endDate": "Sista dag",
+        "startTime": "Starttid",
+        "endTime": "Sluttid",
+        "location": "Plats",
+        "description": "Beskrivning",
+        "revivalPays": "Nyuppsättningen betalar",
+        "cancelledAt": "Inställd"
+      },
+      "BUDGET_LINE": {
+        "categoryId": "Kategori",
+        "description": "Beskrivning",
+        "quantity": "Antal",
+        "unitAmount": "Belopp per styck",
+        "eventId": "Händelse",
+        "comment": "Kommentar",
+        "removedAt": "Borttagen"
+      },
+      "BUDGET_TRANSACTION": {
+        "date": "Datum",
+        "amount": "Belopp",
+        "categoryId": "Kategori",
+        "description": "Beskrivning",
+        "budgetLineId": "Budgetrad",
+        "paidBy": "Utlagt av",
+        "reimbursedAt": "Återbetald",
+        "receiptFilename": "Kvitto",
+        "receiptUploadedAt": "Kvitto uppladdat",
+        "cancelledAt": "Makulerad"
+      },
+      "MATERIAL": {
+        "title": "Titel",
+        "url": "Länk",
+        "serviceId": "Tjänst",
+        "category": "Kategori",
+        "visibility": "Synligt för",
+        "comment": "Kommentar",
+        "removedAt": "Borttaget"
+      },
+      "NEWS": {
+        "subject": "Rubrik",
+        "text": "Text",
+        "visibleFrom": "Visas från",
+        "visibleTo": "Visas till"
+      }
+    }
+  },
+  "News": {
+    "title": "Nyheter",
+    "description": "Nyheter som visas på startsidan för alla som har åtkomst, från första dagen till och med sista dagen. Utan första dag är en nyhet ett utkast.",
+    "latest": "Senaste nytt",
+    "none": "Inga nyheter just nu.",
+    "create": "Ny nyhet",
+    "editTitle": "Ändra nyhet",
+    "dialogDescription": "Rubriken och texten visas på startsidan mellan dagarna du väljer.",
+    "subject": "Rubrik",
+    "text": "Text",
+    "textHint": "Vanlig text. Radbrytningar och länkar visas som de skrivs.",
+    "visibleFrom": "Visas från",
+    "visibleFromHint": "Lämna tomt för att spara som utkast.",
+    "visibleTo": "Visas till",
+    "visibleToHint": "Lämna tomt för att visa tills vidare.",
+    "state": "Status",
+    "states": {
+      "PUBLISHED": "Publicerad",
+      "SCHEDULED": "Kommande",
+      "DRAFT": "Utkast",
+      "WITHDRAWN": "Avslutad"
+    },
+    "filterPlaceholder": "Sök bland nyheterna…",
+    "rowMenu": "Meny för {subject}",
+    "actions": "Åtgärder",
+    "empty": "Inga nyheter än.",
+    "emptyHint": "Skriv en nyhet så visas den på startsidan.",
+    "deleteTitle": "Radera ”{subject}”?",
+    "deleteDescription": "Nyheten försvinner från startsidan för gott. Historiken finns kvar.",
+    "deleted": "Nyheten raderades"
   }
 }

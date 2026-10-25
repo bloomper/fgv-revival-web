@@ -3,7 +3,8 @@
 import * as React from "react";
 import {useMemo, useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
-import {ExternalLink, MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "lucide-react";
+import {ExternalLink, History, MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "lucide-react";
+import {HistoryDialog} from "@/components/history/history-dialog.client";
 import type {MaterialCategory, MaterialVisibility} from "@/gql/graphql";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
@@ -61,12 +62,15 @@ export function filterMaterials(materials: MaterialRow[], query: string, filters
     });
 }
 
-function RowActions({material, revivalId, onEdit}: {
+function RowActions({material, revivalId, canWrite, onEdit, onHistory}: {
     material: MaterialRow;
     revivalId: string;
-    onEdit: (material: MaterialRow) => void
+    canWrite: boolean;
+    onEdit: (material: MaterialRow) => void;
+    onHistory: (material: MaterialRow) => void;
 }) {
     const t = useTranslations("Material");
+    const tHistory = useTranslations("History");
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
     const input = {id: material.id, version: material.version, revivalId};
@@ -78,13 +82,14 @@ function RowActions({material, revivalId, onEdit}: {
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {!material.removed &&
+                {canWrite && !material.removed &&
                     <DropdownMenuItem onClick={() => onEdit(material)}><Pencil/>{t("edit")}</DropdownMenuItem>}
                 <DropdownMenuItem render={<a href={material.url} target="_blank" rel="noopener noreferrer"/>}>
                     <ExternalLink/>{t("open")}
                 </DropdownMenuItem>
-                <DropdownMenuSeparator/>
-                {material.removed ? (
+                <DropdownMenuItem onClick={() => onHistory(material)}><History/>{tHistory("menu")}</DropdownMenuItem>
+                {canWrite && <DropdownMenuSeparator/>}
+                {!canWrite ? null : material.removed ? (
                     <DropdownMenuItem onClick={() => startTransition(async () => {
                         feedback(await restoreMaterialAction(input), t("restored"));
                     })}><RotateCcw/>{t("restore")}</DropdownMenuItem>
@@ -98,7 +103,7 @@ function RowActions({material, revivalId, onEdit}: {
     );
 }
 
-function useColumns(revivalId: string, canWrite: boolean, onEdit: (material: MaterialRow) => void) {
+function useColumns(revivalId: string, canWrite: boolean, onEdit: (material: MaterialRow) => void, onHistory: (material: MaterialRow) => void) {
     const t = useTranslations("Material");
     const locale = useLocale();
 
@@ -163,14 +168,13 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (material: Mat
         },
     ];
 
-    if (canWrite) {
-        columns.push({
-            id: "actions",
-            header: () => <span className="sr-only">{t("actions")}</span>,
-            cell: ({row}) => <RowActions material={row.original} revivalId={revivalId} onEdit={onEdit}/>,
-            meta: {className: "w-12 text-right"},
-        });
-    }
+    columns.push({
+        id: "actions",
+        header: () => <span className="sr-only">{t("actions")}</span>,
+        cell: ({row}) => <RowActions material={row.original} revivalId={revivalId} canWrite={canWrite} onEdit={onEdit}
+                                     onHistory={onHistory}/>,
+        meta: {className: "w-12 text-right"},
+    });
     return columns;
 }
 
@@ -207,7 +211,8 @@ export function MaterialTable({
     const [adding, setAdding] = useState(false);
     const filtered = useMemo(() => filterMaterials(materials, query, filters, locale), [materials, query, filters, locale]);
     const active = query.trim() !== "" || filters.categories.size > 0 || filters.services.size > 0 || filters.visibilities.size > 0;
-    const columns = useColumns(revivalId, canWrite, setEditing);
+    const [history, setHistory] = useState<MaterialRow | null>(null);
+    const columns = useColumns(revivalId, canWrite, setEditing, setHistory);
     const serviceOptions = useMemo(() => {
         const held = new Map(materials.filter(material => material.service).map(material => [material.service!.id, material.service!]));
 
@@ -292,6 +297,10 @@ export function MaterialTable({
                         setEditing(null);
                     }
                 }}/>
+            )}
+            {history && (
+                <HistoryDialog key={history.id} target={{type: "MATERIAL", id: history.id, title: history.title}}
+                               onOpenChange={open => !open && setHistory(null)}/>
             )}
         </div>
     );

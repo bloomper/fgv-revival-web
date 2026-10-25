@@ -85,7 +85,7 @@ test.describe("Decision log, user story 1: the steering group keeps the decision
     });
 });
 
-test("an observer reads the log without any controls", async ({page, mock, loginAs}) => {
+test("an observer reads the log and its history without any controls", async ({page, mock, loginAs}) => {
     await mock.setStatus("1", "ORGANISING");
     await mock.logRow({revivalId: "1", type: "DECISION", text: "Spexpengen är 1500 kr"});
     await loginAs("observer");
@@ -93,6 +93,8 @@ test("an observer reads the log without any controls", async ({page, mock, login
 
     await expect(page.getByRole("table").getByText("Spexpengen är 1500 kr")).toBeVisible();
     await expect(page.getByRole("button", {name: "Ny rad"})).toHaveCount(0);
-    await expect(page.getByRole("button", {name: /Åtgärder för rad/})).toHaveCount(0);
     await expect(page.getByText("Endast läsning")).toBeVisible();
+    // The row's menu holds only its history
+    await page.getByRole("button", {name: /Åtgärder för rad/}).click();
+    await expect(page.getByRole("menuitem")).toHaveText(["Historik"]);
 });

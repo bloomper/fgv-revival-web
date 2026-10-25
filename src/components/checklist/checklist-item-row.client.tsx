@@ -3,7 +3,7 @@
 import * as React from "react";
 import {useOptimistic, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
-import {Ban, Pencil, RotateCcw} from "lucide-react";
+import {Ban, History, Pencil, RotateCcw} from "lucide-react";
 import type {ChecklistItemFieldsFragment} from "@/gql/graphql";
 import {Badge} from "@/components/ui/badge";
 import {Checkbox} from "@/components/ui/checkbox";
@@ -20,16 +20,18 @@ import {cn} from "@/utils/utils";
 
 /**
  * One checklist item: a done box, its text, owner, deadline, comment and links. Controls only for those who may write;
- * not applicable on a guide requirement only for directeurs.
+ * not applicable on a guide requirement only for directeurs. Its history for every reader.
  */
-export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, onNotApplicable}: {
+export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, onNotApplicable, onHistory}: {
     revivalId: string;
     item: ChecklistItemFieldsFragment;
     canWrite: boolean;
     canWaive: boolean;
     onEdit: () => void;
     onNotApplicable: () => void;
+    onHistory: () => void;
 }) {
+    const tHistory = useTranslations("History");
     const t = useTranslations("Checklist");
     const locale = useLocale();
     const feedback = useActionFeedback();
@@ -74,18 +76,17 @@ export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, o
                     <p className="text-xs">{t("logRows", {numbers: item.logEntries.map(entry => `#${entry.number}`).join(", ")})}</p>
                 )}
             </div>
-            {canWrite && (
-                <div className="flex shrink-0 items-start gap-1">
-                    <Button size="icon" variant="ghost" aria-label={t("editItem")} onClick={onEdit}><Pencil/></Button>
-                    {item.state === "NOT_APPLICABLE" ? (
-                        <Button size="icon" variant="ghost" aria-label={t("reopen")} disabled={pending}
-                                onClick={() => setState("OPEN")}><RotateCcw/></Button>
-                    ) : (!item.required || canWaive) && (
-                        <Button size="icon" variant="ghost" aria-label={t("markNotApplicable")}
-                                onClick={onNotApplicable}><Ban/></Button>
-                    )}
-                </div>
-            )}
+            <div className="flex shrink-0 items-start gap-1">
+                {canWrite && <Button size="icon" variant="ghost" aria-label={t("editItem")} onClick={onEdit}><Pencil/></Button>}
+                {canWrite && (item.state === "NOT_APPLICABLE" ? (
+                    <Button size="icon" variant="ghost" aria-label={t("reopen")} disabled={pending}
+                            onClick={() => setState("OPEN")}><RotateCcw/></Button>
+                ) : (!item.required || canWaive) && (
+                    <Button size="icon" variant="ghost" aria-label={t("markNotApplicable")}
+                            onClick={onNotApplicable}><Ban/></Button>
+                ))}
+                <Button size="icon" variant="ghost" aria-label={tHistory("menu")} onClick={onHistory}><History/></Button>
+            </div>
         </li>
     );
 }

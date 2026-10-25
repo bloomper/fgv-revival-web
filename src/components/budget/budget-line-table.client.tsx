@@ -3,7 +3,8 @@
 import {useMemo, useState, useTransition} from "react";
 import Link from "next/link";
 import {useLocale, useTranslations} from "next-intl";
-import {MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "lucide-react";
+import {History, MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "lucide-react";
+import {HistoryDialog} from "@/components/history/history-dialog.client";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {
@@ -55,12 +56,15 @@ export function filterBudgetLines(lines: BudgetLineRow[], query: string, categor
     });
 }
 
-function RowActions({line, revivalId, onEdit}: {
+function RowActions({line, revivalId, canWrite, onEdit, onHistory}: {
     line: BudgetLineRow;
     revivalId: string;
-    onEdit: (line: BudgetLineRow) => void
+    canWrite: boolean;
+    onEdit: (line: BudgetLineRow) => void;
+    onHistory: (line: BudgetLineRow) => void;
 }) {
     const t = useTranslations("Budget");
+    const tHistory = useTranslations("History");
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
     const input = {revivalId, id: line.id, version: line.version};
@@ -72,10 +76,11 @@ function RowActions({line, revivalId, onEdit}: {
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {!line.removed &&
+                {canWrite && !line.removed &&
                     <DropdownMenuItem onClick={() => onEdit(line)}><Pencil/>{t("edit")}</DropdownMenuItem>}
-                {!line.removed && <DropdownMenuSeparator/>}
-                {line.removed ? (
+                <DropdownMenuItem onClick={() => onHistory(line)}><History/>{tHistory("menu")}</DropdownMenuItem>
+                {canWrite && <DropdownMenuSeparator/>}
+                {!canWrite ? null : line.removed ? (
                     <DropdownMenuItem onClick={() => startTransition(async () => {
                         feedback(await restoreBudgetLineAction(input), t("lineRestored"));
                     })}><RotateCcw/>{t("restore")}</DropdownMenuItem>
@@ -89,7 +94,7 @@ function RowActions({line, revivalId, onEdit}: {
     );
 }
 
-function useColumns(revivalId: string, canWrite: boolean, onEdit: (line: BudgetLineRow) => void) {
+function useColumns(revivalId: string, canWrite: boolean, onEdit: (line: BudgetLineRow) => void, onHistory: (line: BudgetLineRow) => void) {
     const t = useTranslations("Budget");
     const locale = useLocale();
 
@@ -157,14 +162,13 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (line: BudgetL
         },
     ];
 
-    if (canWrite) {
-        columns.push({
-            id: "actions",
-            header: () => <span className="sr-only">{t("actions")}</span>,
-            cell: ({row}) => <RowActions line={row.original} revivalId={revivalId} onEdit={onEdit}/>,
-            meta: {className: "w-12 text-right"},
-        });
-    }
+    columns.push({
+        id: "actions",
+        header: () => <span className="sr-only">{t("actions")}</span>,
+        cell: ({row}) => <RowActions line={row.original} revivalId={revivalId} canWrite={canWrite} onEdit={onEdit}
+                                     onHistory={onHistory}/>,
+        meta: {className: "w-12 text-right"},
+    });
     return columns;
 }
 
@@ -191,7 +195,8 @@ export function BudgetLineTable({revivalId, lines, proposals, categories, events
     const [adding, setAdding] = useState<{ prefill: BudgetLinePrefill | null } | null>(null);
     const filtered = useMemo(() => filterBudgetLines(lines, query, categoryFilter, locale), [lines, query, categoryFilter, locale]);
     const active = query.trim() !== "" || categoryFilter.size > 0;
-    const columns = useColumns(revivalId, canWrite, setEditing);
+    const [history, setHistory] = useState<BudgetLineRow | null>(null);
+    const columns = useColumns(revivalId, canWrite, setEditing, setHistory);
     const categoryOptions = useMemo(() => {
         const held = new Map(lines.map(line => [line.category.id, line.category]));
 
@@ -264,6 +269,10 @@ export function BudgetLineTable({revivalId, lines, proposals, categories, events
                                           setEditing(null);
                                       }
                                   }}/>
+            )}
+            {history && (
+                <HistoryDialog key={history.id} target={{type: "BUDGET_LINE", id: history.id, title: history.description}}
+                               onOpenChange={open => !open && setHistory(null)}/>
             )}
         </div>
     );

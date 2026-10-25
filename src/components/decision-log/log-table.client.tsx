@@ -4,7 +4,7 @@ import * as React from "react";
 import {useState, useTransition} from "react";
 import Link from "next/link";
 import {useTranslations} from "next-intl";
-import {Check, CircleDashed, MessageSquareReply, MoreHorizontal, Pencil, Plus, RotateCcw, X} from "lucide-react";
+import {Check, CircleDashed, History, MessageSquareReply, MoreHorizontal, Pencil, Plus, RotateCcw, X} from "lucide-react";
 import type {SortingState} from "@tanstack/react-table";
 import type {LogEntryFieldsFragment, LogEntryStatus} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
 import {DataEmpty} from "@/components/data-empty";
+import {HistoryDialog} from "@/components/history/history-dialog.client";
 import {OwnerLabel} from "@/components/owner/owner-label";
 import type {OwnerMember} from "@/components/owner/owner-field.client";
 import {PlainText} from "@/components/plain-text";
@@ -70,16 +71,20 @@ function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
 }
 
 /**
- * A row's menu: edit, answer a question, and set another status. Status changes are sent with the version shown.
+ * A row's menu: edit, answer a question, and set another status, for those who write; its history for every reader.
+ * Status changes are sent with the version shown.
  */
-function RowActions({entry, revivalId, meetingId, onEdit, onAnswer}: {
+function RowActions({entry, revivalId, meetingId, canWrite, onEdit, onAnswer, onHistory}: {
     entry: Entry;
     revivalId: string;
     meetingId?: string | null;
+    canWrite: boolean;
     onEdit: (entry: Entry) => void;
     onAnswer: (entry: Entry) => void;
+    onHistory: (entry: Entry) => void;
 }) {
     const t = useTranslations("Log");
+    const tHistory = useTranslations("History");
     const feedback = useActionFeedback();
     const [pending, startTransition] = useTransition();
 
@@ -101,35 +106,43 @@ function RowActions({entry, revivalId, meetingId, onEdit, onAnswer}: {
                 <MoreHorizontal className="h-4 w-4"/>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onEdit(entry)}><Pencil/>{t("editRow", {number: entry.number})}
-                </DropdownMenuItem>
-                {answerable(entry) && (
+                {canWrite && (
+                    <DropdownMenuItem onClick={() => onEdit(entry)}><Pencil/>{t("editRow", {number: entry.number})}
+                    </DropdownMenuItem>
+                )}
+                {canWrite && answerable(entry) && (
                     <DropdownMenuItem
                         onClick={() => onAnswer(entry)}><MessageSquareReply/>{t("answerRow", {number: entry.number})}
                     </DropdownMenuItem>
                 )}
-                <DropdownMenuSeparator/>
-                <DropdownMenuGroup>
-                    <DropdownMenuLabel>{t("setStatus")}</DropdownMenuLabel>
-                    {LOG_ENTRY_STATUSES.filter(status => status !== entry.status).map(status => {
-                        const Icon = STATUS_ICONS[status];
+                <DropdownMenuItem onClick={() => onHistory(entry)}><History/>{tHistory("menu")}</DropdownMenuItem>
+                {canWrite && (
+                    <>
+                        <DropdownMenuSeparator/>
+                        <DropdownMenuGroup>
+                            <DropdownMenuLabel>{t("setStatus")}</DropdownMenuLabel>
+                            {LOG_ENTRY_STATUSES.filter(status => status !== entry.status).map(status => {
+                                const Icon = STATUS_ICONS[status];
 
-                        return <DropdownMenuItem key={status}
-                                                 onClick={() => setStatus(status)}><Icon/>{t(`status.${status}`)}
-                        </DropdownMenuItem>;
-                    })}
-                </DropdownMenuGroup>
+                                return <DropdownMenuItem key={status}
+                                                         onClick={() => setStatus(status)}><Icon/>{t(`status.${status}`)}
+                                </DropdownMenuItem>;
+                            })}
+                        </DropdownMenuGroup>
+                    </>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );
 }
 
-function useColumns({revivalId, canWrite, meetingId, onEdit, onAnswer}: {
+function useColumns({revivalId, canWrite, meetingId, onEdit, onAnswer, onHistory}: {
     revivalId: string;
     canWrite: boolean;
     meetingId?: string | null;
     onEdit: (entry: Entry) => void;
     onAnswer: (entry: Entry) => void;
+    onHistory: (entry: Entry) => void;
 }): DataTableColumnDef<Entry>[] {
     const t = useTranslations("Log");
 
@@ -222,15 +235,13 @@ function useColumns({revivalId, canWrite, meetingId, onEdit, onAnswer}: {
         },
     ];
 
-    if (canWrite) {
-        columns.push({
-            id: "actions",
-            header: () => <span className="sr-only">{t("actions")}</span>,
-            cell: ({row}) => <RowActions entry={row.original} revivalId={revivalId} meetingId={meetingId}
-                                         onEdit={onEdit} onAnswer={onAnswer}/>,
-            meta: {className: "w-12 text-right"},
-        });
-    }
+    columns.push({
+        id: "actions",
+        header: () => <span className="sr-only">{t("actions")}</span>,
+        cell: ({row}) => <RowActions entry={row.original} revivalId={revivalId} meetingId={meetingId} canWrite={canWrite}
+                                     onEdit={onEdit} onAnswer={onAnswer} onHistory={onHistory}/>,
+        meta: {className: "w-12 text-right"},
+    });
     return columns;
 }
 
@@ -274,7 +285,8 @@ export function LogTable({
     const setEditing = (entry: Entry | null) => onEditingIdChange ? onEditingIdChange(entry?.id ?? null) : setOwnEditing(entry);
     const [adding, setAdding] = useState(false);
     const [answering, setAnswering] = useState<Entry | null>(null);
-    const columns = useColumns({revivalId, canWrite, meetingId, onEdit: setEditing, onAnswer: setAnswering});
+    const [history, setHistory] = useState<Entry | null>(null);
+    const columns = useColumns({revivalId, canWrite, meetingId, onEdit: setEditing, onAnswer: setAnswering, onHistory: setHistory});
 
     return (
         <>
@@ -306,6 +318,10 @@ export function LogTable({
             {answering && (
                 <LogAnswerDialog revivalId={revivalId} question={answering} members={members} meetingId={meetingId} open
                                  onOpenChange={(open) => !open && setAnswering(null)}/>
+            )}
+            {history && (
+                <HistoryDialog key={history.id} target={{type: "LOG_ENTRY", id: history.id, title: t("rowTitle", {number: history.number})}}
+                               onOpenChange={open => !open && setHistory(null)}/>
             )}
         </>
     );

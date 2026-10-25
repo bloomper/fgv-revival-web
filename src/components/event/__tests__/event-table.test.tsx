@@ -1,6 +1,6 @@
 import type {ReactNode} from "react";
 import {describe, expect, it, vi} from "vitest";
-import {render, screen, within} from "@testing-library/react";
+import {fireEvent, render, screen, within} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {EventProposals} from "@/components/event/event-proposals.client";
 import {type EventRow, EventTable, filterEvents, NO_TYPE} from "@/components/event/event-table.client";
@@ -17,6 +17,7 @@ vi.mock("next/link", () => ({
 vi.mock("@/app/(app)/revivals/[id]/events/actions.server", () => ({
     cancelEventAction: vi.fn(), restoreEventAction: vi.fn(), createEventAction: vi.fn(), updateEventAction: vi.fn(),
 }));
+vi.mock("@/app/(app)/history/actions.server", () => ({getRevisionsAction: vi.fn()}));
 vi.mock("@/hooks/use-action-feedback", () => ({useActionFeedback: () => () => true}));
 
 const rephelg = {
@@ -112,12 +113,17 @@ describe("EventTable", () => {
         expect(screen.getByRole("button", {name: /rowMenu.*Förrådsbesök/})).toBeInTheDocument();
     });
 
-    it("shows readers no proposals, no new button and no row menus", () => {
+    it("shows readers no proposals and no new button, and only the history in a row's menu", async () => {
         render(<EventTable revivalId="1" events={events} types={[rephelg]} proposals={[proposal]} canWrite={false}
                            showCancelled={false}/>);
 
         expect(screen.queryByRole("button", {name: "Event.new"})).not.toBeInTheDocument();
         expect(screen.queryByText("proposals")).not.toBeInTheDocument();
-        expect(screen.queryByRole("button", {name: /rowMenu/})).not.toBeInTheDocument();
+
+        fireEvent.click(screen.getByRole("button", {name: /rowMenu.*Förrådsbesök/}));
+
+        expect(await screen.findByRole("menuitem", {name: "menu"})).toBeInTheDocument();
+        expect(screen.queryByRole("menuitem", {name: "edit"})).not.toBeInTheDocument();
+        expect(screen.queryByRole("menuitem", {name: "cancel"})).not.toBeInTheDocument();
     });
 });

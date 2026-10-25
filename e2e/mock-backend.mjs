@@ -15,6 +15,7 @@ import {createParticipantState, participantResolvers, POSITIONS} from "./mock-pa
 import {createStaffingState, staffingResolvers} from "./mock-staffing.mjs";
 import {createMaterialState, materialResolvers} from "./mock-material.mjs";
 import {closingResolvers, createClosingState} from "./mock-closing.mjs";
+import {createNewsState, newsResolvers} from "./mock-news.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 4101);
 const ISSUER = `http://localhost:${PORT}/realms/fgv`;
@@ -69,6 +70,7 @@ function resetState(guideSeed = "none") {
         staffing: createStaffingState(),
         material: createMaterialState(),
         closing: createClosingState(),
+        news: createNewsState(),
         nextId: 100,
         revivals: [
             {
@@ -660,6 +662,9 @@ const closing = closingResolvers({
 });
 
 Object.assign(resolvers, closing.resolvers);
+
+// News on the start page, kept by the super admin, and its history
+Object.assign(resolvers, newsResolvers({state: () => state, GraphQLError, forbidden, isSuperAdmin}).resolvers);
 
 const eventTypesResolver = resolvers.EventTypes;
 

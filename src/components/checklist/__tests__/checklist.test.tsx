@@ -44,7 +44,7 @@ const item = (overrides: Partial<ChecklistItemFieldsFragment> = {}): ChecklistIt
 
 function renderRow(value: ChecklistItemFieldsFragment, canWaive: boolean) {
     render(<ul><ChecklistItemRow revivalId="3" item={value} canWrite canWaive={canWaive} onEdit={() => undefined}
-                                 onNotApplicable={() => undefined}/></ul>);
+                                 onNotApplicable={() => undefined} onHistory={() => undefined}/></ul>);
 }
 
 describe("ChecklistItemRow", () => {

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import * as types from './graphql';
-import type {TypedDocumentNode as DocumentNode} from '@graphql-typed-document-node/core';
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 
 /**
  * Map of all GraphQL operations in the project.
@@ -14,6 +14,7 @@ import type {TypedDocumentNode as DocumentNode} from '@graphql-typed-document-no
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n    query Revisions($type: AuditedType!, $id: ID!) {\n        revisions(type: $type, id: $id) {\n            revision\n            revisionType\n            modifiedAt\n            modifiedBy\n            source\n            comment\n            changes { field kind oldValue newValue }\n        }\n    }\n": typeof types.RevisionsDocument,
     "\n    query BudgetAccess($id: ID!) {\n        revival(id: $id) {\n            id\n            status\n            permissions { canReadBudget canWriteBudget }\n        }\n    }\n": typeof types.BudgetAccessDocument,
     "\n    query BudgetOverview($id: ID!) {\n        revival(id: $id) {\n            id\n            title\n            status\n            permissions { canReadBudget canWriteBudget }\n            budget {\n                revivalId\n                settings { participantsPlanned participationFee loanAmount loanReceivedOn loanRepaidOn version }\n                totals {\n                    budgetedIncome budgetedCost budgetedResult actualIncome actualCost actualResult\n                    unreimbursed unreimbursedCount missingReceipts\n                }\n                categories {\n                    category { ...BudgetCategoryFields }\n                    budgeted\n                    actual\n                    references { label year participants budgeted actual budgetedPerParticipant actualPerParticipant }\n                }\n            }\n        }\n    }\n": typeof types.BudgetOverviewDocument,
     "\n    query BudgetLines($id: ID!, $includeRemoved: Boolean!) {\n        revival(id: $id) {\n            id\n            status\n            permissions { canReadBudget canWriteBudget }\n            budget {\n                revivalId\n                settings { participantsPlanned version }\n                lines(includeRemoved: $includeRemoved) { ...BudgetLineFields }\n                proposals {\n                    event { id title startDate endDate }\n                    line { ...EventTypeBudgetLineFields }\n                    quantity\n                    amount\n                }\n            }\n        }\n        events(revivalId: $id) { id title startDate endDate }\n        logEntries(revivalId: $id, filter: {types: [DECISION]}) { id number text date }\n        budgetCategories { ...BudgetCategoryFields }\n    }\n": typeof types.BudgetLinesDocument,
@@ -212,6 +213,10 @@ type Documents = {
     "\n    mutation RevivalMemberAdd($input: RevivalMemberAddInput!) {\n        revivalMemberAdd(input: $input) { id role capabilities { ...CapabilityFields } state displayName email invitedAt version }\n    }\n": typeof types.RevivalMemberAddDocument,
     "\n    mutation RevivalMemberCapabilitiesSet($input: RevivalMemberCapabilitiesInput!) {\n        revivalMemberCapabilitiesSet(input: $input) { id capabilities { ...CapabilityFields } version }\n    }\n": typeof types.RevivalMemberCapabilitiesSetDocument,
     "\n    mutation RevivalMemberRemove($id: ID!) {\n        revivalMemberRemove(id: $id)\n    }\n": typeof types.RevivalMemberRemoveDocument,
+    "\n    query News($all: Boolean, $limit: Int) {\n        news(all: $all, limit: $limit) { id subject text visibleFrom visibleTo published createdAt lastModifiedAt version }\n    }\n": typeof types.NewsDocument,
+    "\n    mutation NewsCreate($input: NewsInput!) {\n        newsCreate(input: $input) { id }\n    }\n": typeof types.NewsCreateDocument,
+    "\n    mutation NewsUpdate($id: ID!, $version: Int!, $input: NewsInput!) {\n        newsUpdate(id: $id, version: $version, input: $input) { id }\n    }\n": typeof types.NewsUpdateDocument,
+    "\n    mutation NewsDelete($id: ID!, $version: Int!) {\n        newsDelete(id: $id, version: $version)\n    }\n": typeof types.NewsDeleteDocument,
     "\n    fragment PositionFields on Position {\n        id\n        name\n        category\n        hasRole\n    }\n": typeof types.PositionFieldsFragmentDoc,
     "\n    fragment ParticipantFields on Participant {\n        id\n        revivalId\n        kind\n        spexareId\n        firstName\n        lastName\n        nickName\n        email\n        phone\n        pending\n        position { ...PositionFields }\n        roleName\n        vocalPart { id name }\n        preferredPosition { ...PositionFields }\n        response\n        respondedAt\n        comment\n        termsAcceptedAt\n        registerConsent\n        invitation\n        invitedAt\n        dietary\n        dietaryReadable\n        fee\n        feeOverride\n        feePaid\n        feePaidAt\n        compensationPerShift\n        removed\n        version\n    }\n": typeof types.ParticipantFieldsFragmentDoc,
     "\n    fragment SpexareCandidateFields on SpexareCandidate {\n        spexareId\n        firstName\n        lastName\n        nickName\n        graduation\n        history\n        added\n    }\n": typeof types.SpexareCandidateFieldsFragmentDoc,
@@ -266,6 +271,7 @@ type Documents = {
     "\n    mutation AvailabilitySet($input: AvailabilityInput!) {\n        availabilitySet(input: $input) { participant { id } }\n    }\n": typeof types.AvailabilitySetDocument,
 };
 const documents: Documents = {
+    "\n    query Revisions($type: AuditedType!, $id: ID!) {\n        revisions(type: $type, id: $id) {\n            revision\n            revisionType\n            modifiedAt\n            modifiedBy\n            source\n            comment\n            changes { field kind oldValue newValue }\n        }\n    }\n": types.RevisionsDocument,
     "\n    query BudgetAccess($id: ID!) {\n        revival(id: $id) {\n            id\n            status\n            permissions { canReadBudget canWriteBudget }\n        }\n    }\n": types.BudgetAccessDocument,
     "\n    query BudgetOverview($id: ID!) {\n        revival(id: $id) {\n            id\n            title\n            status\n            permissions { canReadBudget canWriteBudget }\n            budget {\n                revivalId\n                settings { participantsPlanned participationFee loanAmount loanReceivedOn loanRepaidOn version }\n                totals {\n                    budgetedIncome budgetedCost budgetedResult actualIncome actualCost actualResult\n                    unreimbursed unreimbursedCount missingReceipts\n                }\n                categories {\n                    category { ...BudgetCategoryFields }\n                    budgeted\n                    actual\n                    references { label year participants budgeted actual budgetedPerParticipant actualPerParticipant }\n                }\n            }\n        }\n    }\n": types.BudgetOverviewDocument,
     "\n    query BudgetLines($id: ID!, $includeRemoved: Boolean!) {\n        revival(id: $id) {\n            id\n            status\n            permissions { canReadBudget canWriteBudget }\n            budget {\n                revivalId\n                settings { participantsPlanned version }\n                lines(includeRemoved: $includeRemoved) { ...BudgetLineFields }\n                proposals {\n                    event { id title startDate endDate }\n                    line { ...EventTypeBudgetLineFields }\n                    quantity\n                    amount\n                }\n            }\n        }\n        events(revivalId: $id) { id title startDate endDate }\n        logEntries(revivalId: $id, filter: {types: [DECISION]}) { id number text date }\n        budgetCategories { ...BudgetCategoryFields }\n    }\n": types.BudgetLinesDocument,
@@ -464,6 +470,10 @@ const documents: Documents = {
     "\n    mutation RevivalMemberAdd($input: RevivalMemberAddInput!) {\n        revivalMemberAdd(input: $input) { id role capabilities { ...CapabilityFields } state displayName email invitedAt version }\n    }\n": types.RevivalMemberAddDocument,
     "\n    mutation RevivalMemberCapabilitiesSet($input: RevivalMemberCapabilitiesInput!) {\n        revivalMemberCapabilitiesSet(input: $input) { id capabilities { ...CapabilityFields } version }\n    }\n": types.RevivalMemberCapabilitiesSetDocument,
     "\n    mutation RevivalMemberRemove($id: ID!) {\n        revivalMemberRemove(id: $id)\n    }\n": types.RevivalMemberRemoveDocument,
+    "\n    query News($all: Boolean, $limit: Int) {\n        news(all: $all, limit: $limit) { id subject text visibleFrom visibleTo published createdAt lastModifiedAt version }\n    }\n": types.NewsDocument,
+    "\n    mutation NewsCreate($input: NewsInput!) {\n        newsCreate(input: $input) { id }\n    }\n": types.NewsCreateDocument,
+    "\n    mutation NewsUpdate($id: ID!, $version: Int!, $input: NewsInput!) {\n        newsUpdate(id: $id, version: $version, input: $input) { id }\n    }\n": types.NewsUpdateDocument,
+    "\n    mutation NewsDelete($id: ID!, $version: Int!) {\n        newsDelete(id: $id, version: $version)\n    }\n": types.NewsDeleteDocument,
     "\n    fragment PositionFields on Position {\n        id\n        name\n        category\n        hasRole\n    }\n": types.PositionFieldsFragmentDoc,
     "\n    fragment ParticipantFields on Participant {\n        id\n        revivalId\n        kind\n        spexareId\n        firstName\n        lastName\n        nickName\n        email\n        phone\n        pending\n        position { ...PositionFields }\n        roleName\n        vocalPart { id name }\n        preferredPosition { ...PositionFields }\n        response\n        respondedAt\n        comment\n        termsAcceptedAt\n        registerConsent\n        invitation\n        invitedAt\n        dietary\n        dietaryReadable\n        fee\n        feeOverride\n        feePaid\n        feePaidAt\n        compensationPerShift\n        removed\n        version\n    }\n": types.ParticipantFieldsFragmentDoc,
     "\n    fragment SpexareCandidateFields on SpexareCandidate {\n        spexareId\n        firstName\n        lastName\n        nickName\n        graduation\n        history\n        added\n    }\n": types.SpexareCandidateFieldsFragmentDoc,
@@ -532,6 +542,10 @@ const documents: Documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query Revisions($type: AuditedType!, $id: ID!) {\n        revisions(type: $type, id: $id) {\n            revision\n            revisionType\n            modifiedAt\n            modifiedBy\n            source\n            comment\n            changes { field kind oldValue newValue }\n        }\n    }\n"): (typeof documents)["\n    query Revisions($type: AuditedType!, $id: ID!) {\n        revisions(type: $type, id: $id) {\n            revision\n            revisionType\n            modifiedAt\n            modifiedBy\n            source\n            comment\n            changes { field kind oldValue newValue }\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -1327,6 +1341,22 @@ export function graphql(source: "\n    mutation RevivalMemberRemove($id: ID!) {\
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n    query News($all: Boolean, $limit: Int) {\n        news(all: $all, limit: $limit) { id subject text visibleFrom visibleTo published createdAt lastModifiedAt version }\n    }\n"): (typeof documents)["\n    query News($all: Boolean, $limit: Int) {\n        news(all: $all, limit: $limit) { id subject text visibleFrom visibleTo published createdAt lastModifiedAt version }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation NewsCreate($input: NewsInput!) {\n        newsCreate(input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation NewsCreate($input: NewsInput!) {\n        newsCreate(input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation NewsUpdate($id: ID!, $version: Int!, $input: NewsInput!) {\n        newsUpdate(id: $id, version: $version, input: $input) { id }\n    }\n"): (typeof documents)["\n    mutation NewsUpdate($id: ID!, $version: Int!, $input: NewsInput!) {\n        newsUpdate(id: $id, version: $version, input: $input) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation NewsDelete($id: ID!, $version: Int!) {\n        newsDelete(id: $id, version: $version)\n    }\n"): (typeof documents)["\n    mutation NewsDelete($id: ID!, $version: Int!) {\n        newsDelete(id: $id, version: $version)\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n    fragment PositionFields on Position {\n        id\n        name\n        category\n        hasRole\n    }\n"): (typeof documents)["\n    fragment PositionFields on Position {\n        id\n        name\n        category\n        hasRole\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -1534,7 +1564,7 @@ export function graphql(source: "\n    mutation ShiftWithdraw($slotId: ID!) {\n 
 export function graphql(source: "\n    mutation AvailabilitySet($input: AvailabilityInput!) {\n        availabilitySet(input: $input) { participant { id } }\n    }\n"): (typeof documents)["\n    mutation AvailabilitySet($input: AvailabilityInput!) {\n        availabilitySet(input: $input) { participant { id } }\n    }\n"];
 
 export function graphql(source: string) {
-    return (documents as any)[source] ?? {};
+  return (documents as any)[source] ?? {};
 }
 
-export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<infer TType, any> ? TType : never;
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;
