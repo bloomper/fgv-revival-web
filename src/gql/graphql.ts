@@ -993,10 +993,12 @@ export type RevisionType =
   | 'MOD';
 
 /**
- * The year must not be before the original spex nor before the current year, and the spex must not already have a
- * revival that year.
+ * The year must not be before the original spex nor, unless past is set, before the current year, and the spex must not
+ * already have a revival that year.
  */
 export type RevivalCreateInput = {
+  /** Set for a revival that has already been played, to allow a year before the current one. */
+  past?: boolean | null | undefined;
   spexId: string | number;
   year: number;
 };
@@ -1061,6 +1063,8 @@ export type RevivalStatusChangeInput = {
 export type RevivalUpdateInput = {
   clearPremiereDate?: boolean | null | undefined;
   id: string | number;
+  /** Set to move the year to before the current one, for a revival that has already been played. */
+  past?: boolean | null | undefined;
   premiereDate?: string | null | undefined;
   /**
    * Replaces the whole list. Directeur or SUPER_ADMIN, as premiereDate. At most 50 shows, none before the premiere and

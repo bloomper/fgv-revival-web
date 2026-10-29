@@ -20,7 +20,7 @@ export async function searchSpexAction(query: string): Promise<ActionResult<Spex
     }));
 }
 
-export async function createRevivalAction(input: { spexId: string; year: number }): Promise<ActionResult<{
+export async function createRevivalAction(input: { spexId: string; year: number; past: boolean }): Promise<ActionResult<{
     id: string
 }>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
@@ -36,12 +36,13 @@ export async function updateRevivalAction(input: {
     id: string;
     version: number;
     spexId: string;
-    year: number
+    year: number;
+    past: boolean
 }): Promise<ActionResult<null>> {
     return withPolicyAction(Policies.admin.requireSuperAdmin, () => toActionResult(async () => {
-        const {id, version, spexId, year} = revivalCoreSchema.parse(input);
+        const {id, version, spexId, year, past} = revivalCoreSchema.parse(input);
 
-        await updateRevival({id, version, spexId, year});
+        await updateRevival({id, version, spexId, year, past});
         revalidatePath("/", "layout");
         return null;
     }));

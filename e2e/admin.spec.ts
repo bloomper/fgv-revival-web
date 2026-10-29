@@ -37,6 +37,22 @@ test.describe("The super admin records and approves a revival", () => {
         await expect(page.getByText("Väntar på åtkomst")).toBeVisible();
     });
 
+    test("records a revival that has already been played, among the years before this one", async ({page}) => {
+        const lastYear = String(new Date().getFullYear() - 1);
+
+        await page.goto("/revivals/manage");
+        await page.getByRole("button", {name: "Ny nyuppsättning"}).click();
+        await page.getByRole("textbox", {name: "Sök spex på titel"}).fill("sno");
+        await page.getByRole("option", {name: /Snorre/}).click();
+        await page.getByRole("checkbox", {name: "Redan spelad"}).click();
+        await page.getByRole("combobox", {name: "År"}).click();
+        await expect(page.getByRole("option", {name: "2031"})).toHaveCount(0);
+        await page.getByRole("option", {name: lastYear}).click();
+        await page.getByRole("button", {name: "Skapa"}).click();
+
+        await expect(page.getByRole("heading", {level: 2, name: `Snorre ${lastYear}`})).toBeVisible();
+    });
+
     test("rejects a revival and moves another one backwards on their pages", async ({page}) => {
         await page.goto("/revivals/manage");
         await openRevival(page, "Nobel 2030");

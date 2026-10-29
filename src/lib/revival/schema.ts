@@ -13,6 +13,7 @@ const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid").refine(va
 export const revivalCreateSchema = z.object({
     spexId: z.string().min(1, "spexRequired"),
     year: z.coerce.number<number>().int("yearRange").min(MIN_YEAR, "yearRange").max(MAX_YEAR, "yearRange"),
+    past: z.boolean(),
 });
 
 export type RevivalCreateValues = z.infer<typeof revivalCreateSchema>;
@@ -23,18 +24,24 @@ export const revivalCoreSchema = revivalCreateSchema.extend({
 });
 
 /**
- * The years a revival of the spex may have, newest first as in Spexregister: not before the original, and for a new
- * revival not before this year either. The server checks the same.
+ * The years a revival of the spex may have, newest first as in Spexregister: never before the original, and from this
+ * year on unless it has already been played ({@code past}), when only the years before this one. {@code include} keeps
+ * the year a revival already has. The server checks the same.
  */
 export function revivalYears(originalYear: number | null | undefined, options: {
-    fromThisYear: boolean;
+    past: boolean;
     include?: number
 }): number[] {
     const thisYear = new Date().getFullYear();
-    const first = Math.max(originalYear ?? MIN_YEAR, options.fromThisYear ? thisYear : MIN_YEAR);
-    const last = Math.max(thisYear + 5, options.include ?? 0);
+    const first = Math.max(originalYear ?? MIN_YEAR, options.past ? MIN_YEAR : thisYear);
+    const last = options.past ? thisYear - 1 : thisYear + 5;
+    const years = Array.from({length: Math.max(0, last - first + 1)}, (_, index) => last - index);
 
-    return Array.from({length: Math.max(0, last - first + 1)}, (_, index) => last - index);
+    if (options.include !== undefined && !years.includes(options.include)) {
+        years.push(options.include);
+        years.sort((a, b) => b - a);
+    }
+    return years;
 }
 
 /**

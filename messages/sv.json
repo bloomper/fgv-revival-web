@@ -217,6 +217,8 @@
     "created": "Nyuppsättningen skapades",
     "selectYear": "Välj år",
     "selectSpexFirst": "Välj spex först",
+    "past": "Redan spelad",
+    "pastHint": "För en nyuppsättning som redan har spelats. Då väljs året bland åren före i år.",
     "editTitle": "Ändra nyuppsättningen",
     "editDescription": "Byt spex eller år. Året får inte vara före originalets.",
     "save": "Spara",

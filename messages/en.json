@@ -217,6 +217,8 @@
     "created": "The revival was created",
     "selectYear": "Choose year",
     "selectSpexFirst": "Choose a spex first",
+    "past": "Already played",
+    "pastHint": "For a revival that has already been played. The year is then chosen among the years before this one.",
     "editTitle": "Edit the revival",
     "editDescription": "Change the spex or the year. The year must not be before the original's.",
     "save": "Save",

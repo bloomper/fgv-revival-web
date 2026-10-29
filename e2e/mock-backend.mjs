@@ -379,6 +379,9 @@ const resolvers = {
         if (state.revivals.some(revival => revival.spexId === String(input.spexId) && revival.year === Number(input.year))) {
             throw new GraphQLError("BAD_REQUEST", `Det finns redan en nyuppsättning av spexet ${input.year}.`);
         }
+        if (Number(input.year) < new Date().getFullYear() && !input.past) {
+            throw new GraphQLError("BAD_REQUEST", `Året får inte vara före innevarande år, ${new Date().getFullYear()}.`);
+        }
         const revival = {
             id: String(state.nextId++),
             spexId: String(input.spexId),
@@ -406,6 +409,9 @@ const resolvers = {
         if (core) {
             const spexId = String(input.spexId ?? revival.spexId);
             const year = Number(input.year ?? revival.year);
+            if (year !== revival.year && year < new Date().getFullYear() && !input.past) {
+                throw new GraphQLError("BAD_REQUEST", `Året får inte vara före innevarande år, ${new Date().getFullYear()}.`);
+            }
             Object.assign(revival, {spexId, year, title: titleOf(spexId, year), version: revival.version + 1});
             return {revivalUpdate: toRevival(persona, revival)};
         }

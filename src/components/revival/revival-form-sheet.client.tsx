@@ -4,10 +4,11 @@ import * as React from "react";
 import {useEffect, useState, useTransition} from "react";
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
-import {Controller, useForm} from "react-hook-form";
+import {Controller, useForm, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import type {RevivalSummaryFragment} from "@/gql/graphql";
 import {Button} from "@/components/ui/button";
+import {Checkbox} from "@/components/ui/checkbox";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {ScrollArea} from "@/components/ui/scroll-area";
@@ -103,7 +104,7 @@ function SpexPicker({value, onChange}: { value: SpexOption | null; onChange: (sp
 
 /**
  * Creates a revival in PROPOSED, or with {@code revival} changes its spex and year. The year is chosen from
- * the years the spex allows.
+ * the years the spex allows: from this year on, or before it for a revival that has already been played.
  */
 export function RevivalFormSheet({revival, open, onOpenChange, trigger}: {
     revival?: RevivalSummaryFragment;
@@ -122,10 +123,15 @@ export function RevivalFormSheet({revival, open, onOpenChange, trigger}: {
     const [pending, startTransition] = useTransition();
     const form = useForm<RevivalCreateValues>({
         resolver: zodResolver(revivalCreateSchema),
-        defaultValues: {spexId: revival?.spex.id ?? "", year: revival?.year},
+        defaultValues: {
+            spexId: revival?.spex.id ?? "",
+            year: revival?.year,
+            past: !!revival && revival.year < new Date().getFullYear()
+        },
     });
     const {errors} = form.formState;
-    const years = spex ? revivalYears(spex.year, {fromThisYear: !revival, include: revival?.year}) : [];
+    const past = useWatch({control: form.control, name: "past"});
+    const years = spex ? revivalYears(spex.year, {past, include: revival?.year}) : [];
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -173,6 +179,22 @@ export function RevivalFormSheet({revival, open, onOpenChange, trigger}: {
                                 }}/>
                                 {errors.spexId &&
                                     <p className="text-sm text-destructive">{t(`Validation.${errors.spexId.message}`)}</p>}
+                            </div>
+                            <div className="space-y-1">
+                                <Controller control={form.control} name="past" render={({field}) => (
+                                    <label htmlFor="revival-past" className="flex items-start gap-2 text-sm font-medium">
+                                        <Checkbox id="revival-past" checked={field.value} className="mt-0.5"
+                                                  onCheckedChange={value => {
+                                                      field.onChange(!!value);
+                                                      if (!revivalYears(spex?.year, {past: !!value, include: revival?.year})
+                                                          .includes(form.getValues("year"))) {
+                                                          form.resetField("year");
+                                                      }
+                                                  }}/>
+                                        <span>{t("CreateDialog.past")}</span>
+                                    </label>
+                                )}/>
+                                <p className="pl-6 text-sm text-muted-foreground">{t("CreateDialog.pastHint")}</p>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="revival-year">{t("Revival.year")}</Label>

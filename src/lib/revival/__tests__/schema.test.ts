@@ -12,32 +12,39 @@ const messages = (result: { success: boolean; error?: { issues: { message: strin
 
 describe("revivalCreateSchema", () => {
     it("accepts a spex and a year", () => {
-        expect(revivalCreateSchema.parse({spexId: "1", year: "2028"})).toEqual({spexId: "1", year: 2028});
+        expect(revivalCreateSchema.parse({spexId: "1", year: "2028", past: false})).toEqual({spexId: "1", year: 2028, past: false});
     });
 
     it("refuses a missing spex and a year out of range", () => {
         expect(messages(revivalCreateSchema.safeParse({
             spexId: "",
-            year: 1947
+            year: 1947,
+            past: false
         }))).toEqual(["spexRequired", "yearRange"]);
-        expect(messages(revivalCreateSchema.safeParse({spexId: "1", year: 2101}))).toEqual(["yearRange"]);
+        expect(messages(revivalCreateSchema.safeParse({spexId: "1", year: 2101, past: false}))).toEqual(["yearRange"]);
     });
 });
 
 describe("revivalYears", () => {
     const thisYear = new Date().getFullYear();
 
-    it("offers this year and five more, newest first, for a new revival", () => {
-        expect(revivalYears(1956, {fromThisYear: true})).toEqual([5, 4, 3, 2, 1, 0].map(offset => thisYear + offset));
+    it("offers this year and five more, newest first, unless already played", () => {
+        expect(revivalYears(1956, {past: false})).toEqual([5, 4, 3, 2, 1, 0].map(offset => thisYear + offset));
+    });
+
+    it("offers only the years before this one when already played", () => {
+        expect(revivalYears(thisYear - 3, {past: true})).toEqual([thisYear - 1, thisYear - 2, thisYear - 3]);
     });
 
     it("never offers a year before the original", () => {
-        expect(revivalYears(thisYear + 3, {fromThisYear: true})).toEqual([thisYear + 5, thisYear + 4, thisYear + 3]);
-        expect(revivalYears(thisYear - 2, {fromThisYear: false}).at(-1)).toBe(thisYear - 2);
+        expect(revivalYears(thisYear + 3, {past: false})).toEqual([thisYear + 5, thisYear + 4, thisYear + 3]);
+        expect(revivalYears(thisYear + 3, {past: true})).toEqual([]);
     });
 
-    it("keeps a later year a revival already has", () => {
-        expect(revivalYears(1956, {fromThisYear: false, include: thisYear + 9})[0]).toBe(thisYear + 9);
+    it("keeps the year a revival already has", () => {
+        expect(revivalYears(1956, {past: false, include: thisYear + 9})[0]).toBe(thisYear + 9);
+        expect(revivalYears(1956, {past: false, include: thisYear - 4}).at(-1)).toBe(thisYear - 4);
+        expect(revivalYears(thisYear - 2, {past: true, include: thisYear})).toEqual([thisYear, thisYear - 1, thisYear - 2]);
     });
 });
 
