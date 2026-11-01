@@ -3,6 +3,14 @@ import {MOCK_URL} from "./constants";
 
 type Persona = "superadmin" | "observer" | "directeur" | "styrgrupp" | "noaccess" | "deltagare";
 
+let logins = 0;
+
+/** A documentation address (RFC 5737) per login: 192.0.2.1, 192.0.2.2, … */
+function nextClientIp() {
+    logins = logins % 254 + 1;
+    return `192.0.2.${logins}`;
+}
+
 export const test = base.extend<{ resetBackend: void; loginAs: (persona: Persona) => Promise<void>; mock: Mock }>({
     resetBackend: [async ({request}, provide) => {
         await request.post(`${MOCK_URL}/__reset`);
@@ -11,6 +19,9 @@ export const test = base.extend<{ resetBackend: void; loginAs: (persona: Persona
     loginAs: async ({page, request}, provide) => {
         await provide(async (persona: Persona) => {
             await request.post(`${MOCK_URL}/__persona`, {data: {persona}});
+            // Better Auth limits requests per client IP. Every test comes from the same machine, so without an address
+            // of its own each login would count against one shared limit, and a busy run gets "Too many requests"
+            await page.setExtraHTTPHeaders({"x-forwarded-for": nextClientIp()});
             // A second login in one test starts afresh too: c15t also remembers the dismissed notice in local storage
             if (page.url().startsWith("http")) {
                 await page.evaluate(() => localStorage.clear());
