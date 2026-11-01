@@ -4,6 +4,8 @@
 // in with their FGV account: inviting gives them a participant role waiting on their email address, claimed by the
 // persona with that address. Test data is fictitious.
 
+import {ALI_BABA_2028} from "./mock-ids.mjs";
+
 export const POSITIONS = [
     {id: "T-ENS", name: "Ensemble", category: "Scen", hasRole: true},
     {id: "T-ORK", name: "Orkester", category: "Musik", hasRole: false},
@@ -764,18 +766,18 @@ export function participantResolvers(ctx) {
          * in, the spexare Anna Andersson not invited, and a referral.
          */
         seed({people = false} = {}) {
-            const revival = ctx.state().revivals.find(candidate => candidate.id === "1");
+            const revival = ctx.state().revivals.find(candidate => candidate.id === ALI_BABA_2028);
             const budget = ctx.state().budget.settings;
 
-            budget["1"] = {
+            budget[ALI_BABA_2028] = {
                 participantsPlanned: 40,
                 participationFee: "800",
                 loanAmount: "10000",
                 loanReceivedOn: null,
                 loanRepaidOn: null,
-                version: 1, ...budget["1"]
+                version: 1, ...budget[ALI_BABA_2028]
             };
-            store().settings["1"] = {
+            store().settings[ALI_BABA_2028] = {
                 swishNumber: "1234567890",
                 whatsappLink: "https://chat.whatsapp.com/E2eGrupp",
                 terms: "Repetitioner varje söndag.",
@@ -792,7 +794,7 @@ export function participantResolvers(ctx) {
                 });
                 const member = {
                     id: "m-disa",
-                    revivalId: "1",
+                    revivalId: ALI_BABA_2028,
                     role: "PARTICIPANT",
                     capabilities: [],
                     email: "disa@example.org",
@@ -811,7 +813,7 @@ export function participantResolvers(ctx) {
                 });
                 store().referrals.push({
                     id: "r0",
-                    revivalId: "1",
+                    revivalId: ALI_BABA_2028,
                     name: "Gustav Gren",
                     contact: "gustav@example.org",
                     comment: "Spelade fiol 2008.",

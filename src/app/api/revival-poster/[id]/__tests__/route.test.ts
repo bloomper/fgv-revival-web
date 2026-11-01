@@ -13,7 +13,7 @@ describe("GET /api/revival-poster/[id]", () => {
         apiFetch.mockReset();
     });
 
-    it.each(["abc", "1;drop", "../1"])("refuses %s", async id => {
+    it.each(["abc", "1", "1;drop", "../1"])("refuses %s", async id => {
         const response = await get(id);
 
         expect(response.status).toBe(400);
@@ -26,9 +26,9 @@ describe("GET /api/revival-poster/[id]", () => {
             headers: {"content-type": "image/png"}
         }));
 
-        const response = await get("3");
+        const response = await get("00000000-0000-7000-8000-000000000003");
 
-        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/3/poster");
+        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/poster");
         expect(response.status).toBe(200);
         expect(response.headers.get("content-type")).toBe("image/png");
         expect(response.headers.get("content-security-policy")).toContain("sandbox");
@@ -39,12 +39,12 @@ describe("GET /api/revival-poster/[id]", () => {
     it("answers 404 when the spex has no poster", async () => {
         apiFetch.mockResolvedValue(new Response(null, {status: 204}));
 
-        expect((await get("3")).status).toBe(404);
+        expect((await get("00000000-0000-7000-8000-000000000003")).status).toBe(404);
     });
 
     it("forwards the server's error status", async () => {
         apiFetch.mockResolvedValue(new Response("{}", {status: 503}));
 
-        expect((await get("3")).status).toBe(503);
+        expect((await get("00000000-0000-7000-8000-000000000003")).status).toBe(503);
     });
 });

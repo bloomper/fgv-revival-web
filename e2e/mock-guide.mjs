@@ -1,6 +1,8 @@
 // The guide part of the mock backend: versions, the draft and the PDF, with the server's rules.
 // The guide content is fictitious. Chapters are keyed A–J in the fixture.
 
+import {seqOf, uuidOf} from "./mock-ids.mjs";
+
 const KEYS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 const TITLES = {
     A: "Först: godkännande och tajmning", B: "Boka lokaler och lägg fast er tidslinje", C: "Sätt budgeten",
@@ -19,7 +21,7 @@ export function fixtureVersion(id, {status = "PUBLISHED", label = "v1", publishe
     const item = (type, sv, en = null) => ({id: String(itemId++), key: key("item"), type, text: {sv, en}, version: 0});
 
     return {
-        id: String(id),
+        id: uuidOf(id),
         status,
         label: status === "PUBLISHED" ? label : null,
         note: null,
@@ -67,7 +69,7 @@ export function createGuideState(seed = "none") {
     if (seed === "two") {
         const v2 = JSON.parse(JSON.stringify(versions[0]));
 
-        Object.assign(v2, {id: "2", label: "v2", publishedAt: "2027-03-01T10:00:00Z"});
+        Object.assign(v2, {id: uuidOf(2), label: "v2", publishedAt: "2027-03-01T10:00:00Z"});
         v2.chapters.forEach(chapter => {
             chapter.id = `2-${chapter.key}`;
         });
@@ -179,7 +181,7 @@ export function guideResolvers(ctx) {
             throw new GraphQLError("CONFLICT", "Det finns redan ett utkast.");
         }
         const latest = published(guide())[0];
-        const id = String(guide().nextVersionId++);
+        const id = uuidOf(guide().nextVersionId++);
         const copy = latest ? JSON.parse(JSON.stringify(latest)) : {
             ...fixtureVersion(id, {status: "DRAFT"}),
             introduction: {sv: "", en: null},
@@ -196,7 +198,7 @@ export function guideResolvers(ctx) {
             basedOnId: latest?.id ?? null,
             version: 0
         });
-        let nextItemId = Number(id) * 1000;
+        let nextItemId = seqOf(id) * 1000;
         copy.chapters.forEach(chapter => {
             chapter.id = `${id}-${chapter.key}`;
             chapter.items.forEach(entry => {
@@ -792,8 +794,8 @@ export function handleGuidePdf(ctx, persona, path, url, res) {
     let version;
     let name;
 
-    const versionMatch = /^\/api\/guide\/versions\/(\d+)\/pdf$/.exec(path);
-    const revivalMatch = /^\/api\/revivals\/(\d+)\/guide\/pdf$/.exec(path);
+    const versionMatch = /^\/api\/guide\/versions\/([^/]+)\/pdf$/.exec(path);
+    const revivalMatch = /^\/api\/revivals\/([^/]+)\/guide\/pdf$/.exec(path);
 
     if (versionMatch) {
         version = guide.versions.find(candidate => candidate.id === versionMatch[1]);

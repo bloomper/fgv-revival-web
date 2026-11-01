@@ -1,4 +1,5 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Guide: the super admin writes the first version chapter by chapter", () => {
     test.beforeEach(async ({loginAs}) => {
@@ -88,7 +89,7 @@ test("removing a chapter is confirmed three times: when removed, when published 
                                                                                                                          loginAs
                                                                                                                      }) => {
     await mock.guide("published");
-    await mock.setStatus("1", "ORGANISING");
+    await mock.setStatus(ALI_BABA_2028, "ORGANISING");
     await loginAs("superadmin");
 
     await page.goto("/admin/guide");
@@ -115,7 +116,7 @@ test("removing a chapter is confirmed three times: when removed, when published 
     await publish.getByRole("button", {name: "Publicera"}).click();
     await expect(page.getByText("Versionen är publicerad")).toBeVisible();
 
-    await page.goto("/revivals/1/guide");
+    await page.goto(`/revivals/${ALI_BABA_2028}/guide`);
     await page.getByRole("button", {name: "Byt version"}).click();
     const change = page.getByRole("dialog");
 
@@ -127,7 +128,7 @@ test("removing a chapter is confirmed three times: when removed, when published 
     await change.getByRole("button", {name: "Byt version"}).click();
     await expect(page.getByText("Nyuppsättningen följer den nya versionen")).toBeVisible();
 
-    await page.goto("/revivals/1/checklists");
+    await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
     const checklists = page.getByRole("region", {name: "Guidens kapitel"});
 
     await expect(checklists.getByRole("link")).toHaveCount(9);

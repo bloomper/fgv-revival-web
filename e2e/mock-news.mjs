@@ -1,6 +1,8 @@
 // The news part of the mock backend, with the server's rules (fgv-revival-server/src/main/resources/graphql/news.graphqls),
 // and the history the server reads from its audit trail (audit.graphqls), which the mock keeps for news only.
 
+import {seqOf} from "./mock-ids.mjs";
+
 const today = () => new Date().toISOString().slice(0, 10);
 
 export function createNewsState() {
@@ -13,7 +15,7 @@ export function newsResolvers(ctx) {
     const {GraphQLError, forbidden, isSuperAdmin} = ctx;
     const store = () => ctx.state().news;
     const toNews = news => ({__typename: "News", ...news, published: published(news)});
-    const newest = (a, b) => (a.visibleFrom === b.visibleFrom ? Number(b.id) - Number(a.id)
+    const newest = (a, b) => (a.visibleFrom === b.visibleFrom ? seqOf(b.id) - seqOf(a.id)
         : !a.visibleFrom ? -1 : !b.visibleFrom ? 1 : b.visibleFrom.localeCompare(a.visibleFrom));
     const manageable = persona => {
         if (!isSuperAdmin(persona)) {

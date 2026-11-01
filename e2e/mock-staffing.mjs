@@ -4,6 +4,8 @@
 // mailing.graphqls). Recipients are names only; addresses come from the participant mock at send time. Test data is
 // fictitious.
 
+import {ALI_BABA_2028} from "./mock-ids.mjs";
+
 const DAY = 24 * 60 * 60 * 1000;
 const WEEKDAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
 
@@ -712,11 +714,11 @@ export function staffingResolvers(ctx) {
          * available on the event's second day, and Anna Andersson answer maybe without saying when she can.
          */
         seed({capabilities, answered = false} = {}) {
-            const revival = ctx.state().revivals.find(candidate => candidate.id === "1");
+            const revival = ctx.state().revivals.find(candidate => candidate.id === ALI_BABA_2028);
             const start = addDays(today(), 5);
             const event = {
                 id: String(900 + store().nextId++),
-                revivalId: "1",
+                revivalId: ALI_BABA_2028,
                 typeId: "3",
                 title: "Rephelg 1",
                 startDate: start,
@@ -774,7 +776,7 @@ export function staffingResolvers(ctx) {
                 },
             );
             if (capabilities) {
-                members().find(member => member.sub === "p-styrgrupp" && member.revivalId === "1").capabilities = capabilities;
+                members().find(member => member.sub === "p-styrgrupp" && member.revivalId === ALI_BABA_2028).capabilities = capabilities;
             }
             if (answered) {
                 const disa = people().find(participant => participant.memberId === "m-disa");

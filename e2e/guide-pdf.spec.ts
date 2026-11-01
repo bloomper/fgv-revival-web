@@ -1,10 +1,11 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028, uuidOf} from "./constants";
 
 test.describe("Guide: export the guide to PDF", () => {
     test("a directeur downloads the revival's guide as a PDF", async ({page, mock, loginAs}) => {
         await mock.guide("published");
         await loginAs("directeur");
-        await page.goto("/revivals/1/guide");
+        await page.goto(`/revivals/${ALI_BABA_2028}/guide`);
 
         await page.getByRole("button", {name: "Ladda ner PDF"}).click();
         const download = page.waitForEvent("download");
@@ -19,13 +20,13 @@ test.describe("Guide: export the guide to PDF", () => {
                                                                                                   loginAs
                                                                                               }) => {
         await mock.guide("draft");
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await loginAs("styrgrupp");
 
-        const published = await page.request.get("/api/guide-pdf?version=1&lang=sv");
+        const published = await page.request.get(`/api/guide-pdf?version=${uuidOf(1)}&lang=sv`);
 
         expect(published.status()).toBe(200);
         expect(published.headers()["content-disposition"]).toContain("nyuppsattningsguide-v1-sv.pdf");
-        expect((await page.request.get("/api/guide-pdf?version=10&lang=sv")).status()).toBe(404);
+        expect((await page.request.get(`/api/guide-pdf?version=${uuidOf(10)}&lang=sv`)).status()).toBe(404);
     });
 });

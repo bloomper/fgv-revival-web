@@ -1,7 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import {apiFetch} from "@/lib/api.server";
-
-const ID = /^\d+$/;
+import {ID} from "@/lib/id";
 
 /**
  * A revival's spex poster, fetched with the user's token so the browser never holds it. 404 when there is none, so an

@@ -2,6 +2,7 @@
 // calendar links, with the server's rules (fgv-revival-server/src/main/resources/graphql/event.graphqls). An event
 // whose type has a checklist template gets an EVENT checklist through the checklist mock, as EventService does.
 import {randomBytes} from "node:crypto";
+import {ALI_BABA_2028, seqOf} from "./mock-ids.mjs";
 
 const DAY = 24 * 60 * 60 * 1000;
 const WEB_URL = process.env.WEB_URL || "http://localhost:3101";
@@ -153,7 +154,7 @@ export function eventResolvers(ctx) {
         };
     };
     const sorted = events => [...events].sort((a, b) => a.startDate.localeCompare(b.startDate) || (a.startTime ?? "").localeCompare(b.startTime ?? "")
-        || Number(a.id) - Number(b.id));
+        || seqOf(a.id) - seqOf(b.id));
     const eventsOf = (revival, includeCancelled) => sorted(store().events.filter(event => event.revivalId === revival.id && (includeCancelled || !event.cancelled)));
     const findEvent = (persona, id, version) => {
         const event = store().events.find(candidate => candidate.id === String(id));
@@ -474,7 +475,7 @@ export function eventResolvers(ctx) {
         /** Revival 1 gets a premiere and a show, and "Rephelg 1" an event checklist template with two items. */
         seed() {
             const as = {sub: "p-superadmin", roles: ["USER", "SUPER_ADMIN"]};
-            const revival = ctx.state().revivals.find(candidate => candidate.id === "1");
+            const revival = ctx.state().revivals.find(candidate => candidate.id === ALI_BABA_2028);
 
             Object.assign(revival, {
                 premiereDate: "2028-03-04",

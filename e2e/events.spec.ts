@@ -1,8 +1,9 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Events: the timeline, proposals from the premiere and calendar links", () => {
     test.beforeEach(async ({mock}) => {
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await mock.events();
     });
 
@@ -11,7 +12,7 @@ test.describe("Events: the timeline, proposals from the premiere and calendar li
                                                                                                                                   loginAs
                                                                                                                               }) => {
         await loginAs("styrgrupp");
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await page.getByRole("link", {name: "Händelser", exact: true}).click();
 
         const proposals = page.getByRole("region", {name: "Föreslagna händelser"});
@@ -92,14 +93,14 @@ test.describe("Events: the timeline, proposals from the premiere and calendar li
         expect((await page.request.get(url)).status()).toBe(404);
         expect((await page.request.get("/api/calendar/not-a-feed.txt")).status()).toBe(404);
 
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await expect(page.getByText("Kommande händelser")).toBeVisible();
         await expect(page.getByText("Rephelg 1 i Kemi")).toBeVisible();
     });
 
     test("the observer reads the events without changing them", async ({page, loginAs}) => {
         await loginAs("observer");
-        await page.goto("/revivals/1/events");
+        await page.goto(`/revivals/${ALI_BABA_2028}/events`);
 
         await expect(page.getByText("Endast läsning")).toBeVisible();
         await expect(page.getByText("Inga händelser än.")).toBeVisible();

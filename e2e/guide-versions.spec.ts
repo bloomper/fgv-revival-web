@@ -1,4 +1,5 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Guide: the super admin edits a draft and publishes a new version", () => {
     test.beforeEach(async ({mock, loginAs}) => {
@@ -67,7 +68,7 @@ test.describe("Guide: the super admin edits a draft and publishes a new version"
         await page.getByRole("button", {name: "Åtgärder för v1"}).click();
         await expect(page.getByRole("menuitem", {name: /Ta bort/})).toHaveAttribute("aria-disabled", "true");
         await page.getByRole("menuitem", {name: "Visa versionen"}).click();
-        await expect(page).toHaveURL(/\/guide\/versions\/1$/);
+        await expect(page).toHaveURL(/\/guide\/versions\/00000000-0000-7000-8000-000000000001$/);
         await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
 
         await page.goto("/admin/guide");
@@ -86,14 +87,14 @@ test.describe("Guide: the directeur moves the revival to a newer version", () =>
     });
 
     test("sees the newer version and what changed, moves forward and cannot move back", async ({page}) => {
-        await page.goto("/revivals/1/guide");
+        await page.goto(`/revivals/${ALI_BABA_2028}/guide`);
         await expect(page.getByText("Det finns en nyare version av guiden, v2.")).toBeVisible();
 
         await page.getByRole("link", {name: "Se vad som ändrats"}).click();
         await expect(page.getByRole("heading", {level: 2, name: "Ändringar från v1 till v2"})).toBeVisible();
         await expect(page.getByText("Ny text (sv)")).toBeVisible();
 
-        await page.goto("/revivals/1/guide");
+        await page.goto(`/revivals/${ALI_BABA_2028}/guide`);
         await page.getByRole("button", {name: "Byt version"}).click();
         await page.getByLabel("Ny version").selectOption({label: "v2"});
         await expect(page.getByRole("dialog").getByText("Ny text (sv)")).toBeVisible();
@@ -108,9 +109,9 @@ test.describe("Guide: the directeur moves the revival to a newer version", () =>
 
 test("a steering group member cannot change the version", async ({page, mock, loginAs}) => {
     await mock.guide("two");
-    await mock.setStatus("1", "ORGANISING");
+    await mock.setStatus(ALI_BABA_2028, "ORGANISING");
     await loginAs("styrgrupp");
-    await page.goto("/revivals/1/guide");
+    await page.goto(`/revivals/${ALI_BABA_2028}/guide`);
 
     await expect(page.getByText("Det finns en nyare version av guiden, v2.")).toBeVisible();
     await expect(page.getByRole("button", {name: "Byt version"})).toHaveCount(0);
@@ -127,7 +128,7 @@ test("an observer picks an older version in the guide's version selector", async
     await expect(select).toContainText("v2 (senaste)");
     await select.click();
     await page.getByRole("option", {name: "v1"}).click();
-    await expect(page).toHaveURL(/\/guide\/versions\/1$/);
+    await expect(page).toHaveURL(/\/guide\/versions\/00000000-0000-7000-8000-000000000001$/);
     await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
 
     await select.click();

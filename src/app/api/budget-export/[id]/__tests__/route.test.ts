@@ -17,7 +17,7 @@ describe("GET /api/budget-export/[id]", () => {
         apiFetch.mockReset();
     });
 
-    it.each(["1;drop", "../1", "a b"])("refuses %s", async id => {
+    it.each(["1", "1;drop", "../1", "a b"])("refuses %s", async id => {
         expect((await get(id)).status).toBe(400);
         expect(apiFetch).not.toHaveBeenCalled();
     });
@@ -31,9 +31,9 @@ describe("GET /api/budget-export/[id]", () => {
             },
         }));
 
-        const response = await get("3", "en");
+        const response = await get("00000000-0000-7000-8000-000000000003", "en");
 
-        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/3/budget.xlsx?lang=en");
+        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/budget.xlsx?lang=en");
         expect(response.status).toBe(200);
         expect(response.headers.get("content-disposition")).toBe("attachment; filename=\"budget-ali-baba-2028.xlsx\"");
         expect(response.headers.get("cache-control")).toBe("no-store");
@@ -43,14 +43,14 @@ describe("GET /api/budget-export/[id]", () => {
     it("falls back to Swedish for an unknown locale", async () => {
         apiFetch.mockResolvedValue(new Response(new Uint8Array([1]), {status: 200}));
 
-        await get("3", "de");
+        await get("00000000-0000-7000-8000-000000000003", "de");
 
-        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/3/budget.xlsx?lang=sv");
+        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/budget.xlsx?lang=sv");
     });
 
     it("forwards the server's error status", async () => {
         apiFetch.mockResolvedValue(new Response("{}", {status: 404}));
 
-        expect((await get("3")).status).toBe(404);
+        expect((await get("00000000-0000-7000-8000-000000000003")).status).toBe(404);
     });
 });

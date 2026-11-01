@@ -1,4 +1,5 @@
 import {expect, openRevival, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("The directeur builds the steering group", () => {
     test("adds a member with FINANCE, shown as waiting for access", async ({page, loginAs}) => {
@@ -52,7 +53,7 @@ test.describe("The directeur builds the steering group", () => {
         await page.goto("/revivals");
         await expect(page.getByText("Ali Baba 2028")).toHaveCount(0);
 
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await page.goto("/revivals");
         await openRevival(page, "Ali Baba 2028");
         await expect(page.getByText("Dana Directeur")).toBeVisible();
@@ -62,7 +63,7 @@ test.describe("The directeur builds the steering group", () => {
         await expect(page.getByRole("row").filter({hasText: "Dana Directeur"})).toBeVisible();
         await expect(page.getByRole("button", {name: "Lägg till i direktionen"})).toHaveCount(0);
 
-        await mock.setStatus("1", "SETTLING");
+        await mock.setStatus(ALI_BABA_2028, "SETTLING");
         await page.goto("/revivals");
         await expect(page.getByText("Ali Baba 2028")).toHaveCount(0);
     });

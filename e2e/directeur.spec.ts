@@ -1,4 +1,5 @@
 import {expect, openRevival, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("The directeur runs their revival", () => {
     test.beforeEach(async ({loginAs}) => {
@@ -46,7 +47,7 @@ test.describe("The directeur runs their revival", () => {
         }
         await expect(page.getByRole("combobox", {name: "Ändra status"})).toHaveCount(0);
 
-        await mock.setStatus("1", "ARCHIVED");
+        await mock.setStatus(ALI_BABA_2028, "ARCHIVED");
         await page.reload();
         await expect(page.getByRole("heading", {name: "Sidan finns inte"})).toBeVisible();
         await page.goto("/revivals");

@@ -1,9 +1,10 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 const inDays = (days: number) => new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
 test("everyone sees the revivals coming up on the start page, not those only approved", async ({page, mock, loginAs}) => {
-    await mock.premiere("1", inDays(60));
+    await mock.premiere(ALI_BABA_2028, inDays(60));
     await loginAs("deltagare");
     await page.goto("/");
     const upcoming = page.getByRole("list", {name: "Kommande nyuppsättningar"}).getByRole("listitem");
@@ -12,7 +13,7 @@ test("everyone sees the revivals coming up on the start page, not those only app
     await expect(upcoming).toHaveCount(1);
     await expect(upcoming.first()).toContainText("Snorre 2027");
 
-    await mock.setStatus("1", "ORGANISING");
+    await mock.setStatus(ALI_BABA_2028, "ORGANISING");
     await page.reload();
 
     // The order follows the premieres; Snorre's is fixed in the mock, so only what is there is checked

@@ -1,14 +1,15 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Guide: the steering group suggests changes", () => {
     test.beforeEach(async ({mock, loginAs}) => {
         await mock.guide("published");
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await loginAs("styrgrupp");
     });
 
     test("suggests new text for a tip and a new requirement, and withdraws one", async ({page}) => {
-        await page.goto("/revivals/1/guide/B");
+        await page.goto(`/revivals/${ALI_BABA_2028}/guide/B`);
 
         const tip = page.locator("[id^='item-']").filter({hasText: "Kontrollera sprittillstånd"});
 
@@ -18,7 +19,7 @@ test.describe("Guide: the steering group suggests changes", () => {
         await page.getByRole("button", {name: "Skicka förslaget"}).click();
         await expect(page.getByRole("dialog")).toHaveCount(0, {timeout: 15_000});
 
-        await page.goto("/revivals/1/guide/E");
+        await page.goto(`/revivals/${ALI_BABA_2028}/guide/E`);
         await page.getByRole("region", {name: /^5\. Ordna tillgångar/}).getByRole("button", {name: "Föreslå ny punkt"}).first().click();
         await page.getByLabel("Typ").selectOption("REQUIREMENT");
         await page.getByLabel("Svenska").fill("Förrådet ska inventeras innan första rephelgen.");
@@ -53,7 +54,7 @@ test.describe("Guide: the super admin decides", () => {
                                                                                                                                 request
                                                                                                                             }) => {
         await mock.guide("published");
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await loginAs("superadmin");
 
         // Two suggestions from the steering group, made through the mock's GraphQL as Stina
@@ -61,7 +62,7 @@ test.describe("Guide: the super admin decides", () => {
             {kind: "CHANGE", itemKey: null, proposedTextSv: "Ändrat tips.", reason: "Inaktuellt"},
             {kind: "ADD", chapterKey: "E", proposedType: "TIP", proposedTextSv: "Ett nytt tips.", reason: null},
         ]) {
-            await request.post("http://localhost:4101/__suggest", {data: {revivalId: "1", ...proposal}});
+            await request.post("http://localhost:4101/__suggest", {data: {revivalId: ALI_BABA_2028, ...proposal}});
         }
 
         await page.goto("/admin/guide/suggestions");

@@ -1,8 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {apiFetch} from "@/lib/api.server";
+import {ID} from "@/lib/id";
 import {receiptProblem} from "@/lib/budget/schema";
-
-const ID = /^\d{1,19}$/;
 
 type Params = { params: Promise<{ transactionId: string }> };
 

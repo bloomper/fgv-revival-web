@@ -17,6 +17,7 @@ import {createMaterialState, materialResolvers} from "./mock-material.mjs";
 import {closingResolvers, createClosingState} from "./mock-closing.mjs";
 import {createLibraryState, libraryResolvers} from "./mock-library.mjs";
 import {createNewsState, newsResolvers} from "./mock-news.mjs";
+import {ALI_BABA_2028, NOBEL_2030, SNORRE_2027, uuidOf} from "./mock-ids.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 4101);
 const ISSUER = `http://localhost:${PORT}/realms/fgv`;
@@ -76,7 +77,7 @@ function resetState(guideSeed = "none") {
         nextId: 100,
         revivals: [
             {
-                id: "1",
+                id: ALI_BABA_2028,
                 spexId: "1",
                 year: 2028,
                 title: "Ali Baba 2028",
@@ -88,7 +89,7 @@ function resetState(guideSeed = "none") {
                 guideVersionId: null
             },
             {
-                id: "2",
+                id: NOBEL_2030,
                 spexId: "2",
                 year: 2030,
                 title: "Nobel 2030",
@@ -100,7 +101,7 @@ function resetState(guideSeed = "none") {
                 guideVersionId: null
             },
             {
-                id: "3",
+                id: SNORRE_2027,
                 spexId: "3",
                 year: 2027,
                 title: "Snorre 2027",
@@ -115,7 +116,7 @@ function resetState(guideSeed = "none") {
         members: [
             {
                 id: "m1",
-                revivalId: "1",
+                revivalId: ALI_BABA_2028,
                 role: "DIRECTEUR",
                 capabilities: [],
                 email: "dana@example.org",
@@ -124,7 +125,7 @@ function resetState(guideSeed = "none") {
             },
             {
                 id: "m2",
-                revivalId: "1",
+                revivalId: ALI_BABA_2028,
                 role: "STEERING_GROUP",
                 capabilities: ["FINANCE"],
                 email: "stina@example.org",
@@ -141,7 +142,7 @@ function seedGuide(seed) {
     resetState(seed);
     if (seed === "published" || seed === "two" || seed === "draft") {
         state.revivals.forEach(revival => {
-            revival.guideVersionId = "1";
+            revival.guideVersionId = uuidOf(1);
         });
     }
 }
@@ -153,7 +154,7 @@ function seedGuide(seed) {
 function seedTemplates() {
     const as = PERSONAS.superadmin;
 
-    resolvers.RevivalChecklists(PERSONAS.styrgrupp, {id: "1", filter: null, filtered: false});
+    resolvers.RevivalChecklists(PERSONAS.styrgrupp, {id: ALI_BABA_2028, filter: null, filtered: false});
     resolvers.ChecklistTemplateCreate(as, {input: {kind: "EVENT", name: {sv: "Rephelg", en: null}}});
     resolvers.ChecklistTemplateCreate(as, {input: {kind: "CHAPTER", chapterKey: "B"}});
     const [event, chapter] = state.checklist.templates;
@@ -383,7 +384,7 @@ const resolvers = {
             throw new GraphQLError("BAD_REQUEST", `Året får inte vara före innevarande år, ${new Date().getFullYear()}.`);
         }
         const revival = {
-            id: String(state.nextId++),
+            id: uuidOf(state.nextId++),
             spexId: String(input.spexId),
             year: Number(input.year),
             title: titleOf(input.spexId, input.year),
@@ -909,7 +910,7 @@ const server = createServer((req, res) => {
             for (let index = 0; index < (waiting ?? 0); index++) {
                 state.members.push({
                     id: `m${state.nextId++}`,
-                    revivalId: "1",
+                    revivalId: ALI_BABA_2028,
                     role: "STEERING_GROUP",
                     capabilities: [],
                     email: `waiting${index}@example.org`,
@@ -969,14 +970,14 @@ const server = createServer((req, res) => {
                 canSee
             }, personaOf(req), path, url, res);
         } else if (req.method === "GET" && /^\/api\/revivals\/[^/]+\/poster$/.test(path)) {
-            // Revival 1's spex has a poster (a 1×1 PNG); the others have none
+            // Ali Baba 2028's spex has a poster (a 1×1 PNG); the others have none
             const revival = state.revivals.find(candidate => candidate.id === path.split("/")[3]);
             if (!revival || !canSee(personaOf(req), revival)) {
                 res.writeHead(404, {"Content-Type": "application/json"}).end(JSON.stringify({
                     code: "NOT_FOUND",
                     message: "Not found"
                 }));
-            } else if (revival.id === "1") {
+            } else if (revival.id === ALI_BABA_2028) {
                 res.writeHead(200, {"Content-Type": "image/png"}).end(Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", "base64"));
             } else {
                 res.writeHead(204).end();

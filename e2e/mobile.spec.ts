@@ -1,4 +1,5 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 const WIDTH = 375;
 
@@ -13,7 +14,7 @@ test.describe("Phone width: no page scrolls sideways", () => {
         await loginAs("directeur");
 
         for (const section of ["", "/members", "/log", "/checklists", "/events", "/budget", "/budget/transactions", "/closing"]) {
-            await page.goto(`/revivals/1${section}`);
+            await page.goto(`/revivals/${ALI_BABA_2028}${section}`);
             await page.getByRole("navigation", {name: "Nyuppsättningens delar"}).waitFor();
             expect(await page.evaluate(() => document.documentElement.scrollWidth), section || "/").toBeLessThanOrEqual(WIDTH);
         }

@@ -1,4 +1,5 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 // The mock places "Rephelg 1" five days from today, so its allergy mailing is due
 const day = (offset: number) => new Date(Date.now() + offset * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
@@ -7,7 +8,7 @@ const second = day(6);
 
 test.describe("Staffing and mailings: availability, shifts, the mailing plan and sending", () => {
     test.beforeEach(async ({mock}) => {
-        await mock.setStatus("1", "OPEN");
+        await mock.setStatus(ALI_BABA_2028, "OPEN");
         await mock.participants({people: true});
     });
 
@@ -19,7 +20,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
         await mock.staffing({answered: true});
         await page.setViewportSize({width: 390, height: 844});
         await loginAs("deltagare");
-        await page.goto("/revivals/1/me");
+        await page.goto(`/revivals/${ALI_BABA_2028}/me`);
 
         const availability = page.getByRole("region", {name: "Kan du?"});
         const firstDay = availability.getByRole("group", {name: new RegExp(first)});
@@ -60,7 +61,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
                                                                                                                }) => {
         await mock.staffing({capabilities: ["STAFFING"], answered: true});
         await loginAs("styrgrupp");
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await page.getByRole("link", {name: "Bemanning", exact: true}).click();
         await expect(page.getByLabel("Händelse")).toHaveValue(/\d+/);
 
@@ -120,7 +121,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
                                                                                                     }) => {
         await mock.staffing();
         await loginAs("styrgrupp");
-        await page.goto("/revivals/1/staffing");
+        await page.goto(`/revivals/${ALI_BABA_2028}/staffing`);
         await expect(page.getByText("Biljettkontroll")).toBeVisible();
         await expect(page.getByRole("button", {name: /Lägg till pass/})).toHaveCount(0);
         await expect(page.getByRole("button", {name: /Bemanna/})).toHaveCount(0);
@@ -129,7 +130,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
     test("a COMMS member drafts the due mailing from the plan and sends it", async ({page, loginAs, mock}) => {
         await mock.staffing({capabilities: ["COMMS"], answered: true});
         await loginAs("styrgrupp");
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await page.getByRole("link", {name: "Utskick", exact: true}).click();
 
         const plan = page.getByRole("region", {name: "Utskicksplan"});
@@ -149,7 +150,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
         await page.getByRole("button", {name: "Svenska", exact: true}).click();
         await page.getByRole("button", {name: "Spara utkast"}).click();
         await expect(page.getByText("Utkastet är sparat")).toBeVisible();
-        await expect(page).toHaveURL(/\/revivals\/1\/mailings\/ml\d+$/);
+        await expect(page).toHaveURL(/\/revivals\/[0-9a-f-]{36}\/mailings\/ml\d+$/);
 
         await page.getByRole("button", {name: "Skicka", exact: true}).click();
         const confirm = page.getByRole("alertdialog", {name: "Skicka Allergier inför rephelgen?"});
@@ -176,7 +177,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
                                                                                                    }) => {
         await mock.staffing({answered: true});
         await loginAs("styrgrupp");
-        await page.goto("/revivals/1/mailings");
+        await page.goto(`/revivals/${ALI_BABA_2028}/mailings`);
         await page.getByRole("link", {name: "Nytt utskick"}).click();
 
         await page.getByLabel("Vilka").selectOption({label: "De som inte har svarat"});
@@ -193,7 +194,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
         await expect(page.getByRole("region", {name: "Förhandsvisning"}).locator("strong")).toHaveText("kickoffen");
         await expect(page.getByRole("region", {name: "Förhandsvisning"}).locator("img")).toHaveCount(0);
         await page.getByRole("button", {name: "Spara utkast"}).click();
-        await expect(page).toHaveURL(/\/revivals\/1\/mailings\/ml\d+$/);
+        await expect(page).toHaveURL(/\/revivals\/[0-9a-f-]{36}\/mailings\/ml\d+$/);
 
         await expect(page.getByText("Directeuren eller den som ansvarar för kommunikation skickar utkastet.")).toBeVisible();
         await expect(page.getByRole("button", {name: "Skicka", exact: true})).toHaveCount(0);
@@ -226,7 +227,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
         await expect(page.getByRole("list", {name: "Utskicksplan"}).getByRole("listitem").filter({hasText: "Tack för i år"}))
             .toContainText("7 dagar efter premiären");
 
-        await page.goto("/revivals/1/mailings");
+        await page.goto(`/revivals/${ALI_BABA_2028}/mailings`);
         await expect(page.getByRole("region", {name: "Utskicksplan"})).toContainText("Tack för i år");
     });
 });

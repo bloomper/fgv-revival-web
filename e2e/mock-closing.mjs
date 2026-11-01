@@ -3,6 +3,7 @@
 // Spexregister's side is a set of what already exists there; a run writes two steps per poll, so the web sees it
 // progress. Test data is fictitious.
 import {createHash} from "node:crypto";
+import {ALI_BABA_2028} from "./mock-ids.mjs";
 
 const OPERATIONS = ["PARTICIPATION", "TASK", "ACTOR", "MEMBERSHIP"];
 const MONTHS_BEFORE_ANONYMIZING = 36;
@@ -354,7 +355,7 @@ export function closingResolvers(ctx) {
          * failOnce} makes the first step of each listed operation fail.
          */
         seed({failOnce = []} = {}) {
-            const revival = ctx.state().revivals.find(candidate => candidate.id === "1");
+            const revival = ctx.state().revivals.find(candidate => candidate.id === ALI_BABA_2028);
             const all = ctx.state().participant.participants;
             const anna = all.find(participant => participant.spexareId === "501");
 
@@ -365,7 +366,7 @@ export function closingResolvers(ctx) {
                 changedAt: new Date().toISOString()
             });
             revival.status = "SETTLING";
-            all.filter(participant => participant.revivalId === "1").forEach(participant => {
+            all.filter(participant => participant.revivalId === ALI_BABA_2028).forEach(participant => {
                 participant.response = "YES";
             });
             if (anna && !all.some(participant => participant.spexareId === "502")) {
