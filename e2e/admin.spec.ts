@@ -1,4 +1,5 @@
 import {expect, openRevival, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("The super admin records and approves a revival", () => {
     test.beforeEach(async ({loginAs}) => {
@@ -9,7 +10,7 @@ test.describe("The super admin records and approves a revival", () => {
         for (const path of ["/revivals", "/revivals/manage"]) {
             await page.goto(path);
 
-            await expect(page.locator('img[src="/api/revival-poster/1"]')).toHaveJSProperty("naturalWidth", 1);
+            await expect(page.locator(`img[src="/api/revival-poster/${ALI_BABA_2028}"]`)).toHaveJSProperty("naturalWidth", 1);
             await expect(page.locator('img[src^="/api/revival-poster/"]')).toHaveCount(1);
         }
     });

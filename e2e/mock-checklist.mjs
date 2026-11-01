@@ -2,6 +2,8 @@
 // checklists follow its pinned version on every read, as RevivalGuideSync does: one per chapter, with the
 // requirements, and none for chapters the version no longer has.
 
+import {seqOf} from "./mock-ids.mjs";
+
 export function createChecklistState() {
     return {checklists: [], items: [], templates: [], templateItems: [], nextId: 1};
 }
@@ -199,7 +201,7 @@ export function checklistResolvers(ctx) {
     const guideItem = (revival, key) => chapters(revival).flatMap(chapterItems).find(item => item.key === key) ?? null;
     const overdue = item => item.state === "OPEN" && !!item.deadline && item.deadline < today();
     const itemsOf = checklist => store().items.filter(item => item.checklistId === checklist.id)
-        .sort((a, b) => Number(b.required) - Number(a.required) || Number(a.id) - Number(b.id));
+        .sort((a, b) => Number(b.required) - Number(a.required) || seqOf(a.id) - seqOf(b.id));
     const summary = checklist => {
         const items = itemsOf(checklist);
         const revival = ctx.state().revivals.find(candidate => candidate.id === checklist.revivalId);

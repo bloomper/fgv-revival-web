@@ -1,4 +1,5 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Administration: the areas of responsibility and guide item types the super admin keeps", () => {
     test("a new area is offered to the steering group, an unused one is deleted and one in use only retired", async ({
@@ -6,7 +7,7 @@ test.describe("Administration: the areas of responsibility and guide item types 
                                                                                                                          mock,
                                                                                                                          loginAs
                                                                                                                      }) => {
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await loginAs("superadmin");
         await page.goto("/admin/capabilities");
         await expect(page.getByRole("heading", {level: 2, name: "Ansvarsområden"})).toBeVisible();
@@ -23,7 +24,7 @@ test.describe("Administration: the areas of responsibility and guide item types 
         await page.getByRole("button", {name: "Avveckla Bemanning"}).click();
         await expect(row("Bemanning")).toHaveCount(0);
 
-        await page.goto("/revivals/1/members");
+        await page.goto(`/revivals/${ALI_BABA_2028}/members`);
         await page.getByRole("button", {name: "Åtgärder för Stina Styrgrupp"}).click();
         await page.getByRole("menuitem", {name: "Ändra ansvarsområden"}).click();
         const steeringGroup = page.getByRole("dialog").getByRole("group", {name: "Ansvarsområden"});

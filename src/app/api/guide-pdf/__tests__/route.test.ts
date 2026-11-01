@@ -13,7 +13,7 @@ describe("GET /api/guide-pdf", () => {
         apiFetch.mockReset();
     });
 
-    it.each(["", "version=abc", "revival=1&version=2", "version=1&lang=de", "version=1;drop"])("refuses %s", async query => {
+    it.each(["", "version=abc", "version=1", "revival=1&version=2", "version=1&lang=de", "version=1;drop"])("refuses %s", async query => {
         const response = await GET(request(query));
 
         expect(response.status).toBe(400);
@@ -29,9 +29,9 @@ describe("GET /api/guide-pdf", () => {
             },
         }));
 
-        const response = await GET(request("version=7&lang=sv"));
+        const response = await GET(request("version=00000000-0000-7000-8000-000000000007&lang=sv"));
 
-        expect(apiFetch).toHaveBeenCalledWith("/api/guide/versions/7/pdf?lang=sv");
+        expect(apiFetch).toHaveBeenCalledWith("/api/guide/versions/00000000-0000-7000-8000-000000000007/pdf?lang=sv");
         expect(response.status).toBe(200);
         expect(response.headers.get("content-disposition")).toContain("nyuppsattningsguide-v1-sv.pdf");
         expect(response.headers.get("cache-control")).toBe("no-store");
@@ -40,9 +40,9 @@ describe("GET /api/guide-pdf", () => {
     it("fetches a revival's guide and forwards the server's status", async () => {
         apiFetch.mockResolvedValue(new Response("{}", {status: 404}));
 
-        const response = await GET(request("revival=3"));
+        const response = await GET(request("revival=00000000-0000-7000-8000-000000000003"));
 
-        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/3/guide/pdf");
+        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/guide/pdf");
         expect(response.status).toBe(404);
     });
 });

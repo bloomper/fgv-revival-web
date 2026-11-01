@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {apiFetch} from "@/lib/api.server";
+import {ID} from "@/lib/id";
 
-const ID = /^\d+$/;
 const LANGUAGES = new Set(["sv", "en"]);
 
 /**

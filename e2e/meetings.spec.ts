@@ -1,9 +1,10 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Decision log: the steering group runs a meeting from the log", () => {
     test.beforeEach(async ({mock, loginAs}) => {
-        await mock.setStatus("1", "ORGANISING");
-        await mock.logRow({revivalId: "1", type: "TODO", text: "Boka RunAn"});
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
+        await mock.logRow({revivalId: ALI_BABA_2028, type: "TODO", text: "Boka RunAn"});
         await loginAs("styrgrupp");
     });
 
@@ -11,7 +12,7 @@ test.describe("Decision log: the steering group runs a meeting from the log", ()
                                                                                                                 page,
                                                                                                                 mock
                                                                                                             }) => {
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await page.getByRole("link", {name: "Möten"}).click();
         await expect(page.getByText("Inga möten än.")).toBeVisible();
 
@@ -36,7 +37,7 @@ test.describe("Decision log: the steering group runs a meeting from the log", ()
         await page.getByRole("button", {name: "Starta mötet"}).click();
         await expect(page.getByText("Protokollförare: Stina Styrgrupp")).toBeVisible();
 
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await expect(page.getByText("Ett möte pågår")).toBeVisible();
         await expect(page.getByRole("link", {name: /Beslutslogg.*1 öppna rader, 0 försenade/})).toBeVisible();
         await page.getByRole("link", {name: "Direktionsmöte 4"}).click();

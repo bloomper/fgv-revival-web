@@ -1,15 +1,16 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Materials and inventory: links to where files are kept, shown to the right participants", () => {
     test.beforeEach(async ({mock}) => {
-        await mock.setStatus("1", "OPEN");
+        await mock.setStatus(ALI_BABA_2028, "OPEN");
         await mock.participants({people: true});
     });
 
     test("the steering group adds a recognised link and one for a position; only a participant with the position sees the second",
         async ({page, loginAs, mock}) => {
             await loginAs("styrgrupp");
-            await page.goto("/revivals/1");
+            await page.goto(`/revivals/${ALI_BABA_2028}`);
             await page.getByRole("navigation", {name: "Nyuppsättningens delar"}).getByRole("link", {name: "Material"}).click();
             await expect(page.getByText("Inget material än")).toBeVisible();
 
@@ -56,7 +57,7 @@ test.describe("Materials and inventory: links to where files are kept, shown to 
 
             // Without a position, Disa sees only what is for every participant
             await loginAs("deltagare");
-            await page.goto("/revivals/1/me");
+            await page.goto(`/revivals/${ALI_BABA_2028}/me`);
             const mine = page.getByRole("region", {name: "Material"});
 
             await expect(mine.getByRole("link", {name: /Manus 2028/})).toHaveAttribute("href", "https://docs.google.com/document/d/e2e");
@@ -74,7 +75,7 @@ test.describe("Materials and inventory: links to where files are kept, shown to 
                                                                                                                loginAs
                                                                                                            }) => {
         await loginAs("styrgrupp");
-        await page.goto("/revivals/1/materials/inventory");
+        await page.goto(`/revivals/${ALI_BABA_2028}/materials/inventory`);
         await expect(page.getByText("Inga inventarier än")).toBeVisible();
 
         await page.getByRole("button", {name: "Ny inventarie"}).click();
@@ -109,7 +110,7 @@ test.describe("Materials and inventory: links to where files are kept, shown to 
 
     test("an observer reads the steering group's work but not its materials", async ({page, loginAs}) => {
         await loginAs("observer");
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         const tabs = page.getByRole("navigation", {name: "Nyuppsättningens delar"});
 
         await expect(tabs.getByRole("link", {name: "Beslutslogg"})).toBeVisible();
@@ -132,7 +133,7 @@ test.describe("Materials and inventory: links to where files are kept, shown to 
         await expect(page.getByRole("listitem").filter({hasText: "Spexflix"})).toContainText("spexflix.example");
 
         await loginAs("styrgrupp");
-        await page.goto("/revivals/1/materials");
+        await page.goto(`/revivals/${ALI_BABA_2028}/materials`);
         await page.getByRole("button", {name: "Nytt material"}).click();
         await page.getByRole("dialog", {name: "Nytt material"}).getByLabel("Länk").fill("https://www.spexflix.example/v/2");
         await expect(page.getByText("Känns igen som Spexflix.")).toBeVisible();

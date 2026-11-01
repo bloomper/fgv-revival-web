@@ -1,4 +1,5 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Decision log: checklist templates and event checklists", () => {
     test("a super admin builds an event template with relative deadlines", async ({page, loginAs}) => {
@@ -41,11 +42,11 @@ test.describe("Decision log: checklist templates and event checklists", () => {
                                                                                                                                  loginAs
                                                                                                                              }) => {
         await mock.guide("published");
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await mock.templates();
         await loginAs("styrgrupp");
 
-        await page.goto("/revivals/1/checklists");
+        await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
         await page.getByRole("button", {name: "Ny händelse-checklista"}).click();
         const dialog = page.getByRole("dialog");
 
@@ -77,7 +78,7 @@ test.describe("Decision log: checklist templates and event checklists", () => {
         await expect(row("Lokaler bokade")).toContainText("Klart senast: 2027-11-13");
         await expect(row("Fika")).toContainText("Klart senast: 2027-11-01");
 
-        await page.goto("/revivals/1/checklists");
+        await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
         await page.getByRole("link", {name: /Boka lokaler/}).click();
         await page.getByRole("button", {name: "Lägg till punkter från mall"}).click();
         await expect(row("Boka kalaslokal")).toHaveCount(1);
@@ -85,7 +86,7 @@ test.describe("Decision log: checklist templates and event checklists", () => {
         await expect(page.getByText("Punkterna från mallen är tillagda").first()).toBeVisible();
         await expect(row("Boka kalaslokal")).toHaveCount(1);
 
-        await page.goto("/revivals/1/checklists");
+        await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
         await page.getByRole("link", {name: /Rephelg 2/}).click();
         await page.getByRole("link", {name: "Från mallen Rephelg"}).click();
         await expect(page.getByRole("heading", {level: 2, name: "Rephelg"})).toBeVisible();
@@ -95,7 +96,7 @@ test.describe("Decision log: checklist templates and event checklists", () => {
         await page.goBack();
         await page.getByRole("button", {name: "Stryk checklistan"}).click();
         await expect(page.getByText("Checklistan är struken").first()).toBeVisible();
-        await page.goto("/revivals/1/checklists");
+        await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
         const events = page.getByRole("region", {name: "Händelser"});
 
         await expect(events.getByText("Rephelg 2")).toHaveCount(0);
@@ -105,7 +106,7 @@ test.describe("Decision log: checklist templates and event checklists", () => {
 
     test("a super admin moves between templates in the list beside the editor", async ({page, mock, loginAs}) => {
         await mock.guide("published");
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await mock.templates();
         await loginAs("superadmin");
         await page.goto("/admin/checklist-templates");
@@ -132,7 +133,7 @@ test.describe("Decision log: checklist templates and event checklists", () => {
 
     test("a super admin sees retired items and restores them and the template", async ({page, mock, loginAs}) => {
         await mock.guide("published");
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await mock.templates();
         await loginAs("superadmin");
         await page.goto("/admin/checklist-templates");

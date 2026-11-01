@@ -1,5 +1,6 @@
 import {type Page} from "@playwright/test";
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 const yesterday = () => new Date(Date.now() - 24 * 3600 * 1000).toISOString().slice(0, 10);
 
@@ -31,12 +32,12 @@ async function addRow(page: Page, {type, text, owner, ownerName, deadline, tag}:
 
 test.describe("Decision log: the steering group keeps the decision log", () => {
     test.beforeEach(async ({mock, loginAs}) => {
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await loginAs("styrgrupp");
     });
 
     test("adds rows, filters them, answers a question and cancels a row", async ({page}) => {
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await page.getByRole("link", {name: "Beslutslogg"}).click();
         await expect(page.getByRole("heading", {level: 3, name: "Beslutslogg"})).toBeVisible();
         await expect(page.getByText("Loggen är tom.")).toBeVisible();
@@ -67,10 +68,10 @@ test.describe("Decision log: the steering group keeps the decision log", () => {
         await expect(table.getByRole("row")).toHaveCount(2);
         await expect(table.getByText("Boka RunAn")).toBeVisible();
 
-        await page.goto("/revivals/1/log?tag=lokal");
+        await page.goto(`/revivals/${ALI_BABA_2028}/log?tag=lokal`);
         await expect(page.getByRole("table").getByRole("row")).toHaveCount(3);
 
-        await page.goto("/revivals/1/log");
+        await page.goto(`/revivals/${ALI_BABA_2028}/log`);
         await page.getByRole("button", {name: "Åtgärder för rad 2"}).click();
         await page.getByRole("menuitem", {name: "Besvara fråga 2"}).click();
         await page.getByRole("dialog").getByLabel("Beslut").fill("Kalaset blir på Kårhuset");
@@ -86,10 +87,10 @@ test.describe("Decision log: the steering group keeps the decision log", () => {
 });
 
 test("an observer reads the log and its history without any controls", async ({page, mock, loginAs}) => {
-    await mock.setStatus("1", "ORGANISING");
-    await mock.logRow({revivalId: "1", type: "DECISION", text: "Spexpengen är 1500 kr"});
+    await mock.setStatus(ALI_BABA_2028, "ORGANISING");
+    await mock.logRow({revivalId: ALI_BABA_2028, type: "DECISION", text: "Spexpengen är 1500 kr"});
     await loginAs("observer");
-    await page.goto("/revivals/1/log");
+    await page.goto(`/revivals/${ALI_BABA_2028}/log`);
 
     await expect(page.getByRole("table").getByText("Spexpengen är 1500 kr")).toBeVisible();
     await expect(page.getByRole("button", {name: "Ny rad"})).toHaveCount(0);

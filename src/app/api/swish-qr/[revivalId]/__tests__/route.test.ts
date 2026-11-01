@@ -13,7 +13,7 @@ describe("GET /api/swish-qr/[revivalId]", () => {
         apiFetch.mockReset();
     });
 
-    it.each(["abc", "1;drop", "../1"])("refuses %s", async revivalId => {
+    it.each(["abc", "1", "1;drop", "../1"])("refuses %s", async revivalId => {
         expect((await get(revivalId)).status).toBe(400);
         expect(apiFetch).not.toHaveBeenCalled();
     });
@@ -21,9 +21,9 @@ describe("GET /api/swish-qr/[revivalId]", () => {
     it("passes the QR code through as a sandboxed SVG, cached privately", async () => {
         apiFetch.mockResolvedValue(new Response("<svg/>", {status: 200, headers: {"content-type": "image/svg+xml"}}));
 
-        const response = await get("3");
+        const response = await get("00000000-0000-7000-8000-000000000003");
 
-        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/3/swish-qr");
+        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/swish-qr");
         expect(response.status).toBe(200);
         expect(response.headers.get("content-type")).toBe("image/svg+xml");
         expect(response.headers.get("content-security-policy")).toContain("sandbox");
@@ -35,6 +35,6 @@ describe("GET /api/swish-qr/[revivalId]", () => {
     it.each([404, 503])("forwards the server's %i", async status => {
         apiFetch.mockResolvedValue(new Response("{}", {status}));
 
-        expect((await get("3")).status).toBe(status);
+        expect((await get("00000000-0000-7000-8000-000000000003")).status).toBe(status);
     });
 });

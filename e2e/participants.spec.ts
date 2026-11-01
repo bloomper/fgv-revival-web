@@ -1,15 +1,16 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Participants: the steering group adds and invites, the participant answers on their own page", () => {
     test.beforeEach(async ({mock}) => {
-        await mock.setStatus("1", "OPEN");
+        await mock.setStatus(ALI_BABA_2028, "OPEN");
     });
 
     test("the directeur adds candidates and a pending person, invites them, marks a fee paid and sets Swish and WhatsApp",
         async ({page, loginAs, mock}) => {
             await mock.participants();
             await loginAs("directeur");
-            await page.goto("/revivals/1");
+            await page.goto(`/revivals/${ALI_BABA_2028}`);
             await page.getByRole("link", {name: "Deltagare", exact: true}).click();
             await expect(page.getByText("Inga deltagare än")).toBeVisible();
 
@@ -85,7 +86,7 @@ test.describe("Participants: the steering group adds and invites, the participan
     test("the directeur turns a participant's suggestion into a pending person", async ({page, loginAs, mock}) => {
         await mock.participants({people: true});
         await loginAs("directeur");
-        await page.goto("/revivals/1/participants");
+        await page.goto(`/revivals/${ALI_BABA_2028}/participants`);
 
         const referrals = page.getByRole("region", {name: "Tips från deltagarna"});
 
@@ -104,12 +105,12 @@ test.describe("Participants: the steering group adds and invites, the participan
             await loginAs("deltagare");
 
             await page.getByRole("link", {name: /Din medverkan: Ali Baba 2028/}).click();
-            await expect(page).toHaveURL(/\/revivals\/1\/me$/);
+            await expect(page).toHaveURL(/\/revivals\/[0-9a-f-]{36}\/me$/);
             await page.goto("/revivals");
             await page.getByRole("link", {name: /Ali Baba 2028/}).click();
-            await expect(page).toHaveURL(/\/revivals\/1\/me$/);
-            await page.goto("/revivals/1");
-            await expect(page).toHaveURL(/\/revivals\/1\/me$/);
+            await expect(page).toHaveURL(/\/revivals\/[0-9a-f-]{36}\/me$/);
+            await page.goto(`/revivals/${ALI_BABA_2028}`);
+            await expect(page).toHaveURL(/\/revivals\/[0-9a-f-]{36}\/me$/);
             await expect(page.getByRole("heading", {level: 2, name: "Ali Baba 2028"})).toBeVisible();
             await expect(page.getByRole("navigation", {name: "Nyuppsättningens delar"})).toHaveCount(0);
 
@@ -187,7 +188,7 @@ test.describe("Participants: the steering group adds and invites, the participan
         async ({page, loginAs, mock}) => {
             await mock.participants({people: true});
             await loginAs("directeur");
-            await page.goto("/revivals/1/participants");
+            await page.goto(`/revivals/${ALI_BABA_2028}/participants`);
 
             const anna = page.getByRole("row").filter({hasText: "Anna"});
             const edit = async (name: string) => {
@@ -229,18 +230,18 @@ test.describe("Participants: the steering group adds and invites, the participan
         await expect(page.getByRole("link", {name: /Din medverkan/})).toBeVisible();
         // Neither the home page nor the sidebar offers the guide, which participants do not read
         await expect(page.getByRole("link", {name: /Guiden/})).toHaveCount(0);
-        await page.goto("/revivals/1/participants");
+        await page.goto(`/revivals/${ALI_BABA_2028}/participants`);
         await expect(page.getByRole("heading", {name: "Sidan finns inte"})).toBeVisible();
     });
 
     test("an observer reads the revival but not its participants", async ({page, loginAs, mock}) => {
         await mock.participants({people: true});
         await loginAs("observer");
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await expect(page.getByRole("heading", {level: 2, name: "Ali Baba 2028"})).toBeVisible();
         await expect(page.getByRole("navigation", {name: "Nyuppsättningens delar"})).toBeVisible();
         await expect(page.getByRole("link", {name: "Deltagare", exact: true})).toHaveCount(0);
-        await page.goto("/revivals/1/participants");
+        await page.goto(`/revivals/${ALI_BABA_2028}/participants`);
         await expect(page.getByRole("heading", {name: "Sidan finns inte"})).toBeVisible();
     });
 });

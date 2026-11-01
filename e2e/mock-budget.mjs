@@ -3,6 +3,8 @@
 // (fgv-revival-server/src/main/resources/graphql/budget.graphqls, spex-calendar.graphqls). Amounts are kept in öre and
 // returned as the server's decimal strings. Test data is fictitious.
 
+import {ALI_BABA_2028, seqOf, uuidOf} from "./mock-ids.mjs";
+
 const category = (id, sv, en, kind, role, position) => ({
     id,
     name: {sv, en},
@@ -159,10 +161,10 @@ export function budgetResolvers(ctx) {
         };
     const linesOf = (revival, includeRemoved = false) => store().lines
         .filter(line => line.revivalId === revival.id && (includeRemoved || !line.removed))
-        .sort((a, b) => categoryById(a.categoryId).position - categoryById(b.categoryId).position || Number(a.id) - Number(b.id));
+        .sort((a, b) => categoryById(a.categoryId).position - categoryById(b.categoryId).position || seqOf(a.id) - seqOf(b.id));
     const transactionsOf = (revival, includeCancelled = false) => store().transactions
         .filter(transaction => transaction.revivalId === revival.id && (includeCancelled || !transaction.cancelled))
-        .sort((a, b) => b.date.localeCompare(a.date) || Number(b.id) - Number(a.id));
+        .sort((a, b) => b.date.localeCompare(a.date) || seqOf(b.id) - seqOf(a.id));
     const eventOf = id => ctx.state().event.events.find(event => event.id === id);
     const toEventRef = id => {
         const event = id && eventOf(id);
@@ -784,7 +786,7 @@ export function budgetResolvers(ctx) {
                     throw new GraphQLError("BAD_REQUEST", "Beloppet måste vara större än noll.");
                 }
                 const transaction = {
-                    id: String(store().nextId++),
+                    id: uuidOf(store().nextId++),
                     revivalId: revival.id,
                     date: input.date,
                     amountOre,
@@ -1008,7 +1010,7 @@ export function budgetResolvers(ctx) {
          * member loses the FINANCE area.
          */
         seed({finance = true} = {}) {
-            store().settings["1"] = {
+            store().settings[ALI_BABA_2028] = {
                 participantsPlanned: 40,
                 participationFee: "800",
                 loanAmount: "10000",
@@ -1028,7 +1030,7 @@ export function budgetResolvers(ctx) {
             });
             store().lines.push({
                 id: String(store().nextId++),
-                revivalId: "1",
+                revivalId: ALI_BABA_2028,
                 categoryId: "SHOW_TICKETS",
                 description: "Biljetter, fyra föreställningar",
                 quantity: 400,
@@ -1041,7 +1043,7 @@ export function budgetResolvers(ctx) {
                 version: 0,
             }, {
                 id: String(store().nextId++),
-                revivalId: "1",
+                revivalId: ALI_BABA_2028,
                 categoryId: "VENUE",
                 description: "Hyra Kårhuset",
                 quantity: 1,
@@ -1071,7 +1073,7 @@ export function budgetResolvers(ctx) {
 
             events.events.push({
                 id: String(events.nextId++),
-                revivalId: "1",
+                revivalId: ALI_BABA_2028,
                 typeId: "3",
                 title: "Rephelg 1",
                 startDate: "2028-01-01",
@@ -1086,7 +1088,7 @@ export function budgetResolvers(ctx) {
                 version: 0,
             });
             if (!finance) {
-                const member = ctx.state().members.find(candidate => candidate.revivalId === "1" && candidate.sub === "p-styrgrupp");
+                const member = ctx.state().members.find(candidate => candidate.revivalId === ALI_BABA_2028 && candidate.sub === "p-styrgrupp");
 
                 member.capabilities = member.capabilities.filter(capability => capability !== "FINANCE");
             }

@@ -1,20 +1,21 @@
 import type {Page} from "@playwright/test";
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 const budgetNav = (page: Page) => page.getByRole("navigation", {name: "Budgetens delar"});
 
 test.describe("Budget: lines from proposals, transactions with receipts, scenarios and reference figures", () => {
     test.beforeEach(async ({mock}) => {
-        await mock.setStatus("1", "ORGANISING");
+        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await mock.events();
     });
 
     test("the steering group member with finance adds a proposed line and a transaction with a receipt, reimburses it, runs a scenario and exports",
         async ({page, loginAs, mock}) => {
             await mock.budget();
-            await mock.logRow({revivalId: "1", type: "DECISION", text: "Fyra springare à 1 200 kr"});
+            await mock.logRow({revivalId: ALI_BABA_2028, type: "DECISION", text: "Fyra springare à 1 200 kr"});
             await loginAs("styrgrupp");
-            await page.goto("/revivals/1");
+            await page.goto(`/revivals/${ALI_BABA_2028}`);
             await expect(page.getByRole("region", {name: "Budget"})).toContainText("20 000 kr");
             await page.getByRole("link", {name: "Budget", exact: true}).click();
 
@@ -120,7 +121,7 @@ test.describe("Budget: lines from proposals, transactions with receipts, scenari
                                                                                                 }) => {
         await mock.budget({finance: false});
         await loginAs("styrgrupp");
-        await page.goto("/revivals/1/budget");
+        await page.goto(`/revivals/${ALI_BABA_2028}/budget`);
 
         await expect(page.getByText("Endast läsning")).toBeVisible();
         await expect(page.getByText("bara directeuren och direktionsmedlemmar med ansvarsområdet ekonomi ändrar den")).toBeVisible();
@@ -166,7 +167,7 @@ test.describe("Budget: lines from proposals, transactions with receipts, scenari
         await expect(dialog).toBeHidden();
         await expect(page.getByRole("list", {name: "Referenssiffror"}).getByRole("listitem").filter({hasText: "Snorre 2024"})).toContainText("31 500 kr");
 
-        await page.goto("/revivals/1/budget");
+        await page.goto(`/revivals/${ALI_BABA_2028}/budget`);
         await expect(page.getByText("Endast läsning")).toBeVisible();
         await page.getByRole("button", {name: "Visa referenssiffror för Lokaler"}).click();
         const references = page.getByRole("row", {name: /^Snorre 2024/});

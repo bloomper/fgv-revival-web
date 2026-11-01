@@ -1,4 +1,5 @@
 import {expect, test} from "./fixtures";
+import {ALI_BABA_2028} from "./constants";
 
 test.describe("Closing: the directeur records the surplus, marks memberships, syncs to Spexregister and anonymizes", () => {
     test.beforeEach(async ({mock}) => {
@@ -13,7 +14,7 @@ test.describe("Closing: the directeur records the surplus, marks memberships, sy
         test.setTimeout(90_000);
         await mock.closing({failOnce: ["TASK"]});
         await loginAs("directeur");
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
         await page.getByRole("link", {name: "Avslut", exact: true}).click();
 
         // The surplus decision is a DECISION in the log tagged "överskott"
@@ -97,7 +98,7 @@ test.describe("Closing: the directeur records the surplus, marks memberships, sy
                                                                                                    }) => {
         await mock.closing();
         await loginAs("superadmin");
-        await page.goto("/revivals/1");
+        await page.goto(`/revivals/${ALI_BABA_2028}`);
 
         await page.getByRole("combobox", {name: "Ändra status"}).selectOption("ARCHIVED");
         const warning = page.getByRole("alertdialog", {name: "Arkivera utan klar synkning?"});
@@ -117,7 +118,7 @@ test.describe("Closing: the directeur records the surplus, marks memberships, sy
                                                                                               }) => {
         await mock.closing();
         await loginAs("observer");
-        await page.goto("/revivals/1/closing");
+        await page.goto(`/revivals/${ALI_BABA_2028}/closing`);
 
         await expect(page.getByRole("region", {name: "Ekonomi"})).toBeVisible();
         await expect(page.getByRole("button", {name: "Skriv beslut om överskott"})).toHaveCount(0);
