@@ -71,6 +71,7 @@
     "adminLinkServices": "Länktjänster",
     "adminNews": "Nyheter",
     "library": "Biblioteket",
+    "adminMaintenance": "Underhåll",
     "adminSettings": "Inställningar"
   },
   "Home": {
@@ -2217,5 +2218,30 @@
     "termsHelp": "Varje deltagare godkänner dem när den tackar ja, efter avgiften och ansvaret för lånet och före nyuppsättningens egna villkor.",
     "defaultFee": "Deltagaravgift för nya nyuppsättningar (kr)",
     "defaultFeeHelp": "Nya nyuppsättningars budget börjar med avgiften. Directeuren eller den som har Ekonomi kan ändra den. Lämna tomt för ingen avgift."
+  },
+  "Maintenance": {
+    "title": "Underhåll",
+    "intro": "Jobben som servern kör enligt schema, i svensk tid. Du kan också starta ett nu, till exempel efter att ha ändrat en revivals status eller planerat ett utskick.",
+    "schedule": "Schema",
+    "notScheduled": "Inte schemalagt",
+    "lastRun": "Senaste körning",
+    "running": "Körs",
+    "neverRun": "Inte sedan servern startade",
+    "succeeded": "Lyckades {at}",
+    "failed": "Misslyckades, startade {at}",
+    "startedAt": "Startade {at}",
+    "runNow": "Kör nu",
+    "started": "{job} har startat. Det körs i bakgrunden.",
+    "alreadyRunning": "{job} körs redan.",
+    "jobs": {
+      "PARTICIPANT_RETENTION": {
+        "title": "Gallring av deltagaruppgifter",
+        "description": "Raderar specialkost efter sista föreställningen, stänger väntande personer som tackat nej eller aldrig svarat när en revival lämnat Öppen, och anonymiserar revivaler som arkiverats eller avslagits för tillräckligt länge sedan."
+      },
+      "MAILING_REMINDERS": {
+        "title": "Påminnelser om utskick",
+        "description": "Mejlar en revivals ägare om planerade utskick som snart ska gå ut eller är försenade."
+      }
+    }
   }
 }

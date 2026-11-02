@@ -184,6 +184,8 @@ type Documents = {
     "\n    mutation MailingTemplateMove($id: ID!, $version: Int!, $position: Int!) {\n        mailingTemplateMove(id: $id, version: $version, position: $position) { id }\n    }\n": typeof types.MailingTemplateMoveDocument,
     "\n    mutation MailingTemplateRetire($id: ID!, $version: Int!) {\n        mailingTemplateRetire(id: $id, version: $version) { id }\n    }\n": typeof types.MailingTemplateRetireDocument,
     "\n    mutation MailingTemplateRestore($id: ID!, $version: Int!) {\n        mailingTemplateRestore(id: $id, version: $version) { id }\n    }\n": typeof types.MailingTemplateRestoreDocument,
+    "\n    query MaintenanceJobs {\n        maintenanceJobs { job schedule running lastStartedAt lastFinishedAt lastSucceeded }\n    }\n": typeof types.MaintenanceJobsDocument,
+    "\n    mutation MaintenanceJobRun($job: MaintenanceJob!) { maintenanceJobRun(job: $job) }\n": typeof types.MaintenanceJobRunDocument,
     "\n    fragment LinkServiceFields on LinkService {\n        id\n        name { sv en }\n        hosts\n        homeUrl\n        retired\n    }\n": typeof types.LinkServiceFieldsFragmentDoc,
     "\n    fragment MaterialFields on Material {\n        id\n        title\n        url\n        service { ...LinkServiceFields }\n        serviceChosen\n        category\n        visibility\n        positions { ...PositionFields }\n        comment\n        removed\n        version\n    }\n": typeof types.MaterialFieldsFragmentDoc,
     "\n    fragment InventoryItemFields on InventoryItem {\n        id\n        name\n        kind\n        quantity\n        status\n        location\n        locationNote\n        owner { name person { id displayName active } }\n        comment\n        material { id title url removed }\n        removed\n        version\n    }\n": typeof types.InventoryItemFieldsFragmentDoc,
@@ -451,6 +453,8 @@ const documents: Documents = {
     "\n    mutation MailingTemplateMove($id: ID!, $version: Int!, $position: Int!) {\n        mailingTemplateMove(id: $id, version: $version, position: $position) { id }\n    }\n": types.MailingTemplateMoveDocument,
     "\n    mutation MailingTemplateRetire($id: ID!, $version: Int!) {\n        mailingTemplateRetire(id: $id, version: $version) { id }\n    }\n": types.MailingTemplateRetireDocument,
     "\n    mutation MailingTemplateRestore($id: ID!, $version: Int!) {\n        mailingTemplateRestore(id: $id, version: $version) { id }\n    }\n": types.MailingTemplateRestoreDocument,
+    "\n    query MaintenanceJobs {\n        maintenanceJobs { job schedule running lastStartedAt lastFinishedAt lastSucceeded }\n    }\n": types.MaintenanceJobsDocument,
+    "\n    mutation MaintenanceJobRun($job: MaintenanceJob!) { maintenanceJobRun(job: $job) }\n": types.MaintenanceJobRunDocument,
     "\n    fragment LinkServiceFields on LinkService {\n        id\n        name { sv en }\n        hosts\n        homeUrl\n        retired\n    }\n": types.LinkServiceFieldsFragmentDoc,
     "\n    fragment MaterialFields on Material {\n        id\n        title\n        url\n        service { ...LinkServiceFields }\n        serviceChosen\n        category\n        visibility\n        positions { ...PositionFields }\n        comment\n        removed\n        version\n    }\n": types.MaterialFieldsFragmentDoc,
     "\n    fragment InventoryItemFields on InventoryItem {\n        id\n        name\n        kind\n        quantity\n        status\n        location\n        locationNote\n        owner { name person { id displayName active } }\n        comment\n        material { id title url removed }\n        removed\n        version\n    }\n": types.InventoryItemFieldsFragmentDoc,
@@ -1242,6 +1246,14 @@ export function graphql(source: "\n    mutation MailingTemplateRetire($id: ID!, 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    mutation MailingTemplateRestore($id: ID!, $version: Int!) {\n        mailingTemplateRestore(id: $id, version: $version) { id }\n    }\n"): (typeof documents)["\n    mutation MailingTemplateRestore($id: ID!, $version: Int!) {\n        mailingTemplateRestore(id: $id, version: $version) { id }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query MaintenanceJobs {\n        maintenanceJobs { job schedule running lastStartedAt lastFinishedAt lastSucceeded }\n    }\n"): (typeof documents)["\n    query MaintenanceJobs {\n        maintenanceJobs { job schedule running lastStartedAt lastFinishedAt lastSucceeded }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation MaintenanceJobRun($job: MaintenanceJob!) { maintenanceJobRun(job: $job) }\n"): (typeof documents)["\n    mutation MaintenanceJobRun($job: MaintenanceJob!) { maintenanceJobRun(job: $job) }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

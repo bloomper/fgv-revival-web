@@ -29,10 +29,10 @@ export default defineConfig({
             exclude: ["**/*.d.ts", "**/__tests__/**", "src/hooks/use-mobile.ts", "src/components/ui/**"],
             // A floor at today's level over the widened scope, to be raised as the components get tests
             thresholds: {
-                statements: 44,
-                branches: 41,
-                functions: 34,
-                lines: 44,
+                statements: 63,
+                branches: 55,
+                functions: 57,
+                lines: 63,
             },
         },
     },

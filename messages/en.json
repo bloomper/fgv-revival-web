@@ -71,6 +71,7 @@
     "adminLinkServices": "Link services",
     "adminNews": "News",
     "library": "The library",
+    "adminMaintenance": "Maintenance",
     "adminSettings": "Settings"
   },
   "Home": {
@@ -2217,5 +2218,30 @@
     "termsHelp": "Every participant accepts them when saying yes, after the fee and the liability for the loan and before the revival's own terms.",
     "defaultFee": "Participation fee for new revivals (kr)",
     "defaultFeeHelp": "A new revival's budget starts with this fee. The directeur or whoever has Finance can change it. Leave blank for no fee."
+  },
+  "Maintenance": {
+    "title": "Maintenance",
+    "intro": "The jobs the server runs on a schedule, in Swedish time. You can also start one now, for example after changing a revival's status or planning a mailing.",
+    "schedule": "Schedule",
+    "notScheduled": "Not scheduled",
+    "lastRun": "Latest run",
+    "running": "Running",
+    "neverRun": "Not since the server started",
+    "succeeded": "Succeeded {at}",
+    "failed": "Failed, started {at}",
+    "startedAt": "Started {at}",
+    "runNow": "Run now",
+    "started": "{job} has started. It runs in the background.",
+    "alreadyRunning": "{job} is already running.",
+    "jobs": {
+      "PARTICIPANT_RETENTION": {
+        "title": "Participant data retention",
+        "description": "Deletes dietary needs after the last show, closes pending people who declined or never answered once a revival has left Open, and anonymizes revivals archived or rejected long enough ago."
+      },
+      "MAILING_REMINDERS": {
+        "title": "Mailing reminders",
+        "description": "Emails the owners of a revival about planned mailings that are due soon or overdue."
+      }
+    }
   }
 }
