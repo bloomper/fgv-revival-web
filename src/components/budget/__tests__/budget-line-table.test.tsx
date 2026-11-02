@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import {BudgetLineTable, type BudgetLineRow, filterBudgetLines} from "@/components/budget/budget-line-table.client";
 import * as actions from "@/app/(app)/revivals/[id]/budget/actions.server";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/revivals/[id]/budget/actions.server", () => ({
     removeBudgetLineAction: vi.fn(),
     restoreBudgetLineAction: vi.fn(),

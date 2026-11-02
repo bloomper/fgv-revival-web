@@ -2,9 +2,9 @@ import {beforeEach, describe, expect, it, vi} from "vitest";
 import {render, screen} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {filterMeetings, MEETING_STATUSES, MeetingTable, type MeetingRow} from "@/components/meeting/meeting-table.client";
-import {router} from "../../../../test/next-navigation";
+import {router} from "@/test/next-navigation";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 
 const meetings: MeetingRow[] = [
     {id: "m1", date: "2026-02-01", title: "Styrgruppsmöte", status: "CLOSED"},

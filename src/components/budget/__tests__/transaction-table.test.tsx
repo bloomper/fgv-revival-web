@@ -10,9 +10,9 @@ import {
 import * as actions from "@/app/(app)/revivals/[id]/budget/actions.server";
 import {removeReceipt} from "@/components/budget/receipt";
 import {toast} from "sonner";
-import {router} from "../../../../test/next-navigation";
+import {router} from "@/test/next-navigation";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/revivals/[id]/budget/actions.server", () => ({
     cancelTransactionAction: vi.fn(),
     setReimbursedAction: vi.fn(),

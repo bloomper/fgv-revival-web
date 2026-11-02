@@ -5,7 +5,7 @@ import {LogTable} from "@/components/decision-log/log-table.client";
 import * as actions from "@/app/(app)/revivals/[id]/log/actions.server";
 import type {LogEntryFieldsFragment} from "@/gql/graphql";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/revivals/[id]/log/actions.server", () => ({
     createLogEntryAction: vi.fn(),
     updateLogEntryAction: vi.fn(),

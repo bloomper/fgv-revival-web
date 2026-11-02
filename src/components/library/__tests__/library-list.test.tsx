@@ -5,7 +5,7 @@ import {LibraryList} from "@/components/library/library-list.client";
 import type {LibraryEntryRow} from "@/components/library/library";
 import * as actions from "@/app/(app)/library/actions.server";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/library/actions.server", () => ({
     createLibraryEntryAction: vi.fn(),
     updateLibraryEntryAction: vi.fn(),

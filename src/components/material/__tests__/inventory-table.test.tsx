@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import {filterInventory, InventoryTable, type InventoryRow, NO_LOCATION} from "@/components/material/inventory-table.client";
 import * as actions from "@/app/(app)/revivals/[id]/materials/actions.server";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/revivals/[id]/materials/actions.server", () => ({
     createInventoryItemAction: vi.fn(),
     updateInventoryItemAction: vi.fn(),

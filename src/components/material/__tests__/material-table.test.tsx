@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import {filterMaterials, MaterialTable, type MaterialRow, NO_SERVICE} from "@/components/material/material-table.client";
 import * as actions from "@/app/(app)/revivals/[id]/materials/actions.server";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/revivals/[id]/materials/actions.server", () => ({
     createMaterialAction: vi.fn(),
     updateMaterialAction: vi.fn(),

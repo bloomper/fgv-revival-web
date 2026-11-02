@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import {EventTypeEditor, type EventTypeRow, OffsetHint} from "@/components/event/event-type-editor.client";
 import * as actions from "@/app/(app)/admin/event-types/actions.server";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/admin/event-types/actions.server", () => ({
     createEventTypeAction: vi.fn(),
     updateEventTypeAction: vi.fn(),

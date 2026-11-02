@@ -5,7 +5,7 @@ import {SpexCalendarEditor} from "@/components/spex-calendar/spex-calendar-edito
 import * as actions from "@/app/(app)/admin/spex-calendar/actions.server";
 import {toast} from "sonner";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/admin/spex-calendar/actions.server", () => ({
     createSpexCalendarDateAction: vi.fn(),
     updateSpexCalendarDateAction: vi.fn(),

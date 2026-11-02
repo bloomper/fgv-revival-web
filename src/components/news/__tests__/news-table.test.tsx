@@ -6,7 +6,7 @@ import type {NewsItem} from "@/components/news/news";
 import * as actions from "@/app/(app)/admin/news/actions.server";
 import {toast} from "sonner";
 
-vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("next/navigation", async () => (await import("@/test/next-navigation")).navigation);
 vi.mock("@/app/(app)/admin/news/actions.server", () => ({
     createNewsAction: vi.fn(),
     updateNewsAction: vi.fn(),
