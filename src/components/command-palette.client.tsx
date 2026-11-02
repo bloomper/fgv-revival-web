@@ -160,6 +160,12 @@ export function CommandPalette({guideReadable}: { guideReadable: boolean }) {
                 icon: Newspaper
             });
             navigationEntries.push({
+                id: "admin-maintenance",
+                label: t("Nav.adminMaintenance"),
+                href: "/admin/maintenance",
+                icon: Wrench
+            });
+            navigationEntries.push({
                 id: "admin-settings",
                 label: t("Nav.adminSettings"),
                 href: "/admin/settings",

@@ -110,6 +110,7 @@ export function AppSidebar({roles, accountUrl, guideReadable, ...props}: AppSide
                     {title: t("Nav.adminLinkServices"), url: "/admin/link-services"},
                     {title: t("Nav.adminSpexCalendar"), url: "/admin/spex-calendar"},
                     {title: t("Nav.adminNews"), url: "/admin/news"},
+                    {title: t("Nav.adminMaintenance"), url: "/admin/maintenance"},
                     {title: t("Nav.adminSettings"), url: "/admin/settings"},
                 ],
             });

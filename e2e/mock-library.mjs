@@ -2,7 +2,13 @@
 // assigned to a participant (checklist.graphqls) in the mock backend, with the server's rules.
 
 export function createLibraryState() {
-    return {nextId: 1, entries: [], settings: {terms: null, defaultParticipationFee: null, version: 0}};
+    return {
+        nextId: 1, entries: [], settings: {terms: null, defaultParticipationFee: null, version: 0},
+        maintenanceJobs: [
+            {job: "PARTICIPANT_RETENTION", schedule: "0 15 3 * * *", running: false, lastStartedAt: null, lastFinishedAt: null, lastSucceeded: null},
+            {job: "MAILING_REMINDERS", schedule: "0 30 7 * * *", running: true, lastStartedAt: "2026-11-01T06:30:00Z", lastFinishedAt: null, lastSucceeded: null},
+        ],
+    };
 }
 
 const KINDS = ["VENUE", "TICKET_SERVICE", "ROLE_DESCRIPTION", "CONTACT_ROLE"];
@@ -108,6 +114,21 @@ export function libraryResolvers(ctx) {
 
             Object.assign(entry, {retired: false, version: entry.version + 1});
             return {libraryEntryRestore: toEntry(entry)};
+        },
+        MaintenanceJobs(persona) {
+            manageable(persona);
+            return {maintenanceJobs: store().maintenanceJobs.map(job => ({__typename: "MaintenanceJobStatus", ...job}))};
+        },
+        MaintenanceJobRun(persona, {job}) {
+            manageable(persona);
+
+            const status = store().maintenanceJobs.find(candidate => candidate.job === job);
+
+            if (!status || status.running) {
+                return {maintenanceJobRun: false};
+            }
+            Object.assign(status, {lastStartedAt: "2026-11-01T12:00:00Z", lastFinishedAt: "2026-11-01T12:00:01Z", lastSucceeded: true});
+            return {maintenanceJobRun: true};
         },
         ApplicationSettings(persona) {
             manageable(persona);

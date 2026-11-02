@@ -1,7 +1,18 @@
-import {describe, expect, it, vi} from "vitest";
-import {filterInventory, type InventoryRow, NO_LOCATION} from "@/components/material/inventory-table.client";
+import {beforeEach, describe, expect, it, vi} from "vitest";
+import {render, screen, waitFor} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import {filterInventory, InventoryTable, type InventoryRow, NO_LOCATION} from "@/components/material/inventory-table.client";
+import * as actions from "@/app/(app)/revivals/[id]/materials/actions.server";
 
-vi.mock("@/app/(app)/revivals/[id]/materials/actions.server", () => ({}));
+vi.mock("next/navigation", async () => (await import("../../../../test/next-navigation")).navigation);
+vi.mock("@/app/(app)/revivals/[id]/materials/actions.server", () => ({
+    createInventoryItemAction: vi.fn(),
+    updateInventoryItemAction: vi.fn(),
+    removeInventoryItemAction: vi.fn(),
+    restoreInventoryItemAction: vi.fn(),
+}));
+vi.mock("@/components/history/history-dialog.client", () => ({HistoryDialog: () => <div data-testid="history"/>}));
+vi.mock("sonner", () => ({toast: {success: vi.fn(), error: vi.fn()}}));
 
 const items: InventoryRow[] = [
     {
@@ -44,5 +55,57 @@ describe("filterInventory", () => {
             locations: new Set([NO_LOCATION])
         }).map(item => item.id)).toEqual(["2"]);
         expect(filterInventory(items, "", {...none, kinds: new Set(["WIG"]), statuses: new Set(["BUY"])})).toEqual([]);
+    });
+});
+
+describe("InventoryTable", () => {
+    const rows = [...items, {...items[0], id: "3", version: 4, name: "Trasig stol", removed: true}] as InventoryRow[];
+
+    function show(canWrite = true) {
+        return render(<InventoryTable revivalId="r1" items={rows} members={[]} materials={[]} canWrite={canWrite} showRemoved/>);
+    }
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        vi.mocked(actions.removeInventoryItemAction).mockResolvedValue({ok: true, data: null} as never);
+        vi.mocked(actions.restoreInventoryItemAction).mockResolvedValue({ok: true, data: null} as never);
+    });
+
+    it("lists the items, the owner and the material", () => {
+        show();
+
+        expect(screen.getByText("Lampa")).toBeInTheDocument();
+        expect(screen.getByText("Hos Dana")).toBeInTheDocument();
+        expect(screen.getByText("Kostymlista")).toBeInTheDocument();
+    });
+
+    it("searches and clears the search", async () => {
+        show();
+
+        await userEvent.type(screen.getByRole("textbox", {name: "Common.search"}), "peruk");
+        expect(screen.queryByText("Lampa")).not.toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole("button", {name: "Common.clearSearch"}));
+        expect(screen.getByText("Lampa")).toBeInTheDocument();
+    });
+
+    it("removes and restores items", async () => {
+        show();
+
+        await userEvent.click(screen.getByRole("button", {name: `rowMenu:${JSON.stringify({name: "Lampa"})}`}));
+        await userEvent.click(await screen.findByRole("menuitem", {name: /^remove$/}));
+        await waitFor(() => expect(actions.removeInventoryItemAction).toHaveBeenCalledWith(expect.objectContaining({id: "1", version: 0})));
+
+        await userEvent.click(screen.getByRole("button", {name: `rowMenu:${JSON.stringify({name: "Trasig stol"})}`}));
+        await userEvent.click(await screen.findByRole("menuitem", {name: /^restore$/}));
+        await waitFor(() => expect(actions.restoreInventoryItemAction).toHaveBeenCalledWith(expect.objectContaining({id: "3", version: 4})));
+    });
+
+    it("edits an item from its row", async () => {
+        show();
+
+        await userEvent.click(screen.getByText("Lampa"));
+
+        expect(await screen.findByRole("dialog")).toBeInTheDocument();
     });
 });
