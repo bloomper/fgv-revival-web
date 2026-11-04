@@ -50,6 +50,13 @@
     "toggleLanguage": "Byt språk",
     "toggleTheme": "Byt tema"
   },
+  "AppSwitcher": {
+    "heading": "Byt applikation",
+    "spexregister": "Spexregister",
+    "revival": "Nyuppsättning",
+    "spexflix": "Spexflix",
+    "spexify": "Spexify"
+  },
   "Nav": {
     "home": "Hem",
     "revivals": "Nyuppsättningar",

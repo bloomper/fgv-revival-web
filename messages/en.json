@@ -50,6 +50,13 @@
     "toggleLanguage": "Change language",
     "toggleTheme": "Change theme"
   },
+  "AppSwitcher": {
+    "heading": "Switch application",
+    "spexregister": "Spexregister",
+    "revival": "Nyuppsättning",
+    "spexflix": "Spexflix",
+    "spexify": "Spexify"
+  },
   "Nav": {
     "home": "Home",
     "revivals": "Revivals",
