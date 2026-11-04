@@ -4,6 +4,7 @@ import {getTranslations} from "next-intl/server";
 import {AppSidebar} from "@/components/app-sidebar.client";
 import {RolesProvider} from "@/components/roles-provider.client";
 import {SiteHeader} from "@/components/site-header.client";
+import {getApplications} from "@/utils/applications.server";
 import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar";
 import {Button} from "@/components/ui/button";
 import {Logo} from "@/components/logo";
@@ -83,12 +84,13 @@ export default async function AppLayout({children}: { children: React.ReactNode 
 
     const guideReadable = await getGuideReadable();
     const accountUrl = `${(process.env.KEYCLOAK_ISSUER ?? "").replace(/\/$/, "")}/account`;
+    const applications = await getApplications();
 
     return (
         <div className="[--header-height:calc(--spacing(14))]">
             <RolesProvider roles={roles}>
                 <SidebarProvider className="flex flex-col">
-                    <SiteHeader guideReadable={guideReadable}/>
+                    <SiteHeader guideReadable={guideReadable} applications={applications}/>
                     <div className="flex flex-1">
                         <AppSidebar roles={roles} accountUrl={accountUrl} guideReadable={guideReadable}/>
                         <SidebarInset className="min-w-0">
