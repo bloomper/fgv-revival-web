@@ -208,7 +208,7 @@ test.describe("Staffing and mailings: availability, shifts, the mailing plan and
         await mock.staffing();
         await loginAs("superadmin");
         await page.goto("/admin/mailing-templates");
-        await expect(page.getByRole("heading", {level: 2, name: "Utskicksplan"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Utskicksplan"})).toBeVisible();
         await expect(page.getByRole("list", {name: "Utskicksplan"})).toContainText("måndag veckan innan Rephelg 1");
 
         await page.getByRole("button", {name: "Lägg till utskick"}).click();

@@ -60,7 +60,7 @@ export default async function RevivalLayout({children, params}: {
 
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <h2 className="text-lg font-bold tracking-tight">{revival.title}</h2>
+                <h1 className="text-lg font-bold tracking-tight">{revival.title}</h1>
 
                 {revival.anonymizedAt && (
                     <Alert className="print:hidden">

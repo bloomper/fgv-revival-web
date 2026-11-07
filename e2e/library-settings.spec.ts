@@ -4,7 +4,7 @@ test.describe("The reference library and the application settings", () => {
     test("the super admin adds a venue, the steering group reads it, and a retired entry is hidden", async ({page, loginAs}) => {
         await loginAs("superadmin");
         await page.goto("/library");
-        await expect(page.getByRole("heading", {level: 2, name: "Referensbiblioteket"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Referensbiblioteket"})).toBeVisible();
 
         await page.getByRole("button", {name: "Ny post"}).click();
         const sheet = page.getByRole("dialog");

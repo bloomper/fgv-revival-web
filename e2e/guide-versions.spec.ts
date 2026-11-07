@@ -10,7 +10,7 @@ test.describe("Guide: the super admin edits a draft and publishes a new version"
     test("starts a draft, edits it and publishes it as v2", async ({page}) => {
         await page.goto("/admin/guide");
         await page.getByRole("button", {name: "Starta ett utkast"}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "Utkast"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Utkast"})).toBeVisible();
 
         await page.getByRole("link", {name: /Sätt budgeten/}).click();
         const chapterC = page.getByRole("region", {name: /^3\. Sätt budgeten/});
@@ -50,7 +50,7 @@ test.describe("Guide: the super admin edits a draft and publishes a new version"
     test("shows a summary from the row, the whole version from the menu, and deletes a version only when unused", async ({page}) => {
         await page.goto("/admin/guide");
         await page.getByRole("button", {name: "Starta ett utkast"}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "Utkast"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Utkast"})).toBeVisible();
         await page.getByRole("button", {name: "Publicera"}).click();
         await page.getByRole("dialog").getByRole("button", {name: "Publicera"}).click();
         await expect(page.getByText("Versionen är publicerad")).toBeVisible();
@@ -63,13 +63,14 @@ test.describe("Guide: the super admin edits a draft and publishes a new version"
         await expect(view.getByText("Sara Admin")).toBeVisible();
         await expect(view.getByText("Används av 3 nyuppsättningar")).toBeVisible();
         await expect(view.getByRole("textbox")).toHaveCount(0);
-        await view.getByRole("button", {name: "Stäng"}).click();
+        // The footer's button; the corner's X, after it, is named the same
+        await view.getByRole("button", {name: "Stäng"}).first().click();
 
         await page.getByRole("button", {name: "Åtgärder för v1"}).click();
         await expect(page.getByRole("menuitem", {name: /Ta bort/})).toHaveAttribute("aria-disabled", "true");
         await page.getByRole("menuitem", {name: "Visa versionen"}).click();
         await expect(page).toHaveURL(/\/guide\/versions\/00000000-0000-7000-8000-000000000001$/);
-        await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Guiden v1"})).toBeVisible();
 
         await page.goto("/admin/guide");
         await page.getByRole("button", {name: "Åtgärder för v2"}).click();
@@ -91,7 +92,7 @@ test.describe("Guide: the directeur moves the revival to a newer version", () =>
         await expect(page.getByText("Det finns en nyare version av guiden, v2.")).toBeVisible();
 
         await page.getByRole("link", {name: "Se vad som ändrats"}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "Ändringar från v1 till v2"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Ändringar från v1 till v2"})).toBeVisible();
         await expect(page.getByText("Ny text (sv)")).toBeVisible();
 
         await page.goto(`/revivals/${ALI_BABA_2028}/guide`);
@@ -122,14 +123,14 @@ test("an observer picks an older version in the guide's version selector", async
     await loginAs("observer");
     await page.goto("/guide");
 
-    await expect(page.getByRole("heading", {level: 2, name: "Guiden v2"})).toBeVisible();
+    await expect(page.getByRole("heading", {level: 1, name: "Guiden v2"})).toBeVisible();
     const select = page.getByRole("combobox", {name: "Versioner"});
 
     await expect(select).toContainText("v2 (senaste)");
     await select.click();
     await page.getByRole("option", {name: "v1"}).click();
     await expect(page).toHaveURL(/\/guide\/versions\/00000000-0000-7000-8000-000000000001$/);
-    await expect(page.getByRole("heading", {level: 2, name: "Guiden v1"})).toBeVisible();
+    await expect(page.getByRole("heading", {level: 1, name: "Guiden v1"})).toBeVisible();
 
     await select.click();
     await page.getByRole("option", {name: "v2 (senaste)"}).click();

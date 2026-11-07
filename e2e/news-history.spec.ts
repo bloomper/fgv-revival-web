@@ -9,7 +9,7 @@ test.describe("News on the start page, kept under Administration, with its histo
                                                                                                                           }) => {
         await loginAs("superadmin");
         await page.goto("/admin/news");
-        await expect(page.getByRole("heading", {level: 2, name: "Nyheter"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Nyheter"})).toBeVisible();
 
         await page.getByRole("button", {name: "Ny nyhet"}).click();
         const dialog = page.getByRole("dialog");
@@ -53,6 +53,6 @@ test.describe("News on the start page, kept under Administration, with its histo
     test("news is administered only by the super admin", async ({page, loginAs}) => {
         await loginAs("directeur");
         await page.goto("/admin/news");
-        await expect(page.getByRole("heading", {level: 2, name: "Nyheter"})).toHaveCount(0);
+        await expect(page.getByRole("heading", {level: 1, name: "Nyheter"})).toHaveCount(0);
     });
 });

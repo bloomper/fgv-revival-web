@@ -97,7 +97,7 @@ export default async function StaffingPage({params, searchParams}: {
                     <p className="text-sm text-muted-foreground">{t("noEvents")}</p>
                 ) : (
                     <>
-                        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                        <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:items-end md:justify-between">
                             <StaffingEventPicker events={events} selected={event?.id ?? ""}
                                                  view={matrix ? "matrix" : null}/>
                             <nav aria-label={t("views")} className="flex w-fit gap-1 rounded-lg bg-muted p-1">

@@ -52,7 +52,8 @@ test.describe("Participants: the steering group adds and invites, the participan
             await invite.getByRole("button", {name: "Skicka"}).click();
             await expect(invite).toContainText("2 personer bjöds in.");
             await expect(invite).toContainText("Bertil Bengtsson: saknar e-postadress");
-            await invite.getByRole("button", {name: "Stäng"}).click();
+            // The footer's button; the corner's X, after it, is named the same
+            await invite.getByRole("button", {name: "Stäng"}).first().click();
 
             // Disa's address is an FGV account with access, so her role is claimed at once
             await expect(disa).toContainText("Inloggad");
@@ -111,7 +112,7 @@ test.describe("Participants: the steering group adds and invites, the participan
             await expect(page).toHaveURL(/\/revivals\/[0-9a-f-]{36}\/me$/);
             await page.goto(`/revivals/${ALI_BABA_2028}`);
             await expect(page).toHaveURL(/\/revivals\/[0-9a-f-]{36}\/me$/);
-            await expect(page.getByRole("heading", {level: 2, name: "Ali Baba 2028"})).toBeVisible();
+            await expect(page.getByRole("heading", {level: 1, name: "Ali Baba 2028"})).toBeVisible();
             await expect(page.getByRole("navigation", {name: "Nyuppsättningens delar"})).toHaveCount(0);
 
             const response = page.getByRole("region", {name: "Ditt svar"});
@@ -238,7 +239,7 @@ test.describe("Participants: the steering group adds and invites, the participan
         await mock.participants({people: true});
         await loginAs("observer");
         await page.goto(`/revivals/${ALI_BABA_2028}`);
-        await expect(page.getByRole("heading", {level: 2, name: "Ali Baba 2028"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Ali Baba 2028"})).toBeVisible();
         await expect(page.getByRole("navigation", {name: "Nyuppsättningens delar"})).toBeVisible();
         await expect(page.getByRole("link", {name: "Deltagare", exact: true})).toHaveCount(0);
         await page.goto(`/revivals/${ALI_BABA_2028}/participants`);

@@ -14,7 +14,7 @@ export default async function NewsAdminPage() {
 
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
+                <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
                 <p className="max-w-prose text-sm text-muted-foreground">{t("description")}</p>
                 <NewsTable news={news}/>
             </div>

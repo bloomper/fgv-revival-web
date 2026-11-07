@@ -17,6 +17,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "close": "Close",
+    "toggleMenu": "Show or hide the menu",
     "reload": "Reload",
     "chooseFile": "Choose file…",
     "noFileChosen": "No file chosen",

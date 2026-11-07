@@ -2,6 +2,7 @@ import {defineConfig, devices} from "@playwright/test";
 import {APP_PORT, AUTH_SECRET, BASE_URL, MOCK_PORT} from "./e2e/constants";
 
 const appEnv: Record<string, string> = {
+    // Everything the app reads is set here, or a developer's .env.local (which points at the local stack) would win
     AUTH_SECRET,
     KEYCLOAK_CLIENT_ID: "fgv-revival",
     KEYCLOAK_CLIENT_SECRET: "e2e",
@@ -12,6 +13,13 @@ const appEnv: Record<string, string> = {
     FEEDBACK_EMAIL: "feedback.revival@example.org",
     UMAMI_URL: "",
     UMAMI_WEBSITE_ID: "",
+    SUPPORTED_LOCALES: "sv,en",
+    DEFAULT_LOCALE: "sv",
+    // No other application to switch to, so the header's title is just the name
+    SPEXREGISTER_WEB_URL: "",
+    FGV_REVIVAL_WEB_URL: "",
+    SPEXIFY_WEB_URL: "",
+    SPEXFLIX_WEB_URL: "",
 };
 
 export default defineConfig({

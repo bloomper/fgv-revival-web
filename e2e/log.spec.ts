@@ -59,10 +59,10 @@ test.describe("Decision log: the steering group keeps the decision log", () => {
         await expect(table.getByText("Sam på lokalen").filter({visible: true})).toBeVisible();
         await expect(table.getByText("inte medlem").filter({visible: true})).toBeVisible();
 
-        await page.getByRole("button", {name: /^Visa/}).click();
+        await page.getByRole("button", {name: /^Visa(?! eller dölj menyn)/}).click();
         await page.getByRole("button", {name: "Mina"}).click();
         await expect(page).toHaveURL(/mine=1/);
-        await page.getByRole("button", {name: /^Visa/}).click();
+        await page.getByRole("button", {name: /^Visa(?! eller dölj menyn)/}).click();
         await page.getByRole("button", {name: "Försenade"}).click();
         await expect(page).toHaveURL(/mine=1&overdue=1/);
         await expect(table.getByRole("row")).toHaveCount(2);

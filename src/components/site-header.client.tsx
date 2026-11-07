@@ -28,6 +28,7 @@ export function SiteHeader({guideReadable, applications}: {
                         className="h-8 w-8"
                         variant="ghost"
                         size="icon"
+                        aria-label={t("Common.toggleMenu")}
                         onClick={toggleSidebar}
                     >
                         <SidebarIcon/>

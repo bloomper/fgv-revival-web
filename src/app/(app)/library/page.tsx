@@ -36,7 +36,7 @@ export default async function LibraryPage({searchParams}: {
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h2 className="text-lg font-bold tracking-tight">{t("title")}</h2>
+                    <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
                     {canEdit && <ShowRetiredSwitch shown={retired} label={t("showRetired")}/>}
                 </div>
                 <p className="max-w-prose text-sm text-muted-foreground">{t("intro")}</p>
