@@ -28,6 +28,8 @@ export async function GET(request: NextRequest) {
             "Content-Type": response.headers.get("content-type") ?? "application/pdf",
             "Content-Disposition": response.headers.get("content-disposition") ?? "attachment; filename=\"nyuppsattningsguide.pdf\"",
             "Cache-Control": "no-store",
+            "Content-Security-Policy": "default-src 'none'; sandbox",
+            "X-Content-Type-Options": "nosniff",
         },
     });
 }

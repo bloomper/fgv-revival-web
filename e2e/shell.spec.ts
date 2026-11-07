@@ -32,7 +32,7 @@ test.describe("The application shell", () => {
         await loginAs("directeur");
         await page.goto("/");
 
-        await expect(page.getByRole("heading", {level: 2, name: "Välkommen till Nyuppsättning"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Välkommen till Nyuppsättning"})).toBeVisible();
         await page.getByRole("main").getByRole("link", {name: /Nyuppsättningar/}).click();
         await expect(page).toHaveURL(/\/revivals$/);
         await expect(page.getByRole("link", {name: /Ali Baba 2028/})).toBeVisible();
@@ -83,7 +83,7 @@ test.describe("The application shell", () => {
 
         await page.getByRole("button", {name: "Byt språk"}).click();
         await page.getByRole("menuitem", {name: "English"}).click();
-        await expect(page.getByRole("heading", {level: 2, name: "My revivals"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "My revivals"})).toBeVisible();
 
         await page.locator("header").getByRole("button").first().click();
         await expect(page.locator('[data-slot="sidebar"][data-state="collapsed"]')).toHaveCount(1);

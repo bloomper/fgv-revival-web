@@ -27,6 +27,8 @@ test.describe("Guide: export the guide to PDF", () => {
 
         expect(published.status()).toBe(200);
         expect(published.headers()["content-disposition"]).toContain("nyuppsattningsguide-v1-sv.pdf");
+        // The route's sandbox, not the page policy, which next.config.ts would otherwise set last
+        expect(published.headers()["content-security-policy"]).toBe("default-src 'none'; sandbox");
         expect((await page.request.get(`/api/guide-pdf?version=${uuidOf(10)}&lang=sv`)).status()).toBe(404);
     });
 });

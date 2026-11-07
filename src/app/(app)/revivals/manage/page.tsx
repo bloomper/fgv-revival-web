@@ -40,7 +40,7 @@ export default async function ManageRevivalsPage({searchParams}: {
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
                 <div className="flex flex-col gap-1">
-                    <h2 className="text-lg font-bold tracking-tight">{t("Admin.title")}</h2>
+                    <h1 className="text-lg font-bold tracking-tight">{t("Admin.title")}</h1>
                     {!superAdmin && <p className="text-sm text-muted-foreground">{t("Admin.readOnly")}</p>}
                 </div>
                 <nav aria-label={t("RevivalTimeline.views")} className="flex w-fit gap-1 rounded-lg bg-muted p-1">

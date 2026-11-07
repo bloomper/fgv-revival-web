@@ -10,7 +10,7 @@ test.describe("Administration: the areas of responsibility and guide item types 
         await mock.setStatus(ALI_BABA_2028, "ORGANISING");
         await loginAs("superadmin");
         await page.goto("/admin/capabilities");
-        await expect(page.getByRole("heading", {level: 2, name: "Ansvarsområden"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Ansvarsområden"})).toBeVisible();
         const row = (name: string) => page.getByRole("list", {name: "Ansvarsområden"}).getByRole("listitem").filter({hasText: name});
 
         await page.getByRole("button", {name: "Nytt ansvarsområde"}).click();
@@ -51,7 +51,7 @@ test.describe("Administration: the areas of responsibility and guide item types 
         await mock.guide("draft");
         await loginAs("superadmin");
         await page.goto("/admin/guide-item-types");
-        await expect(page.getByRole("heading", {level: 2, name: "Punkttyper i guiden"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Punkttyper i guiden"})).toBeVisible();
         const row = (name: string) => page.getByRole("list", {name: "Punkttyper i guiden"}).getByRole("listitem").filter({hasText: name});
         // Every type is used in the guide, so none can be deleted
         await expect(page.getByRole("button", {name: /^Radera /})).toHaveCount(0);

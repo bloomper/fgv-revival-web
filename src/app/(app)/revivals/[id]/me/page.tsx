@@ -76,7 +76,7 @@ export default async function MyParticipationPage({params}: { params: Promise<{ 
                 <section aria-labelledby="participation-title" className="flex gap-4">
                     <RevivalPoster revivalId={revival.id} className="h-32 w-24 shrink-0 rounded-md border"/>
                     <div className="flex min-w-0 flex-col gap-1">
-                        <h2 id="participation-title" className="text-xl font-bold tracking-tight">{revival.title}</h2>
+                        <h1 id="participation-title" className="text-xl font-bold tracking-tight">{revival.title}</h1>
                         <p className="text-sm text-muted-foreground">
                             {t(isHelper ? "welcomeHelper" : "welcome", {name: participantName(participant)})}
                         </p>

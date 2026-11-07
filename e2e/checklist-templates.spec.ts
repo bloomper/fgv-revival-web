@@ -5,7 +5,7 @@ test.describe("Decision log: checklist templates and event checklists", () => {
     test("a super admin builds an event template with relative deadlines", async ({page, loginAs}) => {
         await loginAs("superadmin");
         await page.goto("/admin/checklist-templates");
-        await expect(page.getByRole("heading", {level: 2, name: "Checklistmallar"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Checklistmallar"})).toBeVisible();
 
         await page.getByRole("button", {name: "Ny händelsemall"}).click();
         await page.getByRole("dialog").getByLabel("Namn (svenska)").fill("Rephelg");

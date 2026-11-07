@@ -35,6 +35,8 @@ describe("GET /api/guide-pdf", () => {
         expect(response.status).toBe(200);
         expect(response.headers.get("content-disposition")).toContain("nyuppsattningsguide-v1-sv.pdf");
         expect(response.headers.get("cache-control")).toBe("no-store");
+        expect(response.headers.get("content-security-policy")).toBe("default-src 'none'; sandbox");
+        expect(response.headers.get("x-content-type-options")).toBe("nosniff");
     });
 
     it("fetches a revival's guide and forwards the server's status", async () => {

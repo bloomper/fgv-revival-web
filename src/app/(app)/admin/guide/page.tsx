@@ -24,7 +24,7 @@ export default async function AdminGuidePage() {
 
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h2 className="text-lg font-bold tracking-tight">{t("admin.title")}</h2>
+                <h1 className="text-lg font-bold tracking-tight">{t("admin.title")}</h1>
 
                 <div className="grid gap-4 md:grid-cols-2">
                     <Card className={showSuggestions ? undefined : "md:col-span-2"}>

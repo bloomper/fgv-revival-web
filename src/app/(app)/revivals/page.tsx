@@ -17,7 +17,7 @@ export default async function RevivalsPage() {
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
                 {revivals.length === 0 ? (
                     <>
-                        <h2 className="text-lg font-bold tracking-tight">{t("myRevivals")}</h2>
+                        <h1 className="text-lg font-bold tracking-tight">{t("myRevivals")}</h1>
                         <p className="text-muted-foreground">{t("empty")}</p>
                     </>
                 ) : (

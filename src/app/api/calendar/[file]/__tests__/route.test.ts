@@ -35,6 +35,7 @@ describe("GET /api/calendar/[file]", () => {
         expect(response.headers.get("content-type")).toBe("text/calendar; charset=utf-8");
         expect(response.headers.get("cache-control")).toBe("private, max-age=900");
         expect(response.headers.get("x-content-type-options")).toBe("nosniff");
+        expect(response.headers.get("content-security-policy")).toBe("default-src 'none'; sandbox");
         expect(await response.text()).toBe(ICS);
     });
 

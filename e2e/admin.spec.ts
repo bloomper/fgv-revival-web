@@ -24,7 +24,7 @@ test.describe("The super admin records and approves a revival", () => {
         await page.getByRole("option", {name: "2031"}).click();
         await page.getByRole("button", {name: "Skapa"}).click();
 
-        await expect(page.getByRole("heading", {level: 2, name: "Snorre 2031"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Snorre 2031"})).toBeVisible();
         await expect(page.locator('[data-slot="badge"]:visible', {hasText: "Föreslagen"})).toBeVisible();
 
         await page.getByRole("combobox", {name: "Ändra status"}).selectOption("APPROVED");
@@ -51,7 +51,7 @@ test.describe("The super admin records and approves a revival", () => {
         await page.getByRole("option", {name: lastYear}).click();
         await page.getByRole("button", {name: "Skapa"}).click();
 
-        await expect(page.getByRole("heading", {level: 2, name: `Snorre ${lastYear}`})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: `Snorre ${lastYear}`})).toBeVisible();
     });
 
     test("rejects a revival and moves another one backwards on their pages", async ({page}) => {

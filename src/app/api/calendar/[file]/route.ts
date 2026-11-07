@@ -42,6 +42,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ fi
         headers: {
             "Content-Type": response.headers.get("content-type") ?? "text/calendar; charset=utf-8",
             "Cache-Control": "private, max-age=900",
+            "Content-Security-Policy": "default-src 'none'; sandbox",
             "X-Content-Type-Options": "nosniff",
         },
     });

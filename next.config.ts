@@ -31,8 +31,21 @@ const nextConfig: NextConfig = {
                     {key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()"},
                 ],
             },
+            // The page policy above would otherwise replace the routes' own sandbox, since the last matching header wins
             {
                 source: "/api/receipts/:transactionId",
+                headers: [{key: "Content-Security-Policy", value: "default-src 'none'; sandbox"}],
+            },
+            {
+                source: "/api/guide-pdf",
+                headers: [{key: "Content-Security-Policy", value: "default-src 'none'; sandbox"}],
+            },
+            {
+                source: "/api/budget-export/:id",
+                headers: [{key: "Content-Security-Policy", value: "default-src 'none'; sandbox"}],
+            },
+            {
+                source: "/api/calendar/:file",
                 headers: [{key: "Content-Security-Policy", value: "default-src 'none'; sandbox"}],
             },
             {

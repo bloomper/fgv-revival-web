@@ -37,6 +37,7 @@ describe("GET /api/budget-export/[id]", () => {
         expect(response.status).toBe(200);
         expect(response.headers.get("content-disposition")).toBe("attachment; filename=\"budget-ali-baba-2028.xlsx\"");
         expect(response.headers.get("cache-control")).toBe("no-store");
+        expect(response.headers.get("content-security-policy")).toBe("default-src 'none'; sandbox");
         expect(new Uint8Array(await response.arrayBuffer())).toEqual(new Uint8Array([80, 75, 3, 4]));
     });
 

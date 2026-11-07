@@ -33,9 +33,9 @@ export default async function GuideChangesPage({searchParams}: {
 
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <h2 className="text-lg font-bold tracking-tight">
+                <h1 className="text-lg font-bold tracking-tight">
                     {t("title", {from: changes.from.label ?? "", to: changes.to.label ?? t("draft")})}
-                </h2>
+                </h1>
                 <GuideChanges changes={changes}/>
             </div>
         );

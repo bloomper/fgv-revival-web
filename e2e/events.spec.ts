@@ -83,6 +83,7 @@ test.describe("Events: the timeline, proposals from the premiere and calendar li
         expect(feed.status()).toBe(200);
         expect(feed.headers()["content-type"]).toContain("text/calendar");
         expect(feed.headers()["cache-control"]).toBe("private, max-age=900");
+        expect(feed.headers()["content-security-policy"]).toBe("default-src 'none'; sandbox");
         expect(await feed.text()).toContain("SUMMARY:Rephelg 1 i Kemi");
         await page.getByRole("dialog").getByRole("button", {name: "Stäng"}).first().click();
 
@@ -112,7 +113,7 @@ test.describe("Events: the timeline, proposals from the premiere and calendar li
     test("the super admin edits and retires event types", async ({page, loginAs}) => {
         await loginAs("superadmin");
         await page.goto("/admin/event-types");
-        await expect(page.getByRole("heading", {level: 2, name: "Händelsetyper"})).toBeVisible();
+        await expect(page.getByRole("heading", {level: 1, name: "Händelsetyper"})).toBeVisible();
         const row = (name: string) => page.getByRole("list", {name: "Händelsetyper"}).getByRole("listitem").filter({hasText: name});
 
         await expect(row("Rephelg 1")).toContainText("10–8 veckor före premiären");

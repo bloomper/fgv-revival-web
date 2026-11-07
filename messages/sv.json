@@ -17,6 +17,7 @@
     "delete": "Radera",
     "edit": "Redigera",
     "close": "Stäng",
+    "toggleMenu": "Visa eller dölj menyn",
     "reload": "Ladda om",
     "chooseFile": "Välj fil…",
     "noFileChosen": "Ingen fil vald",
