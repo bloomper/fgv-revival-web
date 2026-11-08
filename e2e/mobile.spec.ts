@@ -86,7 +86,7 @@ for (const screen of SCREENS) {
             await headerFits(page);
             if (screen.width < 768) {
                 // On phones the menu is a sheet over the page
-                await page.getByRole("button", {name: "Visa eller dölj menyn"}).click();
+                await page.getByRole("button", {name: "Visa menyn"}).click();
                 await expect(page.getByRole("link", {name: "Nyuppsättningar", exact: true})).toBeVisible();
             }
         });

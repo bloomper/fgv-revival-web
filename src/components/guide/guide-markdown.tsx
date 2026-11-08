@@ -8,7 +8,7 @@ const SAFE_LINK = /^(https?:\/\/|mailto:)\S+$/i;
 
 const components: Components = {
     a: ({href, children}) => href
-        ? <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{children}</a>
+        ? <a href={href} target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:text-primary/80">{children}</a>
         : <>{children}</>,
     ul: ({children}) => <ul className="ml-5 list-disc space-y-1">{children}</ul>,
     ol: ({children}) => <ol className="ml-5 list-decimal space-y-1">{children}</ol>,

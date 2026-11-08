@@ -60,7 +60,7 @@ export function MailingTable({revivalId, mailings, canDraft}: {
                                                   title={t("Mailings.subject")}/>,
             cell: ({row}) => (
                 <Link href={`/revivals/${revivalId}/mailings/${row.original.id}`}
-                      className="font-medium whitespace-normal underline-offset-2 hover:underline">
+                      className="font-medium whitespace-normal hover:text-primary">
                     {row.original.subject}
                 </Link>
             ),

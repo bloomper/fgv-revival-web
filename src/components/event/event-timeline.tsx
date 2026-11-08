@@ -26,7 +26,7 @@ function What({item, revivalId}: { item: TimelineItem; revivalId: string }) {
             return <span>{t("show")}{item.venue ? `, ${item.venue}` : ""}</span>;
         case "meeting":
             return (
-                <Link href={`/revivals/${revivalId}/meetings/${item.id}`} className="hover:underline">
+                <Link href={`/revivals/${revivalId}/meetings/${item.id}`} className="row-link">
                     {item.title || t("meeting")}
                 </Link>
             );
@@ -39,7 +39,7 @@ function What({item, revivalId}: { item: TimelineItem; revivalId: string }) {
                     {item.event.location && <span className="text-muted-foreground">{item.event.location}</span>}
                     {item.event.checklist && (
                         <Link href={`/revivals/${revivalId}/checklists/${item.event.checklist.id}`}
-                              className="inline-flex items-center gap-1 text-muted-foreground tabular-nums hover:underline"
+                              className="inline-flex items-center gap-1 text-muted-foreground tabular-nums hover:text-primary"
                               aria-label={t("checklistLink", {
                                   open: item.event.checklist.openCount,
                                   total: item.event.checklist.totalCount
@@ -80,7 +80,7 @@ export function EventTimeline({revivalId, months}: { revivalId: string; months: 
 
                                 return (
                                     <li key={item.key}
-                                        className={cn("relative flex flex-col gap-1 rounded-md border p-3 text-sm sm:flex-row sm:items-start sm:gap-4",
+                                        className={cn("link-row flex flex-col gap-1 rounded-md border p-3 text-sm sm:flex-row sm:items-start sm:gap-4",
                                             item.kind === "premiere" && "border-primary bg-primary/5",
                                             item.kind === "event" && item.event.cancelled && "text-muted-foreground")}
                                         data-kind={item.kind}>

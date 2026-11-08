@@ -17,7 +17,6 @@
     "delete": "Radera",
     "edit": "Redigera",
     "close": "Stäng",
-    "toggleMenu": "Visa eller dölj menyn",
     "reload": "Ladda om",
     "chooseFile": "Välj fil…",
     "noFileChosen": "Ingen fil vald",
@@ -49,7 +48,12 @@
   },
   "Header": {
     "toggleLanguage": "Byt språk",
-    "toggleTheme": "Byt tema"
+    "toggleTheme": "Byt tema",
+    "showMenu": "Visa menyn"
+  },
+  "Sidebar": {
+    "hideMenu": "Dölj menyn",
+    "showMenu": "Visa menyn"
   },
   "AppSwitcher": {
     "heading": "Byt applikation",

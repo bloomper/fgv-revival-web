@@ -18,7 +18,7 @@ export function GuideVersionBanner({current, newer}: {
             <AlertDescription className="flex flex-wrap items-center gap-x-2">
                 {t("newer", {label: newer.label ?? ""})}
                 <Link href={`/guide/changes?from=${current.id}&to=${newer.id}`}
-                      className="font-medium underline underline-offset-2">
+                      className="font-medium text-primary hover:text-primary/80">
                     {t("whatChanged")}
                 </Link>
             </AlertDescription>

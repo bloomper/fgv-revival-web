@@ -23,7 +23,7 @@ export function ChecklistItemList({revivalId, items}: { revivalId: string; items
             {items.map(item => (
                 <li key={item.id} className="space-y-2 rounded-lg border p-3">
                     <Link href={`/revivals/${revivalId}/checklists/${item.checklist.id}`}
-                          className="block w-fit text-xs text-muted-foreground hover:underline">
+                          className="block w-fit text-xs text-muted-foreground hover:text-primary">
                         {item.checklist.kind === "CHAPTER"
                             ? item.checklist.chapterTitle ? pickText(item.checklist.chapterTitle, locale).text : item.checklist.chapterKey
                             : item.checklist.name}

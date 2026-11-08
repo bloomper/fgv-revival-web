@@ -81,7 +81,7 @@ export function RevivalStatusSelect({revivalId, status, allowedStatuses, syncInc
                         <AlertDialogDescription>
                             {t("Revival.archiveSyncDescription")}{" "}
                             <Link href={`/revivals/${revivalId}/closing`}
-                                  className="underline">{t("Revival.archiveSyncLink")}</Link>
+                                  className="font-medium text-primary hover:text-primary/80">{t("Revival.archiveSyncLink")}</Link>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

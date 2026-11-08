@@ -43,7 +43,7 @@ export default async function MeetingPage({params}: { params: Promise<{ id: stri
             <div className="flex flex-1 flex-col gap-4">
                 <div className="space-y-1">
                     <Link href={`/revivals/${revival.id}/meetings`}
-                          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
                         <ArrowLeft className="size-4"/>
                         {t("title")}
                     </Link>
@@ -58,7 +58,7 @@ export default async function MeetingPage({params}: { params: Promise<{ id: stri
                             {meeting.canEmailMinutes &&
                                 <MinutesEmailDialog revivalId={revival.id} meetingId={meeting.id}/>}
                             <Link href={`/revivals/${revival.id}/log?meeting=${meeting.id}`}
-                                  className="text-sm hover:underline">{t("logRows")}</Link>
+                                  className="text-sm hover:text-primary">{t("logRows")}</Link>
                         </div>
                         <MinutesView minutes={meeting.minutes}/>
                         {meeting.emails.length > 0 && (

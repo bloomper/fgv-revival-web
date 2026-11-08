@@ -188,7 +188,7 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                                            chooseLabel={transaction?.receipt ? t("Budget.replaceReceiptChoose") : undefined}
                                            current={transaction?.receipt && (
                                                <a href={receiptUrl(transaction.id)} download
-                                                  className="underline underline-offset-4 hover:text-primary"
+                                                  className="hover:text-primary font-medium text-primary"
                                                   aria-label={t("Budget.downloadReceipt", {filename: transaction.receipt.filename})}>
                                                    {transaction.receipt.filename}
                                                </a>

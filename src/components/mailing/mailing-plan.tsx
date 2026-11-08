@@ -66,7 +66,7 @@ export function MailingPlan({revivalId, entries, canDraft}: {
                         <div className="flex shrink-0 items-center gap-2">
                             {entry.mailing && (
                                 <Link href={`/revivals/${revivalId}/mailings/${entry.mailing.id}`}
-                                      className="flex items-center gap-2 text-sm underline-offset-2 hover:underline"
+                                      className="flex items-center gap-2 text-sm hover:text-primary"
                                       aria-label={t("openMailing", {subject: entry.mailing.subject})}>
                                     <MailingStatusBadge status={entry.mailing.status}/>
                                     {sent && entry.mailing.sentAt && <span

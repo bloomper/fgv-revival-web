@@ -110,7 +110,7 @@ export function LibraryList({entries, canEdit}: { entries: LibraryEntryRow[]; ca
                                                 </dl>
                                                 {entry.url && (
                                                     <a href={entry.url} target="_blank" rel="noopener noreferrer"
-                                                       className="inline-flex items-center gap-1 underline underline-offset-2">
+                                                       className="inline-flex items-center gap-1 font-medium text-primary hover:text-primary/80">
                                                         {t("Library.open", {name})}<ExternalLink className="size-3" aria-hidden/>
                                                     </a>
                                                 )}

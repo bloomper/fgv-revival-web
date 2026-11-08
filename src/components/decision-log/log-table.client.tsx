@@ -63,14 +63,14 @@ function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
                 className="text-xs text-muted-foreground">{t("answeredByRow", {number: entry.answeredBy.number})}</span>}
             {entry.event && (
                 <Link href={`/revivals/${revivalId}/events${entry.event.cancelled ? "?cancelled=1" : ""}`}
-                      className="text-xs text-muted-foreground hover:underline"
+                      className="text-xs text-muted-foreground hover:text-primary"
                       onClick={event => event.stopPropagation()}>
                     {t("eventLink", {title: entry.event.title, date: formatDate(entry.event.startDate) ?? entry.event.startDate})}
                 </Link>
             )}
             {entry.checklistItem && (
                 <Link href={`/revivals/${revivalId}/checklists/${entry.checklistItem.checklistId}`}
-                      className="text-xs text-muted-foreground hover:underline"
+                      className="text-xs text-muted-foreground hover:text-primary"
                       onClick={event => event.stopPropagation()}>
                     {t("checklistItemLink", {text: pickText(entry.checklistItem.text, locale).text})}
                 </Link>
@@ -82,14 +82,14 @@ function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
             )}
             {entry.budgetLines?.map(line => (
                 <Link key={line.id} href={`/revivals/${revivalId}/budget/lines`}
-                      className="text-xs text-muted-foreground hover:underline"
+                      className="text-xs text-muted-foreground hover:text-primary"
                       onClick={event => event.stopPropagation()}>
                     {t("budgetLineLink", {description: line.description, amount: formatAmount(line.amount) ?? line.amount})}
                 </Link>
             ))}
             {entry.meeting && (
                 <Link href={`/revivals/${revivalId}/log?meeting=${entry.meeting.id}`}
-                      className="text-xs text-muted-foreground hover:underline"
+                      className="text-xs text-muted-foreground hover:text-primary"
                       onClick={event => event.stopPropagation()}>
                     {t("fromMeeting", {date: formatDate(entry.meeting.date) ?? entry.meeting.date})}
                 </Link>

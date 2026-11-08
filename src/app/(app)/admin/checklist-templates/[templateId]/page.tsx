@@ -62,7 +62,7 @@ export default async function ChecklistTemplatePage({params, searchParams}: {
                     <div className="space-y-1">
                         {superAdmin && (
                             <Link href={`/admin/checklist-templates${retired ? "?retired=1" : ""}`}
-                                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline lg:hidden">
+                                  className="inline-flex items-center gap-1 text-sm text-muted-foreground lg:hidden hover:text-primary">
                                 <ArrowLeft className="size-4"/>
                                 {t("ChecklistTemplate.title")}
                             </Link>

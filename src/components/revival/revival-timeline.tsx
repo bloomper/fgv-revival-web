@@ -55,7 +55,7 @@ export function RevivalTimeline({months, clashes}: { months: CrossTimelineMonth[
                         <ol className="space-y-2 border-l pl-4">
                             {items.map(item => (
                                 <li key={item.key}
-                                    className={cn("flex flex-col gap-1 rounded-md border p-3 text-sm sm:flex-row sm:items-center sm:gap-4",
+                                    className={cn("link-row flex flex-col gap-1 rounded-md border p-3 text-sm sm:flex-row sm:items-center sm:gap-4",
                                         item.clash && "border-destructive/60 bg-destructive/5")}>
                                     <span
                                         className="flex items-center gap-2 font-medium tabular-nums sm:w-48 sm:shrink-0">
@@ -68,7 +68,7 @@ export function RevivalTimeline({months, clashes}: { months: CrossTimelineMonth[
                                         {item.kind === "show" ? (
                                             <>
                                                 <Link href={`/revivals/${item.revivalId}`}
-                                                      className="font-medium hover:underline">{item.revivalTitle}</Link>
+                                                      className="row-link font-medium">{item.revivalTitle}</Link>
                                                 {item.venue &&
                                                     <span className="text-muted-foreground">{item.venue}</span>}
                                             </>

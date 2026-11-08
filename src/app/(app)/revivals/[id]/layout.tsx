@@ -76,7 +76,7 @@ export default async function RevivalLayout({children, params}: {
                         <AlertTitle>{t("meetingInProgress")}</AlertTitle>
                         <AlertDescription>
                             <Link href={`/revivals/${revival.id}/meetings/${work.meetingInProgress.id}`}
-                                  className="underline">
+                                  className="font-medium text-primary hover:text-primary/80">
                                 {work.meetingInProgress.title ?? work.meetingInProgress.date}
                             </Link>
                         </AlertDescription>

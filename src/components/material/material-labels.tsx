@@ -70,7 +70,7 @@ export function MaterialLink({title, url, className, onClick}: {
 
     return (
         <a href={url} target="_blank" rel="noopener noreferrer"
-           className={cn("inline-flex items-center gap-1 font-medium underline-offset-2 hover:underline", className)}
+           className={cn("inline-flex items-center gap-1 font-medium hover:text-primary", className)}
            onClick={onClick}>
             <span className="break-words">{title}</span>
             <ExternalLink aria-hidden className="size-3.5 shrink-0"/>

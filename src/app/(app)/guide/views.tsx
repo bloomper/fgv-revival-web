@@ -91,7 +91,7 @@ export async function GuideChapters({version, children}: { version?: string; chi
             <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h1 className="text-lg font-bold tracking-tight">{await title(shown)}</h1>
                 <Link href={basePath}
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
                     <ArrowLeft className="size-4"/>
                     {t("startPage")}
                 </Link>

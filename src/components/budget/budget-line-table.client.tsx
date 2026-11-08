@@ -126,13 +126,13 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (line: BudgetL
                         <span className="flex flex-wrap gap-x-3 text-xs text-muted-foreground">
                             <span className="md:hidden">{catalogName(line.category, locale)}</span>
                             {line.event && (
-                                <Link href={`/revivals/${revivalId}/events`} className="hover:underline"
+                                <Link href={`/revivals/${revivalId}/events`} className="hover:text-primary"
                                       onClick={click => click.stopPropagation()}>
                                     {line.event.title}
                                 </Link>
                             )}
                             {line.logEntry && (
-                                <Link href={`/revivals/${revivalId}/log`} className="hover:underline"
+                                <Link href={`/revivals/${revivalId}/log`} className="hover:text-primary"
                                       onClick={click => click.stopPropagation()}>
                                     {t("decisionNumber", {number: line.logEntry.number})}
                                 </Link>

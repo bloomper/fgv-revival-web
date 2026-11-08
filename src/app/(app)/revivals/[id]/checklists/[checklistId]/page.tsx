@@ -50,7 +50,7 @@ export default async function ChecklistPage({params}: { params: Promise<{ id: st
             <div className="flex flex-1 flex-col gap-4">
                 <div className="space-y-1">
                     <Link href={`/revivals/${revival.id}/checklists`}
-                          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline lg:hidden">
+                          className="inline-flex items-center gap-1 text-sm text-muted-foreground lg:hidden hover:text-primary">
                         <ArrowLeft className="size-4"/>
                         {t("title")}
                     </Link>
@@ -62,13 +62,13 @@ export default async function ChecklistPage({params}: { params: Promise<{ id: st
                     </h3>
                     {checklist.event && (
                         <Link href={`/revivals/${revival.id}/events`}
-                              className="block text-sm text-muted-foreground hover:underline">
+                              className="block text-sm text-muted-foreground hover:text-primary">
                             {t("forEvent", {title: checklist.event.title})}
                         </Link>
                     )}
                     {checklist.template && (
                         <Link href={`/admin/checklist-templates/${checklist.template.id}`}
-                              className="text-sm text-muted-foreground hover:underline">
+                              className="text-sm text-muted-foreground hover:text-primary">
                             {t("fromTemplate", {name: checklist.template.name ? pickText(checklist.template.name, locale).text : ""})}
                         </Link>
                     )}

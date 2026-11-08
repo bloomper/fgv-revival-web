@@ -39,7 +39,7 @@ export default async function RevivalGuideSuggestionsPage({params}: { params: Pr
         return (
             <div className="flex flex-1 flex-col gap-4">
                 <Link href={`/revivals/${id}/guide`}
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
                     <ArrowLeft className="size-4"/>
                     {t("backToGuide")}
                 </Link>

@@ -29,7 +29,7 @@ export default async function AdminGuideSuggestionsPage({searchParams}: {
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
                 <Link href="/admin/guide"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
                     <ArrowLeft className="size-4"/>
                     {t("back")}
                 </Link>
@@ -38,7 +38,7 @@ export default async function AdminGuideSuggestionsPage({searchParams}: {
                     {SUGGESTION_STATUSES.map(candidate => (
                         <Link key={candidate} href={`/admin/guide/suggestions?status=${candidate}`}
                               aria-current={candidate === filter ? "page" : undefined}
-                              className={candidate === filter ? "font-semibold" : "underline-offset-2 hover:underline"}>
+                              className={candidate === filter ? "font-semibold" : "hover:text-primary"}>
                             {t(`status.${candidate}`)}
                         </Link>
                     ))}

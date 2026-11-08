@@ -28,7 +28,7 @@ export default async function GuideDraftPage() {
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
                 <Link href="/admin/guide"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:underline">
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
                     <ArrowLeft className="size-4"/>
                     {t("admin.title")}
                 </Link>

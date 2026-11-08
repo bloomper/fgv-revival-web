@@ -187,7 +187,7 @@ function ChecklistLink({revivalId, checklist}: { revivalId: string; checklist: N
 
     return (
         <Link href={`/revivals/${revivalId}/checklists/${checklist.id}`}
-              className="whitespace-nowrap tabular-nums hover:underline"
+              className="whitespace-nowrap tabular-nums hover:text-primary"
               aria-label={t("checklistLink", {open: checklist.openCount, total: checklist.totalCount})}
               onClick={click => click.stopPropagation()}>
             <ClipboardCheck className="mr-1 inline size-4 align-text-bottom"/>

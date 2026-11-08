@@ -32,7 +32,7 @@ export async function ReadOnlyNotice({revivalId, status, canWrite, roles}: {
                 <p>
                     {t(reason)}
                     {reason === "superAdmin" && (
-                        <> <Link href={`/revivals/${revivalId}`} className="underline">{t("join")}</Link></>
+                        <> <Link href={`/revivals/${revivalId}`} className="font-medium text-primary hover:text-primary/80">{t("join")}</Link></>
                     )}
                 </p>
             </AlertDescription>

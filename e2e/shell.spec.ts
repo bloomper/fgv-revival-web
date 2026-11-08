@@ -77,7 +77,7 @@ test.describe("The application shell", () => {
         await expect(page.getByRole("dialog", {name: "Ny nyuppsättning"})).toBeVisible();
     });
 
-    test("switches language and collapses the sidebar from the header", async ({page, loginAs}) => {
+    test("switches language from the header and collapses the sidebar from its own button", async ({page, loginAs}) => {
         await loginAs("directeur");
         await page.goto("/revivals");
 
@@ -85,7 +85,9 @@ test.describe("The application shell", () => {
         await page.getByRole("menuitem", {name: "English"}).click();
         await expect(page.getByRole("heading", {level: 1, name: "My revivals"})).toBeVisible();
 
-        await page.locator("header").getByRole("button").first().click();
+        await page.getByRole("button", {name: "Hide menu"}).click();
         await expect(page.locator('[data-slot="sidebar"][data-state="collapsed"]')).toHaveCount(1);
+        await page.getByRole("button", {name: "Show menu"}).click();
+        await expect(page.locator('[data-slot="sidebar"][data-state="expanded"]')).toHaveCount(1);
     });
 });

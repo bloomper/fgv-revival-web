@@ -138,14 +138,14 @@ function ContactCell({participant}: { participant: ParticipantRow }) {
         <div className="flex flex-col gap-1 text-sm whitespace-nowrap">
             {participant.email && (
                 <a href={`mailto:${participant.email}`}
-                   className="inline-flex items-center gap-1 underline-offset-2 hover:underline">
+                   className="inline-flex items-center gap-1 hover:text-primary">
                     <Mail className="size-3.5 text-muted-foreground" aria-hidden/>{participant.email}
                 </a>
             )}
             {participant.phone && (
                 <span className="inline-flex items-center gap-2">
                     <a href={`tel:${participant.phone.replace(/[^\d+]/g, "")}`}
-                       className="underline-offset-2 hover:underline">{participant.phone}</a>
+                       className="hover:text-primary">{participant.phone}</a>
                     {whatsApp && (
                         <a href={whatsApp} target="_blank" rel="noopener noreferrer"
                            className="inline-flex text-muted-foreground hover:text-foreground"
