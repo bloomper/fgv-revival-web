@@ -27,7 +27,7 @@ async function Refused() {
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-            <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
             <Card><CardContent className="pt-6 text-sm">{t("refused")}</CardContent></Card>
         </div>
     );
@@ -54,7 +54,7 @@ export async function GuideStart({version}: { version?: string }) {
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
             <div className="flex flex-wrap items-center justify-between gap-2">
-                <h1 className="text-lg font-bold tracking-tight">{shown ? await title(shown) : t("title")}</h1>
+                <h1 className="text-2xl font-bold tracking-tight">{shown ? await title(shown) : t("title")}</h1>
                 {versions.length > 1 && shown?.status === "PUBLISHED" &&
                     <GuideVersionSelect versions={versions} current={shown.id}/>}
             </div>
@@ -89,7 +89,7 @@ export async function GuideChapters({version, children}: { version?: string; chi
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h1 className="text-lg font-bold tracking-tight">{await title(shown)}</h1>
+                <h1 className="text-2xl font-bold tracking-tight">{await title(shown)}</h1>
                 <Link href={basePath}
                       className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
                     <ArrowLeft className="size-4"/>

@@ -17,7 +17,7 @@ export default async function MaintenancePage() {
 
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
+                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
                 <p className="max-w-prose text-sm text-muted-foreground">{t("intro")}</p>
                 <RefreshWhileRunning running={jobs.some(job => job.running)}/>
                 <ul className="grid max-w-4xl gap-4 md:grid-cols-2">

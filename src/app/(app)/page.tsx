@@ -74,7 +74,7 @@ export default async function HomePage() {
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
                 <div className="space-y-1">
-                    <h1 className="text-lg font-bold tracking-tight">{t("Home.welcome")}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">{t("Home.welcome")}</h1>
                     <p className="text-muted-foreground">{t("Home.intro")}</p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">

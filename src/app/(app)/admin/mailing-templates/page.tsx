@@ -22,7 +22,7 @@ export default async function MailingTemplatesPage({searchParams}: {
         return (
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h1 className="text-lg font-bold tracking-tight">{t("MailingTemplate.title")}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">{t("MailingTemplate.title")}</h1>
                     <ShowRetiredSwitch shown={retired} label={t("Catalog.showRetired")}/>
                 </div>
                 <p className="max-w-prose text-sm text-muted-foreground">{t("MailingTemplate.intro")}</p>

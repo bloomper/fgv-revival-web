@@ -33,7 +33,7 @@ export default async function GuideDraftPage() {
                     {t("admin.title")}
                 </Link>
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h1 className="text-lg font-bold tracking-tight">{t("admin.draft")}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">{t("admin.draft")}</h1>
                     <div className="flex flex-wrap items-center gap-2">
                         <span
                             className="text-sm text-muted-foreground">{t("admin.untranslated", {count: draft.untranslatedCount})}</span>

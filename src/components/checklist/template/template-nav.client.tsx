@@ -43,7 +43,7 @@ export function TemplatePageHeader() {
 
     return (
         <div className={cn("flex flex-wrap items-center justify-between gap-2", current && "hidden lg:flex")}>
-            <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
             <ShowRetiredSwitch shown={retired} label={t("showRetired")}/>
         </div>
     );

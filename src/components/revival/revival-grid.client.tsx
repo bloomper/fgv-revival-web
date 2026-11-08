@@ -20,7 +20,7 @@ export function RevivalGrid({title, revivals, roles}: {
     return (
         <div className="grid auto-rows-min gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="col-span-full mb-2 flex flex-col gap-4 border-b pb-6">
-                <h1 className="text-lg font-bold tracking-tight">{title}</h1>
+                <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
                 <RevivalFilterBar filter={filter}/>
             </div>
             {filter.filtered.length === 0
