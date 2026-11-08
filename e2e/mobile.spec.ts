@@ -39,6 +39,7 @@ async function headerFits(page: Page) {
     await expect(title).toBeVisible();
     expect(await title.evaluate(element => element.scrollWidth - element.clientWidth), "the title is cut short")
         .toBeLessThanOrEqual(0);
+    await expect(header.getByRole("button", {name: "Byt tema"})).toBeVisible();
 
     const boxes = await header.locator("button:visible, a:visible, input:visible").evaluateAll(elements => elements
         .filter(element => !elements.some(other => other !== element && other.contains(element)))
