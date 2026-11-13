@@ -52,7 +52,7 @@ talks to [Nyuppsättning Server][1] over GraphQL. The product spec, feature spec
    For visitor statistics, run fgv-infra-deploy's `local/bin/configure-umami.sh` and put the ID it prints in
    `.env.local` as `UMAMI_WEBSITE_ID`, with `UMAMI_URL=https://analytics.fgv.local.nu:8443`.
    `npm run dev` and `docker compose` trust the root certificate of fgv-infra-deploy's local Caddy
-   (`local/.docker/caddy/data/caddy/pki/authorities/local/root.crt`), read from `../fgv-infra-deploy`, or from
+   (`local/.docker/caddy/data/caddy/pki/authorities/local/root.crt`), read from `../../fgv-infra-deploy`, or from
    `INFRA_DEPLOY` if it is checked out elsewhere.
 
 3. **Generate GraphQL types:**
