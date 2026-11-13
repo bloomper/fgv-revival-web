@@ -52,7 +52,7 @@ function SpexPicker({value, onChange}: { value: SpexOption | null; onChange: (sp
                 setUnavailable(false);
                 setResults(result.data);
             } else {
-                setUnavailable(result.code === "SPEXREGISTER_UNAVAILABLE");
+                setUnavailable(result.code === "SPEXIPEDIA_UNAVAILABLE" || result.code === "SPEXREGISTER_UNAVAILABLE");
                 setResults([]);
             }
             setSearched(true);
@@ -78,7 +78,7 @@ function SpexPicker({value, onChange}: { value: SpexOption | null; onChange: (sp
             <Input value={query} onChange={event => setQuery(event.target.value)} placeholder={t("searchSpex")}
                    aria-label={t("searchSpex")}/>
             {unavailable ? (
-                <p className="text-sm text-destructive" role="alert">{t("spexregisterUnavailable")}</p>
+                <p className="text-sm text-destructive" role="alert">{t("spexipediaUnavailable")}</p>
             ) : searched && results.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t("noResults")}</p>
             ) : (

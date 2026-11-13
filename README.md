@@ -45,6 +45,7 @@ talks to [Nyuppsättning Server][1] over GraphQL. The product spec, feature spec
    SPEXIFY_WEB_URL=http://localhost:3002
    SPEXFLIX_WEB_URL=http://localhost:3003
    SPEXGRAM_WEB_URL=http://localhost:3004
+   SPEXIPEDIA_WEB_URL=http://localhost:3006
    ARCHIVE_WEB_URL=http://localhost:3005
    ```
    `SPEXREGISTER_WEB_URL`, `SPEXIFY_WEB_URL`, `SPEXFLIX_WEB_URL`, `SPEXGRAM_WEB_URL` and `ARCHIVE_WEB_URL` are the other applications' addresses, for
@@ -102,7 +103,7 @@ already on Docker Hub.
 
 The image contains no environment-specific values. All configuration is read at runtime: `BETTER_AUTH_URL`,
 `AUTH_SECRET`, `KEYCLOAK_CLIENT_ID`, `KEYCLOAK_CLIENT_SECRET`, `KEYCLOAK_ISSUER`, `API_GRAPHQL_ENDPOINT`,
-`SUPPORT_EMAIL`, `FEEDBACK_EMAIL`, `SUPPORTED_LOCALES`, `DEFAULT_LOCALE`, `SPEXREGISTER_WEB_URL`, `SPEXIFY_WEB_URL`, `SPEXFLIX_WEB_URL`, `SPEXGRAM_WEB_URL`, `ARCHIVE_WEB_URL`, `UMAMI_URL` and `UMAMI_WEBSITE_ID`. Visitor
+`SUPPORT_EMAIL`, `FEEDBACK_EMAIL`, `SUPPORTED_LOCALES`, `DEFAULT_LOCALE`, `SPEXREGISTER_WEB_URL`, `SPEXIFY_WEB_URL`, `SPEXFLIX_WEB_URL`, `SPEXGRAM_WEB_URL`, `SPEXIPEDIA_WEB_URL`, `ARCHIVE_WEB_URL`, `UMAMI_URL` and `UMAMI_WEBSITE_ID`. Visitor
 statistics go to Umami only when both Umami variables are set.
 
 ## Building and Deployment

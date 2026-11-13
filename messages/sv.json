@@ -62,6 +62,7 @@
     "spexflix": "Spexflix",
     "spexify": "Spexify",
     "spexgram": "Spexgram",
+    "spexipedia": "Spexipedia",
     "archive": "Spexarkiv"
   },
   "Nav": {
@@ -227,6 +228,7 @@
     "searchSpex": "Sök spex på titel",
     "noResults": "Inga spex hittades.",
     "selected": "Valt spex",
+    "spexipediaUnavailable": "Spexipedia är tillfälligt otillgängligt. Försök igen om en stund.",
     "spexregisterUnavailable": "Spexregistret är tillfälligt otillgängligt. Försök igen om en stund.",
     "submit": "Skapa",
     "created": "Nyuppsättningen skapades",
@@ -301,6 +303,7 @@
     "NOT_FOUND": "Nyuppsättningen finns inte.",
     "BAD_REQUEST": "Uppgifterna är inte giltiga.",
     "SPEXREGISTER_UNAVAILABLE": "Spexregistret är tillfälligt otillgängligt. Försök igen om en stund.",
+    "SPEXIPEDIA_UNAVAILABLE": "Spexipedia är tillfälligt otillgängligt. Försök igen om en stund.",
     "UNAUTHORIZED": "Du är inte inloggad.",
     "INTERNAL_ERROR": "Något gick fel. Försök igen.",
     "MAIL_UNAVAILABLE": "E-post kan inte skickas just nu. Försök igen senare.",
@@ -2024,6 +2027,7 @@
       "revivalStep": "Nyuppsättningen",
       "reason": {
         "SPEXREGISTER_UNAVAILABLE": "Spexregistret svarade inte",
+        "SPEXIPEDIA_UNAVAILABLE": "Spexipedia svarade inte",
         "REFUSED": "Spexregistret vägrade",
         "NOT_FOUND": "finns inte i Spexregistret"
       }

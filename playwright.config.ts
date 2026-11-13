@@ -21,6 +21,7 @@ const appEnv: Record<string, string> = {
     SPEXIFY_WEB_URL: "",
     SPEXFLIX_WEB_URL: "",
     SPEXGRAM_WEB_URL: "",
+    SPEXIPEDIA_WEB_URL: "",
     ARCHIVE_WEB_URL: "",
 };
 
