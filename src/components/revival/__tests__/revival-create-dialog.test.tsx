@@ -22,11 +22,11 @@ describe("RevivalCreateDialog", () => {
     });
 
     it("says when Spexregister is unavailable", async () => {
-        vi.mocked(searchSpexAction).mockResolvedValue({ok: false, code: "SPEXREGISTER_UNAVAILABLE", message: "x"});
+        vi.mocked(searchSpexAction).mockResolvedValue({ok: false, code: "SPEXIPEDIA_UNAVAILABLE", message: "x"});
         render(<RevivalCreateDialog/>);
 
         await userEvent.click(screen.getByRole("button", {name: /create/}));
 
-        expect(await screen.findByRole("alert")).toHaveTextContent("spexregisterUnavailable");
+        expect(await screen.findByRole("alert")).toHaveTextContent("spexipediaUnavailable");
     });
 });

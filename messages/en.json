@@ -62,6 +62,7 @@
     "spexflix": "Spexflix",
     "spexify": "Spexify",
     "spexgram": "Spexgram",
+    "spexipedia": "Spexipedia",
     "archive": "Spexarkiv"
   },
   "Nav": {
@@ -227,6 +228,7 @@
     "searchSpex": "Search spex by title",
     "noResults": "No spex found.",
     "selected": "Selected spex",
+    "spexipediaUnavailable": "Spexipedia is temporarily unavailable. Try again in a moment.",
     "spexregisterUnavailable": "Spexregister is temporarily unavailable. Try again in a moment.",
     "submit": "Create",
     "created": "The revival was created",
@@ -301,6 +303,7 @@
     "NOT_FOUND": "The revival does not exist.",
     "BAD_REQUEST": "The details are not valid.",
     "SPEXREGISTER_UNAVAILABLE": "Spexregister is temporarily unavailable. Try again in a moment.",
+    "SPEXIPEDIA_UNAVAILABLE": "Spexipedia is temporarily unavailable. Try again in a moment.",
     "UNAUTHORIZED": "You are not logged in.",
     "INTERNAL_ERROR": "Something went wrong. Please try again.",
     "MAIL_UNAVAILABLE": "Email cannot be sent at the moment. Try again later.",
@@ -2024,6 +2027,7 @@
       "revivalStep": "The revival",
       "reason": {
         "SPEXREGISTER_UNAVAILABLE": "Spexregister did not answer",
+        "SPEXIPEDIA_UNAVAILABLE": "Spexipedia did not answer",
         "REFUSED": "Spexregister refused",
         "NOT_FOUND": "not found in Spexregister"
       }
