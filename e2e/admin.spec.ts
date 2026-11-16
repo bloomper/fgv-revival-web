@@ -132,13 +132,13 @@ test.describe("The super admin records and approves a revival", () => {
         await expect(page.getByRole("row", {name: /Ali Baba/})).toBeVisible();
     });
 
-    test("is told the spex list is unavailable while Spexregister is down", async ({page, mock}) => {
-        await mock.spexregister(false);
+    test("is told the spex list is unavailable while Spexipedia is down", async ({page, mock}) => {
+        await mock.spexipedia(false);
         await page.goto("/revivals/manage");
 
-        await expect(page.getByRole("row", {name: /Ali Baba 2028/}).getByText("Spexregistret är tillfälligt otillgängligt")).toBeVisible();
+        await expect(page.getByRole("row", {name: /Ali Baba 2028/}).getByText("Spexipedia är tillfälligt otillgängligt")).toBeVisible();
         await page.getByRole("button", {name: "Ny nyuppsättning"}).click();
-        await expect(page.getByRole("dialog").getByRole("alert")).toHaveText("Spexregistret är tillfälligt otillgängligt. Försök igen om en stund.");
+        await expect(page.getByRole("dialog").getByRole("alert")).toHaveText("Spexipedia är tillfälligt otillgängligt. Försök igen om en stund.");
     });
 
     test("opens a revival from the list to manage its steering group", async ({page}) => {
