@@ -17,7 +17,7 @@ const appEnv: Record<string, string> = {
     DEFAULT_LOCALE: "sv",
     // No other application to switch to, so the header's title is just the name
     SPEXREGISTER_WEB_URL: "",
-    FGV_REVIVAL_WEB_URL: "",
+    REVIVAL_WEB_URL: "",
     SPEXIFY_WEB_URL: "",
     SPEXFLIX_WEB_URL: "",
     SPEXGRAM_WEB_URL: "",

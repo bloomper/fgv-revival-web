@@ -85,7 +85,7 @@ docker compose up --build
 The application will be accessible at `https://revival.fgv.local.nu:9443` if your hosts file is configured. Port
 9443 keeps it clear of Spexregister Web's Caddy on 443. It talks to the server's API at
 `api.revival.fgv.local.nu:8443` and to Keycloak at `auth.fgv.local.nu:8443`, both behind fgv-infra-deploy's local
-Caddy. To log in, `FGV_REVIVAL_URL` in fgv-infra-deploy's `local/.env` must be `https://revival.fgv.local.nu:9443`,
+Caddy. To log in, `REVIVAL_URL` in fgv-infra-deploy's `local/.env` must be `https://revival.fgv.local.nu:9443`,
 since the realm only accepts redirects to that address.
 
 ### Published images
