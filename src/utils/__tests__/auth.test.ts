@@ -14,14 +14,14 @@ describe("extractRolesFromClaims", () => {
         expect(extractRolesFromClaims({
             resource_access: {
                 "fgv-revival": {roles: ["USER", "super_admin", "OBSERVER", "USER", "UNKNOWN"]},
-                spexregister: {roles: ["ADMIN"]},
+                "fgv-spexregister": {roles: ["ADMIN"]},
             },
         })).toEqual(["USER", "SUPER_ADMIN", "OBSERVER"]);
     });
 
     it("gives no roles without the claim", () => {
         expect(extractRolesFromClaims({})).toEqual([]);
-        expect(extractRolesFromClaims({resource_access: {spexregister: {roles: ["USER"]}}})).toEqual([]);
+        expect(extractRolesFromClaims({resource_access: {"fgv-spexregister": {roles: ["USER"]}}})).toEqual([]);
     });
 });
 
