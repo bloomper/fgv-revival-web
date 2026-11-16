@@ -60,7 +60,7 @@ let currentPersona = "superadmin";
 
 function resetState(guideSeed = "none") {
     state = {
-        spexregisterUp: true,
+        spexipediaUp: true,
         guide: createGuideState(guideSeed),
         log: createLogState(),
         meeting: createMeetingState(),
@@ -256,9 +256,9 @@ function toRevival(persona, revival) {
         spex: {
             __typename: "Spex",
             id: revival.spexId,
-            title: state.spexregisterUp ? spex?.title ?? null : null,
-            year: state.spexregisterUp ? spex?.year ?? null : null,
-            available: state.spexregisterUp,
+            title: state.spexipediaUp ? spex?.title ?? null : null,
+            year: state.spexipediaUp ? spex?.year ?? null : null,
+            available: state.spexipediaUp,
         },
         myRole: roleIn(persona, revival),
         members: participantOnly ? [] : state.members.filter(member => member.revivalId === revival.id).map(member => ({
@@ -359,8 +359,8 @@ const resolvers = {
         if (!isSuperAdmin(persona)) {
             throw forbidden();
         }
-        if (!state.spexregisterUp) {
-            throw new GraphQLError("SPEXREGISTER_UNAVAILABLE", "Spexregistret är inte tillgängligt just nu.");
+        if (!state.spexipediaUp) {
+            throw new GraphQLError("SPEXIPEDIA_UNAVAILABLE", "Spexipedia är inte tillgängligt just nu.");
         }
         const needle = (query ?? "").toLowerCase();
         return {
@@ -374,8 +374,8 @@ const resolvers = {
         if (!isSuperAdmin(persona)) {
             throw forbidden();
         }
-        if (!state.spexregisterUp) {
-            throw new GraphQLError("SPEXREGISTER_UNAVAILABLE", "Spexregistret är inte tillgängligt just nu.");
+        if (!state.spexipediaUp) {
+            throw new GraphQLError("SPEXIPEDIA_UNAVAILABLE", "Spexipedia är inte tillgängligt just nu.");
         }
         if (state.revivals.some(revival => revival.spexId === String(input.spexId) && revival.year === Number(input.year))) {
             throw new GraphQLError("BAD_REQUEST", `Det finns redan en nyuppsättning av spexet ${input.year}.`);
@@ -991,8 +991,8 @@ const server = createServer((req, res) => {
             }
             currentPersona = persona;
             res.writeHead(204).end();
-        } else if (req.method === "POST" && path === "/__spexregister") {
-            state.spexregisterUp = JSON.parse(body).up;
+        } else if (req.method === "POST" && path === "/__spexipedia") {
+            state.spexipediaUp = JSON.parse(body).up;
             res.writeHead(204).end();
         } else if (req.method === "POST" && path === "/__premiere") {
             const {id, date} = JSON.parse(body);

@@ -44,8 +44,8 @@ export const test = base.extend<{ resetBackend: void; loginAs: (persona: Persona
             premiere: async (id: string, date: string) => {
                 await request.post(`${MOCK_URL}/__premiere`, {data: {id, date}});
             },
-            spexregister: async (up: boolean) => {
-                await request.post(`${MOCK_URL}/__spexregister`, {data: {up}});
+            spexipedia: async (up: boolean) => {
+                await request.post(`${MOCK_URL}/__spexipedia`, {data: {up}});
             },
             guide: async (seed: "none" | "published" | "two" | "draft") => {
                 await request.post(`${MOCK_URL}/__guide`, {data: {seed}});
@@ -92,7 +92,7 @@ type LogRow = {
 type Mock = {
     setStatus: (id: string, status: string) => Promise<void>;
     premiere: (id: string, date: string) => Promise<void>;
-    spexregister: (up: boolean) => Promise<void>;
+    spexipedia: (up: boolean) => Promise<void>;
     /** Resets the backend with no guide, or v1 (with "two" also a newer v2, with "draft" also a draft with id 10) published and every revival pinned to v1. */
     guide: (seed: "none" | "published" | "two" | "draft") => Promise<void>;
     /** Adds a decision log row as the steering group member. */

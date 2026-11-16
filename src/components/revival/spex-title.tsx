@@ -1,7 +1,7 @@
 import {useTranslations} from "next-intl";
 
 /**
- * The spex's title from Spexregister, or a notice while Spexregister is unavailable.
+ * The spex's title from Spexipedia, or a notice while Spexipedia is unavailable.
  */
 export function SpexTitle({spex}: { spex: { title?: string | null; available: boolean } }) {
     const t = useTranslations("Revival");
