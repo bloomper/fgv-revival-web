@@ -60,6 +60,8 @@ let currentPersona = "superadmin";
 
 function resetState(guideSeed = "none") {
     state = {
+        // Spexregister answers for people (candidates, memberships), Spexipedia for spex
+        spexregisterUp: true,
         spexipediaUp: true,
         guide: createGuideState(guideSeed),
         log: createLogState(),
@@ -990,6 +992,9 @@ const server = createServer((req, res) => {
                 return;
             }
             currentPersona = persona;
+            res.writeHead(204).end();
+        } else if (req.method === "POST" && path === "/__spexregister") {
+            state.spexregisterUp = JSON.parse(body).up;
             res.writeHead(204).end();
         } else if (req.method === "POST" && path === "/__spexipedia") {
             state.spexipediaUp = JSON.parse(body).up;
