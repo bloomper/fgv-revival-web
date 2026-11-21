@@ -16,6 +16,7 @@ import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
 import {createMeetingAction, updateMeetingAction} from "@/app/(app)/revivals/[id]/meetings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
+import {today} from "@/utils/format";
 import {MAX_AGENDA_POINT, MAX_OTHERS_PRESENT, type MeetingValues, meetingValuesSchema} from "@/lib/meeting/schema";
 
 type Person = { id: string; displayName?: string | null };
@@ -57,7 +58,7 @@ export function MeetingDialog({revivalId, meeting, members, open, onOpenChange}:
     const form = useForm<MeetingValues>({
         resolver: zodResolver(meetingValuesSchema),
         values: {
-            date: meeting?.date ?? new Date().toISOString().slice(0, 10),
+            date: meeting?.date ?? today(),
             title: meeting?.title ?? "",
             attendeeIds: meeting?.attendees.map(attendee => attendee.id) ?? [],
             othersPresent: meeting?.othersPresent ?? "",

@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {formatAmount, formatDate, formatInstant} from "@/utils/format";
+import {formatAmount, formatDate, formatInstant, today} from "@/utils/format";
 
 describe("format", () => {
     it("formats dates as yyyy-mm-dd without shifting them", () => {
@@ -33,5 +33,11 @@ describe("format", () => {
 
     it("keeps an amount together on one line", () => {
         expect(formatAmount("12345")).toBe("12\u00a0345\u00a0kr");
+    });
+
+    it("gives today's date in Swedish time, not in UTC", () => {
+        expect(today(new Date("2026-06-30T22:30:00Z"))).toBe("2026-07-01");
+        expect(today(new Date("2026-12-31T23:30:00Z"))).toBe("2027-01-01");
+        expect(today(new Date("2026-11-21T12:00:00Z"))).toBe("2026-11-21");
     });
 });
