@@ -3,8 +3,10 @@ import {
     budgetLineValuesSchema,
     budgetSettingsValuesSchema,
     eventTypeBudgetLineValuesSchema,
+    MAX_TICKETS,
     receiptProblem,
     referenceRevivalValuesSchema,
+    scenarioValuesSchema,
     toEventTypeBudgetLineInput,
     toReferenceRevivalInput,
     toScenarioInput,
@@ -78,6 +80,17 @@ describe("budget schemas", () => {
             participantsPlanned: "2001",
             loanRepaidOn: ""
         }))).toEqual(["wholeNumberInvalid"]);
+    });
+
+    it("takes at most the tickets the server does in a scenario", () => {
+        const values = {
+            participants: "", participationFee: "", showTicketPrice: "", showTickets: String(MAX_TICKETS),
+            partyTicketPrice: "", partyTickets: "", venueCost: "", partyCost: "",
+        };
+
+        expect(scenarioValuesSchema.safeParse(values).success).toBe(true);
+        expect(scenarioValuesSchema.safeParse({...values, showTickets: String(MAX_TICKETS + 1)}).success).toBe(false);
+        expect(scenarioValuesSchema.safeParse({...values, partyTickets: String(MAX_TICKETS + 1)}).success).toBe(false);
     });
 
     it("sends blank scenario fields as null, so the budget's value is kept", () => {
