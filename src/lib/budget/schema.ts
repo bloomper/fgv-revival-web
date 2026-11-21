@@ -12,6 +12,8 @@ export const MAX_PARTICIPANTS = 2000;
 export const MAX_QUANTITY = 100000;
 /** 10 000 000 kr in öre: the most a line's unit amount or a transaction may be. */
 export const MAX_AMOUNT_ORE = 1_000_000_000;
+/** The most tickets a scenario may count with, as on the server. */
+export const MAX_TICKETS = 100_000;
 /** The largest receipt the server takes. */
 export const MAX_RECEIPT_BYTES = 10 * 1024 * 1024;
 export const RECEIPT_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/heic", "image/webp"] as const;
@@ -146,9 +148,9 @@ export const scenarioValuesSchema = z.object({
     participants: wholeNumber(MAX_PARTICIPANTS),
     participationFee: optionalAmount,
     showTicketPrice: optionalAmount,
-    showTickets: wholeNumber(1_000_000),
+    showTickets: wholeNumber(MAX_TICKETS),
     partyTicketPrice: optionalAmount,
-    partyTickets: wholeNumber(1_000_000),
+    partyTickets: wholeNumber(MAX_TICKETS),
     venueCost: optionalAmount,
     partyCost: optionalAmount,
 });
