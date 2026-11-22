@@ -26,15 +26,20 @@ import {usePathname} from "next/navigation";
 import {useTranslations} from "next-intl";
 import {useIsClient} from "@/hooks/use-is-client.client";
 
-interface NavItem {
+interface NavLink {
     title: string;
     url: string;
     icon?: LucideIcon;
     isActive?: boolean;
-    items?: NavItem[];
+    items?: NavLink[];
 }
 
-interface NavSecondaryItem extends Omit<NavItem, "icon"> {
+/** A group without an address only opens and closes its entries. */
+interface NavItem extends Omit<NavLink, "url"> {
+    url?: string;
+}
+
+interface NavSecondaryItem extends Omit<NavLink, "icon"> {
     icon: LucideIcon;
 }
 
@@ -94,7 +99,6 @@ export function AppSidebar({roles, accountUrl, guideReadable, ...props}: AppSide
         if (isSuperAdmin(roles)) {
             mainItems.push({
                 title: t("Nav.admin"),
-                url: "/admin/guide",
                 icon: Settings,
                 isActive: pathname.startsWith("/admin/"),
                 items: [

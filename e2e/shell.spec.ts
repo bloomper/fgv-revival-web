@@ -13,7 +13,7 @@ test.describe("The application shell", () => {
             name: "Hantera",
             exact: true
         })).toHaveAttribute("href", "/revivals/manage");
-        await expect(sidebar.getByRole("link", {name: "Administration"})).toBeVisible();
+        await expect(sidebar.getByRole("button", {name: "Administration", exact: true})).toBeVisible();
         await expect(sidebar.getByRole("link", {name: "Support"})).toBeVisible();
         await expect(sidebar.getByRole("link", {name: "Om"})).toBeVisible();
     });
@@ -25,7 +25,7 @@ test.describe("The application shell", () => {
         const sidebar = page.locator('[data-slot="sidebar"]:visible');
         await expect(sidebar.getByRole("link", {name: "Nyuppsättningar"})).toBeVisible();
         await expect(sidebar.getByRole("link", {name: "Hantera", exact: true})).toHaveCount(0);
-        await expect(sidebar.getByRole("link", {name: "Administration"})).toHaveCount(0);
+        await expect(sidebar.getByRole("button", {name: "Administration", exact: true})).toHaveCount(0);
     });
 
     test("welcomes the user on the home page and points onwards", async ({page, loginAs}) => {

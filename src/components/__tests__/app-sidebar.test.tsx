@@ -67,7 +67,8 @@ describe("AppSidebar", () => {
         sidebar(["USER", "SUPER_ADMIN"]);
 
         expect(screen.getByRole("link", {name: "Nav.guide"})).toHaveAttribute("href", "/guide");
-        expect(screen.getByRole("link", {name: "Nav.admin"})).toHaveAttribute("href", "/admin/guide");
+        expect(screen.queryByRole("link", {name: "Nav.admin"})).not.toBeInTheDocument();
+        expect(screen.getByRole("button", {name: "Nav.admin"})).toHaveAttribute("aria-expanded", "true");
         expect(screen.getByRole("link", {name: "Nav.adminGuideShort"})).toHaveAttribute("href", "/admin/guide");
         expect(screen.getByRole("link", {name: "Nav.adminChecklistTemplates"})).toHaveAttribute("href", "/admin/checklist-templates");
         expect(screen.getByRole("link", {name: "Nav.adminEventTypes"})).toHaveAttribute("href", "/admin/event-types");
