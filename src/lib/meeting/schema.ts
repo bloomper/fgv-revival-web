@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {isoDate} from "@/lib/date-schema";
 
 export const MAX_MEETING_TITLE = 255;
 export const MAX_OTHERS_PRESENT = 1000;
@@ -7,7 +8,7 @@ export const MAX_AGENDA_POINT = 1000;
 const id = z.string().min(1);
 
 export const meetingValuesSchema = z.object({
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid"),
+    date: isoDate,
     title: z.string().trim().max(MAX_MEETING_TITLE, "meetingTitleTooLong").optional(),
     attendeeIds: z.array(id),
     othersPresent: z.string().trim().max(MAX_OTHERS_PRESENT, "othersPresentTooLong").optional(),

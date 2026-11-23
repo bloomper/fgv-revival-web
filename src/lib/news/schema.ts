@@ -1,9 +1,10 @@
 import {z} from "zod";
+import {optionalIsoDate} from "@/lib/date-schema";
 
 export const MAX_NEWS_SUBJECT = 255;
 export const MAX_NEWS_TEXT = 10000;
 
-const optionalDate = z.string().regex(/^(\d{4}-\d{2}-\d{2})?$/, "dateInvalid");
+const optionalDate = optionalIsoDate;
 
 export const newsValuesSchema = z.object({
     subject: z.string().trim().min(1, "newsSubjectRequired").max(MAX_NEWS_SUBJECT, "newsSubjectTooLong"),

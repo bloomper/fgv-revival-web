@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {isoDate} from "@/lib/date-schema";
 import {daysBetween} from "@/lib/event/dates";
 
 export const MAX_EVENT_TITLE = 255;
@@ -12,7 +13,7 @@ export const MAX_OFFSET_DAYS = 730;
 export const MAX_EVENT_TYPE_DAYS = 14;
 
 const id = z.string().min(1);
-const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid");
+const date = isoDate;
 const time = z.union([z.literal(""), z.string().trim().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "timeInvalid")]);
 
 /**

@@ -17,7 +17,7 @@ import {Textarea} from "@/components/ui/textarea";
 import {createMeetingAction, updateMeetingAction} from "@/app/(app)/revivals/[id]/meetings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {today} from "@/utils/format";
-import {MAX_AGENDA_POINT, MAX_OTHERS_PRESENT, type MeetingValues, meetingValuesSchema} from "@/lib/meeting/schema";
+import {MAX_AGENDA_POINT, MAX_MEETING_TITLE, MAX_OTHERS_PRESENT, type MeetingValues, meetingValuesSchema} from "@/lib/meeting/schema";
 
 type Person = { id: string; displayName?: string | null };
 
@@ -66,6 +66,13 @@ export function MeetingDialog({revivalId, meeting, members, open, onOpenChange}:
         },
     });
     const {errors} = form.formState;
+    const id = "meeting";
+    const error = (name: string, message?: string) => message &&
+        <p id={`${id}-${name}-error`} className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const described = (name: string, message?: string) => ({
+        "aria-invalid": message ? true : undefined,
+        "aria-describedby": message ? `${id}-${name}-error` : undefined,
+    });
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -99,12 +106,15 @@ export function MeetingDialog({revivalId, meeting, members, open, onOpenChange}:
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="meeting-date">{t("Meeting.date")}</Label>
-                                    <DateInput id="meeting-date" {...form.register("date")}/>
+                                    <DateInput id="meeting-date" {...described("date", errors.date?.message)} {...form.register("date")}/>
+                                    {error("date", errors.date?.message)}
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="meeting-title">{t("Meeting.titleLabel")}</Label>
-                                    <Input id="meeting-title"
-                                           placeholder={t("Meeting.titlePlaceholder")} {...form.register("title")}/>
+                                    <Input id="meeting-title" maxLength={MAX_MEETING_TITLE}
+                                           placeholder={t("Meeting.titlePlaceholder")}
+                                           {...described("title", errors.title?.message)} {...form.register("title")}/>
+                                    {error("title", errors.title?.message)}
                                 </div>
                             </div>
                             <Controller control={form.control} name="attendeeIds" render={({field}) => (
@@ -123,7 +133,9 @@ export function MeetingDialog({revivalId, meeting, members, open, onOpenChange}:
                             <div className="space-y-2">
                                 <Label htmlFor="meeting-others">{t("Meeting.othersPresent")}</Label>
                                 <Textarea id="meeting-others" rows={2}
-                                          maxLength={MAX_OTHERS_PRESENT} {...form.register("othersPresent")}/>
+                                          maxLength={MAX_OTHERS_PRESENT}
+                                          {...described("others", errors.othersPresent?.message)} {...form.register("othersPresent")}/>
+                                {error("others", errors.othersPresent?.message)}
                             </div>
                             <Controller control={form.control} name="agendaPoints" render={({field}) => (
                                 <div className="space-y-2">
@@ -164,8 +176,8 @@ export function MeetingDialog({revivalId, meeting, members, open, onOpenChange}:
                                     </div>
                                 </div>
                             )}/>
-                            {(errors.date || errors.agendaPoints) && (
-                                <p className="text-sm text-destructive">{t(`Validation.${errors.date?.message ?? "agendaPointInvalid"}`)}</p>
+                            {errors.agendaPoints && (
+                                <p className="text-sm text-destructive">{t("Validation.agendaPointInvalid")}</p>
                             )}
                         </div>
                     </ScrollArea>

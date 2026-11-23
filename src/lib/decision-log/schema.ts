@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {isoDate} from "@/lib/date-schema";
 
 export const MAX_LOG_TEXT = 5000;
 export const MAX_TAG = 50;
@@ -8,7 +9,7 @@ export const LOG_ENTRY_TYPES = ["DECISION", "TODO", "QUESTION"] as const;
 export const LOG_ENTRY_STATUSES = ["OPEN", "WAITING", "DONE", "CANCELLED"] as const;
 
 const id = z.string().min(1);
-const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid");
+const date = isoDate;
 
 export const ownerSchema = z.object({
     personId: id.nullable().optional(),

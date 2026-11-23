@@ -70,7 +70,7 @@ export function DateInput({
     return (
         <div className={cn("flex w-fit items-center gap-1", className)}>
             <Input {...props} ref={setRef} type="text" inputMode="numeric" autoComplete="off"
-                   placeholder={t("datePlaceholder")}
+                   placeholder={t("datePlaceholder")} title={t("datePlaceholder")}
                    pattern="\d{4}-\d{2}-\d{2}" maxLength={10} className="w-32 tabular-nums" disabled={disabled}
                    aria-label={ariaLabel}/>
             <Popover open={open} onOpenChange={(next) => {

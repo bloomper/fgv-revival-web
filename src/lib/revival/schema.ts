@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {isoDate} from "@/lib/date-schema";
 import {catalogId} from "@/lib/catalog/schema";
 
 export const MIN_YEAR = 1948;
@@ -8,7 +9,6 @@ export const MAX_VENUE = 255;
 
 export const REVIVAL_STATUSES = ["PROPOSED", "APPROVED", "ORGANISING", "OPEN", "CLOSING", "SETTLING", "ARCHIVED", "REJECTED"] as const;
 
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid").refine(value => !Number.isNaN(Date.parse(value)), "dateInvalid");
 
 export const revivalCreateSchema = z.object({
     spexId: z.string().min(1, "spexRequired"),

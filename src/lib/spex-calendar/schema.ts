@@ -1,9 +1,10 @@
 import {z} from "zod";
+import {isoDate} from "@/lib/date-schema";
 
 export const MAX_SPEX_DATE_LABEL = 100;
 
 export const spexCalendarDateValuesSchema = z.object({
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid"),
+    date: isoDate,
     label: z.string().trim().min(1, "spexDateLabelRequired").max(MAX_SPEX_DATE_LABEL, "spexDateLabelTooLong"),
 });
 
