@@ -44,7 +44,23 @@
     "lastPage": "Last page",
     "clearSearch": "Clear search",
     "datePlaceholder": "YYYY-MM-DD",
-    "pickDate": "Pick a date"
+    "pickDate": "Pick a date",
+    "validation": {
+      "valueMissing": "Please fill in this field.",
+      "selectMissing": "Please select an option.",
+      "checkboxMissing": "Please tick this box to continue.",
+      "fileMissing": "Please choose a file.",
+      "email": "Please enter a valid email address.",
+      "url": "Please enter a valid web address.",
+      "number": "Please enter a number.",
+      "format": "Please enter a value in the right format.",
+      "patternWithHint": "Please enter a value in the right format: {hint}",
+      "tooShort": "Please enter at least {min} characters.",
+      "tooLong": "Please enter at most {max} characters.",
+      "rangeUnderflow": "The value must be at least {min}.",
+      "rangeOverflow": "The value must be at most {max}.",
+      "step": "Please enter a valid value."
+    }
   },
   "Header": {
     "toggleLanguage": "Change language",
@@ -315,7 +331,7 @@
     "premiereYear": "The premiere must be in the revival's year.",
     "showDateBeforePremiere": "A show must not be before the premiere.",
     "showDateWithoutPremiere": "Set the premiere date before shows.",
-    "dateInvalid": "Enter a date.",
+    "dateInvalid": "Enter a valid date, YYYY-MM-DD.",
     "emailInvalid": "Enter a valid email address.",
     "noteTooLong": "At most 2,000 characters.",
     "guideTextRequired": "The text cannot be empty.",

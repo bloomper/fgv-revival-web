@@ -31,6 +31,14 @@ export function GuideIntroductionDialog({trigger, children, versionId, version, 
         resolver: zodResolver(guideIntroductionSchema),
         values: {sv: initial.sv, en: initial.en ?? ""}
     });
+    const {errors} = form.formState;
+    const id = "guide-intro";
+    const error = (name: string, message?: string) => message &&
+        <p id={`${id}-${name}-error`} className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const described = (name: string, message?: string) => ({
+        "aria-invalid": message ? true : undefined,
+        "aria-describedby": message ? `${id}-${name}-error` : undefined,
+    });
     // The sheet stays mounted, so drop edits left over from a cancelled opening.
     const change = (next: boolean) => {
         if (next) {
@@ -63,12 +71,16 @@ export function GuideIntroductionDialog({trigger, children, versionId, version, 
                             <div className="space-y-2">
                                 <Label htmlFor="guide-intro-sv">{t("Guide.editor.swedish")}</Label>
                                 <Textarea id="guide-intro-sv" rows={10}
-                                          maxLength={MAX_INTRODUCTION} {...form.register("sv")}/>
+                                          maxLength={MAX_INTRODUCTION}
+                                          {...described("sv", errors.sv?.message)} {...form.register("sv")}/>
+                                {error("sv", errors.sv?.message)}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="guide-intro-en">{t("Guide.editor.english")}</Label>
                                 <Textarea id="guide-intro-en" rows={10}
-                                          maxLength={MAX_INTRODUCTION} {...form.register("en")}/>
+                                          maxLength={MAX_INTRODUCTION}
+                                          {...described("en", errors.en?.message)} {...form.register("en")}/>
+                                {error("en", errors.en?.message)}
                             </div>
                         </div>
                     </ScrollArea>

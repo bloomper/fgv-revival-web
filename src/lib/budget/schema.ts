@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {isoDate} from "@/lib/date-schema";
 import {parseAmount, parseQuantity, toOre} from "@/lib/budget/amount";
 import {ownerSchema} from "@/lib/decision-log/schema";
 
@@ -24,7 +25,7 @@ export const BUDGET_LINE_QUANTITIES = ["FIXED", "PER_PARTICIPANT"] as const;
 
 const id = z.string().min(1);
 const version = z.number().int().nonnegative();
-const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid");
+const date = isoDate;
 const optionalDate = z.union([z.literal(""), date]);
 
 /** Whether a typed amount is between {@code minOre} öre and 10 000 000 kr. */

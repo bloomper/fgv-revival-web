@@ -49,6 +49,13 @@ export function ChecklistItemDialog({revivalId, checklistId, item, members, open
             comment: item?.comment ?? "",
         },
     });
+    const {errors} = form.formState;
+    const error = (name: string, message?: string) => message &&
+        <p id={`${id}-${name}-error`} className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+    const described = (name: string, message?: string) => ({
+        "aria-invalid": message ? true : undefined,
+        "aria-describedby": message ? `${id}-${name}-error` : undefined,
+    });
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -83,22 +90,29 @@ export function ChecklistItemDialog({revivalId, checklistId, item, members, open
                                 <div className="space-y-2">
                                     <Label htmlFor={`${id}-text`}>{t("Checklist.text")}</Label>
                                     <Textarea id={`${id}-text`} rows={2}
-                                              maxLength={MAX_ITEM_TEXT} {...form.register("text")}/>
+                                              maxLength={MAX_ITEM_TEXT}
+                                              {...described("text", errors.text?.message)} {...form.register("text")}/>
+                                    {error("text", errors.text?.message)}
                                 </div>
                             )}
                             <Controller control={form.control} name="owner" render={({field}) => (
                                 <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}
                                             current={item?.owner?.person}/>
                             )}/>
+                            {error("owner", errors.owner?.name?.message ?? errors.owner?.message)}
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-deadline`}>{t("Checklist.deadline")}</Label>
                                 <DateInput
-                                    id={`${id}-deadline`} {...form.register("deadline", {setValueAs: value => value || null})}/>
+                                    id={`${id}-deadline`} {...described("deadline", errors.deadline?.message)}
+                                    {...form.register("deadline", {setValueAs: value => value || null})}/>
+                                {error("deadline", errors.deadline?.message)}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor={`${id}-comment`}>{t("Checklist.comment")}</Label>
                                 <Textarea id={`${id}-comment`} rows={2}
-                                          maxLength={MAX_ITEM_COMMENT} {...form.register("comment")}/>
+                                          maxLength={MAX_ITEM_COMMENT}
+                                          {...described("comment", errors.comment?.message)} {...form.register("comment")}/>
+                                {error("comment", errors.comment?.message)}
                             </div>
                         </div>
                     </ScrollArea>

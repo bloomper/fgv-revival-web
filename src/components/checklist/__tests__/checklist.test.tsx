@@ -99,6 +99,21 @@ describe("ChecklistItemDialog", () => {
         await waitFor(() => expect(updateChecklistItemAction).toHaveBeenCalled());
         expect(vi.mocked(updateChecklistItemAction).mock.calls[0][0].values.deadline).toBeUndefined();
     });
+
+    it("shows a deadline that does not exist in the calendar as an error next to the field", async () => {
+        vi.mocked(updateChecklistItemAction).mockClear();
+        render(<ChecklistItemDialog revivalId="3" checklistId="9" item={item({deadline: "2027-11-15"})} members={[]}
+                                    open onOpenChange={() => undefined}/>);
+        const deadline = screen.getByLabelText("Checklist.deadline");
+
+        await userEvent.clear(deadline);
+        await userEvent.type(deadline, "2027-02-31");
+        await userEvent.click(screen.getByRole("button", {name: "Common.save"}));
+
+        expect(await screen.findByText("Validation.dateInvalid")).toBeInTheDocument();
+        expect(deadline).toHaveAttribute("aria-invalid", "true");
+        expect(updateChecklistItemAction).not.toHaveBeenCalled();
+    });
 });
 
 describe("checklist filter", () => {

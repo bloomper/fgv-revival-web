@@ -44,7 +44,23 @@
     "lastPage": "Sista sidan",
     "clearSearch": "Rensa sökningen",
     "datePlaceholder": "ÅÅÅÅ-MM-DD",
-    "pickDate": "Välj datum"
+    "pickDate": "Välj datum",
+    "validation": {
+      "valueMissing": "Fyll i det här fältet.",
+      "selectMissing": "Välj ett alternativ.",
+      "checkboxMissing": "Kryssa i den här rutan för att fortsätta.",
+      "fileMissing": "Välj en fil.",
+      "email": "Ange en giltig e-postadress.",
+      "url": "Ange en giltig webbadress.",
+      "number": "Ange ett tal.",
+      "format": "Ange ett värde i rätt format.",
+      "patternWithHint": "Ange ett värde i rätt format: {hint}",
+      "tooShort": "Ange minst {min} tecken.",
+      "tooLong": "Ange högst {max} tecken.",
+      "rangeUnderflow": "Värdet måste vara minst {min}.",
+      "rangeOverflow": "Värdet får vara högst {max}.",
+      "step": "Ange ett giltigt värde."
+    }
   },
   "Header": {
     "toggleLanguage": "Byt språk",
@@ -315,7 +331,7 @@
     "premiereYear": "Premiären måste ligga samma år som nyuppsättningen.",
     "showDateBeforePremiere": "En föreställning får inte ligga före premiären.",
     "showDateWithoutPremiere": "Ange premiärdatum innan föreställningar.",
-    "dateInvalid": "Ange ett datum.",
+    "dateInvalid": "Ange ett giltigt datum, ÅÅÅÅ-MM-DD.",
     "emailInvalid": "Ange en giltig e-postadress.",
     "noteTooLong": "Högst 2 000 tecken.",
     "guideTextRequired": "Texten får inte vara tom.",

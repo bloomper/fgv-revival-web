@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {isoDate} from "@/lib/date-schema";
 
 export const MAX_TASK = 100;
 export const MAX_NEEDED = 100;
@@ -9,7 +10,7 @@ export const AVAILABILITY_ANSWERS = ["YES", "MAYBE", "NO"] as const;
 
 const id = z.string().min(1);
 const version = z.number().int().nonnegative();
-const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid");
+const date = isoDate;
 const time = z.string().trim().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "timeInvalid");
 
 /**

@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {isoDate} from "@/lib/date-schema";
 import {catalogId} from "@/lib/catalog/schema";
 
 export const MAX_ITEM_TEXT = 1000;
@@ -14,7 +15,7 @@ const owner = z.object({
 export const checklistItemValuesSchema = z.object({
     text: z.string().trim().max(MAX_ITEM_TEXT, "itemTextTooLong").optional(),
     owner,
-    deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid").nullable().optional(),
+    deadline: isoDate.nullable().optional(),
     comment: z.string().trim().max(MAX_ITEM_COMMENT, "itemCommentTooLong").optional(),
 });
 
@@ -112,7 +113,7 @@ export const templateItemTransitionSchema = z.object({
 
 export const eventChecklistValuesSchema = z.object({
     name: z.string().trim().min(1, "checklistNameRequired").max(MAX_TEMPLATE_NAME, "checklistNameTooLong"),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "dateInvalid").nullable(),
+    date: isoDate.nullable(),
     templateId: z.string().nullable().optional(),
 });
 
