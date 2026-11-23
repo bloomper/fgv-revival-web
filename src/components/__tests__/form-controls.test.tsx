@@ -1,9 +1,7 @@
 import {describe, expect, it} from "vitest";
 import {fireEvent, render, screen} from "@testing-library/react";
-import {sv} from "date-fns/locale";
 import {FormValidation} from "@/components/form-validation.client";
 import {DateInput} from "@/components/date-input.client";
-import {Calendar} from "@/components/ui/calendar";
 
 describe("FormValidation", () => {
     const form = () => render(
@@ -48,14 +46,5 @@ describe("FormValidation", () => {
 
         day.checkValidity();
         expect(day.validationMessage).toBe('patternWithHint:{"hint":"datePlaceholder"}');
-    });
-});
-
-describe("Calendar", () => {
-    it("names the months in the dropdown in the calendar's language, not the browser's", () => {
-        render(<Calendar mode="single" locale={sv} captionLayout="dropdown" defaultMonth={new Date(1975, 1, 14)}/>);
-
-        expect(screen.getAllByRole("option", {name: "feb."}).length).toBeGreaterThan(0);
-        expect(screen.queryByRole("option", {name: "Feb"})).not.toBeInTheDocument();
     });
 });

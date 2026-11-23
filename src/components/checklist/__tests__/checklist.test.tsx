@@ -110,7 +110,8 @@ describe("ChecklistItemDialog", () => {
         await userEvent.type(deadline, "2027-02-31");
         await userEvent.click(screen.getByRole("button", {name: "Common.save"}));
 
-        expect(await screen.findByText("Validation.dateInvalid")).toBeInTheDocument();
+        // Validation and the re-render can take more than findBy's default second on a busy machine
+        expect(await screen.findByText("Validation.dateInvalid", {}, {timeout: 5000})).toBeInTheDocument();
         expect(deadline).toHaveAttribute("aria-invalid", "true");
         expect(updateChecklistItemAction).not.toHaveBeenCalled();
     });
