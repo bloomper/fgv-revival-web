@@ -6,6 +6,7 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {AnonymizeCard} from "@/components/closing/anonymize-card.client";
 import {ClosingSummary} from "@/components/closing/closing-summary";
+import {MembershipPayment} from "@/components/closing/membership-payment";
 import {MembershipForm} from "@/components/closing/membership-form.client";
 import {SyncPanel} from "@/components/closing/sync-panel.client";
 import {GraphQLRequestError} from "@/lib/graphql.server";
@@ -124,6 +125,12 @@ export default async function ClosingPage({params}: { params: Promise<{ id: stri
                                             participants={membership.participants}
                                             canWrite={permissions.canSetMembership}/>
                         )}
+                    </Section>
+                )}
+
+                {closing.membershipPayment && (
+                    <Section title={t("payment.title")}>
+                        <MembershipPayment payment={closing.membershipPayment}/>
                     </Section>
                 )}
 

@@ -2007,7 +2007,7 @@
     "membershipCount": "{count} of {total} marked",
     "sync": {
       "title": "Sync to Spexregister",
-      "description": "Records the participation in Spexregister: the revival, and each participant's activity, position, role and membership.",
+      "description": "Records the participation in Spexregister: the revival, and each participant's activity, position and role. The memberships the revival pays are asked for as one payment request in Medlemskap.",
       "unavailable": "Spexregister cannot be reached right now, so what would be recorded cannot be shown. Try again in a while.",
       "notYet": "The sync is done when the revival is closing.",
       "revivalMissing": "The revival is not in Spexregister yet and is created first.",
@@ -2019,7 +2019,7 @@
         "PARTICIPATION": "Participation",
         "TASK": "Position",
         "ACTOR": "Role",
-        "MEMBERSHIP": "Membership"
+        "PAYMENT": "Membership payment"
       },
       "exists": "already there",
       "excluded": "{count, plural, one {# participant is not synced} other {# participants are not synced}}",
@@ -2046,7 +2046,9 @@
         "SPEXIPEDIA_UNAVAILABLE": "Spexipedia did not answer",
         "REFUSED": "Spexregister refused",
         "NOT_FOUND": "not found in Spexregister"
-      }
+      },
+      "paymentPlanned": "{count, plural, one {A payment request for {year} will be made in Medlemskap for # membership.} other {A payment request for {year} will be made in Medlemskap for # memberships.}}",
+      "paymentRequested": "The payment request for the {year} memberships has been made in Medlemskap."
     },
     "anonymize": {
       "title": "Anonymization",
@@ -2080,6 +2082,23 @@
       "type": "Type “{title}” to confirm",
       "anonymized": "The revival was anonymized",
       "syncIncomplete": "The sync to Spexregister is not complete. After anonymizing, it cannot be done."
+    },
+    "payment": {
+      "title": "Membership payment",
+      "intro": "{count, plural, one {The revival pays the FGV fee for # participant.} other {The revival pays the FGV fee for # participants.}}",
+      "amount": "To pay",
+      "bankgiro": "Bankgiro",
+      "bankAccount": "Account",
+      "reference": "Message / reference",
+      "status": "Status",
+      "paid": "{amount} kr paid",
+      "statuses": {
+        "OPEN": "Waiting for payment",
+        "REPORTED": "Reported paid",
+        "MATCHED": "Paid",
+        "CANCELLED": "Cancelled"
+      },
+      "how": "Pay the amount with the reference as the message. The treasurer matches the payment in Medlemskap, and the memberships then count."
     }
   },
   "History": {

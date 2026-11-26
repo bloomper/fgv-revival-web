@@ -37,6 +37,7 @@ const preview = (lastRun: ReturnType<typeof run> | null = null) => ({
     ],
     excluded: [{id: "2", displayName: "Disa Deltagare"}],
     membershipYear: null,
+    payment: null as { year: number; participants: number; exists: boolean } | null,
     lastRun,
 });
 
@@ -52,6 +53,11 @@ describe("plannedOperations", () => {
     it("counts what does not exist, and creating the revival when Spexregister lacks it", () => {
         expect(plannedOperations(preview())).toBe(2);
         expect(plannedOperations({...preview(), spexregisterRevivalExists: true})).toBe(1);
+    });
+
+    it("counts the payment request in Medlemskap until it has been made", () => {
+        expect(plannedOperations({...preview(), spexregisterRevivalExists: true, payment: {year: 2028, participants: 3, exists: false}})).toBe(2);
+        expect(plannedOperations({...preview(), spexregisterRevivalExists: true, payment: {year: 2028, participants: 3, exists: true}})).toBe(1);
     });
 });
 
@@ -70,6 +76,15 @@ describe("SyncPanel", () => {
         await waitFor(() => expect(actions.startSyncAction).toHaveBeenCalledWith({revivalId: "1", previewHash: "abc"}));
         expect(track).toHaveBeenCalledWith("sync-start", {participants: 1});
         expect(await screen.findByTestId("sync-run")).toHaveTextContent("runStatus.RUNNING");
+    });
+
+    it("says whether the memberships have been asked for in Medlemskap", () => {
+        const {rerender} = render(<SyncPanel revivalId="1" preview={{...preview(), payment: {year: 2028, participants: 3, exists: false}}} canSync/>);
+
+        expect(screen.getByTestId("sync-payment")).toHaveTextContent("paymentPlanned");
+
+        rerender(<SyncPanel revivalId="1" preview={{...preview(), payment: {year: 2028, participants: 3, exists: true}}} canSync/>);
+        expect(screen.getByTestId("sync-payment")).toHaveTextContent("paymentRequested");
     });
 
     it("polls a running run until it ends, then refreshes", async () => {

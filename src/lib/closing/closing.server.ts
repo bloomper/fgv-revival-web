@@ -40,6 +40,7 @@ const RevivalClosingQuery = graphql(`
                 surplusDecision { id number type status }
                 membershipYear
                 membershipsPaid
+                membershipPayment { reference amount paid status included swishNumber bankgiro bankAccount payeeName }
                 suggestions
                 lastSync { ...SyncRunFields }
                 anonymizedAt
@@ -86,6 +87,7 @@ const SyncPreviewQuery = graphql(`
             }
             excluded { id displayName }
             membershipYear
+            payment { year participants exists }
             lastRun { ...SyncRunFields }
         }
     }
