@@ -1,92 +1,160 @@
 "use client";
 
 import * as React from "react";
-import {useOptimistic, useTransition} from "react";
-import {useLocale, useTranslations} from "next-intl";
-import {Ban, History, Pencil, RotateCcw} from "lucide-react";
-import type {ChecklistItemFieldsFragment} from "@/gql/graphql";
-import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
-import {Checkbox} from "@bloomper/fgv-web-ui/ui/checkbox";
-import {catalogName} from "@/components/catalog/catalog";
-import {Button} from "@bloomper/fgv-web-ui/ui/button";
-import {OwnerLabel} from "@/components/owner/owner-label";
-import {PlainText} from "@/components/plain-text";
-import {OverdueBadge} from "@/components/decision-log/overdue-badge";
-import {ChecklistItemText} from "@/components/checklist/checklist-item-text";
-import {setChecklistItemStateAction} from "@/app/(app)/revivals/[id]/checklists/actions.server";
-import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {formatDate} from "@/utils/format";
-import {cn} from "@/utils/utils";
+import { useOptimistic, useTransition } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { Ban, History, Pencil, RotateCcw } from "lucide-react";
+import type { ChecklistItemFieldsFragment } from "@/gql/graphql";
+import { Badge } from "@bloomper/fgv-web-ui/ui/badge";
+import { Checkbox } from "@bloomper/fgv-web-ui/ui/checkbox";
+import { catalogName } from "@/components/catalog/catalog";
+import { Button } from "@bloomper/fgv-web-ui/ui/button";
+import { OwnerLabel } from "@/components/owner/owner-label";
+import { PlainText } from "@/components/plain-text";
+import { OverdueBadge } from "@/components/decision-log/overdue-badge";
+import { ChecklistItemText } from "@/components/checklist/checklist-item-text";
+import { setChecklistItemStateAction } from "@/app/(app)/revivals/[id]/checklists/actions.server";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
+import { formatDate } from "@/utils/format";
+import { cn } from "@/utils/utils";
 
 /**
  * One checklist item: a done box, its text, owner, deadline, comment and links. Controls only for those who may write;
  * not applicable on a guide requirement only for directeurs. Its history for every reader.
  */
-export function ChecklistItemRow({revivalId, item, canWrite, canWaive, onEdit, onNotApplicable, onHistory}: {
-    revivalId: string;
-    item: ChecklistItemFieldsFragment;
-    canWrite: boolean;
-    canWaive: boolean;
-    onEdit: () => void;
-    onNotApplicable: () => void;
-    onHistory: () => void;
+export function ChecklistItemRow({
+  revivalId,
+  item,
+  canWrite,
+  canWaive,
+  onEdit,
+  onNotApplicable,
+  onHistory,
+}: {
+  revivalId: string;
+  item: ChecklistItemFieldsFragment;
+  canWrite: boolean;
+  canWaive: boolean;
+  onEdit: () => void;
+  onNotApplicable: () => void;
+  onHistory: () => void;
 }) {
-    const tHistory = useTranslations("History");
-    const t = useTranslations("Checklist");
-    const locale = useLocale();
-    const feedback = useActionFeedback();
-    const [pending, startTransition] = useTransition();
-    const [state, setOptimisticState] = useOptimistic(item.state);
-    const textId = `item-${item.id}-text`;
-    const setState = (next: "OPEN" | "DONE") => startTransition(async () => {
-        setOptimisticState(next);
-        feedback(await setChecklistItemStateAction({id: item.id, version: item.version, revivalId, state: next}));
+  const tHistory = useTranslations("History");
+  const t = useTranslations("Checklist");
+  const locale = useLocale();
+  const feedback = useActionFeedback();
+  const [pending, startTransition] = useTransition();
+  const [state, setOptimisticState] = useOptimistic(item.state);
+  const textId = `item-${item.id}-text`;
+  const setState = (next: "OPEN" | "DONE") =>
+    startTransition(async () => {
+      setOptimisticState(next);
+      feedback(await setChecklistItemStateAction({ id: item.id, version: item.version, revivalId, state: next }));
     });
 
-    return (
-        <li className={cn("flex gap-3 rounded-lg border p-3", item.state !== "OPEN" && "text-muted-foreground")}>
-            <Checkbox className="mt-1" aria-labelledby={textId} checked={state === "DONE"}
-                      disabled={!canWrite || pending || item.state === "NOT_APPLICABLE"}
-                      onCheckedChange={checked => setState(checked ? "DONE" : "OPEN")}/>
-            <div className="min-w-0 flex-1 space-y-1">
-                <div id={textId} className={cn(item.state === "NOT_APPLICABLE" && "line-through")}>
-                    <ChecklistItemText item={item}/>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 text-sm">
-                    {item.required && <Badge>{t("required")}</Badge>}
-                    {item.state === "NOT_APPLICABLE" && <Badge variant="outline">{t("state.NOT_APPLICABLE")}</Badge>}
-                    {item.overdue && <OverdueBadge/>}
-                    {item.deadline && <Badge variant="outline">{t("deadline")}: {formatDate(item.deadline)}</Badge>}
-                    {!item.owner && item.defaultCapability && <Badge
-                        variant="outline">{t("capabilityHint", {capability: catalogName(item.defaultCapability, locale)})}</Badge>}
-                    <span>{t("owner")}: <OwnerLabel owner={item.owner}/></span>
-                    {item.stateChangedBy?.displayName && item.state !== "OPEN" && (
-                        <span className="text-xs">{t("changedBy", {name: item.stateChangedBy.displayName})}</span>
-                    )}
-                </div>
-                {item.reason && <p className="text-sm">{t("reasonLabel")}: <PlainText text={item.reason}/></p>}
-                {item.comment && <PlainText className="block text-sm" text={item.comment}/>}
-                {item.guideItem && !item.required && (
-                    <div className="text-xs">
-                        <span>{t("guideItem")}:</span>
-                        <ChecklistItemText item={{required: true, text: item.guideItem.text}}/>
-                    </div>
-                )}
-                {item.logEntries.length > 0 && (
-                    <p className="text-xs">{t("logRows", {numbers: item.logEntries.map(entry => `#${entry.number}`).join(", ")})}</p>
-                )}
-            </div>
-            <div className="flex shrink-0 items-start gap-1">
-                {canWrite && <Button size="icon" variant="ghost" aria-label={t("editItem")} onClick={onEdit}><Pencil/></Button>}
-                {canWrite && (item.state === "NOT_APPLICABLE" ? (
-                    <Button size="icon" variant="ghost" aria-label={t("reopen")} disabled={pending}
-                            onClick={() => setState("OPEN")}><RotateCcw/></Button>
-                ) : (!item.required || canWaive) && (
-                    <Button size="icon" variant="ghost" aria-label={t("markNotApplicable")}
-                            onClick={onNotApplicable}><Ban/></Button>
-                ))}
-                <Button size="icon" variant="ghost" aria-label={tHistory("menu")} onClick={onHistory}><History/></Button>
-            </div>
-        </li>
-    );
+  return (
+    <li className={cn("flex gap-3 rounded-lg border p-3", item.state !== "OPEN" && "text-muted-foreground")}>
+      <Checkbox
+        className="mt-1"
+        aria-labelledby={textId}
+        checked={state === "DONE"}
+        disabled={!canWrite || pending || item.state === "NOT_APPLICABLE"}
+        onCheckedChange={(checked) => setState(checked ? "DONE" : "OPEN")}
+      />
+      <div className="min-w-0 flex-1 space-y-1">
+        <div
+          id={textId}
+          className={cn(item.state === "NOT_APPLICABLE" && "line-through")}
+        >
+          <ChecklistItemText item={item} />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          {item.required && <Badge>{t("required")}</Badge>}
+          {item.state === "NOT_APPLICABLE" && <Badge variant="outline">{t("state.NOT_APPLICABLE")}</Badge>}
+          {item.overdue && <OverdueBadge />}
+          {item.deadline && (
+            <Badge variant="outline">
+              {t("deadline")}: {formatDate(item.deadline)}
+            </Badge>
+          )}
+          {!item.owner && item.defaultCapability && (
+            <Badge variant="outline">
+              {t("capabilityHint", { capability: catalogName(item.defaultCapability, locale) })}
+            </Badge>
+          )}
+          <span>
+            {t("owner")}: <OwnerLabel owner={item.owner} />
+          </span>
+          {item.stateChangedBy?.displayName && item.state !== "OPEN" && (
+            <span className="text-xs">{t("changedBy", { name: item.stateChangedBy.displayName })}</span>
+          )}
+        </div>
+        {item.reason && (
+          <p className="text-sm">
+            {t("reasonLabel")}: <PlainText text={item.reason} />
+          </p>
+        )}
+        {item.comment && (
+          <PlainText
+            className="block text-sm"
+            text={item.comment}
+          />
+        )}
+        {item.guideItem && !item.required && (
+          <div className="text-xs">
+            <span>{t("guideItem")}:</span>
+            <ChecklistItemText item={{ required: true, text: item.guideItem.text }} />
+          </div>
+        )}
+        {item.logEntries.length > 0 && (
+          <p className="text-xs">
+            {t("logRows", { numbers: item.logEntries.map((entry) => `#${entry.number}`).join(", ") })}
+          </p>
+        )}
+      </div>
+      <div className="flex shrink-0 items-start gap-1">
+        {canWrite && (
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={t("editItem")}
+            onClick={onEdit}
+          >
+            <Pencil />
+          </Button>
+        )}
+        {canWrite &&
+          (item.state === "NOT_APPLICABLE" ? (
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={t("reopen")}
+              disabled={pending}
+              onClick={() => setState("OPEN")}
+            >
+              <RotateCcw />
+            </Button>
+          ) : (
+            (!item.required || canWaive) && (
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label={t("markNotApplicable")}
+                onClick={onNotApplicable}
+              >
+                <Ban />
+              </Button>
+            )
+          ))}
+        <Button
+          size="icon"
+          variant="ghost"
+          aria-label={tHistory("menu")}
+          onClick={onHistory}
+        >
+          <History />
+        </Button>
+      </div>
+    </li>
+  );
 }

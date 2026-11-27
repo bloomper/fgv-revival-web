@@ -1,8 +1,8 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import type {MembershipSetInput} from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import type { MembershipSetInput } from "@/gql/graphql";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 // Closing a revival (closing.graphqls): the closing signals, FGV membership marks, the participation sync
 // to Spexregister and anonymization. The preview and the participants' names come from Spexregister, so they are
@@ -118,34 +118,34 @@ const RevivalAnonymizeMutation = graphql(`
 `);
 
 export async function getRevivalClosing(id: string) {
-    return (await runQuery(RevivalClosingQuery, {id}))?.revival ?? null;
+  return (await runQuery(RevivalClosingQuery, { id }))?.revival ?? null;
 }
 
 export async function getRevivalSyncSignal(id: string) {
-    return (await runQuery(RevivalSyncSignalQuery, {id}))?.revival?.closing?.lastSync ?? null;
+  return (await runQuery(RevivalSyncSignalQuery, { id }))?.revival?.closing?.lastSync ?? null;
 }
 
 export async function getMembershipParticipants(revivalId: string) {
-    return (await runQuery(MembershipParticipantsQuery, {revivalId}))?.participants ?? [];
+  return (await runQuery(MembershipParticipantsQuery, { revivalId }))?.participants ?? [];
 }
 
 export async function getSyncPreview(revivalId: string) {
-    return (await runQuery(SyncPreviewQuery, {revivalId}))?.syncPreview ?? null;
+  return (await runQuery(SyncPreviewQuery, { revivalId }))?.syncPreview ?? null;
 }
 
 export async function getSyncRun(id: string) {
-    // Polled while a run is going on: always ask the server, never urql's request cache
-    return (await runQuery(SyncRunQuery, {id}, {requestPolicy: "network-only"}))?.syncRun ?? null;
+  // Polled while a run is going on: always ask the server, never urql's request cache
+  return (await runQuery(SyncRunQuery, { id }, { requestPolicy: "network-only" }))?.syncRun ?? null;
 }
 
 export async function startSync(revivalId: string, previewHash: string) {
-    return (await runMutation(SyncStartMutation, {revivalId, previewHash}))?.syncStart ?? null;
+  return (await runMutation(SyncStartMutation, { revivalId, previewHash }))?.syncStart ?? null;
 }
 
 export async function setMembership(input: MembershipSetInput) {
-    return (await runMutation(MembershipSetMutation, {input}))?.membershipSet ?? [];
+  return (await runMutation(MembershipSetMutation, { input }))?.membershipSet ?? [];
 }
 
 export async function anonymizeRevival(id: string, version: number, confirmation: string) {
-    return (await runMutation(RevivalAnonymizeMutation, {id, version, confirmation}))?.revivalAnonymize ?? null;
+  return (await runMutation(RevivalAnonymizeMutation, { id, version, confirmation }))?.revivalAnonymize ?? null;
 }

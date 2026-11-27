@@ -1,32 +1,32 @@
-import {describe, expect, it, vi} from "vitest";
-import {render, screen} from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {RevivalCreateDialog} from "@/components/revival/revival-create-dialog.client";
-import {searchSpexAction} from "@/app/(app)/revivals/manage/actions.server";
+import { RevivalCreateDialog } from "@/components/revival/revival-create-dialog.client";
+import { searchSpexAction } from "@/app/(app)/revivals/manage/actions.server";
 
 vi.mock("@/app/(app)/revivals/manage/actions.server", () => ({
-    searchSpexAction: vi.fn(),
-    createRevivalAction: vi.fn(),
+  searchSpexAction: vi.fn(),
+  createRevivalAction: vi.fn(),
 }));
-vi.mock("next/navigation", () => ({useRouter: () => ({refresh: vi.fn(), push: vi.fn()})}));
-vi.mock("sonner", () => ({toast: {success: vi.fn(), error: vi.fn()}}));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh: vi.fn(), push: vi.fn() }) }));
+vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 describe("RevivalCreateDialog", () => {
-    it("lists spex from Spexregister", async () => {
-        vi.mocked(searchSpexAction).mockResolvedValue({ok: true, data: [{id: "1", title: "Ali Baba", year: 1956}]});
-        render(<RevivalCreateDialog/>);
+  it("lists spex from Spexregister", async () => {
+    vi.mocked(searchSpexAction).mockResolvedValue({ ok: true, data: [{ id: "1", title: "Ali Baba", year: 1956 }] });
+    render(<RevivalCreateDialog />);
 
-        await userEvent.click(screen.getByRole("button", {name: /create/}));
+    await userEvent.click(screen.getByRole("button", { name: /create/ }));
 
-        expect(await screen.findByRole("option", {name: /Ali Baba/})).toBeInTheDocument();
-    });
+    expect(await screen.findByRole("option", { name: /Ali Baba/ })).toBeInTheDocument();
+  });
 
-    it("says when Spexregister is unavailable", async () => {
-        vi.mocked(searchSpexAction).mockResolvedValue({ok: false, code: "SPEXIPEDIA_UNAVAILABLE", message: "x"});
-        render(<RevivalCreateDialog/>);
+  it("says when Spexregister is unavailable", async () => {
+    vi.mocked(searchSpexAction).mockResolvedValue({ ok: false, code: "SPEXIPEDIA_UNAVAILABLE", message: "x" });
+    render(<RevivalCreateDialog />);
 
-        await userEvent.click(screen.getByRole("button", {name: /create/}));
+    await userEvent.click(screen.getByRole("button", { name: /create/ }));
 
-        expect(await screen.findByRole("alert")).toHaveTextContent("spexipediaUnavailable");
-    });
+    expect(await screen.findByRole("alert")).toHaveTextContent("spexipediaUnavailable");
+  });
 });

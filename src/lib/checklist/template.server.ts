@@ -1,13 +1,13 @@
 import "server-only";
 
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 import type {
-    ChecklistTemplateCreateInput,
-    ChecklistTemplateItemCreateInput,
-    ChecklistTemplateItemUpdateInput,
-    ChecklistTemplateUpdateInput,
+  ChecklistTemplateCreateInput,
+  ChecklistTemplateItemCreateInput,
+  ChecklistTemplateItemUpdateInput,
+  ChecklistTemplateUpdateInput,
 } from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 const ChecklistTemplatesQuery = graphql(`
     query ChecklistTemplates($includeRetired: Boolean) {
@@ -110,49 +110,51 @@ const ItemRestoreMutation = graphql(`
 `);
 
 export async function getChecklistTemplates(includeRetired: boolean) {
-    return (await runQuery(ChecklistTemplatesQuery, {includeRetired}))?.checklistTemplates ?? [];
+  return (await runQuery(ChecklistTemplatesQuery, { includeRetired }))?.checklistTemplates ?? [];
 }
 
 export async function getChecklistTemplate(id: string) {
-    return (await runQuery(ChecklistTemplateQuery, {id}))?.checklistTemplate ?? null;
+  return (await runQuery(ChecklistTemplateQuery, { id }))?.checklistTemplate ?? null;
 }
 
 export async function getEventChecklistTemplates() {
-    return ((await runQuery(EventTemplatesQuery, {}))?.checklistTemplates ?? []).filter(template => template.kind === "EVENT");
+  return ((await runQuery(EventTemplatesQuery, {}))?.checklistTemplates ?? []).filter(
+    (template) => template.kind === "EVENT"
+  );
 }
 
 export async function createChecklistTemplate(input: ChecklistTemplateCreateInput) {
-    return (await runMutation(CreateMutation, {input}))?.checklistTemplateCreate ?? null;
+  return (await runMutation(CreateMutation, { input }))?.checklistTemplateCreate ?? null;
 }
 
 export async function updateChecklistTemplate(input: ChecklistTemplateUpdateInput) {
-    await runMutation(UpdateMutation, {input});
+  await runMutation(UpdateMutation, { input });
 }
 
 export async function retireChecklistTemplate(id: string, version: number) {
-    await runMutation(RetireMutation, {id, version});
+  await runMutation(RetireMutation, { id, version });
 }
 
 export async function restoreChecklistTemplate(id: string, version: number) {
-    await runMutation(RestoreMutation, {id, version});
+  await runMutation(RestoreMutation, { id, version });
 }
 
 export async function createChecklistTemplateItem(input: ChecklistTemplateItemCreateInput) {
-    await runMutation(ItemCreateMutation, {input});
+  await runMutation(ItemCreateMutation, { input });
 }
 
 export async function updateChecklistTemplateItem(input: ChecklistTemplateItemUpdateInput) {
-    await runMutation(ItemUpdateMutation, {input});
+  await runMutation(ItemUpdateMutation, { input });
 }
 
 export async function moveChecklistTemplateItem(id: string, version: number, position: number) {
-    await runMutation(ItemMoveMutation, {id, version, position});
+  await runMutation(ItemMoveMutation, { id, version, position });
 }
 
 export async function retireChecklistTemplateItem(id: string, version: number) {
-    await runMutation(ItemRetireMutation, {id, version});
+  await runMutation(ItemRetireMutation, { id, version });
 }
 
 export async function restoreChecklistTemplateItem(id: string, version: number) {
-    await runMutation(ItemRestoreMutation, {id, version});
+  await runMutation(ItemRestoreMutation, { id, version });
 }

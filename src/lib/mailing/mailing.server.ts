@@ -1,8 +1,8 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import type {MailingAudienceInput, MailingInput, MailingTemplateInput} from "@/gql/graphql";
-import {GraphQLRequestError, runMutation, runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import type { MailingAudienceInput, MailingInput, MailingTemplateInput } from "@/gql/graphql";
+import { GraphQLRequestError, runMutation, runQuery } from "@/lib/graphql.server";
 
 // Mailings, the mailing plan and its templates (mailing.graphqls). Nothing is sent without a person
 // confirming; recipients are names only, and their addresses are looked up by the server at send time.
@@ -131,85 +131,85 @@ const MailingTemplateRestoreMutation = graphql(`
 
 /** The mailings tab: the plan and the mailings, newest first. Null when the revival is not visible. */
 export async function getMailings(revivalId: string) {
-    const data = await runQuery(MailingsQuery, {id: revivalId});
+  const data = await runQuery(MailingsQuery, { id: revivalId });
 
-    return data?.revival ? {revival: data.revival, mailings: data.mailings} : null;
+  return data?.revival ? { revival: data.revival, mailings: data.mailings } : null;
 }
 
 export async function getMailing(revivalId: string, id: string) {
-    const data = await runQuery(MailingQuery, {id, revivalId});
+  const data = await runQuery(MailingQuery, { id, revivalId });
 
-    return data?.revival ? {revival: data.revival, mailing: data.mailing ?? null} : null;
+  return data?.revival ? { revival: data.revival, mailing: data.mailing ?? null } : null;
 }
 
 /** What the editor offers: the events for an event audience and the plan, to prefill from a plan entry. */
 export async function getMailingEditorOptions(revivalId: string) {
-    const data = await runQuery(MailingEditorOptionsQuery, {id: revivalId});
+  const data = await runQuery(MailingEditorOptionsQuery, { id: revivalId });
 
-    return data?.revival ? {revival: data.revival, events: data.events} : null;
+  return data?.revival ? { revival: data.revival, events: data.events } : null;
 }
 
 /** Positions from Spexregister, for a position audience. */
 export async function getMailingPositions() {
-    return (await runQuery(MailingPositionsQuery, {}))?.positions ?? [];
+  return (await runQuery(MailingPositionsQuery, {}))?.positions ?? [];
 }
 
 /** The positions, or none when Spexregister cannot be read: a position audience then cannot be picked, the rest works. */
 export async function loadMailingPositions() {
-    try {
-        return {positions: await getMailingPositions(), unavailable: false};
-    } catch (error) {
-        if (error instanceof GraphQLRequestError) {
-            return {positions: [], unavailable: true};
-        }
-        throw error;
+  try {
+    return { positions: await getMailingPositions(), unavailable: false };
+  } catch (error) {
+    if (error instanceof GraphQLRequestError) {
+      return { positions: [], unavailable: true };
     }
+    throw error;
+  }
 }
 
 export async function previewMailingAudience(revivalId: string, audience: MailingAudienceInput) {
-    return (await runQuery(MailingAudiencePreviewQuery, {revivalId, audience}))?.mailingAudiencePreview ?? [];
+  return (await runQuery(MailingAudiencePreviewQuery, { revivalId, audience }))?.mailingAudiencePreview ?? [];
 }
 
 export async function getMailingTemplates(includeRetired = false) {
-    return (await runQuery(MailingTemplatesQuery, {includeRetired}))?.mailingTemplates ?? [];
+  return (await runQuery(MailingTemplatesQuery, { includeRetired }))?.mailingTemplates ?? [];
 }
 
 export async function createMailing(input: MailingInput) {
-    return (await runMutation(MailingCreateMutation, {input}))?.mailingCreate ?? null;
+  return (await runMutation(MailingCreateMutation, { input }))?.mailingCreate ?? null;
 }
 
 export async function updateMailing(id: string, version: number, input: MailingInput) {
-    await runMutation(MailingUpdateMutation, {id, version, input});
+  await runMutation(MailingUpdateMutation, { id, version, input });
 }
 
 export async function cancelMailing(id: string, version: number) {
-    await runMutation(MailingCancelMutation, {id, version});
+  await runMutation(MailingCancelMutation, { id, version });
 }
 
 export async function sendMailing(id: string, version: number) {
-    return (await runMutation(MailingSendMutation, {id, version}))?.mailingSend ?? null;
+  return (await runMutation(MailingSendMutation, { id, version }))?.mailingSend ?? null;
 }
 
 export async function retryMailing(id: string) {
-    return (await runMutation(MailingRetryMutation, {id}))?.mailingRetry ?? null;
+  return (await runMutation(MailingRetryMutation, { id }))?.mailingRetry ?? null;
 }
 
 export async function createMailingTemplate(input: MailingTemplateInput) {
-    await runMutation(MailingTemplateCreateMutation, {input});
+  await runMutation(MailingTemplateCreateMutation, { input });
 }
 
 export async function updateMailingTemplate(id: string, version: number, input: MailingTemplateInput) {
-    await runMutation(MailingTemplateUpdateMutation, {id, version, input});
+  await runMutation(MailingTemplateUpdateMutation, { id, version, input });
 }
 
 export async function moveMailingTemplate(id: string, version: number, position: number) {
-    await runMutation(MailingTemplateMoveMutation, {id, version, position});
+  await runMutation(MailingTemplateMoveMutation, { id, version, position });
 }
 
 export async function retireMailingTemplate(id: string, version: number) {
-    await runMutation(MailingTemplateRetireMutation, {id, version});
+  await runMutation(MailingTemplateRetireMutation, { id, version });
 }
 
 export async function restoreMailingTemplate(id: string, version: number) {
-    await runMutation(MailingTemplateRestoreMutation, {id, version});
+  await runMutation(MailingTemplateRestoreMutation, { id, version });
 }

@@ -1,20 +1,27 @@
-import {useTranslations} from "next-intl";
-import type {RevivalStatus} from "@/gql/graphql";
-import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import { useTranslations } from "next-intl";
+import type { RevivalStatus } from "@/gql/graphql";
+import { Badge } from "@bloomper/fgv-web-ui/ui/badge";
 
 const VARIANTS: Record<RevivalStatus, "default" | "secondary" | "outline" | "destructive"> = {
-    PROPOSED: "outline",
-    APPROVED: "secondary",
-    ORGANISING: "default",
-    OPEN: "default",
-    CLOSING: "default",
-    SETTLING: "secondary",
-    ARCHIVED: "outline",
-    REJECTED: "destructive",
+  PROPOSED: "outline",
+  APPROVED: "secondary",
+  ORGANISING: "default",
+  OPEN: "default",
+  CLOSING: "default",
+  SETTLING: "secondary",
+  ARCHIVED: "outline",
+  REJECTED: "destructive",
 };
 
-export function StatusBadge({status, className}: { status: RevivalStatus; className?: string }) {
-    const t = useTranslations("Status");
+export function StatusBadge({ status, className }: { status: RevivalStatus; className?: string }) {
+  const t = useTranslations("Status");
 
-    return <Badge variant={VARIANTS[status]} className={className}>{t(status)}</Badge>;
+  return (
+    <Badge
+      variant={VARIANTS[status]}
+      className={className}
+    >
+      {t(status)}
+    </Badge>
+  );
 }

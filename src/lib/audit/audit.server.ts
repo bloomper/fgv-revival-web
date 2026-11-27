@@ -1,8 +1,8 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import type {AuditedType} from "@/gql/graphql";
-import {runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import type { AuditedType } from "@/gql/graphql";
+import { runQuery } from "@/lib/graphql.server";
 
 // A record's history (audit.graphqls), read only. The server decides who may read it, as it does for the record.
 
@@ -21,5 +21,5 @@ const RevisionsQuery = graphql(`
 `);
 
 export async function getRevisions(type: AuditedType, id: string) {
-    return (await runQuery(RevisionsQuery, {type, id}))?.revisions ?? [];
+  return (await runQuery(RevisionsQuery, { type, id }))?.revisions ?? [];
 }

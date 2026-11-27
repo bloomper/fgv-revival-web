@@ -22,7 +22,7 @@ PR process: `CONTRIBUTING.md`. Product spec, specs, plans and tasks: the `fgv-re
 
 - `npm run dev` / `build` / `start`
 - `npm run lint` (ESLint), `npm run typecheck` (tsc) — note typecheck only covers `src/**`, so
-  `next.config.ts`, `codegen.ts` and `eslint.config.mts` are *not* type-checked by it.
+  `next.config.ts`, `codegen.ts` and `eslint.config.mts` are _not_ type-checked by it.
 - `npm run test` (Vitest), `npm run test:e2e` (Playwright)
 - `npm run gql-codegen` — regenerate `src/gql/` from the server's schema files in a sibling
   `fgv-revival-server` checkout (introspection is off). Commit the result: CI never regenerates it.
@@ -37,14 +37,14 @@ ESLint enforces double quotes.
 ## File conventions
 
 - **A module's directive and its filename must agree**, both ways:
-    - `"use client"` ⇔ `*.client.ts(x)` — components *and* hooks (`use-lazy-full.client.ts`).
-    - `import "server-only"` ⇔ `*.server.ts` (libs, utils).
-    - `"use server"` ⇔ `*.server.ts` too — the `actions.server.ts` server-action modules. Don't add
-      `server-only` to a `"use server"` file; the directive already pins it to the server.
+  - `"use client"` ⇔ `*.client.ts(x)` — components _and_ hooks (`use-lazy-full.client.ts`).
+  - `import "server-only"` ⇔ `*.server.ts` (libs, utils).
+  - `"use server"` ⇔ `*.server.ts` too — the `actions.server.ts` server-action modules. Don't add
+    `server-only` to a `"use server"` file; the directive already pins it to the server.
 - Three standing exceptions, all deliberate:
-    - `src/auth.ts` — `server-only`, but keeps the conventional Better Auth entry-point name.
-    - Next.js reserved filenames (`page.tsx`, `layout.tsx`, `error.tsx`, `global-error.tsx`) cannot
-      be renamed, so a `"use client"` one keeps its required name.
+  - `src/auth.ts` — `server-only`, but keeps the conventional Better Auth entry-point name.
+  - Next.js reserved filenames (`page.tsx`, `layout.tsx`, `error.tsx`, `global-error.tsx`) cannot
+    be renamed, so a `"use client"` one keeps its required name.
 - `src/gql/**` (generated) is ESLint-ignored — don't hand-edit.
 
 ## Shared FGV UI

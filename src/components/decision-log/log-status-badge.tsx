@@ -1,16 +1,16 @@
-import {useTranslations} from "next-intl";
-import type {LogEntryStatus} from "@/gql/graphql";
-import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import { useTranslations } from "next-intl";
+import type { LogEntryStatus } from "@/gql/graphql";
+import { Badge } from "@bloomper/fgv-web-ui/ui/badge";
 
 const VARIANTS: Record<LogEntryStatus, "default" | "secondary" | "outline" | "ghost"> = {
-    OPEN: "secondary",
-    WAITING: "outline",
-    DONE: "ghost",
-    CANCELLED: "ghost",
+  OPEN: "secondary",
+  WAITING: "outline",
+  DONE: "ghost",
+  CANCELLED: "ghost",
 };
 
-export function LogStatusBadge({status}: { status: LogEntryStatus }) {
-    const t = useTranslations("Log.status");
+export function LogStatusBadge({ status }: { status: LogEntryStatus }) {
+  const t = useTranslations("Log.status");
 
-    return <Badge variant={VARIANTS[status]}>{t(status)}</Badge>;
+  return <Badge variant={VARIANTS[status]}>{t(status)}</Badge>;
 }

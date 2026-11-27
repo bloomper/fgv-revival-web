@@ -1,8 +1,8 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import type {LogEntryAnswerInput, LogEntryCreateInput, LogEntryFilter, LogEntryUpdateInput} from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import type { LogEntryAnswerInput, LogEntryCreateInput, LogEntryFilter, LogEntryUpdateInput } from "@/gql/graphql";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 const RevivalLogQuery = graphql(`
     query RevivalLog($id: ID!, $filter: LogEntryFilter) {
@@ -43,25 +43,27 @@ const LogEntryAnswerMutation = graphql(`
 `);
 
 export async function getRevivalLog(revivalId: string, filter: LogEntryFilter) {
-    const data = await runQuery(RevivalLogQuery, {id: revivalId, filter});
+  const data = await runQuery(RevivalLogQuery, { id: revivalId, filter });
 
-    return data?.revival ? {
+  return data?.revival
+    ? {
         revival: data.revival,
         entries: data.logEntries,
         tags: data.logTags,
         meetings: data.meetings,
         events: data.events,
-    } : null;
+      }
+    : null;
 }
 
 export async function createLogEntry(input: LogEntryCreateInput) {
-    return (await runMutation(LogEntryCreateMutation, {input}))?.logEntryCreate;
+  return (await runMutation(LogEntryCreateMutation, { input }))?.logEntryCreate;
 }
 
 export async function updateLogEntry(input: LogEntryUpdateInput) {
-    return (await runMutation(LogEntryUpdateMutation, {input}))?.logEntryUpdate;
+  return (await runMutation(LogEntryUpdateMutation, { input }))?.logEntryUpdate;
 }
 
 export async function answerLogEntry(input: LogEntryAnswerInput) {
-    return (await runMutation(LogEntryAnswerMutation, {input}))?.logEntryAnswer;
+  return (await runMutation(LogEntryAnswerMutation, { input }))?.logEntryAnswer;
 }

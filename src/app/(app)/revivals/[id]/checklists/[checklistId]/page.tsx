@@ -1,92 +1,117 @@
 import Link from "next/link";
-import {notFound} from "next/navigation";
-import {getLocale, getTranslations} from "next-intl/server";
-import {ArrowLeft} from "lucide-react";
-import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
-import {ChecklistActions} from "@/components/checklist/checklist-actions.client";
-import {ChecklistTips} from "@/components/checklist/checklist-tips";
-import {EventChecklistDialog} from "@/components/checklist/event-checklist-dialog.client";
-import {ChecklistView} from "@/components/checklist/checklist-view.client";
-import {pickText} from "@/components/guide/localized";
-import {GraphQLRequestError} from "@/lib/graphql.server";
-import {getChecklist} from "@/lib/checklist/checklist.server";
-import {Policies} from "@/utils/policy.server";
-import {withPolicyPage} from "@/utils/route.server";
-import {formatDate} from "@/utils/format";
+import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
+import { ArrowLeft } from "lucide-react";
+import { Badge } from "@bloomper/fgv-web-ui/ui/badge";
+import { ChecklistActions } from "@/components/checklist/checklist-actions.client";
+import { ChecklistTips } from "@/components/checklist/checklist-tips";
+import { EventChecklistDialog } from "@/components/checklist/event-checklist-dialog.client";
+import { ChecklistView } from "@/components/checklist/checklist-view.client";
+import { pickText } from "@/components/guide/localized";
+import { GraphQLRequestError } from "@/lib/graphql.server";
+import { getChecklist } from "@/lib/checklist/checklist.server";
+import { Policies } from "@/utils/policy.server";
+import { withPolicyPage } from "@/utils/route.server";
+import { formatDate } from "@/utils/format";
 
 async function load(revivalId: string, id: string) {
-    try {
-        return await getChecklist(revivalId, id);
-    } catch (error) {
-        if (error instanceof GraphQLRequestError && (error.code === "NOT_FOUND" || error.code === "FORBIDDEN")) {
-            return null;
-        }
-        throw error;
+  try {
+    return await getChecklist(revivalId, id);
+  } catch (error) {
+    if (error instanceof GraphQLRequestError && (error.code === "NOT_FOUND" || error.code === "FORBIDDEN")) {
+      return null;
     }
+    throw error;
+  }
 }
 
 /**
  * One checklist: a guide chapter's with the chapter's tips, or an event's. The list of checklists beside it
  * is in the layout.
  */
-export default async function ChecklistPage({params}: { params: Promise<{ id: string; checklistId: string }> }) {
-    const {id, checklistId} = await params;
+export default async function ChecklistPage({ params }: { params: Promise<{ id: string; checklistId: string }> }) {
+  const { id, checklistId } = await params;
 
-    return withPolicyPage(Policies.app.requireAccess, async () => {
-        const loaded = await load(id, checklistId);
+  return withPolicyPage(Policies.app.requireAccess, async () => {
+    const loaded = await load(id, checklistId);
 
-        if (!loaded) {
-            notFound();
-        }
+    if (!loaded) {
+      notFound();
+    }
 
-        const t = await getTranslations("Checklist");
-        const locale = await getLocale();
-        const {revival, checklist} = loaded;
-        const title = checklist.kind === "CHAPTER"
-            ? checklist.chapterTitle ? pickText(checklist.chapterTitle, locale).text : checklist.chapterKey ?? ""
-            : checklist.name ?? "";
+    const t = await getTranslations("Checklist");
+    const locale = await getLocale();
+    const { revival, checklist } = loaded;
+    const title =
+      checklist.kind === "CHAPTER"
+        ? checklist.chapterTitle
+          ? pickText(checklist.chapterTitle, locale).text
+          : (checklist.chapterKey ?? "")
+        : (checklist.name ?? "");
 
-        return (
-            <div className="flex flex-1 flex-col gap-4">
-                <div className="space-y-1">
-                    <Link href={`/revivals/${revival.id}/checklists`}
-                          className="inline-flex items-center gap-1 text-sm text-muted-foreground lg:hidden hover:text-link">
-                        <ArrowLeft className="size-4"/>
-                        {t("title")}
-                    </Link>
-                    <h3 className="flex flex-wrap items-center gap-2 text-base font-semibold tracking-tight">
-                        {title}
-                        {checklist.date && <span
-                            className="font-normal text-muted-foreground tabular-nums">{formatDate(checklist.date)}</span>}
-                        {checklist.cancelled && <Badge variant="outline">{t("cancelled")}</Badge>}
-                    </h3>
-                    {checklist.event && (
-                        <Link href={`/revivals/${revival.id}/events`}
-                              className="block text-sm text-muted-foreground hover:text-link">
-                            {t("forEvent", {title: checklist.event.title})}
-                        </Link>
-                    )}
-                    {checklist.template && (
-                        <Link href={`/admin/checklist-templates/${checklist.template.id}`}
-                              className="text-sm text-muted-foreground hover:text-link">
-                            {t("fromTemplate", {name: checklist.template.name ? pickText(checklist.template.name, locale).text : ""})}
-                        </Link>
-                    )}
-                </div>
-                <ChecklistTips tips={checklist.tips}/>
-                <ChecklistView revivalId={revival.id} checklistId={checklist.id} items={checklist.items}
-                               members={revival.ownerCandidates}
-                               canWrite={revival.permissions.canWriteLog}
-                               canWaive={revival.permissions.canWaiveRequirement}
-                               cancelled={checklist.cancelled} actions={(
-                    <>
-                        {checklist.kind === "EVENT" &&
-                            <EventChecklistDialog revivalId={revival.id} templates={[]} checklist={checklist}/>}
-                        <ChecklistActions revivalId={revival.id} checklist={checklist}
-                                          templates={checklist.templatesAvailable}/>
-                    </>
-                )}/>
-            </div>
-        );
-    });
+    return (
+      <div className="flex flex-1 flex-col gap-4">
+        <div className="space-y-1">
+          <Link
+            href={`/revivals/${revival.id}/checklists`}
+            className="text-muted-foreground hover:text-link inline-flex items-center gap-1 text-sm lg:hidden"
+          >
+            <ArrowLeft className="size-4" />
+            {t("title")}
+          </Link>
+          <h3 className="flex flex-wrap items-center gap-2 text-base font-semibold tracking-tight">
+            {title}
+            {checklist.date && (
+              <span className="text-muted-foreground font-normal tabular-nums">{formatDate(checklist.date)}</span>
+            )}
+            {checklist.cancelled && <Badge variant="outline">{t("cancelled")}</Badge>}
+          </h3>
+          {checklist.event && (
+            <Link
+              href={`/revivals/${revival.id}/events`}
+              className="text-muted-foreground hover:text-link block text-sm"
+            >
+              {t("forEvent", { title: checklist.event.title })}
+            </Link>
+          )}
+          {checklist.template && (
+            <Link
+              href={`/admin/checklist-templates/${checklist.template.id}`}
+              className="text-muted-foreground hover:text-link text-sm"
+            >
+              {t("fromTemplate", {
+                name: checklist.template.name ? pickText(checklist.template.name, locale).text : "",
+              })}
+            </Link>
+          )}
+        </div>
+        <ChecklistTips tips={checklist.tips} />
+        <ChecklistView
+          revivalId={revival.id}
+          checklistId={checklist.id}
+          items={checklist.items}
+          members={revival.ownerCandidates}
+          canWrite={revival.permissions.canWriteLog}
+          canWaive={revival.permissions.canWaiveRequirement}
+          cancelled={checklist.cancelled}
+          actions={
+            <>
+              {checklist.kind === "EVENT" && (
+                <EventChecklistDialog
+                  revivalId={revival.id}
+                  templates={[]}
+                  checklist={checklist}
+                />
+              )}
+              <ChecklistActions
+                revivalId={revival.id}
+                checklist={checklist}
+                templates={checklist.templatesAvailable}
+              />
+            </>
+          }
+        />
+      </div>
+    );
+  });
 }

@@ -1,7 +1,7 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import {runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import { runQuery } from "@/lib/graphql.server";
 
 const SpexSearchQuery = graphql(`
     query SpexSearch($query: String!, $first: Int) {
@@ -10,5 +10,5 @@ const SpexSearchQuery = graphql(`
 `);
 
 export async function searchSpex(query: string) {
-    return (await runQuery(SpexSearchQuery, {query, first: 20}))?.spexSearch ?? [];
+  return (await runQuery(SpexSearchQuery, { query, first: 20 }))?.spexSearch ?? [];
 }

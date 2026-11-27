@@ -1,65 +1,68 @@
-import {expect, test} from "./fixtures";
-import {ALI_BABA_2028} from "./constants";
+import { expect, test } from "./fixtures";
+import { ALI_BABA_2028 } from "./constants";
 
 test.describe("Decision log: the steering group works through the chapter checklists", () => {
-    test.beforeEach(async ({mock}) => {
-        await mock.guide("published");
-        await mock.setStatus(ALI_BABA_2028, "ORGANISING");
-    });
+  test.beforeEach(async ({ mock }) => {
+    await mock.guide("published");
+    await mock.setStatus(ALI_BABA_2028, "ORGANISING");
+  });
 
-    test("ticks a requirement, adds an own item and filters across checklists", async ({page, loginAs}) => {
-        await loginAs("styrgrupp");
-        await page.goto(`/revivals/${ALI_BABA_2028}`);
-        await page.getByRole("link", {name: "Checklistor"}).click();
+  test("ticks a requirement, adds an own item and filters across checklists", async ({ page, loginAs }) => {
+    await loginAs("styrgrupp");
+    await page.goto(`/revivals/${ALI_BABA_2028}`);
+    await page.getByRole("link", { name: "Checklistor" }).click();
 
-        await expect(page.getByRole("heading", {level: 3, name: "Checklistor"})).toBeVisible();
-        await expect(page.getByRole("region", {name: "Guidens kapitel"}).getByRole("link")).toHaveCount(10);
-        await page.getByRole("link", {name: /1\. Först: godkännande/}).click();
-        await expect(page.getByRole("heading", {level: 3, name: "Först: godkännande och tajmning"})).toBeVisible();
+    await expect(page.getByRole("heading", { level: 3, name: "Checklistor" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Guidens kapitel" }).getByRole("link")).toHaveCount(10);
+    await page.getByRole("link", { name: /1\. Först: godkännande/ }).click();
+    await expect(page.getByRole("heading", { level: 3, name: "Först: godkännande och tajmning" })).toBeVisible();
 
-        const requirement = page.getByRole("checkbox", {name: "Nyuppsättningen ska godkännas av JK och FGV."});
+    const requirement = page.getByRole("checkbox", { name: "Nyuppsättningen ska godkännas av JK och FGV." });
 
-        await requirement.check();
-        await expect(requirement).toBeChecked();
-        await expect(page.getByRole("button", {name: "Gäller inte"})).toHaveCount(0);
+    await requirement.check();
+    await expect(requirement).toBeChecked();
+    await expect(page.getByRole("button", { name: "Gäller inte" })).toHaveCount(0);
 
-        await page.getByRole("button", {name: "Ny punkt"}).click();
-        await page.getByRole("dialog").getByLabel("Vad ska göras").fill("Fråga JK om datum");
-        await page.getByRole("dialog").getByLabel("Ansvarig").selectOption({label: "Stina Styrgrupp"});
-        await page.getByRole("dialog").getByRole("button", {name: "Spara"}).click();
-        await expect(page.getByRole("dialog")).toBeHidden();
-        await expect(page.getByRole("checkbox", {name: "Fråga JK om datum"})).toBeVisible();
+    await page.getByRole("button", { name: "Ny punkt" }).click();
+    await page.getByRole("dialog").getByLabel("Vad ska göras").fill("Fråga JK om datum");
+    await page.getByRole("dialog").getByLabel("Ansvarig").selectOption({ label: "Stina Styrgrupp" });
+    await page.getByRole("dialog").getByRole("button", { name: "Spara" }).click();
+    await expect(page.getByRole("dialog")).toBeHidden();
+    await expect(page.getByRole("checkbox", { name: "Fråga JK om datum" })).toBeVisible();
 
-        await page.getByRole("navigation", {name: "Nyuppsättningens delar"}).getByRole("link", {name: /^Checklistor/}).click();
-        await page.getByRole("link", {name: "Mina", exact: true}).click();
-        const matches = page.getByRole("list", {name: "Matchande punkter"});
+    await page
+      .getByRole("navigation", { name: "Nyuppsättningens delar" })
+      .getByRole("link", { name: /^Checklistor/ })
+      .click();
+    await page.getByRole("link", { name: "Mina", exact: true }).click();
+    const matches = page.getByRole("list", { name: "Matchande punkter" });
 
-        await expect(matches.getByText("Fråga JK om datum")).toBeVisible();
-        await expect(matches.getByText("Nyuppsättningen ska godkännas av JK och FGV.")).toHaveCount(0);
-    });
+    await expect(matches.getByText("Fråga JK om datum")).toBeVisible();
+    await expect(matches.getByText("Nyuppsättningen ska godkännas av JK och FGV.")).toHaveCount(0);
+  });
 
-    test("shows the chapter's tips with its checklist", async ({page, loginAs}) => {
-        await loginAs("styrgrupp");
-        await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
-        await page.getByRole("link", {name: /Boka lokaler/}).click();
+  test("shows the chapter's tips with its checklist", async ({ page, loginAs }) => {
+    await loginAs("styrgrupp");
+    await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
+    await page.getByRole("link", { name: /Boka lokaler/ }).click();
 
-        await page.getByText("Tips från guiden (1)").click();
-        await expect(page.getByText("Kontrollera sprittillstånd i vald lokal.")).toBeVisible();
-    });
+    await page.getByText("Tips från guiden (1)").click();
+    await expect(page.getByText("Kontrollera sprittillstånd i vald lokal.")).toBeVisible();
+  });
 
-    test("a directeur waives a requirement with a reason", async ({page, loginAs}) => {
-        await loginAs("directeur");
-        await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
-        await page.getByRole("link", {name: /Stänga nyuppsättningen/}).click();
+  test("a directeur waives a requirement with a reason", async ({ page, loginAs }) => {
+    await loginAs("directeur");
+    await page.goto(`/revivals/${ALI_BABA_2028}/checklists`);
+    await page.getByRole("link", { name: /Stänga nyuppsättningen/ }).click();
 
-        await page.getByRole("button", {name: "Gäller inte"}).click();
-        const dialog = page.getByRole("dialog");
+    await page.getByRole("button", { name: "Gäller inte" }).click();
+    const dialog = page.getByRole("dialog");
 
-        await expect(dialog.getByRole("button", {name: "Gäller inte"})).toBeDisabled();
-        await dialog.getByLabel("Motivering").fill("Vi tar inget lån");
-        await dialog.getByRole("button", {name: "Gäller inte"}).click();
-        await expect(dialog).toBeHidden();
-        await expect(page.getByText("Vi tar inget lån")).toBeVisible();
-        await expect(page.getByRole("button", {name: "Öppna igen"})).toBeVisible();
-    });
+    await expect(dialog.getByRole("button", { name: "Gäller inte" })).toBeDisabled();
+    await dialog.getByLabel("Motivering").fill("Vi tar inget lån");
+    await dialog.getByRole("button", { name: "Gäller inte" }).click();
+    await expect(dialog).toBeHidden();
+    await expect(page.getByText("Vi tar inget lån")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Öppna igen" })).toBeVisible();
+  });
 });

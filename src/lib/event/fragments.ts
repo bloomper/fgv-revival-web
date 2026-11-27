@@ -1,4 +1,4 @@
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 
 export const EventTypeFields = graphql(`
     fragment EventTypeFields on EventType {

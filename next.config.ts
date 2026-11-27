@@ -1,35 +1,35 @@
-import type {NextConfig} from "next";
+import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-    poweredByHeader: false,
-    async headers() {
-        return [
-            {
-                source: "/(.*)",
-                headers: [
-                    {key: "X-Content-Type-Options", value: "nosniff"},
-                    {key: "X-Frame-Options", value: "DENY"},
-                    {key: "Referrer-Policy", value: "strict-origin-when-cross-origin"},
-                    {key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()"},
-                ],
-            },
-        ];
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+    ];
+  },
+  turbopack: {
+    root: __dirname,
+  },
+  output: "standalone",
+  reactCompiler: true,
+  cacheComponents: true,
+  partialPrefetching: true,
+  experimental: {
+    authInterrupts: true,
+    instantInsights: {
+      validationLevel: "manual-warning",
     },
-    turbopack: {
-        root: __dirname,
-    },
-    output: "standalone",
-    reactCompiler: true,
-    cacheComponents: true,
-    partialPrefetching: true,
-    experimental: {
-        authInterrupts: true,
-        instantInsights: {
-            validationLevel: "manual-warning",
-        },
-        proxyClientMaxBodySize: "11mb",
-    },
+    proxyClientMaxBodySize: "11mb",
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();

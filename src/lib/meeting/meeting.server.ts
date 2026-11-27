@@ -1,8 +1,8 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import type {MeetingCreateInput, MeetingUpdateInput, MinutesEmailSendInput} from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import type { MeetingCreateInput, MeetingUpdateInput, MinutesEmailSendInput } from "@/gql/graphql";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 const RevivalMeetingsQuery = graphql(`
     query RevivalMeetings($id: ID!) {
@@ -120,43 +120,43 @@ const MinutesEmailRetryMutation = graphql(`
 `);
 
 export async function getRevivalMeetings(revivalId: string) {
-    const data = await runQuery(RevivalMeetingsQuery, {id: revivalId});
+  const data = await runQuery(RevivalMeetingsQuery, { id: revivalId });
 
-    return data?.revival ? {revival: data.revival, meetings: data.meetings} : null;
+  return data?.revival ? { revival: data.revival, meetings: data.meetings } : null;
 }
 
 export async function getMeeting(revivalId: string, id: string) {
-    const data = await runQuery(MeetingQuery, {id, revivalId});
+  const data = await runQuery(MeetingQuery, { id, revivalId });
 
-    return data?.revival && data.meeting && data.meeting.revivalId === revivalId
-        ? {revival: data.revival, meeting: data.meeting, tags: data.logTags}
-        : null;
+  return data?.revival && data.meeting && data.meeting.revivalId === revivalId
+    ? { revival: data.revival, meeting: data.meeting, tags: data.logTags }
+    : null;
 }
 
 export async function createMeeting(input: MeetingCreateInput) {
-    return (await runMutation(MeetingCreateMutation, {input}))?.meetingCreate;
+  return (await runMutation(MeetingCreateMutation, { input }))?.meetingCreate;
 }
 
 export async function updateMeeting(input: MeetingUpdateInput) {
-    await runMutation(MeetingUpdateMutation, {input});
+  await runMutation(MeetingUpdateMutation, { input });
 }
 
 export async function startMeeting(id: string, version: number) {
-    await runMutation(MeetingStartMutation, {id, version});
+  await runMutation(MeetingStartMutation, { id, version });
 }
 
 export async function closeMeeting(id: string, version: number) {
-    await runMutation(MeetingCloseMutation, {id, version});
+  await runMutation(MeetingCloseMutation, { id, version });
 }
 
 export async function cancelMeeting(id: string, version: number) {
-    await runMutation(MeetingCancelMutation, {id, version});
+  await runMutation(MeetingCancelMutation, { id, version });
 }
 
 export async function sendMinutes(input: MinutesEmailSendInput) {
-    return (await runMutation(MinutesEmailSendMutation, {input}))?.minutesEmailSend;
+  return (await runMutation(MinutesEmailSendMutation, { input }))?.minutesEmailSend;
 }
 
 export async function retryMinutes(emailId: string) {
-    return (await runMutation(MinutesEmailRetryMutation, {emailId}))?.minutesEmailRetry;
+  return (await runMutation(MinutesEmailRetryMutation, { emailId }))?.minutesEmailRetry;
 }

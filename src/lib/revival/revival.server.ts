@@ -1,15 +1,15 @@
 import "server-only";
 
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 import type {
-    RevivalCreateInput,
-    RevivalDetailFragment,
-    RevivalStatus,
-    RevivalStatusChangeInput,
-    RevivalSummaryFragment,
-    RevivalUpdateInput,
+  RevivalCreateInput,
+  RevivalDetailFragment,
+  RevivalStatus,
+  RevivalStatusChangeInput,
+  RevivalSummaryFragment,
+  RevivalUpdateInput,
 } from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 export const RevivalSummary = graphql(`
     fragment RevivalSummary on Revival {
@@ -129,41 +129,41 @@ const RevivalDeleteMutation = graphql(`
  * The revivals being organised or open that have not played their last show, soonest first.
  */
 export async function getUpcomingRevivals() {
-    return (await runQuery(UpcomingRevivalsQuery, {}))?.upcomingRevivals ?? [];
+  return (await runQuery(UpcomingRevivalsQuery, {}))?.upcomingRevivals ?? [];
 }
 
 export async function getMe() {
-    return (await runQuery(MeQuery, {}))?.me;
+  return (await runQuery(MeQuery, {}))?.me;
 }
 
 export async function getRevivalShell(id: string) {
-    return (await runQuery(RevivalShellQuery, {id}))?.revival ?? null;
+  return (await runQuery(RevivalShellQuery, { id }))?.revival ?? null;
 }
 
 export async function getRevivalWorkSummary(id: string) {
-    return (await runQuery(RevivalWorkSummaryQuery, {id}))?.revival?.workSummary ?? null;
+  return (await runQuery(RevivalWorkSummaryQuery, { id }))?.revival?.workSummary ?? null;
 }
 
 export async function getRevivals(status?: RevivalStatus[]): Promise<RevivalSummaryFragment[]> {
-    return (await runQuery(RevivalsQuery, {status: status ?? null}))?.revivals ?? [];
+  return (await runQuery(RevivalsQuery, { status: status ?? null }))?.revivals ?? [];
 }
 
 export async function getRevival(id: string): Promise<RevivalDetailFragment | null> {
-    return (await runQuery(RevivalQuery, {id}))?.revival ?? null;
+  return (await runQuery(RevivalQuery, { id }))?.revival ?? null;
 }
 
 export async function createRevival(input: RevivalCreateInput): Promise<RevivalSummaryFragment | undefined> {
-    return (await runMutation(RevivalCreateMutation, {input}))?.revivalCreate;
+  return (await runMutation(RevivalCreateMutation, { input }))?.revivalCreate;
 }
 
 export async function updateRevival(input: RevivalUpdateInput): Promise<RevivalDetailFragment | undefined> {
-    return (await runMutation(RevivalUpdateMutation, {input}))?.revivalUpdate;
+  return (await runMutation(RevivalUpdateMutation, { input }))?.revivalUpdate;
 }
 
 export async function changeStatus(input: RevivalStatusChangeInput): Promise<RevivalSummaryFragment | undefined> {
-    return (await runMutation(RevivalStatusChangeMutation, {input}))?.revivalStatusChange;
+  return (await runMutation(RevivalStatusChangeMutation, { input }))?.revivalStatusChange;
 }
 
 export async function deleteRevival(id: string, version: number): Promise<void> {
-    await runMutation(RevivalDeleteMutation, {id, version});
+  await runMutation(RevivalDeleteMutation, { id, version });
 }

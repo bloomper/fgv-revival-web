@@ -1,13 +1,13 @@
-import {formatInstant} from "@/utils/format";
+import { formatInstant } from "@/utils/format";
 
 export type NewsItem = {
-    id: string;
-    subject: string;
-    text: string;
-    visibleFrom?: string | null;
-    visibleTo?: string | null;
-    published: boolean;
-    version: number;
+  id: string;
+  subject: string;
+  text: string;
+  visibleFrom?: string | null;
+  visibleTo?: string | null;
+  published: boolean;
+  version: number;
 };
 
 export type NewsState = "PUBLISHED" | "DRAFT" | "SCHEDULED" | "WITHDRAWN";
@@ -17,14 +17,14 @@ export type NewsState = "PUBLISHED" | "DRAFT" | "SCHEDULED" | "WITHDRAWN";
  * (first day ahead) or withdrawn (last day passed).
  */
 export function newsState(news: Pick<NewsItem, "published" | "visibleFrom">, now: Date = new Date()): NewsState {
-    if (news.published) {
-        return "PUBLISHED";
-    }
-    if (!news.visibleFrom) {
-        return "DRAFT";
-    }
+  if (news.published) {
+    return "PUBLISHED";
+  }
+  if (!news.visibleFrom) {
+    return "DRAFT";
+  }
 
-    const today = formatInstant(now)?.slice(0, 10) ?? "";
+  const today = formatInstant(now)?.slice(0, 10) ?? "";
 
-    return news.visibleFrom > today ? "SCHEDULED" : "WITHDRAWN";
+  return news.visibleFrom > today ? "SCHEDULED" : "WITHDRAWN";
 }

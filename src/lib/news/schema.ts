@@ -1,27 +1,29 @@
-import {z} from "zod";
-import {optionalIsoDate} from "@/lib/date-schema";
+import { z } from "zod";
+import { optionalIsoDate } from "@/lib/date-schema";
 
 export const MAX_NEWS_SUBJECT = 255;
 export const MAX_NEWS_TEXT = 10000;
 
 const optionalDate = optionalIsoDate;
 
-export const newsValuesSchema = z.object({
+export const newsValuesSchema = z
+  .object({
     subject: z.string().trim().min(1, "newsSubjectRequired").max(MAX_NEWS_SUBJECT, "newsSubjectTooLong"),
     text: z.string().trim().min(1, "newsTextRequired").max(MAX_NEWS_TEXT, "newsTextTooLong"),
     visibleFrom: optionalDate,
     visibleTo: optionalDate,
-}).refine(values => !values.visibleTo || (values.visibleFrom !== "" && values.visibleTo >= values.visibleFrom), {
+  })
+  .refine((values) => !values.visibleTo || (values.visibleFrom !== "" && values.visibleTo >= values.visibleFrom), {
     message: "newsDates",
     path: ["visibleTo"],
-});
+  });
 
 export type NewsValues = z.infer<typeof newsValuesSchema>;
 
-export const newsCreateSchema = z.object({values: newsValuesSchema});
+export const newsCreateSchema = z.object({ values: newsValuesSchema });
 export const newsUpdateSchema = z.object({
-    id: z.string().min(1),
-    version: z.number().int().nonnegative(),
-    values: newsValuesSchema
+  id: z.string().min(1),
+  version: z.number().int().nonnegative(),
+  values: newsValuesSchema,
 });
-export const newsDeleteSchema = z.object({id: z.string().min(1), version: z.number().int().nonnegative()});
+export const newsDeleteSchema = z.object({ id: z.string().min(1), version: z.number().int().nonnegative() });
