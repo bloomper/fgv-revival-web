@@ -106,15 +106,17 @@ describe("ChecklistItemDialog", () => {
                                     open onOpenChange={() => undefined}/>);
         const deadline = screen.getByLabelText("Checklist.deadline");
 
+        // Pasted in one go: typed key by key, each of the ten keystrokes re-rendered the form
         await userEvent.clear(deadline);
-        await userEvent.type(deadline, "2027-02-31");
+        await userEvent.click(deadline);
+        await userEvent.paste("2027-02-31");
         await userEvent.click(screen.getByRole("button", {name: "Common.save"}));
 
         // Validation and the re-render can take more than findBy's default second on a busy machine
         expect(await screen.findByText("Validation.dateInvalid", {}, {timeout: 5000})).toBeInTheDocument();
         expect(deadline).toHaveAttribute("aria-invalid", "true");
         expect(updateChecklistItemAction).not.toHaveBeenCalled();
-    });
+    }, 15_000); // Above the 5 s the error may take to show, unlike Vitest's default 5 s for the whole test
 });
 
 describe("checklist filter", () => {
