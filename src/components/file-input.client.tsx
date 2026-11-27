@@ -4,7 +4,7 @@ import * as React from "react";
 import {useId, useRef, useState} from "react";
 import {useTranslations} from "next-intl";
 import {FileUp} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {cn} from "@/utils/utils";
 
 /**

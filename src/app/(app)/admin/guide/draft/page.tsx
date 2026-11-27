@@ -10,6 +10,7 @@ import {GuidePdfButton} from "@/components/guide/guide-pdf-button.client";
 import {getGuideDraft, getRemovedChapters} from "@/lib/guide/guide.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * Editing the draft: its introduction and its chapters, each opened on its own page. Super admins only.
@@ -26,15 +27,13 @@ export default async function GuideDraftPage() {
         const removedChapters = await getRemovedChapters(draft.draft);
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+            <Page>
                 <Link href="/admin/guide"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-link">
                     <ArrowLeft className="size-4"/>
                     {t("admin.title")}
                 </Link>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h1 className="text-2xl font-bold tracking-tight">{t("admin.draft")}</h1>
-                    <div className="flex flex-wrap items-center gap-2">
+                <PageHeader title={t("admin.draft")} actions={<div className="flex flex-wrap items-center gap-2">
                         <span
                             className="text-sm text-muted-foreground">{t("admin.untranslated", {count: draft.untranslatedCount})}</span>
                         <GuidePdfButton versionId={draft.draft.id}/>
@@ -42,11 +41,10 @@ export default async function GuideDraftPage() {
                                             removedChapters={removedChapters}/>
                         <GuideDiscardDialog draftId={draft.draft.id} version={draft.draft.version}
                                             acceptedSuggestionCount={draft.acceptedSuggestionCount}/>
-                    </div>
-                </div>
+                    </div>}/>
                 <GuideDraftIntroduction draft={draft.draft}/>
                 <GuideDraftChapters draft={draft.draft}/>
-            </div>
+            </Page>
         );
     });
 }

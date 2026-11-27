@@ -3,8 +3,8 @@
 import {useTransition} from "react";
 import {useTranslations} from "next-intl";
 import {UserPlus, X} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
 import {PlainText} from "@/components/plain-text";
 import {handleReferralAction} from "@/app/(app)/revivals/[id]/participants/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";

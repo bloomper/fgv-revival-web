@@ -6,6 +6,7 @@ import {getEventTypes} from "@/lib/event/event.server";
 import {getBudgetCategories} from "@/lib/budget/reference.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The kinds of events the guide's example timeline names, for super admins: what each is, when it is proposed relative
@@ -21,15 +22,12 @@ export default async function EventTypesPage({searchParams}: {
         const [types, templates, categories] = await Promise.all([getEventTypes(retired), getEventChecklistTemplates(), getBudgetCategories()]);
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h1 className="text-2xl font-bold tracking-tight">{t("EventType.title")}</h1>
-                    <ShowRetiredSwitch shown={retired} label={t("Catalog.showRetired")}/>
-                </div>
+            <Page variant="content">
+                <PageHeader title={t("EventType.title")} actions={<ShowRetiredSwitch shown={retired} label={t("Catalog.showRetired")}/>}/>
                 <p className="max-w-prose text-sm text-muted-foreground">{t("EventType.intro")}</p>
                 <EventTypeEditor types={types} templates={templates.filter(template => template.kind === "EVENT")}
                                  categories={categories}/>
-            </div>
+            </Page>
         );
     });
 }

@@ -3,7 +3,7 @@
 import * as React from "react";
 import {useState, useTransition} from "react";
 import {useTranslations} from "next-intl";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -11,7 +11,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
+} from "@bloomper/fgv-web-ui/ui/dialog";
 import {closeMeetingAction} from "@/app/(app)/revivals/[id]/meetings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 

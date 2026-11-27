@@ -4,9 +4,9 @@ import {type ReactNode, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {ArrowDown, ArrowUp, PencilLine, Plus, Trash2} from "lucide-react";
 import type {GuideItemFieldsFragment, GuideVersionFieldsFragment} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {NativeSelect} from "@/components/ui/native-select";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,7 +16,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
 import {
     createItemAction,
     createSectionAction,

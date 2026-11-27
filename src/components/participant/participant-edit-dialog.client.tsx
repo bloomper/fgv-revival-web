@@ -4,7 +4,7 @@ import {useId, useTransition} from "react";
 import {useTranslations} from "next-intl";
 import {useForm, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -12,10 +12,10 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {NativeSelect} from "@/components/ui/native-select";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {AmountText} from "@/components/budget/budget-labels";
 import {PositionSelect, type PositionValue, type VocalPartValue} from "@/components/participant/participant-labels";
 import {updateParticipantAction} from "@/app/(app)/revivals/[id]/participants/actions.server";

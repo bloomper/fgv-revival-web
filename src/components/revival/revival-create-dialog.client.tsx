@@ -3,7 +3,7 @@
 import {useState} from "react";
 import {useTranslations} from "next-intl";
 import {Plus} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {RevivalFormSheet} from "@/components/revival/revival-form-sheet.client";
 
 export function RevivalCreateDialog({defaultOpen = false}: { defaultOpen?: boolean }) {

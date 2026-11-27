@@ -1,5 +1,5 @@
 import type {ReactNode} from "react";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
 
 /**
  * One section of the participant's page: a card named by its heading, so each is a landmark a screen reader can jump

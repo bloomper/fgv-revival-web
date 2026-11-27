@@ -7,12 +7,12 @@ import {useTranslations} from "next-intl";
 import {Controller, useForm, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import type {RevivalSummaryFragment} from "@/gql/graphql";
-import {Button} from "@/components/ui/button";
-import {Checkbox} from "@/components/ui/checkbox";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Checkbox} from "@bloomper/fgv-web-ui/ui/checkbox";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@bloomper/fgv-web-ui/ui/select";
 import {
     Sheet,
     SheetClose,
@@ -22,7 +22,7 @@ import {
     SheetHeader,
     SheetTitle,
     SheetTrigger
-} from "@/components/ui/sheet";
+} from "@bloomper/fgv-web-ui/ui/sheet";
 import {
     createRevivalAction,
     searchSpexAction,

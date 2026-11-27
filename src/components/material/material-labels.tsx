@@ -2,7 +2,7 @@ import type * as React from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {ExternalLink} from "lucide-react";
 import type {InventoryLocation, InventoryStatus, MaterialCategory, MaterialVisibility} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import {catalogName} from "@/components/catalog/catalog";
 import type {LocalizedTextValue} from "@/components/guide/localized";
 import type {PositionValue} from "@/components/participant/participant-labels";
@@ -70,7 +70,7 @@ export function MaterialLink({title, url, className, onClick}: {
 
     return (
         <a href={url} target="_blank" rel="noopener noreferrer"
-           className={cn("inline-flex items-center gap-1 font-medium hover:text-primary", className)}
+           className={cn("inline-flex items-center gap-1 font-medium hover:text-link", className)}
            onClick={onClick}>
             <span className="break-words">{title}</span>
             <ExternalLink aria-hidden className="size-3.5 shrink-0"/>

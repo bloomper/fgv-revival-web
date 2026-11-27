@@ -13,20 +13,20 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import {Input} from "@/components/ui/input";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
-import {Switch} from "@/components/ui/switch";
-import {DataEmpty} from "@/components/data-empty";
+} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Popover, PopoverContent, PopoverTrigger} from "@bloomper/fgv-web-ui/ui/popover";
+import {Switch} from "@bloomper/fgv-web-ui/ui/switch";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {DataFilter} from "@/components/data-filter";
 import {DataTable, type DataTableColumnDef, selectColumn, SortableHeader} from "@/components/data-table.client";
 import {AmountText} from "@/components/budget/budget-labels";
@@ -138,14 +138,14 @@ function ContactCell({participant}: { participant: ParticipantRow }) {
         <div className="flex flex-col gap-1 text-sm whitespace-nowrap">
             {participant.email && (
                 <a href={`mailto:${participant.email}`}
-                   className="inline-flex items-center gap-1 hover:text-primary">
+                   className="inline-flex items-center gap-1 hover:text-link">
                     <Mail className="size-3.5 text-muted-foreground" aria-hidden/>{participant.email}
                 </a>
             )}
             {participant.phone && (
                 <span className="inline-flex items-center gap-2">
                     <a href={`tel:${participant.phone.replace(/[^\d+]/g, "")}`}
-                       className="hover:text-primary">{participant.phone}</a>
+                       className="hover:text-link">{participant.phone}</a>
                     {whatsApp && (
                         <a href={whatsApp} target="_blank" rel="noopener noreferrer"
                            className="inline-flex text-muted-foreground hover:text-foreground"

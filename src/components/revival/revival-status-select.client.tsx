@@ -4,7 +4,7 @@ import * as React from "react";
 import {useState, useTransition} from "react";
 import Link from "next/link";
 import {useTranslations} from "next-intl";
-import {NativeSelect} from "@/components/ui/native-select";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,7 +14,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
 import type {RevivalStatus} from "@/gql/graphql";
 import {changeStatusAction} from "@/app/(app)/revivals/[id]/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
@@ -81,7 +81,7 @@ export function RevivalStatusSelect({revivalId, status, allowedStatuses, syncInc
                         <AlertDialogDescription>
                             {t("Revival.archiveSyncDescription")}{" "}
                             <Link href={`/revivals/${revivalId}/closing`}
-                                  className="font-medium text-primary hover:text-primary/80">{t("Revival.archiveSyncLink")}</Link>
+                                  className="font-medium text-link hover:text-link/80">{t("Revival.archiveSyncLink")}</Link>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

@@ -4,7 +4,7 @@ import {useTransition} from "react";
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
 import {FilePlus2} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {startDraftAction} from "@/app/(app)/admin/guide/draft/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {track} from "@/utils/umami";

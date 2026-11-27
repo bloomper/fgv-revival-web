@@ -2,7 +2,7 @@
 
 import {useTranslations} from "next-intl";
 import {FileSpreadsheet} from "lucide-react";
-import {buttonVariants} from "@/components/ui/button";
+import {buttonVariants} from "@bloomper/fgv-web-ui/ui/button";
 import {track} from "@/utils/umami";
 
 /**

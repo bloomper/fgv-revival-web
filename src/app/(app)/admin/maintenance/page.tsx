@@ -1,11 +1,12 @@
 import {getTranslations} from "next-intl/server";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import {RefreshWhileRunning} from "@/components/maintenance/refresh-while-running.client";
 import {RunJobButton} from "@/components/maintenance/run-job-button.client";
 import {getMaintenanceJobs} from "@/lib/maintenance/maintenance.server";
 import {formatInstant} from "@/utils/format";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The scheduled maintenance jobs, for super admins: their schedules and latest runs, and a button to run each now.
@@ -16,9 +17,8 @@ export default async function MaintenancePage() {
         const jobs = await getMaintenanceJobs();
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-                <p className="max-w-prose text-sm text-muted-foreground">{t("intro")}</p>
+            <Page variant="content">
+                <PageHeader title={t("title")} description={t("intro")}/>
                 <RefreshWhileRunning running={jobs.some(job => job.running)}/>
                 <ul className="grid max-w-4xl gap-4 md:grid-cols-2">
                     {jobs.map(job => (
@@ -48,7 +48,7 @@ export default async function MaintenancePage() {
                         </li>
                     ))}
                 </ul>
-            </div>
+            </Page>
         );
     });
 }

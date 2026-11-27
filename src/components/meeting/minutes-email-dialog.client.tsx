@@ -5,7 +5,7 @@ import {useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {toast} from "sonner";
 import {Mail} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -13,8 +13,8 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {NativeSelect} from "@/components/ui/native-select";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {
     type MinutesEmailResult,
     retryMinutesAction,

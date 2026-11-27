@@ -3,13 +3,14 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {CalendarCheck, UserX} from "lucide-react";
 import {getTranslations} from "next-intl/server";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
+import {Alert, AlertDescription, AlertTitle} from "@bloomper/fgv-web-ui/ui/alert";
 import {RevivalTabs} from "@/components/revival/revival-tabs.client";
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getRevivalShell, getRevivalWorkSummary} from "@/lib/revival/revival.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
 import {formatInstant} from "@/utils/format";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 async function loadRevival(id: string) {
     try {
@@ -51,7 +52,7 @@ export default async function RevivalLayout({children, params}: {
             notFound();
         }
         if (revival.permissions.isParticipant) {
-            return <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">{children}</div>;
+            return <Page>{children}</Page>;
         }
 
         const work = revival.permissions.canReadWork ? await loadWorkSummary(id) : null;
@@ -59,8 +60,8 @@ export default async function RevivalLayout({children, params}: {
         const t = await getTranslations("Revival");
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <h1 className="text-2xl font-bold tracking-tight">{revival.title}</h1>
+            <Page>
+                <PageHeader title={revival.title}/>
 
                 {revival.anonymizedAt && (
                     <Alert className="print:hidden">
@@ -76,7 +77,7 @@ export default async function RevivalLayout({children, params}: {
                         <AlertTitle>{t("meetingInProgress")}</AlertTitle>
                         <AlertDescription>
                             <Link href={`/revivals/${revival.id}/meetings/${work.meetingInProgress.id}`}
-                                  className="font-medium text-primary hover:text-primary/80">
+                                  className="font-medium text-link hover:text-link/80">
                                 {work.meetingInProgress.title ?? work.meetingInProgress.date}
                             </Link>
                         </AlertDescription>
@@ -91,7 +92,7 @@ export default async function RevivalLayout({children, params}: {
                              closingProminent={["CLOSING", "SETTLING"].includes(revival.status)}/>
 
                 {children}
-            </div>
+            </Page>
         );
     });
 }

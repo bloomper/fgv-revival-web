@@ -3,8 +3,8 @@
 import {useId} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
-import {Label} from "@/components/ui/label";
-import {NativeSelect} from "@/components/ui/native-select";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {formatDate} from "@/utils/format";
 
 type PickerEvent = { id: string; title: string; startDate: string; endDate: string };

@@ -2,8 +2,8 @@
 
 import {useId, useOptimistic, useTransition} from "react";
 import {usePathname, useRouter} from "next/navigation";
-import {Label} from "@/components/ui/label";
-import {Switch} from "@/components/ui/switch";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {Switch} from "@bloomper/fgv-web-ui/ui/switch";
 
 /**
  * Shows or hides retired entries of an admin list. The choice lives in the URL (`?retired=1`), so the server renders

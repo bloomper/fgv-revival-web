@@ -16,14 +16,14 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {NativeSelect} from "@/components/ui/native-select";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
+import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@bloomper/fgv-web-ui/ui/sheet";
 import type {CatalogEntryValue} from "@/components/catalog/catalog";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import type {ActionResult} from "@/lib/graphql.server";

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {getTranslations} from "next-intl/server";
 import {MessagesSquare, PencilLine} from "lucide-react";
-import {buttonVariants} from "@/components/ui/button";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {buttonVariants} from "@bloomper/fgv-web-ui/ui/button";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
 import {GuideDiscardDialog} from "@/components/guide/admin/guide-discard-dialog.client";
 import {GuidePublishDialog} from "@/components/guide/admin/guide-publish-dialog.client";
 import {GuideStartDraftButton} from "@/components/guide/admin/guide-start-draft-button.client";
@@ -10,6 +10,7 @@ import {GuideVersionTable} from "@/components/guide/admin/guide-version-table.cl
 import {getGuideDraft, getGuideSuggestions, getGuideVersionsAdmin, getRemovedChapters} from "@/lib/guide/guide.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The guide for super admins: the draft, the suggestions waiting for it, and the published versions.
@@ -23,8 +24,8 @@ export default async function AdminGuidePage() {
         const showSuggestions = versions.length > 0;
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h1 className="text-2xl font-bold tracking-tight">{t("admin.title")}</h1>
+            <Page variant="content">
+                <PageHeader title={t("admin.title")}/>
 
                 <div className="grid gap-4 md:grid-cols-2">
                     <Card className={showSuggestions ? undefined : "md:col-span-2"}>
@@ -84,7 +85,7 @@ export default async function AdminGuidePage() {
                     <h3 className="font-semibold tracking-tight">{t("admin.versions")}</h3>
                     <GuideVersionTable versions={versions}/>
                 </section>
-            </div>
+            </Page>
         );
     });
 }

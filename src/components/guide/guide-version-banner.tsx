@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {useTranslations} from "next-intl";
 import {Info} from "lucide-react";
-import {Alert, AlertDescription} from "@/components/ui/alert";
+import {Alert, AlertDescription} from "@bloomper/fgv-web-ui/ui/alert";
 
 /**
  * Tells readers a newer version exists, with a link to what changed.
@@ -18,7 +18,7 @@ export function GuideVersionBanner({current, newer}: {
             <AlertDescription className="flex flex-wrap items-center gap-x-2">
                 {t("newer", {label: newer.label ?? ""})}
                 <Link href={`/guide/changes?from=${current.id}&to=${newer.id}`}
-                      className="font-medium text-primary hover:text-primary/80">
+                      className="font-medium text-link hover:text-link/80">
                     {t("whatChanged")}
                 </Link>
             </AlertDescription>

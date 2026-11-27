@@ -16,20 +16,20 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Switch} from "@/components/ui/switch";
-import {DataEmpty} from "@/components/data-empty";
+} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {Switch} from "@bloomper/fgv-web-ui/ui/switch";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {DataFilter} from "@/components/data-filter";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
 import {catalogName} from "@/components/catalog/catalog";
@@ -187,7 +187,7 @@ function ChecklistLink({revivalId, checklist}: { revivalId: string; checklist: N
 
     return (
         <Link href={`/revivals/${revivalId}/checklists/${checklist.id}`}
-              className="whitespace-nowrap tabular-nums hover:text-primary"
+              className="whitespace-nowrap tabular-nums hover:text-link"
               aria-label={t("checklistLink", {open: checklist.openCount, total: checklist.totalCount})}
               onClick={click => click.stopPropagation()}>
             <ClipboardCheck className="mr-1 inline size-4 align-text-bottom"/>

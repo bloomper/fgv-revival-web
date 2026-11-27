@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {BookOpen, type LucideIcon, Theater, UserRound} from "lucide-react";
 import {getTranslations} from "next-intl/server";
-import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {Card, CardDescription, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
 import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getGuideReadable} from "@/lib/guide/guide.server";
 import {getPublishedNews} from "@/lib/news/news.server";
@@ -10,6 +10,7 @@ import {UpcomingRevivals} from "@/components/revival/upcoming-revivals";
 import {NewsList} from "@/components/news/news-list.client";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 function Shortcut({href, icon: Icon, title, text}: { href: string; icon: LucideIcon; title: string; text: string }) {
     return (
@@ -72,11 +73,8 @@ export default async function HomePage() {
         const participations = (me?.revivalRoles ?? []).filter(assignment => assignment.role === "PARTICIPANT" || assignment.role === "HELPER");
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <div className="space-y-1">
-                    <h1 className="text-2xl font-bold tracking-tight">{t("Home.welcome")}</h1>
-                    <p className="text-muted-foreground">{t("Home.intro")}</p>
-                </div>
+            <Page variant="content">
+                <PageHeader title={t("Home.welcome")} description={t("Home.intro")}/>
                 <div className="grid gap-4 sm:grid-cols-2">
                     {participations.map(({revival}) => (
                         <Shortcut key={revival.id} href={`/revivals/${revival.id}/me`} icon={UserRound}
@@ -99,7 +97,7 @@ export default async function HomePage() {
                         ? <NewsList news={news}/>
                         : <p className="text-sm text-muted-foreground">{t("News.none")}</p>}
                 </section>
-            </div>
+            </Page>
         );
     });
 }

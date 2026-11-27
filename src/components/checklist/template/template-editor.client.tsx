@@ -4,8 +4,8 @@ import * as React from "react";
 import {useState, useTransition} from "react";
 import {useFormatter, useLocale, useTranslations} from "next-intl";
 import {Archive, ArchiveRestore, ArrowDown, ArrowUp, Pencil, Plus} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {catalogName} from "@/components/catalog/catalog";
 import {type TemplateItem, TemplateItemDialog} from "@/components/checklist/template/template-item-dialog.client";
 import {

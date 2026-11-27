@@ -5,17 +5,17 @@ import Link from "next/link";
 import {useLocale, useTranslations} from "next-intl";
 import {History, MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "lucide-react";
 import {HistoryDialog} from "@/components/history/history-dialog.client";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import {Input} from "@/components/ui/input";
-import {DataEmpty} from "@/components/data-empty";
+} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {DataFilter} from "@/components/data-filter";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
 import {catalogName} from "@/components/catalog/catalog";
@@ -126,13 +126,13 @@ function useColumns(revivalId: string, canWrite: boolean, onEdit: (line: BudgetL
                         <span className="flex flex-wrap gap-x-3 text-xs text-muted-foreground">
                             <span className="md:hidden">{catalogName(line.category, locale)}</span>
                             {line.event && (
-                                <Link href={`/revivals/${revivalId}/events`} className="hover:text-primary"
+                                <Link href={`/revivals/${revivalId}/events`} className="hover:text-link"
                                       onClick={click => click.stopPropagation()}>
                                     {line.event.title}
                                 </Link>
                             )}
                             {line.logEntry && (
-                                <Link href={`/revivals/${revivalId}/log`} className="hover:text-primary"
+                                <Link href={`/revivals/${revivalId}/log`} className="hover:text-link"
                                       onClick={click => click.stopPropagation()}>
                                     {t("decisionNumber", {number: line.logEntry.number})}
                                 </Link>

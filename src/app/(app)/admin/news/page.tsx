@@ -3,6 +3,7 @@ import {NewsTable} from "@/components/news/news-table.client";
 import {getAllNews} from "@/lib/news/news.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The news on the start page, for super admins: written, scheduled, withdrawn and deleted here.
@@ -13,11 +14,10 @@ export default async function NewsAdminPage() {
         const news = await getAllNews();
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-                <p className="max-w-prose text-sm text-muted-foreground">{t("description")}</p>
+            <Page variant="content">
+                <PageHeader title={t("title")} description={t("description")}/>
                 <NewsTable news={news}/>
-            </div>
+            </Page>
         );
     });
 }

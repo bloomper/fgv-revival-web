@@ -6,6 +6,7 @@ import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getLibraryEntries} from "@/lib/library/library.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 async function entries(includeRetired: boolean) {
     try {
@@ -34,14 +35,11 @@ export default async function LibraryPage({searchParams}: {
         const list = await entries(retired);
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-                    {canEdit && <ShowRetiredSwitch shown={retired} label={t("showRetired")}/>}
-                </div>
+            <Page variant="content">
+                <PageHeader title={t("title")} actions={<>{canEdit && <ShowRetiredSwitch shown={retired} label={t("showRetired")}/>}</>}/>
                 <p className="max-w-prose text-sm text-muted-foreground">{t("intro")}</p>
                 <LibraryList entries={list} canEdit={canEdit}/>
-            </div>
+            </Page>
         );
     });
 }

@@ -1,12 +1,13 @@
 import * as React from "react";
 import {Suspense} from "react";
-import {Skeleton} from "@/components/ui/skeleton";
+import {Skeleton} from "@bloomper/fgv-web-ui/ui/skeleton";
 import {TemplateNav, TemplatePageHeader} from "@/components/checklist/template/template-nav.client";
 import {getChecklistTemplates} from "@/lib/checklist/template.server";
 import {getGuideLatestVersion} from "@/lib/guide/guide.server";
 import {isSuperAdmin} from "@/utils/auth";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * Checklist templates. Super admins get the list of templates beside the one they edit, kept here so moving
@@ -22,7 +23,7 @@ export default async function ChecklistTemplatesLayout({children}: { children: R
         const chapters = (latest?.chapters ?? []).map(chapter => ({key: chapter.key, title: chapter.title}));
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
+            <Page variant="content">
                 <Suspense fallback={<Skeleton className="h-8 w-64"/>}>
                     <TemplatePageHeader/>
                 </Suspense>
@@ -32,7 +33,7 @@ export default async function ChecklistTemplatesLayout({children}: { children: R
                     </Suspense>
                     <div className="flex min-w-0 flex-1 flex-col">{children}</div>
                 </div>
-            </div>
+            </Page>
         );
     });
 }

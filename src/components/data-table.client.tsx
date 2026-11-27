@@ -21,11 +21,11 @@ import {
 } from "@tanstack/react-table";
 import {ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight} from "lucide-react";
 import {useTranslations} from "next-intl";
-import {Checkbox} from "@/components/ui/checkbox";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
-import {Button} from "@/components/ui/button";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {DataEmpty} from "@/components/data-empty";
+import {Checkbox} from "@bloomper/fgv-web-ui/ui/checkbox";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@bloomper/fgv-web-ui/ui/table";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@bloomper/fgv-web-ui/ui/select";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {cn} from "@/utils/utils";
 
 export const dataTableFeatures = tableFeatures({

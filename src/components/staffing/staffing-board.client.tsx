@@ -5,7 +5,7 @@ import {useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Check, CircleHelp, MoreHorizontal, Pencil, Plus, Printer, Trash2, UserPlus, X} from "lucide-react";
-import {Alert, AlertDescription} from "@/components/ui/alert";
+import {Alert, AlertDescription} from "@bloomper/fgv-web-ui/ui/alert";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -15,10 +15,10 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {Badge} from "@/components/ui/badge";
-import {Button, buttonVariants} from "@/components/ui/button";
-import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button, buttonVariants} from "@bloomper/fgv-web-ui/ui/button";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@bloomper/fgv-web-ui/ui/command";
 import {
     Dialog,
     DialogContent,
@@ -26,13 +26,13 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {NativeSelect} from "@/components/ui/native-select";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
-import {Textarea} from "@/components/ui/textarea";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
+import {Popover, PopoverContent, PopoverTrigger} from "@bloomper/fgv-web-ui/ui/popover";
+import {Textarea} from "@bloomper/fgv-web-ui/ui/textarea";
 import {PlainText} from "@/components/plain-text";
 import {
     assignShiftAction,

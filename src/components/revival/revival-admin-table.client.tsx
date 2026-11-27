@@ -7,8 +7,8 @@ import {useTranslations} from "next-intl";
 import {MoreHorizontal, Pencil, Trash2} from "lucide-react";
 import type {RevivalSummaryFragment} from "@/gql/graphql";
 import {DataTable, type DataTableColumnDef, selectColumn, SortableHeader} from "@/components/data-table.client";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -18,8 +18,8 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
 import {StatusBadge} from "@/components/revival/status-badge";
 import {SpexTitle} from "@/components/revival/spex-title";
 import {RevivalPoster} from "@/components/revival/revival-poster.client";

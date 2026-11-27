@@ -5,12 +5,12 @@ import {useId, useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {Controller, useForm, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {NativeSelect} from "@/components/ui/native-select";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
+import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@bloomper/fgv-web-ui/ui/sheet";
 import {DateInput} from "@/components/date-input.client";
 import {FileInput} from "@/components/file-input.client";
 import {OwnerField, type OwnerMember} from "@/components/owner/owner-field.client";
@@ -188,7 +188,7 @@ export function TransactionDialog({revivalId, categories, lines, members, transa
                                            chooseLabel={transaction?.receipt ? t("Budget.replaceReceiptChoose") : undefined}
                                            current={transaction?.receipt && (
                                                <a href={receiptUrl(transaction.id)} download
-                                                  className="hover:text-primary font-medium text-primary"
+                                                  className="hover:text-link font-medium text-link"
                                                   aria-label={t("Budget.downloadReceipt", {filename: transaction.receipt.filename})}>
                                                    {transaction.receipt.filename}
                                                </a>

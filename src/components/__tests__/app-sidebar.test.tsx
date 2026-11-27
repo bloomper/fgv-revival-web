@@ -2,8 +2,8 @@ import type {ReactNode} from "react";
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import {render, screen} from "@testing-library/react";
 import {AppSidebar} from "@/components/app-sidebar.client";
-import {SidebarProvider} from "@/components/ui/sidebar";
-import {TooltipProvider} from "@/components/ui/tooltip";
+import {SidebarProvider} from "@bloomper/fgv-web-ui/ui/sidebar";
+import {TooltipProvider} from "@bloomper/fgv-web-ui/ui/tooltip";
 import type {Role} from "@/types/auth";
 
 let pathname = "/";
@@ -14,7 +14,7 @@ vi.mock("next/link", () => ({
     default: ({children, href, ...rest}: { children?: ReactNode; href: string }) => <a
         href={href} {...rest}>{children}</a>,
 }));
-vi.mock("@/hooks/use-is-client.client", () => ({
+vi.mock("@bloomper/fgv-web-ui/hooks/use-is-client", () => ({
     useIsClient: () => true,
 }));
 vi.mock("@/components/nav-user.client", () => ({

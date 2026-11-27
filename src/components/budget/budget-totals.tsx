@@ -1,5 +1,5 @@
 import {useTranslations} from "next-intl";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
 import {AmountText} from "@/components/budget/budget-labels";
 
 export type BudgetTotalsValue = {

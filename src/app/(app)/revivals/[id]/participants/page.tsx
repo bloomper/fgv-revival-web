@@ -1,6 +1,6 @@
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
+import {Alert, AlertDescription, AlertTitle} from "@bloomper/fgv-web-ui/ui/alert";
 import {ParticipantDashboard} from "@/components/participant/participant-dashboard";
 import {ParticipantTable} from "@/components/participant/participant-table.client";
 import {ReferralPanel} from "@/components/participant/referral-panel.client";

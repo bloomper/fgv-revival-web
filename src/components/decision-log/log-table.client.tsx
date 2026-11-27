@@ -7,7 +7,7 @@ import {useLocale, useTranslations} from "next-intl";
 import {Check, CircleDashed, History, MessageSquareReply, MoreHorizontal, Pencil, Plus, RotateCcw, X} from "lucide-react";
 import type {SortingState} from "@tanstack/react-table";
 import type {LogEntryFieldsFragment, LogEntryStatus} from "@/gql/graphql";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,9 +16,9 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
-import {DataEmpty} from "@/components/data-empty";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {HistoryDialog} from "@/components/history/history-dialog.client";
 import {OwnerLabel} from "@/components/owner/owner-label";
 import type {OwnerMember} from "@/components/owner/owner-field.client";
@@ -63,14 +63,14 @@ function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
                 className="text-xs text-muted-foreground">{t("answeredByRow", {number: entry.answeredBy.number})}</span>}
             {entry.event && (
                 <Link href={`/revivals/${revivalId}/events${entry.event.cancelled ? "?cancelled=1" : ""}`}
-                      className="text-xs text-muted-foreground hover:text-primary"
+                      className="text-xs text-muted-foreground hover:text-link"
                       onClick={event => event.stopPropagation()}>
                     {t("eventLink", {title: entry.event.title, date: formatDate(entry.event.startDate) ?? entry.event.startDate})}
                 </Link>
             )}
             {entry.checklistItem && (
                 <Link href={`/revivals/${revivalId}/checklists/${entry.checklistItem.checklistId}`}
-                      className="text-xs text-muted-foreground hover:text-primary"
+                      className="text-xs text-muted-foreground hover:text-link"
                       onClick={event => event.stopPropagation()}>
                     {t("checklistItemLink", {text: pickText(entry.checklistItem.text, locale).text})}
                 </Link>
@@ -82,14 +82,14 @@ function Links({entry, revivalId}: { entry: Entry; revivalId: string }) {
             )}
             {entry.budgetLines?.map(line => (
                 <Link key={line.id} href={`/revivals/${revivalId}/budget/lines`}
-                      className="text-xs text-muted-foreground hover:text-primary"
+                      className="text-xs text-muted-foreground hover:text-link"
                       onClick={event => event.stopPropagation()}>
                     {t("budgetLineLink", {description: line.description, amount: formatAmount(line.amount) ?? line.amount})}
                 </Link>
             ))}
             {entry.meeting && (
                 <Link href={`/revivals/${revivalId}/log?meeting=${entry.meeting.id}`}
-                      className="text-xs text-muted-foreground hover:text-primary"
+                      className="text-xs text-muted-foreground hover:text-link"
                       onClick={event => event.stopPropagation()}>
                     {t("fromMeeting", {date: formatDate(entry.meeting.date) ?? entry.meeting.date})}
                 </Link>

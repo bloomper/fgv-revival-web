@@ -1,7 +1,7 @@
 import type {ComponentProps} from "react";
 import {useLocale, useTranslations} from "next-intl";
-import {Badge} from "@/components/ui/badge";
-import {NativeSelect} from "@/components/ui/native-select";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {catalogChoices, catalogName} from "@/components/catalog/catalog";
 import type {LocalizedTextValue} from "@/components/guide/localized";
 import {formatAmount} from "@/utils/format";

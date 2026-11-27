@@ -5,7 +5,7 @@ import {useLocale, useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Send} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -14,9 +14,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger
-} from "@/components/ui/dialog";
-import {Label} from "@/components/ui/label";
-import {Textarea} from "@/components/ui/textarea";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {Textarea} from "@bloomper/fgv-web-ui/ui/textarea";
 import {publishGuideAction} from "@/app/(app)/admin/guide/actions.server";
 import {pickText} from "@/components/guide/localized";
 import {RemovalWarning} from "@/components/guide/removal-warning.client";

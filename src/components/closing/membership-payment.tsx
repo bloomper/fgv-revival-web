@@ -1,6 +1,6 @@
 import {useTranslations} from "next-intl";
 import type {RevivalClosingQuery} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 
 type Payment = NonNullable<NonNullable<NonNullable<RevivalClosingQuery["revival"]>["closing"]>["membershipPayment"]>;
 

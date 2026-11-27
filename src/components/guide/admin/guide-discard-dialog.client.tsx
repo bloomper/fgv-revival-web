@@ -3,7 +3,7 @@
 import {useTransition} from "react";
 import {useTranslations} from "next-intl";
 import {Trash2} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,7 +14,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
 import {discardGuideAction} from "@/app/(app)/admin/guide/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {track} from "@/utils/umami";

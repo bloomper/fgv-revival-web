@@ -15,14 +15,14 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
-import {Textarea} from "@/components/ui/textarea";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@bloomper/fgv-web-ui/ui/sheet";
+import {Textarea} from "@bloomper/fgv-web-ui/ui/textarea";
 import {catalogName} from "@/components/catalog/catalog";
 import {AmountText, type BudgetCategoryValue} from "@/components/budget/budget-labels";
 import {

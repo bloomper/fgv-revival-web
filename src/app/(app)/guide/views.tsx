@@ -3,7 +3,7 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
 import {ArrowLeft} from "lucide-react";
-import {Card, CardContent} from "@/components/ui/card";
+import {Card, CardContent} from "@bloomper/fgv-web-ui/ui/card";
 import {chapterNumbers, navChapters} from "@/components/guide/chapters";
 import {GuideChapterNav} from "@/components/guide/guide-chapter-nav.client";
 import {GuideChapterPager} from "@/components/guide/guide-chapter-pager";
@@ -13,6 +13,7 @@ import {GuideSearch} from "@/components/guide/guide-search.client";
 import {GuideVersionSelect} from "@/components/guide/guide-version-select.client";
 import {GuideChapterView} from "@/components/guide/guide-view.client";
 import {loadGuide} from "@/app/(app)/guide/load.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The guide's pages for the latest published version ({@code /guide}) or a chosen one ({@code /guide/versions/<id>}),
@@ -26,10 +27,10 @@ async function Refused() {
     const t = await getTranslations("Guide");
 
     return (
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+        <Page>
+            <PageHeader title={t("title")}/>
             <Card><CardContent className="pt-6 text-sm">{t("refused")}</CardContent></Card>
-        </div>
+        </Page>
     );
 }
 
@@ -52,12 +53,9 @@ export async function GuideStart({version}: { version?: string }) {
     }
 
     return (
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-                <h1 className="text-2xl font-bold tracking-tight">{shown ? await title(shown) : t("title")}</h1>
-                {versions.length > 1 && shown?.status === "PUBLISHED" &&
-                    <GuideVersionSelect versions={versions} current={shown.id}/>}
-            </div>
+        <Page>
+            <PageHeader title={shown ? await title(shown) : t("title")} actions={<>{versions.length > 1 && shown?.status === "PUBLISHED" &&
+                    <GuideVersionSelect versions={versions} current={shown.id}/>}</>}/>
             {shown ? (
                 <>
                     <div><GuidePdfButton versionId={shown.id}/></div>
@@ -67,7 +65,7 @@ export async function GuideStart({version}: { version?: string }) {
             ) : (
                 <Card><CardContent className="pt-6 text-sm">{t("notPublished")}</CardContent></Card>
             )}
-        </div>
+        </Page>
     );
 }
 
@@ -87,21 +85,18 @@ export async function GuideChapters({version, children}: { version?: string; chi
     }
 
     return (
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h1 className="text-2xl font-bold tracking-tight">{await title(shown)}</h1>
-                <Link href={basePath}
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
+        <Page>
+            <PageHeader title={await title(shown)} actions={<Link href={basePath}
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-link">
                     <ArrowLeft className="size-4"/>
                     {t("startPage")}
-                </Link>
-            </div>
+                </Link>}/>
             <GuideSearch versionId={shown.id} basePath={basePath} chapterNumbers={chapterNumbers(shown)}/>
             <div className="flex flex-col gap-6 lg:flex-row">
                 <GuideChapterNav chapters={navChapters(shown)} basePath={basePath}/>
                 <div className="min-w-0 flex-1 space-y-8">{children}</div>
             </div>
-        </div>
+        </Page>
     );
 }
 

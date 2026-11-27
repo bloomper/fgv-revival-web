@@ -1,6 +1,6 @@
 import {useTranslations} from "next-intl";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {Card, CardContent, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@bloomper/fgv-web-ui/ui/table";
 import type {ParticipantResponse} from "@/gql/graphql";
 import type {PositionValue} from "@/components/participant/participant-labels";
 

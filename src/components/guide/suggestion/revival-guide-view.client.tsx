@@ -3,7 +3,7 @@
 import {useTranslations} from "next-intl";
 import {MessageSquarePlus, MessageSquareX, Plus} from "lucide-react";
 import type {GuideVersionFieldsFragment} from "@/gql/graphql";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {GuideChapterView} from "@/components/guide/guide-view.client";
 import {SuggestionDialog} from "@/components/guide/suggestion/suggestion-dialog.client";
 

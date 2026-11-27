@@ -5,8 +5,8 @@ import {useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Pencil} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {Card, CardAction, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Card, CardAction, CardContent, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
 import {
     Dialog,
     DialogContent,
@@ -14,9 +14,9 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
 import {DateInput} from "@/components/date-input.client";
 import {AmountText} from "@/components/budget/budget-labels";
 import {updateBudgetSettingsAction} from "@/app/(app)/revivals/[id]/budget/actions.server";

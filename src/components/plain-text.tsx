@@ -10,7 +10,7 @@ export function PlainText({text, className}: { text: string; className?: string 
         <span className={cn("whitespace-pre-line break-words", className)}>
             {linkify(text).map((part, index) => part.kind === "link"
                 ? <a key={index} href={part.href} target="_blank" rel="noopener noreferrer"
-                     className="font-medium text-primary hover:text-primary/80">{part.text}</a>
+                     className="font-medium text-link hover:text-link/80">{part.text}</a>
                 : part.text)}
         </span>
     );

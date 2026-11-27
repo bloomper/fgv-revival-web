@@ -4,6 +4,7 @@ import {BudgetCategoryEditor} from "@/components/budget/admin/budget-category-ed
 import {getBudgetCategories} from "@/lib/budget/reference.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The budget categories every revival's budget uses, for super admins: income or cost, fixed at creation, and the
@@ -19,14 +20,11 @@ export default async function BudgetCategoriesPage({searchParams}: {
         const categories = await getBudgetCategories(retired);
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h1 className="text-2xl font-bold tracking-tight">{t("BudgetCategoryAdmin.title")}</h1>
-                    <ShowRetiredSwitch shown={retired} label={t("Catalog.showRetired")}/>
-                </div>
+            <Page variant="content">
+                <PageHeader title={t("BudgetCategoryAdmin.title")} actions={<ShowRetiredSwitch shown={retired} label={t("Catalog.showRetired")}/>}/>
                 <p className="max-w-prose text-sm text-muted-foreground">{t("BudgetCategoryAdmin.description")}</p>
                 <BudgetCategoryEditor entries={categories}/>
-            </div>
+            </Page>
         );
     });
 }

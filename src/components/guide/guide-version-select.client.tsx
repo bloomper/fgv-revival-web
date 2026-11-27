@@ -2,7 +2,7 @@
 
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@bloomper/fgv-web-ui/ui/select";
 
 type Version = { id: string; label: string | null };
 

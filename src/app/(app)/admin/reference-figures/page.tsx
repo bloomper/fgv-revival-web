@@ -3,6 +3,7 @@ import {ReferenceRevivalEditor} from "@/components/budget/admin/reference-reviva
 import {getBudgetCategories, getReferenceRevivals} from "@/lib/budget/reference.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * Earlier revivals' budgets and outcomes, kept as reference by the super admin: every revival's budget shows
@@ -14,11 +15,10 @@ export default async function ReferenceFiguresPage() {
         const [references, categories] = await Promise.all([getReferenceRevivals(), getBudgetCategories(true)]);
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-                <p className="max-w-prose text-sm text-muted-foreground">{t("description")}</p>
+            <Page variant="content">
+                <PageHeader title={t("title")} description={t("description")}/>
                 <ReferenceRevivalEditor references={references} categories={categories}/>
-            </div>
+            </Page>
         );
     });
 }

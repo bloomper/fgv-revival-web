@@ -5,9 +5,9 @@ import Link from "next/link";
 import {useParams} from "next/navigation";
 import {useLocale, useTranslations} from "next-intl";
 import {ChevronDown} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
+import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger} from "@bloomper/fgv-web-ui/ui/sheet";
 import {pickText} from "@/components/guide/localized";
 import {cn} from "@/utils/utils";
 

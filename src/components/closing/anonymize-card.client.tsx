@@ -3,9 +3,9 @@
 import {useId, useState, useTransition} from "react";
 import {useTranslations} from "next-intl";
 import {UserX} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,7 +16,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
 import {anonymizeRevivalAction} from "@/app/(app)/revivals/[id]/closing/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {confirmsRevival} from "@/lib/closing/schema";

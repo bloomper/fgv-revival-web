@@ -1,8 +1,8 @@
 "use client";
 
 import {useTranslations} from "next-intl";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
 import {CatalogEditor, type CatalogExtra, type CatalogRow} from "@/components/catalog/catalog-editor.client";
 import {HostsInput} from "@/components/material/hosts-input.client";
 import {

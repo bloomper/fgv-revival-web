@@ -2,8 +2,8 @@
 
 import {useState} from "react";
 import {useTranslations} from "next-intl";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@bloomper/fgv-web-ui/ui/dialog";
 import {PlainText} from "@/components/plain-text";
 import type {NewsItem} from "@/components/news/news";
 import {formatDate} from "@/utils/format";

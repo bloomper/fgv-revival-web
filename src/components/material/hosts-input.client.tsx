@@ -4,9 +4,9 @@ import * as React from "react";
 import {useState} from "react";
 import {useTranslations} from "next-intl";
 import {Plus, X} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
 import {isHostName, MAX_HOSTS, normalizeHost} from "@/lib/material/hosts";
 
 /**

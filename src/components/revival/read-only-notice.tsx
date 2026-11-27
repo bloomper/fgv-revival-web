@@ -4,7 +4,7 @@ import {Eye} from "lucide-react";
 import type {RevivalStatus} from "@/gql/graphql";
 import type {Role} from "@/types/auth";
 import {isObserver, isSuperAdmin} from "@/utils/auth";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
+import {Alert, AlertDescription, AlertTitle} from "@bloomper/fgv-web-ui/ui/alert";
 
 /**
  * Says why a revival's work is read-only when the server does not let the caller change it: only its directeurs and
@@ -32,7 +32,7 @@ export async function ReadOnlyNotice({revivalId, status, canWrite, roles}: {
                 <p>
                     {t(reason)}
                     {reason === "superAdmin" && (
-                        <> <Link href={`/revivals/${revivalId}`} className="font-medium text-primary hover:text-primary/80">{t("join")}</Link></>
+                        <> <Link href={`/revivals/${revivalId}`} className="font-medium text-link hover:text-link/80">{t("join")}</Link></>
                     )}
                 </p>
             </AlertDescription>
