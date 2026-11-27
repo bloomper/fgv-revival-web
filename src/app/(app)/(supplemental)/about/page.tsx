@@ -1,8 +1,8 @@
-import {connection} from "next/server";
-import {AboutPage} from "@/components/about-page.client";
+import { connection } from "next/server";
+import { AboutPage } from "@/components/about-page.client";
 
 export default async function Page() {
-    await connection();
+  await connection();
 
-    return <AboutPage feedbackEmail={process.env.FEEDBACK_EMAIL ?? ""}/>;
+  return <AboutPage feedbackEmail={process.env.FEEDBACK_EMAIL ?? ""} />;
 }

@@ -1,89 +1,122 @@
-import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
-import {act, fireEvent, render, screen} from "@testing-library/react";
-import type {GuideSearchHit} from "@/app/(app)/guide/actions.server";
-import {GuideSearch, hrefOf} from "@/components/guide/guide-search.client";
-import {ITEM_TYPES} from "@/components/catalog/__tests__/fixtures";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import type { GuideSearchHit } from "@/app/(app)/guide/actions.server";
+import { GuideSearch, hrefOf } from "@/components/guide/guide-search.client";
+import { ITEM_TYPES } from "@/components/catalog/__tests__/fixtures";
 
 const searchGuideAction = vi.hoisted(() => vi.fn());
 
-vi.mock("@/app/(app)/guide/actions.server", () => ({searchGuideAction}));
+vi.mock("@/app/(app)/guide/actions.server", () => ({ searchGuideAction }));
 
 const hit: GuideSearchHit = {
-    kind: "ITEM",
-    chapterKey: "B",
-    chapterTitle: {sv: "Boka lokaler", en: null},
-    sectionKey: "s-kalas",
-    sectionTitle: {sv: "Kalaslokal", en: null},
-    itemKey: "k-tip",
-    itemType: ITEM_TYPES.TIP,
-    snippet: "Kontrollera sprittillstånd i vald lokal.",
-    matchedLanguage: "sv",
+  kind: "ITEM",
+  chapterKey: "B",
+  chapterTitle: { sv: "Boka lokaler", en: null },
+  sectionKey: "s-kalas",
+  sectionTitle: { sv: "Kalaslokal", en: null },
+  itemKey: "k-tip",
+  itemType: ITEM_TYPES.TIP,
+  snippet: "Kontrollera sprittillstånd i vald lokal.",
+  matchedLanguage: "sv",
 };
 
 describe("GuideSearch", () => {
-    beforeEach(() => {
-        vi.useFakeTimers();
-        searchGuideAction.mockReset();
+  beforeEach(() => {
+    vi.useFakeTimers();
+    searchGuideAction.mockReset();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  async function type(value: string) {
+    fireEvent.change(screen.getByRole("searchbox", { name: "placeholder" }), { target: { value } });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(350);
     });
+  }
 
-    afterEach(() => {
-        vi.useRealTimers();
-    });
+  it("lists hits with their place, linking to the item", async () => {
+    searchGuideAction.mockResolvedValue({ ok: true, data: [hit] });
+    render(
+      <GuideSearch
+        versionId="1"
+        basePath="/guide"
+        chapterNumbers={{ B: 2 }}
+      />
+    );
 
-    async function type(value: string) {
-        fireEvent.change(screen.getByRole("searchbox", {name: "placeholder"}), {target: {value}});
-        await act(async () => {
-            await vi.advanceTimersByTimeAsync(350);
-        });
-    }
+    await type("sprit");
 
-    it("lists hits with their place, linking to the item", async () => {
-        searchGuideAction.mockResolvedValue({ok: true, data: [hit]});
-        render(<GuideSearch versionId="1" basePath="/guide" chapterNumbers={{B: 2}}/>);
+    expect(searchGuideAction).toHaveBeenCalledWith("1", "sprit");
+    expect(screen.getByRole("link", { name: /sprittillstånd/ })).toHaveAttribute("href", "/guide/B#item-k-tip");
+    expect(screen.getByText("2. Boka lokaler")).toBeInTheDocument();
+    expect(screen.getByText("› Kalaslokal")).toBeInTheDocument();
+  });
 
-        await type("sprit");
+  it("links each kind of hit to its place", () => {
+    expect(
+      hrefOf(
+        {
+          ...hit,
+          kind: "INTRODUCTION",
+          chapterKey: null,
+          sectionKey: null,
+          itemKey: null,
+        },
+        "/revivals/7/guide"
+      )
+    ).toBe("/revivals/7/guide");
+    expect(
+      hrefOf(
+        {
+          ...hit,
+          kind: "CHAPTER_TITLE",
+          sectionKey: null,
+          itemKey: null,
+        },
+        "/revivals/7/guide"
+      )
+    ).toBe("/revivals/7/guide/B");
+    expect(
+      hrefOf(
+        {
+          ...hit,
+          kind: "SECTION_TITLE",
+          itemKey: null,
+        },
+        "/revivals/7/guide"
+      )
+    ).toBe("/revivals/7/guide/B#section-s-kalas");
+  });
 
-        expect(searchGuideAction).toHaveBeenCalledWith("1", "sprit");
-        expect(screen.getByRole("link", {name: /sprittillstånd/})).toHaveAttribute("href", "/guide/B#item-k-tip");
-        expect(screen.getByText("2. Boka lokaler")).toBeInTheDocument();
-        expect(screen.getByText("› Kalaslokal")).toBeInTheDocument();
-    });
+  it("says so when nothing matches", async () => {
+    searchGuideAction.mockResolvedValue({ ok: true, data: [] });
+    render(
+      <GuideSearch
+        versionId="1"
+        basePath="/guide"
+        chapterNumbers={{ B: 2 }}
+      />
+    );
 
-    it("links each kind of hit to its place", () => {
-        expect(hrefOf({
-            ...hit,
-            kind: "INTRODUCTION",
-            chapterKey: null,
-            sectionKey: null,
-            itemKey: null
-        }, "/revivals/7/guide")).toBe("/revivals/7/guide");
-        expect(hrefOf({
-            ...hit,
-            kind: "CHAPTER_TITLE",
-            sectionKey: null,
-            itemKey: null
-        }, "/revivals/7/guide")).toBe("/revivals/7/guide/B");
-        expect(hrefOf({
-            ...hit,
-            kind: "SECTION_TITLE",
-            itemKey: null
-        }, "/revivals/7/guide")).toBe("/revivals/7/guide/B#section-s-kalas");
-    });
+    await type("finns inte");
 
-    it("says so when nothing matches", async () => {
-        searchGuideAction.mockResolvedValue({ok: true, data: []});
-        render(<GuideSearch versionId="1" basePath="/guide" chapterNumbers={{B: 2}}/>);
+    expect(screen.getByText("noHits")).toBeInTheDocument();
+  });
 
-        await type("finns inte");
+  it("does not search for a single character", async () => {
+    render(
+      <GuideSearch
+        versionId="1"
+        basePath="/guide"
+        chapterNumbers={{ B: 2 }}
+      />
+    );
 
-        expect(screen.getByText("noHits")).toBeInTheDocument();
-    });
+    await type("a");
 
-    it("does not search for a single character", async () => {
-        render(<GuideSearch versionId="1" basePath="/guide" chapterNumbers={{B: 2}}/>);
-
-        await type("a");
-
-        expect(searchGuideAction).not.toHaveBeenCalled();
-    });
+    expect(searchGuideAction).not.toHaveBeenCalled();
+  });
 });

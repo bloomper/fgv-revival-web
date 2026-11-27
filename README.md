@@ -27,6 +27,7 @@ talks to [Nyuppsättning Server][1] over GraphQL. The product spec, feature spec
 ### Development
 
 1. **Install dependencies:**
+
    ```bash
    npm ci
    ```
@@ -34,6 +35,7 @@ talks to [Nyuppsättning Server][1] over GraphQL. The product spec, feature spec
 2. **Configure environment:**
    Start fgv-infra-deploy's local stack and [Nyuppsättning Server][1]'s, then create `.env.local` (`.env` already
    holds the rest):
+
    ```
    BETTER_AUTH_URL=http://localhost:3001
    AUTH_SECRET=<random string of at least 32 characters>
@@ -48,6 +50,7 @@ talks to [Nyuppsättning Server][1] over GraphQL. The product spec, feature spec
    SPEXIPEDIA_WEB_URL=http://localhost:3006
    ARCHIVE_WEB_URL=http://localhost:3005
    ```
+
    `SPEXREGISTER_WEB_URL`, `SPEXIFY_WEB_URL`, `SPEXFLIX_WEB_URL`, `SPEXGRAM_WEB_URL` and `ARCHIVE_WEB_URL` are the other applications' addresses, for
    the application switcher in the header; it lists only those that are set and that the user can open.
    For visitor statistics, run fgv-infra-deploy's `local/bin/configure-umami.sh` and put the ID it prints in
@@ -58,6 +61,7 @@ talks to [Nyuppsättning Server][1] over GraphQL. The product spec, feature spec
 
 3. **Generate GraphQL types:**
    If you change GraphQL queries or the schema, regenerate types from a sibling `fgv-revival-server` checkout:
+
    ```bash
    npm run gql-codegen
    ```
@@ -93,7 +97,7 @@ since the realm only accepts redirects to that address.
 CI publishes `bloomper/fgv-revival-web` for `linux/amd64`:
 
 | Trigger              | Tags                              |
-|----------------------|-----------------------------------|
+| -------------------- | --------------------------------- |
 | push to `develop`    | `develop`, `sha-<commit>`         |
 | push of tag `vX.Y.Z` | `X.Y.Z`, `latest`, `sha-<commit>` |
 
@@ -135,13 +139,8 @@ You can contribute to Nyuppsättning Web by:
 Nyuppsättning Web is open source software released under the [Apache 2.0 license][6].
 
 [1]: https://github.com/bloomper/fgv-revival-server
-
 [2]: https://github.com/bloomper/fgv-revival-spec
-
 [3]: CODE_OF_CONDUCT.md
-
 [4]: https://help.github.com/articles/using-pull-requests/
-
 [5]: CONTRIBUTING.md
-
 [6]: https://www.apache.org/licenses/LICENSE-2.0.html

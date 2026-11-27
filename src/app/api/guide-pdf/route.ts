@@ -1,6 +1,6 @@
-import {NextRequest, NextResponse} from "next/server";
-import {apiFetch} from "@/lib/api.server";
-import {ID} from "@/lib/id";
+import { NextRequest, NextResponse } from "next/server";
+import { apiFetch } from "@/lib/api.server";
+import { ID } from "@/lib/id";
 
 const LANGUAGES = new Set(["sv", "en"]);
 
@@ -9,27 +9,32 @@ const LANGUAGES = new Set(["sv", "en"]);
  * {@code ?version=<id>} or {@code ?revival=<id>}, and {@code lang=sv|en}.
  */
 export async function GET(request: NextRequest) {
-    const version = request.nextUrl.searchParams.get("version");
-    const revival = request.nextUrl.searchParams.get("revival");
-    const lang = request.nextUrl.searchParams.get("lang");
+  const version = request.nextUrl.searchParams.get("version");
+  const revival = request.nextUrl.searchParams.get("revival");
+  const lang = request.nextUrl.searchParams.get("lang");
 
-    if ((version === null) === (revival === null) || !ID.test(version ?? revival ?? "") || (lang !== null && !LANGUAGES.has(lang))) {
-        return NextResponse.json({error: "Invalid request"}, {status: 400});
-    }
+  if (
+    (version === null) === (revival === null) ||
+    !ID.test(version ?? revival ?? "") ||
+    (lang !== null && !LANGUAGES.has(lang))
+  ) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
 
-    const path = version ? `/api/guide/versions/${version}/pdf` : `/api/revivals/${revival}/guide/pdf`;
-    const response = await apiFetch(lang ? `${path}?lang=${lang}` : path);
+  const path = version ? `/api/guide/versions/${version}/pdf` : `/api/revivals/${revival}/guide/pdf`;
+  const response = await apiFetch(lang ? `${path}?lang=${lang}` : path);
 
-    if (!response.ok) {
-        return NextResponse.json({error: "Download failed"}, {status: response.status});
-    }
-    return new NextResponse(await response.arrayBuffer(), {
-        headers: {
-            "Content-Type": response.headers.get("content-type") ?? "application/pdf",
-            "Content-Disposition": response.headers.get("content-disposition") ?? "attachment; filename=\"nyuppsattningsguide.pdf\"",
-            "Cache-Control": "no-store",
-            "Content-Security-Policy": "default-src 'none'; sandbox",
-            "X-Content-Type-Options": "nosniff",
-        },
-    });
+  if (!response.ok) {
+    return NextResponse.json({ error: "Download failed" }, { status: response.status });
+  }
+  return new NextResponse(await response.arrayBuffer(), {
+    headers: {
+      "Content-Type": response.headers.get("content-type") ?? "application/pdf",
+      "Content-Disposition":
+        response.headers.get("content-disposition") ?? 'attachment; filename="nyuppsattningsguide.pdf"',
+      "Cache-Control": "no-store",
+      "Content-Security-Policy": "default-src 'none'; sandbox",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
 }

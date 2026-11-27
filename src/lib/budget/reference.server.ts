@@ -1,13 +1,13 @@
 import "server-only";
 
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 import type {
-    BudgetCategoryCreateInput,
-    BudgetCategoryUpdateInput,
-    EventTypeBudgetLineInput,
-    ReferenceRevivalInput,
+  BudgetCategoryCreateInput,
+  BudgetCategoryUpdateInput,
+  EventTypeBudgetLineInput,
+  ReferenceRevivalInput,
 } from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 // The lists the super admin keeps for budgets: categories, reference figures from earlier revivals and the lines
 // an event type proposes.
@@ -100,57 +100,57 @@ const EventTypeBudgetLineRemoveMutation = graphql(`
  * The budget categories in list order. Retired ones only when asked for: pickers offer the active ones.
  */
 export async function getBudgetCategories(includeRetired = false) {
-    return (await runQuery(BudgetCategoriesQuery, {includeRetired}))?.budgetCategories ?? [];
+  return (await runQuery(BudgetCategoriesQuery, { includeRetired }))?.budgetCategories ?? [];
 }
 
 export async function createBudgetCategory(input: BudgetCategoryCreateInput) {
-    await runMutation(BudgetCategoryCreateMutation, {input});
+  await runMutation(BudgetCategoryCreateMutation, { input });
 }
 
 export async function updateBudgetCategory(input: BudgetCategoryUpdateInput) {
-    await runMutation(BudgetCategoryUpdateMutation, {input});
+  await runMutation(BudgetCategoryUpdateMutation, { input });
 }
 
 export async function moveBudgetCategory(id: string, version: number, position: number) {
-    await runMutation(BudgetCategoryMoveMutation, {id, version, position});
+  await runMutation(BudgetCategoryMoveMutation, { id, version, position });
 }
 
 export async function retireBudgetCategory(id: string, version: number) {
-    await runMutation(BudgetCategoryRetireMutation, {id, version});
+  await runMutation(BudgetCategoryRetireMutation, { id, version });
 }
 
 export async function restoreBudgetCategory(id: string, version: number) {
-    await runMutation(BudgetCategoryRestoreMutation, {id, version});
+  await runMutation(BudgetCategoryRestoreMutation, { id, version });
 }
 
 export async function deleteBudgetCategory(id: string, version: number) {
-    await runMutation(BudgetCategoryDeleteMutation, {id, version});
+  await runMutation(BudgetCategoryDeleteMutation, { id, version });
 }
 
 export async function getReferenceRevivals() {
-    return (await runQuery(ReferenceRevivalsQuery, {}))?.referenceRevivals ?? [];
+  return (await runQuery(ReferenceRevivalsQuery, {}))?.referenceRevivals ?? [];
 }
 
 export async function createReferenceRevival(input: ReferenceRevivalInput) {
-    await runMutation(ReferenceRevivalCreateMutation, {input});
+  await runMutation(ReferenceRevivalCreateMutation, { input });
 }
 
 export async function updateReferenceRevival(id: string, version: number, input: ReferenceRevivalInput) {
-    await runMutation(ReferenceRevivalUpdateMutation, {id, version, input});
+  await runMutation(ReferenceRevivalUpdateMutation, { id, version, input });
 }
 
 export async function deleteReferenceRevival(id: string, version: number) {
-    await runMutation(ReferenceRevivalDeleteMutation, {id, version});
+  await runMutation(ReferenceRevivalDeleteMutation, { id, version });
 }
 
 export async function createEventTypeBudgetLine(input: EventTypeBudgetLineInput) {
-    await runMutation(EventTypeBudgetLineCreateMutation, {input});
+  await runMutation(EventTypeBudgetLineCreateMutation, { input });
 }
 
 export async function updateEventTypeBudgetLine(id: string, version: number, input: EventTypeBudgetLineInput) {
-    await runMutation(EventTypeBudgetLineUpdateMutation, {id, version, input});
+  await runMutation(EventTypeBudgetLineUpdateMutation, { id, version, input });
 }
 
 export async function removeEventTypeBudgetLine(id: string, version: number) {
-    await runMutation(EventTypeBudgetLineRemoveMutation, {id, version});
+  await runMutation(EventTypeBudgetLineRemoveMutation, { id, version });
 }

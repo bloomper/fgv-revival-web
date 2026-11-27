@@ -1,5 +1,5 @@
-import {Skeleton} from "@bloomper/fgv-web-ui/ui/skeleton";
+import { Skeleton } from "@bloomper/fgv-web-ui/ui/skeleton";
 
 export default function Loading() {
-    return <Skeleton className="h-96 w-full"/>;
+  return <Skeleton className="h-96 w-full" />;
 }

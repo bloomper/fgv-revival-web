@@ -1,11 +1,11 @@
-import {Skeleton} from "@bloomper/fgv-web-ui/ui/skeleton";
+import { Skeleton } from "@bloomper/fgv-web-ui/ui/skeleton";
 
 export default function Loading() {
-    return (
-        <div className="flex flex-1 flex-col gap-4">
-            <Skeleton className="h-8 w-60"/>
-            <Skeleton className="h-10 w-full"/>
-            <Skeleton className="h-96 w-full"/>
-        </div>
-    );
+  return (
+    <div className="flex flex-1 flex-col gap-4">
+      <Skeleton className="h-8 w-60" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-96 w-full" />
+    </div>
+  );
 }

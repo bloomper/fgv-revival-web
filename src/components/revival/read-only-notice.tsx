@@ -1,41 +1,55 @@
 import Link from "next/link";
-import {getTranslations} from "next-intl/server";
-import {Eye} from "lucide-react";
-import type {RevivalStatus} from "@/gql/graphql";
-import type {Role} from "@/types/auth";
-import {isObserver, isSuperAdmin} from "@/utils/auth";
-import {Alert, AlertDescription, AlertTitle} from "@bloomper/fgv-web-ui/ui/alert";
+import { getTranslations } from "next-intl/server";
+import { Eye } from "lucide-react";
+import type { RevivalStatus } from "@/gql/graphql";
+import type { Role } from "@/types/auth";
+import { isObserver, isSuperAdmin } from "@/utils/auth";
+import { Alert, AlertDescription, AlertTitle } from "@bloomper/fgv-web-ui/ui/alert";
 
 /**
  * Says why a revival's work is read-only when the server does not let the caller change it: only its directeurs and
  * steering group write the log, meetings, checklists and guide suggestions. Super admins are told
  * how to join the steering group. Renders nothing when the caller may write.
  */
-export async function ReadOnlyNotice({revivalId, status, canWrite, roles}: {
-    revivalId: string;
-    status: RevivalStatus;
-    canWrite: boolean;
-    roles: Role[];
+export async function ReadOnlyNotice({
+  revivalId,
+  status,
+  canWrite,
+  roles,
+}: {
+  revivalId: string;
+  status: RevivalStatus;
+  canWrite: boolean;
+  roles: Role[];
 }) {
-    if (canWrite) {
-        return null;
-    }
+  if (canWrite) {
+    return null;
+  }
 
-    const t = await getTranslations("Revival.readOnly");
-    const reason = status === "ARCHIVED" ? "archived" : isSuperAdmin(roles) ? "superAdmin" : isObserver(roles) ? "observer" : "other";
+  const t = await getTranslations("Revival.readOnly");
+  const reason =
+    status === "ARCHIVED" ? "archived" : isSuperAdmin(roles) ? "superAdmin" : isObserver(roles) ? "observer" : "other";
 
-    return (
-        <Alert>
-            <Eye/>
-            <AlertTitle>{t("title")}</AlertTitle>
-            <AlertDescription>
-                <p>
-                    {t(reason)}
-                    {reason === "superAdmin" && (
-                        <> <Link href={`/revivals/${revivalId}`} className="font-medium text-link hover:text-link/80">{t("join")}</Link></>
-                    )}
-                </p>
-            </AlertDescription>
-        </Alert>
-    );
+  return (
+    <Alert>
+      <Eye />
+      <AlertTitle>{t("title")}</AlertTitle>
+      <AlertDescription>
+        <p>
+          {t(reason)}
+          {reason === "superAdmin" && (
+            <>
+              {" "}
+              <Link
+                href={`/revivals/${revivalId}`}
+                className="text-link hover:text-link/80 font-medium"
+              >
+                {t("join")}
+              </Link>
+            </>
+          )}
+        </p>
+      </AlertDescription>
+    </Alert>
+  );
 }

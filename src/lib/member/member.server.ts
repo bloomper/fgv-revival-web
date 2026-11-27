@@ -1,8 +1,8 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import type {RevivalMemberAddInput, RevivalMemberCapabilitiesInput} from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import type { RevivalMemberAddInput, RevivalMemberCapabilitiesInput } from "@/gql/graphql";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 const MemberCandidatesQuery = graphql(`
     query RevivalMemberCandidates($revivalId: ID!, $query: String!) {
@@ -32,17 +32,17 @@ const MemberRemoveMutation = graphql(`
  * Users in the FGV realm matching the query, for picking a member; the server asks for at least 3 characters.
  */
 export async function searchMemberCandidates(revivalId: string, query: string) {
-    return (await runQuery(MemberCandidatesQuery, {revivalId, query}))?.revivalMemberCandidates ?? [];
+  return (await runQuery(MemberCandidatesQuery, { revivalId, query }))?.revivalMemberCandidates ?? [];
 }
 
 export async function addMember(input: RevivalMemberAddInput) {
-    return (await runMutation(MemberAddMutation, {input}))?.revivalMemberAdd;
+  return (await runMutation(MemberAddMutation, { input }))?.revivalMemberAdd;
 }
 
 export async function setCapabilities(input: RevivalMemberCapabilitiesInput) {
-    return (await runMutation(MemberCapabilitiesMutation, {input}))?.revivalMemberCapabilitiesSet;
+  return (await runMutation(MemberCapabilitiesMutation, { input }))?.revivalMemberCapabilitiesSet;
 }
 
 export async function removeMember(id: string): Promise<void> {
-    await runMutation(MemberRemoveMutation, {id});
+  await runMutation(MemberRemoveMutation, { id });
 }

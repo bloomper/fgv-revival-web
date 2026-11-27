@@ -1,13 +1,13 @@
 import "server-only";
 
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 import type {
-    CapabilityCreateInput,
-    CapabilityUpdateInput,
-    GuideItemTypeCreateInput,
-    GuideItemTypeUpdateInput
+  CapabilityCreateInput,
+  CapabilityUpdateInput,
+  GuideItemTypeCreateInput,
+  GuideItemTypeUpdateInput,
 } from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 const CapabilitiesQuery = graphql(`
     query Capabilities($includeRetired: Boolean) {
@@ -97,60 +97,60 @@ const GuideItemTypeDeleteMutation = graphql(`
  * The areas of responsibility, in list order. Retired ones only when asked for: pickers offer the active ones.
  */
 export async function getCapabilities(includeRetired = false) {
-    return (await runQuery(CapabilitiesQuery, {includeRetired}))?.capabilities ?? [];
+  return (await runQuery(CapabilitiesQuery, { includeRetired }))?.capabilities ?? [];
 }
 
 export async function createCapability(input: CapabilityCreateInput) {
-    return (await runMutation(CapabilityCreateMutation, {input}))?.capabilityCreate;
+  return (await runMutation(CapabilityCreateMutation, { input }))?.capabilityCreate;
 }
 
 export async function updateCapability(input: CapabilityUpdateInput) {
-    return (await runMutation(CapabilityUpdateMutation, {input}))?.capabilityUpdate;
+  return (await runMutation(CapabilityUpdateMutation, { input }))?.capabilityUpdate;
 }
 
 export async function moveCapability(id: string, version: number, position: number) {
-    return (await runMutation(CapabilityMoveMutation, {id, version, position}))?.capabilityMove;
+  return (await runMutation(CapabilityMoveMutation, { id, version, position }))?.capabilityMove;
 }
 
 export async function retireCapability(id: string, version: number) {
-    return (await runMutation(CapabilityRetireMutation, {id, version}))?.capabilityRetire;
+  return (await runMutation(CapabilityRetireMutation, { id, version }))?.capabilityRetire;
 }
 
 export async function restoreCapability(id: string, version: number) {
-    return (await runMutation(CapabilityRestoreMutation, {id, version}))?.capabilityRestore;
+  return (await runMutation(CapabilityRestoreMutation, { id, version }))?.capabilityRestore;
 }
 
 export async function deleteCapability(id: string, version: number) {
-    await runMutation(CapabilityDeleteMutation, {id, version});
+  await runMutation(CapabilityDeleteMutation, { id, version });
 }
 
 /**
  * The guide item types, in list order. Retired ones only when asked for: pickers offer the active ones.
  */
 export async function getGuideItemTypes(includeRetired = false) {
-    return (await runQuery(GuideItemTypesQuery, {includeRetired}))?.guideItemTypes ?? [];
+  return (await runQuery(GuideItemTypesQuery, { includeRetired }))?.guideItemTypes ?? [];
 }
 
 export async function createGuideItemType(input: GuideItemTypeCreateInput) {
-    return (await runMutation(GuideItemTypeCreateMutation, {input}))?.guideItemTypeCreate;
+  return (await runMutation(GuideItemTypeCreateMutation, { input }))?.guideItemTypeCreate;
 }
 
 export async function updateGuideItemType(input: GuideItemTypeUpdateInput) {
-    return (await runMutation(GuideItemTypeUpdateMutation, {input}))?.guideItemTypeUpdate;
+  return (await runMutation(GuideItemTypeUpdateMutation, { input }))?.guideItemTypeUpdate;
 }
 
 export async function moveGuideItemType(id: string, version: number, position: number) {
-    return (await runMutation(GuideItemTypeMoveMutation, {id, version, position}))?.guideItemTypeMove;
+  return (await runMutation(GuideItemTypeMoveMutation, { id, version, position }))?.guideItemTypeMove;
 }
 
 export async function retireGuideItemType(id: string, version: number) {
-    return (await runMutation(GuideItemTypeRetireMutation, {id, version}))?.guideItemTypeRetire;
+  return (await runMutation(GuideItemTypeRetireMutation, { id, version }))?.guideItemTypeRetire;
 }
 
 export async function restoreGuideItemType(id: string, version: number) {
-    return (await runMutation(GuideItemTypeRestoreMutation, {id, version}))?.guideItemTypeRestore;
+  return (await runMutation(GuideItemTypeRestoreMutation, { id, version }))?.guideItemTypeRestore;
 }
 
 export async function deleteGuideItemType(id: string, version: number) {
-    await runMutation(GuideItemTypeDeleteMutation, {id, version});
+  await runMutation(GuideItemTypeDeleteMutation, { id, version });
 }

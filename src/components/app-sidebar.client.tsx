@@ -1,158 +1,160 @@
 "use client";
 
 import * as React from "react";
-import {useMemo} from "react";
-import {BookMarked, BookOpen, Drama, House, type LucideIcon, Settings, Theater, Wrench} from "lucide-react";
+import { useMemo } from "react";
+import { BookMarked, BookOpen, Drama, House, type LucideIcon, Settings, Theater, Wrench } from "lucide-react";
 
-import {NavMain} from "@bloomper/fgv-web-ui/shell/nav-main";
-import {NavSecondary, SidebarBrand} from "@bloomper/fgv-web-ui/shell/sidebar-parts";
-import {NavUser} from "@/components/nav-user.client";
-import {Sidebar, SidebarContent, SidebarFooter, useSidebar} from "@bloomper/fgv-web-ui/ui/sidebar";
-import {Role} from "@/types/auth";
-import {canReadAllRevivals, isSuperAdmin} from "@/utils/auth";
-import {usePathname} from "next/navigation";
-import {useTranslations} from "next-intl";
-import {useIsClient} from "@bloomper/fgv-web-ui/hooks/use-is-client";
+import { NavMain } from "@bloomper/fgv-web-ui/shell/nav-main";
+import { NavSecondary, SidebarBrand } from "@bloomper/fgv-web-ui/shell/sidebar-parts";
+import { NavUser } from "@/components/nav-user.client";
+import { Sidebar, SidebarContent, SidebarFooter, useSidebar } from "@bloomper/fgv-web-ui/ui/sidebar";
+import { Role } from "@/types/auth";
+import { canReadAllRevivals, isSuperAdmin } from "@/utils/auth";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useIsClient } from "@bloomper/fgv-web-ui/hooks/use-is-client";
 
 interface NavLink {
-    title: string;
-    url: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
-    items?: NavLink[];
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+  items?: NavLink[];
 }
 
 /** A group without an address only opens and closes its entries. */
 interface NavItem extends Omit<NavLink, "url"> {
-    url?: string;
+  url?: string;
 }
 
 interface NavSecondaryItem extends Omit<NavLink, "icon"> {
-    icon: LucideIcon;
+  icon: LucideIcon;
 }
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-    roles: Role[];
-    accountUrl: string;
-    /** The server decides who reads the guide. */
-    guideReadable: boolean;
+  roles: Role[];
+  accountUrl: string;
+  /** The server decides who reads the guide. */
+  guideReadable: boolean;
 }
 
-export function AppSidebar({roles, accountUrl, guideReadable, ...props}: AppSidebarProps) {
-    const pathname = usePathname();
-    const t = useTranslations();
-    const isClient = useIsClient();
-    const {isMobile, setOpenMobile} = useSidebar();
+export function AppSidebar({ roles, accountUrl, guideReadable, ...props }: AppSidebarProps) {
+  const pathname = usePathname();
+  const t = useTranslations();
+  const isClient = useIsClient();
+  const { isMobile, setOpenMobile } = useSidebar();
 
-    const closeOnNavigate = (event: React.MouseEvent) => {
-        if (isMobile && (event.target as Element).closest("a")) {
-            setOpenMobile(false);
-        }
+  const closeOnNavigate = (event: React.MouseEvent) => {
+    if (isMobile && (event.target as Element).closest("a")) {
+      setOpenMobile(false);
+    }
+  };
+
+  const navigation = useMemo((): { main: NavItem[]; secondary: NavSecondaryItem[] } => {
+    const mainItems: NavItem[] = [
+      {
+        title: t("Nav.home"),
+        url: "/",
+        icon: House,
+        isActive: pathname === "/",
+      },
+      {
+        title: t("Nav.revivals"),
+        url: "/revivals",
+        icon: Theater,
+        isActive: pathname.startsWith("/revivals"),
+        items: canReadAllRevivals(roles) ? [{ title: t("Nav.manage"), url: "/revivals/manage" }] : undefined,
+      },
+    ];
+
+    if (guideReadable) {
+      mainItems.push({
+        title: t("Nav.guide"),
+        url: "/guide",
+        icon: BookOpen,
+        isActive: pathname.startsWith("/guide"),
+      });
+      mainItems.push({
+        title: t("Nav.library"),
+        url: "/library",
+        icon: BookMarked,
+        isActive: pathname.startsWith("/library"),
+      });
+    }
+
+    if (isSuperAdmin(roles)) {
+      mainItems.push({
+        title: t("Nav.admin"),
+        icon: Settings,
+        isActive: pathname.startsWith("/admin/"),
+        items: [
+          // Under "Administration" the short name suffices; the command palette keeps "Nav.adminGuide".
+          // Grouped: the guide, then what revivals start from, the budget, and the rest.
+          { title: t("Nav.adminGuideShort"), url: "/admin/guide" },
+          { title: t("Nav.adminGuideItemTypes"), url: "/admin/guide-item-types" },
+          { title: t("Nav.adminEventTypes"), url: "/admin/event-types" },
+          { title: t("Nav.adminChecklistTemplates"), url: "/admin/checklist-templates" },
+          { title: t("Nav.adminMailingTemplates"), url: "/admin/mailing-templates" },
+          { title: t("Nav.adminCapabilities"), url: "/admin/capabilities" },
+          { title: t("Nav.adminBudgetCategories"), url: "/admin/budget-categories" },
+          { title: t("Nav.adminReferenceFigures"), url: "/admin/reference-figures" },
+          { title: t("Nav.adminLinkServices"), url: "/admin/link-services" },
+          { title: t("Nav.adminSpexCalendar"), url: "/admin/spex-calendar" },
+          { title: t("Nav.adminNews"), url: "/admin/news" },
+          { title: t("Nav.adminMaintenance"), url: "/admin/maintenance" },
+          { title: t("Nav.adminSettings"), url: "/admin/settings" },
+        ],
+      });
+    }
+
+    return {
+      main: mainItems,
+      secondary: [
+        {
+          title: t("Support.title"),
+          url: "/support",
+          icon: Wrench,
+        },
+        {
+          title: t("About.title"),
+          url: "/about",
+          icon: Drama,
+        },
+      ],
     };
+  }, [roles, pathname, t, guideReadable]);
 
-    const navigation = useMemo((): { main: NavItem[]; secondary: NavSecondaryItem[] } => {
-        const mainItems: NavItem[] = [
-            {
-                title: t("Nav.home"),
-                url: "/",
-                icon: House,
-                isActive: pathname === "/",
-            },
-            {
-                title: t("Nav.revivals"),
-                url: "/revivals",
-                icon: Theater,
-                isActive: pathname.startsWith("/revivals"),
-                items: canReadAllRevivals(roles) ? [
-                    {title: t("Nav.manage"), url: "/revivals/manage"},
-                ] : undefined,
-            },
-        ];
-
-        if (guideReadable) {
-            mainItems.push({
-                title: t("Nav.guide"),
-                url: "/guide",
-                icon: BookOpen,
-                isActive: pathname.startsWith("/guide"),
-            });
-            mainItems.push({
-                title: t("Nav.library"),
-                url: "/library",
-                icon: BookMarked,
-                isActive: pathname.startsWith("/library"),
-            });
-        }
-
-        if (isSuperAdmin(roles)) {
-            mainItems.push({
-                title: t("Nav.admin"),
-                icon: Settings,
-                isActive: pathname.startsWith("/admin/"),
-                items: [
-                    // Under "Administration" the short name suffices; the command palette keeps "Nav.adminGuide".
-                    // Grouped: the guide, then what revivals start from, the budget, and the rest.
-                    {title: t("Nav.adminGuideShort"), url: "/admin/guide"},
-                    {title: t("Nav.adminGuideItemTypes"), url: "/admin/guide-item-types"},
-                    {title: t("Nav.adminEventTypes"), url: "/admin/event-types"},
-                    {title: t("Nav.adminChecklistTemplates"), url: "/admin/checklist-templates"},
-                    {title: t("Nav.adminMailingTemplates"), url: "/admin/mailing-templates"},
-                    {title: t("Nav.adminCapabilities"), url: "/admin/capabilities"},
-                    {title: t("Nav.adminBudgetCategories"), url: "/admin/budget-categories"},
-                    {title: t("Nav.adminReferenceFigures"), url: "/admin/reference-figures"},
-                    {title: t("Nav.adminLinkServices"), url: "/admin/link-services"},
-                    {title: t("Nav.adminSpexCalendar"), url: "/admin/spex-calendar"},
-                    {title: t("Nav.adminNews"), url: "/admin/news"},
-                    {title: t("Nav.adminMaintenance"), url: "/admin/maintenance"},
-                    {title: t("Nav.adminSettings"), url: "/admin/settings"},
-                ],
-            });
-        }
-
-        return {
-            main: mainItems,
-            secondary: [
-                {
-                    title: t("Support.title"),
-                    url: "/support",
-                    icon: Wrench,
-                },
-                {
-                    title: t("About.title"),
-                    url: "/about",
-                    icon: Drama,
-                },
-            ]
-        };
-    }, [roles, pathname, t, guideReadable]);
-
-    return (
-        <Sidebar collapsible="icon"
-                 className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
-                 {...props}
-        >
-            <SidebarBrand/>
-            <SidebarContent onClickCapture={closeOnNavigate}>
-                {isClient ? (
-                    <>
-                        <NavMain items={navigation.main}/>
-                        <NavSecondary items={navigation.secondary} className="mt-auto"/>
-                    </>
-                ) : (
-                    <div className="flex flex-col gap-2 p-4">
-                        {Array.from({length: 3}).map((_, i) => (
-                            <div key={i} className="flex items-center gap-3 px-2 py-1.5">
-                                <div className="size-4 shrink-0 animate-pulse rounded bg-sidebar-accent/50"/>
-                                <div
-                                    className="h-3 w-24 animate-pulse rounded bg-sidebar-accent/50 group-data-[collapsible=icon]:hidden"/>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </SidebarContent>
-            <SidebarFooter onClickCapture={closeOnNavigate}>
-                {isClient && <NavUser accountUrl={accountUrl}/>}
-            </SidebarFooter>
-        </Sidebar>
-    );
+  return (
+    <Sidebar
+      collapsible="icon"
+      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
+      {...props}
+    >
+      <SidebarBrand />
+      <SidebarContent onClickCapture={closeOnNavigate}>
+        {isClient ? (
+          <>
+            <NavMain items={navigation.main} />
+            <NavSecondary
+              items={navigation.secondary}
+              className="mt-auto"
+            />
+          </>
+        ) : (
+          <div className="flex flex-col gap-2 p-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 px-2 py-1.5"
+              >
+                <div className="bg-sidebar-accent/50 size-4 shrink-0 animate-pulse rounded" />
+                <div className="bg-sidebar-accent/50 h-3 w-24 animate-pulse rounded group-data-[collapsible=icon]:hidden" />
+              </div>
+            ))}
+          </div>
+        )}
+      </SidebarContent>
+      <SidebarFooter onClickCapture={closeOnNavigate}>{isClient && <NavUser accountUrl={accountUrl} />}</SidebarFooter>
+    </Sidebar>
+  );
 }

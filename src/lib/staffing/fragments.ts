@@ -1,4 +1,4 @@
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 
 export const ParticipantRefFields = graphql(`
     fragment ParticipantRefFields on ParticipantRef {

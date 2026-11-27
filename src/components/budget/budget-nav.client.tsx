@@ -1,43 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import {useSelectedLayoutSegment} from "next/navigation";
-import {useTranslations} from "next-intl";
-import {ArrowLeftRight, Calculator, LayoutDashboard, List, type LucideIcon} from "lucide-react";
-import {cn} from "@/utils/utils";
+import { useSelectedLayoutSegment } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { ArrowLeftRight, Calculator, LayoutDashboard, List, type LucideIcon } from "lucide-react";
+import { cn } from "@/utils/utils";
 
 const VIEWS: { segment: string | null; key: string; icon: LucideIcon }[] = [
-    {segment: null, key: "overview", icon: LayoutDashboard},
-    {segment: "lines", key: "lines", icon: List},
-    {segment: "transactions", key: "transactions", icon: ArrowLeftRight},
-    {segment: "scenarios", key: "scenarios", icon: Calculator},
+  { segment: null, key: "overview", icon: LayoutDashboard },
+  { segment: "lines", key: "lines", icon: List },
+  { segment: "transactions", key: "transactions", icon: ArrowLeftRight },
+  { segment: "scenarios", key: "scenarios", icon: Calculator },
 ];
 
 /**
  * The budget's parts as links styled as a segmented control, each its own route, as the events' views are.
  */
-export function BudgetNav({revivalId}: { revivalId: string }) {
-    const t = useTranslations("Budget");
-    const segment = useSelectedLayoutSegment();
-    const base = `/revivals/${revivalId}/budget`;
+export function BudgetNav({ revivalId }: { revivalId: string }) {
+  const t = useTranslations("Budget");
+  const segment = useSelectedLayoutSegment();
+  const base = `/revivals/${revivalId}/budget`;
 
-    return (
-        // On phones only the active view is labelled, so all four fit; relative keeps the sr-only labels inside the nav
-        <nav aria-label={t("views")}
-             className="relative flex w-fit max-w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1">
-            {VIEWS.map(view => {
-                const active = view.segment === segment;
+  return (
+    // On phones only the active view is labelled, so all four fit; relative keeps the sr-only labels inside the nav
+    <nav
+      aria-label={t("views")}
+      className="bg-muted relative flex w-fit max-w-full gap-1 overflow-x-auto rounded-lg p-1"
+    >
+      {VIEWS.map((view) => {
+        const active = view.segment === segment;
 
-                return (
-                    <Link key={view.key} href={view.segment ? `${base}/${view.segment}` : base}
-                          aria-current={active ? "page" : undefined} title={t(view.key)}
-                          className={cn("inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-medium whitespace-nowrap [&_svg]:size-4",
-                              active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
-                        <view.icon/>
-                        <span className={cn(!active && "max-sm:sr-only")}>{t(view.key)}</span>
-                    </Link>
-                );
-            })}
-        </nav>
-    );
+        return (
+          <Link
+            key={view.key}
+            href={view.segment ? `${base}/${view.segment}` : base}
+            aria-current={active ? "page" : undefined}
+            title={t(view.key)}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-medium whitespace-nowrap [&_svg]:size-4",
+              active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <view.icon />
+            <span className={cn(!active && "max-sm:sr-only")}>{t(view.key)}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
 }

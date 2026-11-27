@@ -1,20 +1,24 @@
-import {redirect} from "next/navigation";
-import {LogoutButton} from "@/components/logout-button.client";
-import {requireUser} from "@/utils/auth.server";
-import {hasAccess} from "@/utils/auth";
-import {NoAccessPage as FgvNoAccessPage} from "@bloomper/fgv-web-ui/shell/status-pages";
+import { redirect } from "next/navigation";
+import { LogoutButton } from "@/components/logout-button.client";
+import { requireUser } from "@/utils/auth.server";
+import { hasAccess } from "@/utils/auth";
+import { NoAccessPage as FgvNoAccessPage } from "@bloomper/fgv-web-ui/shell/status-pages";
 
 /**
  * Shown to someone who is logged in without the `USER` role on `fgv-revival`. Shows no revival data.
  */
 export default async function NoAccessPage() {
-    const {session, roles} = await requireUser();
+  const { session, roles } = await requireUser();
 
-    if (!session || hasAccess(roles)) {
-        redirect("/");
-    }
+  if (!session || hasAccess(roles)) {
+    redirect("/");
+  }
 
-    return (
-        <FgvNoAccessPage email={session.user.email} application="revival" actions={<LogoutButton variant="default"/>}/>
-    );
+  return (
+    <FgvNoAccessPage
+      email={session.user.email}
+      application="revival"
+      actions={<LogoutButton variant="default" />}
+    />
+  );
 }

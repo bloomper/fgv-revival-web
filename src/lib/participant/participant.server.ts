@@ -1,17 +1,17 @@
 import "server-only";
 
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 import type {
-    ContactInput,
-    ParticipantAddInput,
-    ParticipantsInviteInput,
-    ParticipantUpdateInput,
-    ParticipationRespondInput,
-    ParticipationSettingsInput,
-    ReferralInput,
-    ReferralOutcome,
+  ContactInput,
+  ParticipantAddInput,
+  ParticipantsInviteInput,
+  ParticipantUpdateInput,
+  ParticipationRespondInput,
+  ParticipationSettingsInput,
+  ReferralInput,
+  ReferralOutcome,
 } from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 // Participants, invitations and the participant's own page (participant.graphqls). Names and contact
 // details come from Spexregister, so the list, the candidates and the positions are fetched on their own: one of them
@@ -186,77 +186,77 @@ const ReferralCreateMutation = graphql(`
 `);
 
 export async function getParticipantsOverview(id: string) {
-    return (await runQuery(ParticipantsOverviewQuery, {id}))?.revival ?? null;
+  return (await runQuery(ParticipantsOverviewQuery, { id }))?.revival ?? null;
 }
 
 export async function getParticipants(revivalId: string, includeRemoved: boolean) {
-    return (await runQuery(ParticipantsQuery, {revivalId, includeRemoved}))?.participants ?? [];
+  return (await runQuery(ParticipantsQuery, { revivalId, includeRemoved }))?.participants ?? [];
 }
 
 export async function getPositions() {
-    const data = await runQuery(PositionsQuery, {});
+  const data = await runQuery(PositionsQuery, {});
 
-    return {positions: data?.positions ?? [], vocalParts: data?.vocalParts ?? []};
+  return { positions: data?.positions ?? [], vocalParts: data?.vocalParts ?? [] };
 }
 
 export async function getParticipantCandidates(revivalId: string) {
-    return (await runQuery(ParticipantCandidatesQuery, {revivalId}))?.participantCandidates ?? [];
+  return (await runQuery(ParticipantCandidatesQuery, { revivalId }))?.participantCandidates ?? [];
 }
 
 export async function searchSpexare(revivalId: string, query: string) {
-    return (await runQuery(SpexareSearchQuery, {revivalId, query}))?.spexareSearch ?? [];
+  return (await runQuery(SpexareSearchQuery, { revivalId, query }))?.spexareSearch ?? [];
 }
 
 export async function getMyParticipation(revivalId: string) {
-    return (await runQuery(MyParticipationQuery, {revivalId}))?.myParticipation ?? null;
+  return (await runQuery(MyParticipationQuery, { revivalId }))?.myParticipation ?? null;
 }
 
 export async function addParticipant(input: ParticipantAddInput) {
-    return (await runMutation(ParticipantAddMutation, {input}))?.participantAdd ?? null;
+  return (await runMutation(ParticipantAddMutation, { input }))?.participantAdd ?? null;
 }
 
 export async function addSpexareParticipants(revivalId: string, spexareIds: string[]) {
-    return (await runMutation(ParticipantsAddSpexareMutation, {revivalId, spexareIds}))?.participantsAddSpexare ?? [];
+  return (await runMutation(ParticipantsAddSpexareMutation, { revivalId, spexareIds }))?.participantsAddSpexare ?? [];
 }
 
 export async function updateParticipant(input: ParticipantUpdateInput) {
-    await runMutation(ParticipantUpdateMutation, {input});
+  await runMutation(ParticipantUpdateMutation, { input });
 }
 
 export async function removeParticipant(id: string, version: number) {
-    await runMutation(ParticipantRemoveMutation, {id, version});
+  await runMutation(ParticipantRemoveMutation, { id, version });
 }
 
 export async function inviteParticipants(input: ParticipantsInviteInput) {
-    return (await runMutation(ParticipantsInviteMutation, {input}))?.participantsInvite ?? {invited: [], skipped: []};
+  return (await runMutation(ParticipantsInviteMutation, { input }))?.participantsInvite ?? { invited: [], skipped: [] };
 }
 
 export async function setParticipantFeePaid(id: string, version: number, paid: boolean) {
-    await runMutation(ParticipantFeeSetPaidMutation, {id, version, paid});
+  await runMutation(ParticipantFeeSetPaidMutation, { id, version, paid });
 }
 
 export async function updateParticipationSettings(input: ParticipationSettingsInput) {
-    await runMutation(ParticipationSettingsUpdateMutation, {input});
+  await runMutation(ParticipationSettingsUpdateMutation, { input });
 }
 
 export async function handleReferral(id: string, outcome: ReferralOutcome) {
-    await runMutation(ReferralHandleMutation, {id, outcome});
+  await runMutation(ReferralHandleMutation, { id, outcome });
 }
 
 export async function respondToParticipation(input: ParticipationRespondInput) {
-    await runMutation(ParticipationRespondMutation, {input});
+  await runMutation(ParticipationRespondMutation, { input });
 }
 
 export async function updateParticipationContact(input: ContactInput) {
-    await runMutation(ParticipationContactUpdateMutation, {input});
+  await runMutation(ParticipationContactUpdateMutation, { input });
 }
 
 export async function setParticipationDietary(revivalId: string, text: string | null) {
-    await runMutation(ParticipationDietarySetMutation, {revivalId, text});
+  await runMutation(ParticipationDietarySetMutation, { revivalId, text });
 }
 
 export async function createReferral(input: ReferralInput) {
-    await runMutation(ReferralCreateMutation, {input});
+  await runMutation(ReferralCreateMutation, { input });
 }
 
 const AssignedChecklistItemSetDoneMutation = graphql(`
@@ -269,5 +269,5 @@ const AssignedChecklistItemSetDoneMutation = graphql(`
  * Marks a checklist item assigned to the caller done, or not done.
  */
 export async function setAssignedChecklistItemDone(id: string, version: number, done: boolean) {
-    await runMutation(AssignedChecklistItemSetDoneMutation, {id, version, done});
+  await runMutation(AssignedChecklistItemSetDoneMutation, { id, version, done });
 }

@@ -1,29 +1,36 @@
 "use client";
 
 import * as React from "react";
-import {useState, useTransition} from "react";
-import {useTranslations} from "next-intl";
-import {Controller, useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import type {LogEntryFieldsFragment} from "@/gql/graphql";
-import {Button} from "@bloomper/fgv-web-ui/ui/button";
-import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
-import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@bloomper/fgv-web-ui/ui/sheet";
-import {DateInput} from "@/components/date-input.client";
-import {Input} from "@bloomper/fgv-web-ui/ui/input";
-import {Label} from "@bloomper/fgv-web-ui/ui/label";
-import {Textarea} from "@bloomper/fgv-web-ui/ui/textarea";
-import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
-import {OwnerField, type OwnerMember} from "@/components/owner/owner-field.client";
-import {createLogEntryAction, updateLogEntryAction} from "@/app/(app)/revivals/[id]/log/actions.server";
-import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {formatDate} from "@/utils/format";
+import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { LogEntryFieldsFragment } from "@/gql/graphql";
+import { Button } from "@bloomper/fgv-web-ui/ui/button";
+import { ScrollArea } from "@bloomper/fgv-web-ui/ui/scroll-area";
 import {
-    LOG_ENTRY_STATUSES,
-    LOG_ENTRY_TYPES,
-    type LogEntryValues,
-    logEntryValuesSchema,
-    MAX_LOG_TEXT
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@bloomper/fgv-web-ui/ui/sheet";
+import { DateInput } from "@/components/date-input.client";
+import { Input } from "@bloomper/fgv-web-ui/ui/input";
+import { Label } from "@bloomper/fgv-web-ui/ui/label";
+import { Textarea } from "@bloomper/fgv-web-ui/ui/textarea";
+import { NativeSelect } from "@bloomper/fgv-web-ui/ui/native-select";
+import { OwnerField, type OwnerMember } from "@/components/owner/owner-field.client";
+import { createLogEntryAction, updateLogEntryAction } from "@/app/(app)/revivals/[id]/log/actions.server";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
+import { formatDate } from "@/utils/format";
+import {
+  LOG_ENTRY_STATUSES,
+  LOG_ENTRY_TYPES,
+  type LogEntryValues,
+  logEntryValuesSchema,
+  MAX_LOG_TEXT,
 } from "@/lib/decision-log/schema";
 
 /**
@@ -31,18 +38,26 @@ import {
  */
 export type LogEventOption = { id: string; title: string; startDate: string; cancelled: boolean };
 
-function valuesOf(entry: LogEntryFieldsFragment | null, initial: Partial<LogEntryValues> | undefined, withEvents: boolean): LogEntryValues {
-    return {
-        type: entry?.type ?? initial?.type ?? "TODO",
-        text: entry?.text ?? initial?.text ?? "",
-        status: entry?.status ?? "OPEN",
-        owner: entry?.owner?.person ? {personId: entry.owner.person.id} : entry?.owner?.name ? {name: entry.owner.name} : null,
-        deadline: entry?.deadline ?? null,
-        date: entry?.date,
-        comment: entry?.comment ?? "",
-        tags: entry?.tags ?? initial?.tags ?? [],
-        eventId: withEvents ? entry?.event?.id ?? initial?.eventId ?? "" : undefined,
-    };
+function valuesOf(
+  entry: LogEntryFieldsFragment | null,
+  initial: Partial<LogEntryValues> | undefined,
+  withEvents: boolean
+): LogEntryValues {
+  return {
+    type: entry?.type ?? initial?.type ?? "TODO",
+    text: entry?.text ?? initial?.text ?? "",
+    status: entry?.status ?? "OPEN",
+    owner: entry?.owner?.person
+      ? { personId: entry.owner.person.id }
+      : entry?.owner?.name
+        ? { name: entry.owner.name }
+        : null,
+    deadline: entry?.deadline ?? null,
+    date: entry?.date,
+    comment: entry?.comment ?? "",
+    tags: entry?.tags ?? initial?.tags ?? [],
+    eventId: withEvents ? (entry?.event?.id ?? initial?.eventId ?? "") : undefined,
+  };
 }
 
 /**
@@ -50,155 +65,257 @@ function valuesOf(entry: LogEntryFieldsFragment | null, initial: Partial<LogEntr
  * With a meeting in progress, the change is recorded as made in it. A new row can start from `initial`, e.g.
  * the closing page's surplus decision: a DECISION tagged "överskott".
  */
-export function LogEntryDialog({revivalId, entry, initial, members, tags, events, meetingId, open, onOpenChange}: {
-    revivalId: string;
-    entry: LogEntryFieldsFragment | null;
-    initial?: Partial<LogEntryValues>;
-    members: OwnerMember[];
-    tags: string[];
-    /** The revival's events, to link the row to one; without them the link is left as it is. */
-    events?: LogEventOption[];
-    meetingId?: string | null;
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
+export function LogEntryDialog({
+  revivalId,
+  entry,
+  initial,
+  members,
+  tags,
+  events,
+  meetingId,
+  open,
+  onOpenChange,
+}: {
+  revivalId: string;
+  entry: LogEntryFieldsFragment | null;
+  initial?: Partial<LogEntryValues>;
+  members: OwnerMember[];
+  tags: string[];
+  /** The revival's events, to link the row to one; without them the link is left as it is. */
+  events?: LogEventOption[];
+  meetingId?: string | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
-    const t = useTranslations();
-    const feedback = useActionFeedback();
-    const [pending, startTransition] = useTransition();
-    const [tagText, setTagText] = useState("");
-    const form = useForm<LogEntryValues>({
-        resolver: zodResolver(logEntryValuesSchema),
-        values: valuesOf(entry, initial, events !== undefined)
-    });
-    const {errors} = form.formState;
-    const error = (message?: string) => message &&
-        <p className="text-sm text-destructive">{t(`Validation.${message}`)}</p>;
+  const t = useTranslations();
+  const feedback = useActionFeedback();
+  const [pending, startTransition] = useTransition();
+  const [tagText, setTagText] = useState("");
+  const form = useForm<LogEntryValues>({
+    resolver: zodResolver(logEntryValuesSchema),
+    values: valuesOf(entry, initial, events !== undefined),
+  });
+  const { errors } = form.formState;
+  const error = (message?: string) =>
+    message && <p className="text-destructive text-sm">{t(`Validation.${message}`)}</p>;
 
-    return (
-        <Sheet open={open} onOpenChange={onOpenChange}>
-            <SheetContent className="w-full sm:max-w-[600px] flex flex-col gap-0 p-0 h-full">
-                <SheetHeader className="p-6 pb-4 shrink-0">
-                    <SheetTitle>{entry ? t("Log.editTitle", {number: entry.number}) : t("Log.addTitle")}</SheetTitle>
-                    <SheetDescription>{t("Log.dialogDescription")}</SheetDescription>
-                </SheetHeader>
-                <form
-                    className="flex min-h-0 flex-1 flex-col overflow-hidden"
-                    onSubmit={form.handleSubmit(values => startTransition(async () => {
-                        const result = entry
-                            ? await updateLogEntryAction({
-                                id: entry.id,
-                                version: entry.version,
-                                revivalId,
-                                meetingId,
-                                values
-                            })
-                            : await createLogEntryAction({revivalId, meetingId, values});
+  return (
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+    >
+      <SheetContent className="flex h-full w-full flex-col gap-0 p-0 sm:max-w-[600px]">
+        <SheetHeader className="shrink-0 p-6 pb-4">
+          <SheetTitle>{entry ? t("Log.editTitle", { number: entry.number }) : t("Log.addTitle")}</SheetTitle>
+          <SheetDescription>{t("Log.dialogDescription")}</SheetDescription>
+        </SheetHeader>
+        <form
+          className="flex min-h-0 flex-1 flex-col overflow-hidden"
+          onSubmit={form.handleSubmit((values) =>
+            startTransition(async () => {
+              const result = entry
+                ? await updateLogEntryAction({
+                    id: entry.id,
+                    version: entry.version,
+                    revivalId,
+                    meetingId,
+                    values,
+                  })
+                : await createLogEntryAction({ revivalId, meetingId, values });
 
-                        if (feedback(result, entry ? t("Common.saved") : t("Log.added"))) {
-                            onOpenChange(false);
+              if (feedback(result, entry ? t("Common.saved") : t("Log.added"))) {
+                onOpenChange(false);
+              }
+            })
+          )}
+        >
+          <ScrollArea className="min-h-0 flex-1 border-t">
+            <div className="space-y-4 px-6 py-6 pb-12">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="log-type">{t("Log.typeLabel")}</Label>
+                  <NativeSelect
+                    className="w-full"
+                    id="log-type"
+                    {...form.register("type")}
+                  >
+                    {LOG_ENTRY_TYPES.map((type) => (
+                      <option
+                        key={type}
+                        value={type}
+                      >
+                        {t(`Log.type.${type}`)}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="log-status">{t("Log.statusLabel")}</Label>
+                  <NativeSelect
+                    className="w-full"
+                    id="log-status"
+                    {...form.register("status")}
+                  >
+                    {LOG_ENTRY_STATUSES.map((status) => (
+                      <option
+                        key={status}
+                        value={status}
+                      >
+                        {t(`Log.status.${status}`)}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="log-text">{t("Log.text")}</Label>
+                <Textarea
+                  id="log-text"
+                  rows={4}
+                  maxLength={MAX_LOG_TEXT}
+                  {...form.register("text")}
+                />
+                {error(errors.text?.message)}
+              </div>
+              <Controller
+                control={form.control}
+                name="owner"
+                render={({ field }) => (
+                  <OwnerField
+                    members={members}
+                    value={field.value ?? null}
+                    onChange={field.onChange}
+                    current={entry?.owner?.person}
+                  />
+                )}
+              />
+              {error(errors.owner?.name?.message ?? errors.owner?.message)}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="log-date">{t("Log.dateLabel")}</Label>
+                  <DateInput
+                    id="log-date"
+                    aria-describedby="log-date-hint"
+                    {...form.register("date", { setValueAs: (value) => value || undefined })}
+                  />
+                  <p
+                    id="log-date-hint"
+                    className="text-muted-foreground text-xs"
+                  >
+                    {t("Log.dateHint")}
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="log-deadline">{t("Log.deadline")}</Label>
+                  <DateInput
+                    id="log-deadline"
+                    aria-describedby="log-deadline-hint"
+                    {...form.register("deadline", { setValueAs: (value) => value || null })}
+                  />
+                  <p
+                    id="log-deadline-hint"
+                    className="text-muted-foreground text-xs"
+                  >
+                    {t("Log.deadlineHint")}
+                  </p>
+                </div>
+              </div>
+              {events && (
+                <div className="space-y-2">
+                  <Label htmlFor="log-event">{t("Log.event")}</Label>
+                  <NativeSelect
+                    className="w-full"
+                    id="log-event"
+                    {...form.register("eventId")}
+                  >
+                    <option value="">{t("Log.noEvent")}</option>
+                    {events.map((event) => (
+                      <option
+                        key={event.id}
+                        value={event.id}
+                      >
+                        {`${formatDate(event.startDate)} ${event.title}`}
+                        {event.cancelled ? ` (${t("Log.cancelledEvent")})` : ""}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="log-comment">{t("Log.comment")}</Label>
+                <Textarea
+                  id="log-comment"
+                  rows={2}
+                  maxLength={MAX_LOG_TEXT}
+                  {...form.register("comment")}
+                />
+                {error(errors.comment?.message)}
+              </div>
+              <Controller
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <div className="space-y-2">
+                    <Label htmlFor="log-tag">{t("Log.tags")}</Label>
+                    <div className="flex flex-wrap gap-1">
+                      {field.value.map((tag) => (
+                        <Button
+                          key={tag}
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          aria-label={t("Log.removeTag", { tag })}
+                          onClick={() => field.onChange(field.value.filter((other) => other !== tag))}
+                        >
+                          {tag} ×
+                        </Button>
+                      ))}
+                    </div>
+                    <Input
+                      id="log-tag"
+                      list="log-tag-options"
+                      value={tagText}
+                      placeholder={t("Log.addTag")}
+                      onChange={(event) => setTagText(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" && tagText.trim()) {
+                          event.preventDefault();
+                          field.onChange([...new Set([...field.value, tagText.trim()])]);
+                          setTagText("");
                         }
-                    }))}
-                >
-                    <ScrollArea className="min-h-0 flex-1 border-t">
-                        <div className="space-y-4 px-6 py-6 pb-12">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="log-type">{t("Log.typeLabel")}</Label>
-                                    <NativeSelect className="w-full" id="log-type" {...form.register("type")}>
-                                        {LOG_ENTRY_TYPES.map(type => <option key={type}
-                                                                             value={type}>{t(`Log.type.${type}`)}</option>)}
-                                    </NativeSelect>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="log-status">{t("Log.statusLabel")}</Label>
-                                    <NativeSelect className="w-full" id="log-status" {...form.register("status")}>
-                                        {LOG_ENTRY_STATUSES.map(status => <option key={status}
-                                                                                  value={status}>{t(`Log.status.${status}`)}</option>)}
-                                    </NativeSelect>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="log-text">{t("Log.text")}</Label>
-                                <Textarea id="log-text" rows={4} maxLength={MAX_LOG_TEXT} {...form.register("text")}/>
-                                {error(errors.text?.message)}
-                            </div>
-                            <Controller control={form.control} name="owner" render={({field}) => (
-                                <OwnerField members={members} value={field.value ?? null} onChange={field.onChange}
-                                            current={entry?.owner?.person}/>
-                            )}/>
-                            {error(errors.owner?.name?.message ?? errors.owner?.message)}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="log-date">{t("Log.dateLabel")}</Label>
-                                    <DateInput id="log-date"
-                                               aria-describedby="log-date-hint" {...form.register("date", {setValueAs: value => value || undefined})}/>
-                                    <p id="log-date-hint"
-                                       className="text-xs text-muted-foreground">{t("Log.dateHint")}</p>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="log-deadline">{t("Log.deadline")}</Label>
-                                    <DateInput id="log-deadline"
-                                               aria-describedby="log-deadline-hint" {...form.register("deadline", {setValueAs: value => value || null})}/>
-                                    <p id="log-deadline-hint"
-                                       className="text-xs text-muted-foreground">{t("Log.deadlineHint")}</p>
-                                </div>
-                            </div>
-                            {events && (
-                                <div className="space-y-2">
-                                    <Label htmlFor="log-event">{t("Log.event")}</Label>
-                                    <NativeSelect className="w-full" id="log-event" {...form.register("eventId")}>
-                                        <option value="">{t("Log.noEvent")}</option>
-                                        {events.map(event => (
-                                            <option key={event.id} value={event.id}>
-                                                {`${formatDate(event.startDate)} ${event.title}`}{event.cancelled ? ` (${t("Log.cancelledEvent")})` : ""}
-                                            </option>
-                                        ))}
-                                    </NativeSelect>
-                                </div>
-                            )}
-                            <div className="space-y-2">
-                                <Label htmlFor="log-comment">{t("Log.comment")}</Label>
-                                <Textarea id="log-comment" rows={2}
-                                          maxLength={MAX_LOG_TEXT} {...form.register("comment")}/>
-                                {error(errors.comment?.message)}
-                            </div>
-                            <Controller control={form.control} name="tags" render={({field}) => (
-                                <div className="space-y-2">
-                                    <Label htmlFor="log-tag">{t("Log.tags")}</Label>
-                                    <div className="flex flex-wrap gap-1">
-                                        {field.value.map(tag => (
-                                            <Button key={tag} type="button" size="sm" variant="secondary"
-                                                    aria-label={t("Log.removeTag", {tag})}
-                                                    onClick={() => field.onChange(field.value.filter(other => other !== tag))}>
-                                                {tag} ×
-                                            </Button>
-                                        ))}
-                                    </div>
-                                    <Input id="log-tag" list="log-tag-options" value={tagText}
-                                           placeholder={t("Log.addTag")}
-                                           onChange={event => setTagText(event.target.value)}
-                                           onKeyDown={(event) => {
-                                               if (event.key === "Enter" && tagText.trim()) {
-                                                   event.preventDefault();
-                                                   field.onChange([...new Set([...field.value, tagText.trim()])]);
-                                                   setTagText("");
-                                               }
-                                           }}/>
-                                    <datalist id="log-tag-options">
-                                        {tags.map(tag => <option key={tag} value={tag}/>)}
-                                    </datalist>
-                                    {error(errors.tags?.message ?? errors.tags?.[0]?.message)}
-                                </div>
-                            )}/>
-                        </div>
-                    </ScrollArea>
-                    <SheetFooter className="p-6 pt-4 border-t bg-muted/30 shrink-0 mt-auto">
-                        <Button type="button" variant="outline"
-                                onClick={() => onOpenChange(false)}>{t("Common.cancel")}</Button>
-                        <Button type="submit" disabled={pending}>{t("Common.save")}</Button>
-                    </SheetFooter>
-                </form>
-            </SheetContent>
-        </Sheet>
-    );
+                      }}
+                    />
+                    <datalist id="log-tag-options">
+                      {tags.map((tag) => (
+                        <option
+                          key={tag}
+                          value={tag}
+                        />
+                      ))}
+                    </datalist>
+                    {error(errors.tags?.message ?? errors.tags?.[0]?.message)}
+                  </div>
+                )}
+              />
+            </div>
+          </ScrollArea>
+          <SheetFooter className="bg-muted/30 mt-auto shrink-0 border-t p-6 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              {t("Common.cancel")}
+            </Button>
+            <Button
+              type="submit"
+              disabled={pending}
+            >
+              {t("Common.save")}
+            </Button>
+          </SheetFooter>
+        </form>
+      </SheetContent>
+    </Sheet>
+  );
 }

@@ -1,8 +1,8 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import type {ApplicationSettingsInput} from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import type { ApplicationSettingsInput } from "@/gql/graphql";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 // The application settings (settings.graphqls), which the super admin keeps.
 
@@ -19,9 +19,9 @@ const ApplicationSettingsUpdateMutation = graphql(`
 `);
 
 export async function getApplicationSettings() {
-    return (await runQuery(ApplicationSettingsQuery, {}))?.applicationSettings;
+  return (await runQuery(ApplicationSettingsQuery, {}))?.applicationSettings;
 }
 
 export async function updateApplicationSettings(version: number, input: ApplicationSettingsInput) {
-    await runMutation(ApplicationSettingsUpdateMutation, {version, input});
+  await runMutation(ApplicationSettingsUpdateMutation, { version, input });
 }

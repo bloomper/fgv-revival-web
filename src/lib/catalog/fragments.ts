@@ -1,4 +1,4 @@
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 
 export const CapabilityFields = graphql(`
     fragment CapabilityFields on Capability {

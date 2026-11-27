@@ -1,57 +1,61 @@
-import {beforeEach, describe, expect, it, vi} from "vitest";
-import {NextRequest} from "next/server";
-import {GET} from "@/app/api/budget-export/[id]/route";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { NextRequest } from "next/server";
+import { GET } from "@/app/api/budget-export/[id]/route";
 
 const apiFetch = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/api.server", () => ({apiFetch}));
+vi.mock("@/lib/api.server", () => ({ apiFetch }));
 
 const get = (id: string, locale?: string) => {
-    const request = new NextRequest(`http://localhost/api/budget-export/${id}`, {headers: locale ? {cookie: `locale=${locale}`} : {}});
+  const request = new NextRequest(`http://localhost/api/budget-export/${id}`, {
+    headers: locale ? { cookie: `locale=${locale}` } : {},
+  });
 
-    return GET(request, {params: Promise.resolve({id})});
+  return GET(request, { params: Promise.resolve({ id }) });
 };
 
 describe("GET /api/budget-export/[id]", () => {
-    beforeEach(() => {
-        apiFetch.mockReset();
-    });
+  beforeEach(() => {
+    apiFetch.mockReset();
+  });
 
-    it.each(["1", "1;drop", "../1", "a b"])("refuses %s", async id => {
-        expect((await get(id)).status).toBe(400);
-        expect(apiFetch).not.toHaveBeenCalled();
-    });
+  it.each(["1", "1;drop", "../1", "a b"])("refuses %s", async (id) => {
+    expect((await get(id)).status).toBe(400);
+    expect(apiFetch).not.toHaveBeenCalled();
+  });
 
-    it("downloads the workbook in the locale cookie's language", async () => {
-        apiFetch.mockResolvedValue(new Response(new Uint8Array([80, 75, 3, 4]), {
-            status: 200,
-            headers: {
-                "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "content-disposition": "attachment; filename=\"budget-ali-baba-2028.xlsx\""
-            },
-        }));
+  it("downloads the workbook in the locale cookie's language", async () => {
+    apiFetch.mockResolvedValue(
+      new Response(new Uint8Array([80, 75, 3, 4]), {
+        status: 200,
+        headers: {
+          "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "content-disposition": 'attachment; filename="budget-ali-baba-2028.xlsx"',
+        },
+      })
+    );
 
-        const response = await get("00000000-0000-7000-8000-000000000003", "en");
+    const response = await get("00000000-0000-7000-8000-000000000003", "en");
 
-        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/budget.xlsx?lang=en");
-        expect(response.status).toBe(200);
-        expect(response.headers.get("content-disposition")).toBe("attachment; filename=\"budget-ali-baba-2028.xlsx\"");
-        expect(response.headers.get("cache-control")).toBe("no-store");
-        expect(response.headers.get("content-security-policy")).toBe("default-src 'none'; sandbox");
-        expect(new Uint8Array(await response.arrayBuffer())).toEqual(new Uint8Array([80, 75, 3, 4]));
-    });
+    expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/budget.xlsx?lang=en");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-disposition")).toBe('attachment; filename="budget-ali-baba-2028.xlsx"');
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("content-security-policy")).toBe("default-src 'none'; sandbox");
+    expect(new Uint8Array(await response.arrayBuffer())).toEqual(new Uint8Array([80, 75, 3, 4]));
+  });
 
-    it("falls back to Swedish for an unknown locale", async () => {
-        apiFetch.mockResolvedValue(new Response(new Uint8Array([1]), {status: 200}));
+  it("falls back to Swedish for an unknown locale", async () => {
+    apiFetch.mockResolvedValue(new Response(new Uint8Array([1]), { status: 200 }));
 
-        await get("00000000-0000-7000-8000-000000000003", "de");
+    await get("00000000-0000-7000-8000-000000000003", "de");
 
-        expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/budget.xlsx?lang=sv");
-    });
+    expect(apiFetch).toHaveBeenCalledWith("/api/revivals/00000000-0000-7000-8000-000000000003/budget.xlsx?lang=sv");
+  });
 
-    it("forwards the server's error status", async () => {
-        apiFetch.mockResolvedValue(new Response("{}", {status: 404}));
+  it("forwards the server's error status", async () => {
+    apiFetch.mockResolvedValue(new Response("{}", { status: 404 }));
 
-        expect((await get("00000000-0000-7000-8000-000000000003")).status).toBe(404);
-    });
+    expect((await get("00000000-0000-7000-8000-000000000003")).status).toBe(404);
+  });
 });

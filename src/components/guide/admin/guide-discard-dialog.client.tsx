@@ -1,66 +1,78 @@
 "use client";
 
-import {useTransition} from "react";
-import {useTranslations} from "next-intl";
-import {Trash2} from "lucide-react";
-import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import { useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { Trash2 } from "lucide-react";
+import { Button } from "@bloomper/fgv-web-ui/ui/button";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@bloomper/fgv-web-ui/ui/alert-dialog";
-import {discardGuideAction} from "@/app/(app)/admin/guide/actions.server";
-import {useActionFeedback} from "@/hooks/use-action-feedback";
-import {track} from "@/utils/umami";
+import { discardGuideAction } from "@/app/(app)/admin/guide/actions.server";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
+import { track } from "@/utils/umami";
 
 /**
  * Discards the draft after explicit confirmation, saying how many accepted suggestions will reopen.
  */
-export function GuideDiscardDialog({draftId, version, acceptedSuggestionCount}: {
-    draftId: string;
-    version: number;
-    acceptedSuggestionCount: number
+export function GuideDiscardDialog({
+  draftId,
+  version,
+  acceptedSuggestionCount,
+}: {
+  draftId: string;
+  version: number;
+  acceptedSuggestionCount: number;
 }) {
-    const t = useTranslations();
-    const feedback = useActionFeedback();
-    const [pending, startTransition] = useTransition();
+  const t = useTranslations();
+  const feedback = useActionFeedback();
+  const [pending, startTransition] = useTransition();
 
-    return (
-        <AlertDialog>
-            <AlertDialogTrigger
-                render={<Button variant="outline" className="text-destructive hover:text-destructive"/>}>
-                <Trash2/>
-                {t("Guide.discard.open")}
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>{t("Guide.discard.title")}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        {t("Guide.discard.description")}
-                        {acceptedSuggestionCount > 0 && <> {t("Guide.discard.reopens", {count: acceptedSuggestionCount})}</>}
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
-                    <AlertDialogAction
-                        variant="destructive"
-                        disabled={pending}
-                        onClick={() => startTransition(async () => {
-                            if (feedback(await discardGuideAction({id: draftId, version}), t("Guide.discard.done"))) {
-                                track("guide-discard");
-                            }
-                        })}
-                    >
-                        {t("Guide.discard.confirm")}
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-    );
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger
+        render={
+          <Button
+            variant="outline"
+            className="text-destructive hover:text-destructive"
+          />
+        }
+      >
+        <Trash2 />
+        {t("Guide.discard.open")}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("Guide.discard.title")}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t("Guide.discard.description")}
+            {acceptedSuggestionCount > 0 && <> {t("Guide.discard.reopens", { count: acceptedSuggestionCount })}</>}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t("Common.cancel")}</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
+            disabled={pending}
+            onClick={() =>
+              startTransition(async () => {
+                if (feedback(await discardGuideAction({ id: draftId, version }), t("Guide.discard.done"))) {
+                  track("guide-discard");
+                }
+              })
+            }
+          >
+            {t("Guide.discard.confirm")}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }

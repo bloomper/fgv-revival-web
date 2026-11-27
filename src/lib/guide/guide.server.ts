@@ -1,26 +1,26 @@
 import "server-only";
 
-import {cache} from "react";
-import {graphql} from "@/gql";
+import { cache } from "react";
+import { graphql } from "@/gql";
 import type {
-    GuideChapterCreateInput,
-    GuideChapterInput,
-    GuideChapterMoveInput,
-    GuideDraftPublishInput,
-    GuideIntroductionInput,
-    GuideItemCreateInput,
-    GuideItemMoveInput,
-    GuideItemUpdateInput,
-    GuideSectionCreateInput,
-    GuideSectionMoveInput,
-    GuideSectionUpdateInput,
-    GuideSuggestionAcceptInput,
-    GuideSuggestionCreateInput,
-    GuideSuggestionRejectInput,
-    GuideSuggestionStatus,
-    RevivalGuideVersionChangeInput,
+  GuideChapterCreateInput,
+  GuideChapterInput,
+  GuideChapterMoveInput,
+  GuideDraftPublishInput,
+  GuideIntroductionInput,
+  GuideItemCreateInput,
+  GuideItemMoveInput,
+  GuideItemUpdateInput,
+  GuideSectionCreateInput,
+  GuideSectionMoveInput,
+  GuideSectionUpdateInput,
+  GuideSuggestionAcceptInput,
+  GuideSuggestionCreateInput,
+  GuideSuggestionRejectInput,
+  GuideSuggestionStatus,
+  RevivalGuideVersionChangeInput,
 } from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 const GuideReadableQuery = graphql(`
     query GuideReadable {
@@ -231,35 +231,35 @@ const GuideSearchQuery = graphql(`
  * the home page both ask.
  */
 export const getGuideReadable = cache(async () => {
-    try {
-        return (await runQuery(GuideReadableQuery, {}))?.guideReadable ?? true;
-    } catch {
-        return true;
-    }
+  try {
+    return (await runQuery(GuideReadableQuery, {}))?.guideReadable ?? true;
+  } catch {
+    return true;
+  }
 });
 
 export async function getGuideLatestVersion() {
-    return (await runQuery(GuideLatestVersionQuery, {}))?.guideLatestVersion ?? null;
+  return (await runQuery(GuideLatestVersionQuery, {}))?.guideLatestVersion ?? null;
 }
 
 export async function getGuideVersion(id: string) {
-    return (await runQuery(GuideVersionQuery, {id}))?.guideVersion ?? null;
+  return (await runQuery(GuideVersionQuery, { id }))?.guideVersion ?? null;
 }
 
 /**
  * A revival the user can see and the version it is pinned to, or a null version before the first is published.
  */
 export async function getRevivalGuide(revivalId: string) {
-    const revival = (await runQuery(RevivalGuideQuery, {id: revivalId}))?.revival ?? null;
+  const revival = (await runQuery(RevivalGuideQuery, { id: revivalId }))?.revival ?? null;
 
-    if (!revival) {
-        return null;
-    }
-    return {revival, version: revival.guideVersion ? await getGuideVersion(revival.guideVersion.id) : null};
+  if (!revival) {
+    return null;
+  }
+  return { revival, version: revival.guideVersion ? await getGuideVersion(revival.guideVersion.id) : null };
 }
 
 export async function searchGuide(versionId: string | null, query: string) {
-    return (await runQuery(GuideSearchQuery, {versionId, query}))?.guideSearch ?? [];
+  return (await runQuery(GuideSearchQuery, { versionId, query }))?.guideSearch ?? [];
 }
 
 const GuideDraftQuery = graphql(`
@@ -285,69 +285,69 @@ const DiscardMutation = graphql(`
 `);
 
 export async function getGuideVersions() {
-    return (await runQuery(GuideVersionsQuery, {}))?.guideVersions ?? [];
+  return (await runQuery(GuideVersionsQuery, {}))?.guideVersions ?? [];
 }
 
 /**
  * Published versions with how much each is used, for super admins.
  */
 export async function getGuideVersionsAdmin() {
-    return (await runQuery(GuideVersionsAdminQuery, {}))?.guideVersions ?? [];
+  return (await runQuery(GuideVersionsAdminQuery, {}))?.guideVersions ?? [];
 }
 
 export async function deleteGuideVersion(id: string, version: number) {
-    await runMutation(GuideVersionDeleteMutation, {id, version});
+  await runMutation(GuideVersionDeleteMutation, { id, version });
 }
 
 export async function getGuideDraft() {
-    return (await runQuery(GuideDraftQuery, {}))?.guideDraft ?? null;
+  return (await runQuery(GuideDraftQuery, {}))?.guideDraft ?? null;
 }
 
 export async function publishGuideDraft(input: GuideDraftPublishInput) {
-    return (await runMutation(PublishMutation, {input}))?.guideDraftPublish;
+  return (await runMutation(PublishMutation, { input }))?.guideDraftPublish;
 }
 
 export async function discardGuideDraft(id: string, version: number) {
-    await runMutation(DiscardMutation, {id, version});
+  await runMutation(DiscardMutation, { id, version });
 }
 
 export async function getGuideChanges(fromId: string, toId: string) {
-    return (await runQuery(GuideChangesQuery, {fromId, toId}))?.guideChanges ?? null;
+  return (await runQuery(GuideChangesQuery, { fromId, toId }))?.guideChanges ?? null;
 }
 
 export async function changeRevivalGuideVersion(input: RevivalGuideVersionChangeInput) {
-    return (await runMutation(RevivalGuideVersionChangeMutation, {input}))?.revivalGuideVersionChange;
+  return (await runMutation(RevivalGuideVersionChangeMutation, { input }))?.revivalGuideVersionChange;
 }
 
 export async function startGuideDraft() {
-    return (await runMutation(GuideDraftStartMutation, {}))?.guideDraftStart;
+  return (await runMutation(GuideDraftStartMutation, {}))?.guideDraftStart;
 }
 
 export async function updateGuideIntroduction(input: GuideIntroductionInput) {
-    await runMutation(GuideIntroductionUpdateMutation, {input});
+  await runMutation(GuideIntroductionUpdateMutation, { input });
 }
 
 export async function createGuideChapter(input: GuideChapterCreateInput) {
-    return (await runMutation(GuideChapterCreateMutation, {input}))?.guideChapterCreate;
+  return (await runMutation(GuideChapterCreateMutation, { input }))?.guideChapterCreate;
 }
 
 export async function updateGuideChapter(input: GuideChapterInput) {
-    await runMutation(GuideChapterUpdateMutation, {input});
+  await runMutation(GuideChapterUpdateMutation, { input });
 }
 
 export async function moveGuideChapter(input: GuideChapterMoveInput) {
-    await runMutation(GuideChapterMoveMutation, {input});
+  await runMutation(GuideChapterMoveMutation, { input });
 }
 
 export async function removeGuideChapter(id: string, version: number) {
-    await runMutation(GuideChapterRemoveMutation, {id, version});
+  await runMutation(GuideChapterRemoveMutation, { id, version });
 }
 
 /**
  * What removing the chapter would delete in revivals' checklists once they move to a version without it.
  */
 export async function getChapterRemovalImpact(chapterKey: string) {
-    return (await runQuery(GuideChapterRemovalImpactQuery, {chapterKey}))?.guideChapterRemovalImpact ?? null;
+  return (await runQuery(GuideChapterRemovalImpactQuery, { chapterKey }))?.guideChapterRemovalImpact ?? null;
 }
 
 /**
@@ -355,67 +355,73 @@ export async function getChapterRemovalImpact(chapterKey: string) {
  * delete in revivals' checklists.
  */
 export async function getRemovedChapters(draft: { basedOn?: { id: string } | null; chapters: { key: string }[] }) {
-    if (!draft.basedOn) {
-        return [];
-    }
+  if (!draft.basedOn) {
+    return [];
+  }
 
-    const basedOn = await getGuideVersion(draft.basedOn.id);
-    const kept = new Set(draft.chapters.map(chapter => chapter.key));
-    const removed = (basedOn?.chapters ?? []).filter(chapter => !kept.has(chapter.key));
+  const basedOn = await getGuideVersion(draft.basedOn.id);
+  const kept = new Set(draft.chapters.map((chapter) => chapter.key));
+  const removed = (basedOn?.chapters ?? []).filter((chapter) => !kept.has(chapter.key));
 
-    return Promise.all(removed.map(async chapter => {
-        const impact = await getChapterRemovalImpact(chapter.key);
+  return Promise.all(
+    removed.map(async (chapter) => {
+      const impact = await getChapterRemovalImpact(chapter.key);
 
-        return {
-            key: chapter.key,
-            title: chapter.title,
-            revivalCount: impact?.revivalCount ?? 0,
-            itemCount: impact?.itemCount ?? 0,
-            doneCount: impact?.doneCount ?? 0
-        };
-    }));
+      return {
+        key: chapter.key,
+        title: chapter.title,
+        revivalCount: impact?.revivalCount ?? 0,
+        itemCount: impact?.itemCount ?? 0,
+        doneCount: impact?.doneCount ?? 0,
+      };
+    })
+  );
 }
 
 /**
  * The revival's chapter checklists that moving to the version would delete.
  */
 export async function getGuideVersionChangeImpact(revivalId: string, toId: string) {
-    return (await runQuery(RevivalGuideVersionChangeImpactQuery, {
+  return (
+    (
+      await runQuery(RevivalGuideVersionChangeImpactQuery, {
         id: revivalId,
-        toId
-    }))?.revival?.guideVersionChangeImpact ?? [];
+        toId,
+      })
+    )?.revival?.guideVersionChangeImpact ?? []
+  );
 }
 
 export async function createGuideSection(input: GuideSectionCreateInput) {
-    await runMutation(GuideSectionCreateMutation, {input});
+  await runMutation(GuideSectionCreateMutation, { input });
 }
 
 export async function updateGuideSection(input: GuideSectionUpdateInput) {
-    await runMutation(GuideSectionUpdateMutation, {input});
+  await runMutation(GuideSectionUpdateMutation, { input });
 }
 
 export async function moveGuideSection(input: GuideSectionMoveInput) {
-    await runMutation(GuideSectionMoveMutation, {input});
+  await runMutation(GuideSectionMoveMutation, { input });
 }
 
 export async function removeGuideSection(id: string, version: number) {
-    await runMutation(GuideSectionRemoveMutation, {id, version});
+  await runMutation(GuideSectionRemoveMutation, { id, version });
 }
 
 export async function createGuideItem(input: GuideItemCreateInput) {
-    await runMutation(GuideItemCreateMutation, {input});
+  await runMutation(GuideItemCreateMutation, { input });
 }
 
 export async function updateGuideItem(input: GuideItemUpdateInput) {
-    await runMutation(GuideItemUpdateMutation, {input});
+  await runMutation(GuideItemUpdateMutation, { input });
 }
 
 export async function moveGuideItem(input: GuideItemMoveInput) {
-    await runMutation(GuideItemMoveMutation, {input});
+  await runMutation(GuideItemMoveMutation, { input });
 }
 
 export async function removeGuideItem(id: string, version: number) {
-    await runMutation(GuideItemRemoveMutation, {id, version});
+  await runMutation(GuideItemRemoveMutation, { id, version });
 }
 
 export const GuideSuggestionFields = graphql(`
@@ -476,21 +482,21 @@ const GuideSuggestionWithdrawMutation = graphql(`
 `);
 
 export async function getGuideSuggestions(status: GuideSuggestionStatus[] | null, revivalId: string | null) {
-    return (await runQuery(GuideSuggestionsQuery, {status, revivalId}))?.guideSuggestions ?? [];
+  return (await runQuery(GuideSuggestionsQuery, { status, revivalId }))?.guideSuggestions ?? [];
 }
 
 export async function createGuideSuggestion(input: GuideSuggestionCreateInput) {
-    await runMutation(GuideSuggestionCreateMutation, {input});
+  await runMutation(GuideSuggestionCreateMutation, { input });
 }
 
 export async function acceptGuideSuggestion(input: GuideSuggestionAcceptInput) {
-    await runMutation(GuideSuggestionAcceptMutation, {input});
+  await runMutation(GuideSuggestionAcceptMutation, { input });
 }
 
 export async function rejectGuideSuggestion(input: GuideSuggestionRejectInput) {
-    await runMutation(GuideSuggestionRejectMutation, {input});
+  await runMutation(GuideSuggestionRejectMutation, { input });
 }
 
 export async function withdrawGuideSuggestion(id: string, version: number) {
-    await runMutation(GuideSuggestionWithdrawMutation, {id, version});
+  await runMutation(GuideSuggestionWithdrawMutation, { id, version });
 }

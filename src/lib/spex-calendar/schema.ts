@@ -1,19 +1,22 @@
-import {z} from "zod";
-import {isoDate} from "@/lib/date-schema";
+import { z } from "zod";
+import { isoDate } from "@/lib/date-schema";
 
 export const MAX_SPEX_DATE_LABEL = 100;
 
 export const spexCalendarDateValuesSchema = z.object({
-    date: isoDate,
-    label: z.string().trim().min(1, "spexDateLabelRequired").max(MAX_SPEX_DATE_LABEL, "spexDateLabelTooLong"),
+  date: isoDate,
+  label: z.string().trim().min(1, "spexDateLabelRequired").max(MAX_SPEX_DATE_LABEL, "spexDateLabelTooLong"),
 });
 
 export type SpexCalendarDateValues = z.infer<typeof spexCalendarDateValuesSchema>;
 
-export const spexCalendarDateCreateSchema = z.object({values: spexCalendarDateValuesSchema});
+export const spexCalendarDateCreateSchema = z.object({ values: spexCalendarDateValuesSchema });
 export const spexCalendarDateUpdateSchema = z.object({
-    id: z.string().min(1),
-    version: z.number().int().nonnegative(),
-    values: spexCalendarDateValuesSchema
+  id: z.string().min(1),
+  version: z.number().int().nonnegative(),
+  values: spexCalendarDateValuesSchema,
 });
-export const spexCalendarDateDeleteSchema = z.object({id: z.string().min(1), version: z.number().int().nonnegative()});
+export const spexCalendarDateDeleteSchema = z.object({
+  id: z.string().min(1),
+  version: z.number().int().nonnegative(),
+});

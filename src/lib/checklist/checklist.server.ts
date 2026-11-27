@@ -1,16 +1,16 @@
 import "server-only";
 
-import {graphql} from "@/gql";
+import { graphql } from "@/gql";
 import type {
-    ChecklistAddFromTemplateInput,
-    ChecklistItemCreateInput,
-    ChecklistItemFilter,
-    ChecklistItemSetStateInput,
-    ChecklistItemUpdateInput,
-    EventChecklistCreateInput,
-    EventChecklistUpdateInput,
+  ChecklistAddFromTemplateInput,
+  ChecklistItemCreateInput,
+  ChecklistItemFilter,
+  ChecklistItemSetStateInput,
+  ChecklistItemUpdateInput,
+  EventChecklistCreateInput,
+  EventChecklistUpdateInput,
 } from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 const RevivalChecklistsQuery = graphql(`
     query RevivalChecklists($id: ID!, $filter: ChecklistItemFilter, $filtered: Boolean!, $includeCancelled: Boolean!) {
@@ -95,54 +95,62 @@ const ChecklistItemSetStateMutation = graphql(`
     }
 `);
 
-export async function getRevivalChecklists(revivalId: string, filter: ChecklistItemFilter | null, includeCancelled = false) {
-    const data = await runQuery(RevivalChecklistsQuery, {
-        id: revivalId,
-        filter,
-        filtered: filter !== null,
-        includeCancelled
-    });
+export async function getRevivalChecklists(
+  revivalId: string,
+  filter: ChecklistItemFilter | null,
+  includeCancelled = false
+) {
+  const data = await runQuery(RevivalChecklistsQuery, {
+    id: revivalId,
+    filter,
+    filtered: filter !== null,
+    includeCancelled,
+  });
 
-    return data?.revival ? {
+  return data?.revival
+    ? {
         revival: data.revival,
         checklists: data.checklists,
-        items: data.checklistItems ?? null
-    } : null;
+        items: data.checklistItems ?? null,
+      }
+    : null;
 }
 
 export async function getChecklist(revivalId: string, id: string) {
-    const data = await runQuery(ChecklistQuery, {id, revivalId});
+  const data = await runQuery(ChecklistQuery, { id, revivalId });
 
-    return data?.revival && data.checklist && data.checklist.revivalId === revivalId ? {
+  return data?.revival && data.checklist && data.checklist.revivalId === revivalId
+    ? {
         revival: data.revival,
-        checklist: data.checklist
-    } : null;
+        checklist: data.checklist,
+      }
+    : null;
 }
 
 export async function createChecklistItem(input: ChecklistItemCreateInput) {
-    await runMutation(ChecklistItemCreateMutation, {input});
+  await runMutation(ChecklistItemCreateMutation, { input });
 }
 
 export async function updateChecklistItem(input: ChecklistItemUpdateInput) {
-    await runMutation(ChecklistItemUpdateMutation, {input});
+  await runMutation(ChecklistItemUpdateMutation, { input });
 }
 
 export async function setChecklistItemState(input: ChecklistItemSetStateInput) {
-    await runMutation(ChecklistItemSetStateMutation, {input});
+  await runMutation(ChecklistItemSetStateMutation, { input });
 }
 
 export async function createEventChecklist(input: EventChecklistCreateInput) {
-    return (await runMutation(EventChecklistCreateMutation, {input}))?.eventChecklistCreate ?? null;
+  return (await runMutation(EventChecklistCreateMutation, { input }))?.eventChecklistCreate ?? null;
 }
 
 export async function updateEventChecklist(input: EventChecklistUpdateInput) {
-    await runMutation(EventChecklistUpdateMutation, {input});
+  await runMutation(EventChecklistUpdateMutation, { input });
 }
 
 export async function cancelEventChecklist(id: string, version: number) {
-    await runMutation(EventChecklistCancelMutation, {id, version});
+  await runMutation(EventChecklistCancelMutation, { id, version });
 }
 
 export async function addChecklistItemsFromTemplate(input: ChecklistAddFromTemplateInput) {
-    await runMutation(ChecklistAddFromTemplateMutation, {input});
+  await runMutation(ChecklistAddFromTemplateMutation, { input });
 }

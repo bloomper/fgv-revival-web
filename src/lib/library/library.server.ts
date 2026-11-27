@@ -1,8 +1,8 @@
 import "server-only";
 
-import {graphql} from "@/gql";
-import type {LibraryEntryInput} from "@/gql/graphql";
-import {runMutation, runQuery} from "@/lib/graphql.server";
+import { graphql } from "@/gql";
+import type { LibraryEntryInput } from "@/gql/graphql";
+import { runMutation, runQuery } from "@/lib/graphql.server";
 
 // The reference library (library.graphqls): whoever reads the guide reads it, the super admin keeps it.
 
@@ -40,21 +40,21 @@ const LibraryEntryRestoreMutation = graphql(`
  * By kind, then Swedish name; retired entries only when asked for.
  */
 export async function getLibraryEntries(includeRetired = false) {
-    return (await runQuery(LibraryEntriesQuery, {includeRetired}))?.libraryEntries ?? [];
+  return (await runQuery(LibraryEntriesQuery, { includeRetired }))?.libraryEntries ?? [];
 }
 
 export async function createLibraryEntry(input: LibraryEntryInput) {
-    await runMutation(LibraryEntryCreateMutation, {input});
+  await runMutation(LibraryEntryCreateMutation, { input });
 }
 
 export async function updateLibraryEntry(id: string, version: number, input: LibraryEntryInput) {
-    await runMutation(LibraryEntryUpdateMutation, {id, version, input});
+  await runMutation(LibraryEntryUpdateMutation, { id, version, input });
 }
 
 export async function retireLibraryEntry(id: string, version: number) {
-    await runMutation(LibraryEntryRetireMutation, {id, version});
+  await runMutation(LibraryEntryRetireMutation, { id, version });
 }
 
 export async function restoreLibraryEntry(id: string, version: number) {
-    await runMutation(LibraryEntryRestoreMutation, {id, version});
+  await runMutation(LibraryEntryRestoreMutation, { id, version });
 }

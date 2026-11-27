@@ -1,4 +1,4 @@
-import {z} from "zod";
+import { z } from "zod";
 
 export const MAX_CATALOG_NAME = 100;
 
@@ -10,28 +10,28 @@ export const GUIDE_ITEM_KINDS = ["TIP", "REQUIREMENT", "QUESTION", "TEXT"] as co
 export const catalogId = z.string().trim().min(1).max(36);
 
 export const catalogNameSchema = z.object({
-    sv: z.string().trim().min(1, "catalogNameRequired").max(MAX_CATALOG_NAME, "catalogNameTooLong"),
-    en: z.string().trim().max(MAX_CATALOG_NAME, "catalogNameTooLong").optional().nullable(),
+  sv: z.string().trim().min(1, "catalogNameRequired").max(MAX_CATALOG_NAME, "catalogNameTooLong"),
+  en: z.string().trim().max(MAX_CATALOG_NAME, "catalogNameTooLong").optional().nullable(),
 });
 
 export type CatalogNameValues = z.infer<typeof catalogNameSchema>;
 
 export const catalogCreateSchema = z.object({
-    name: catalogNameSchema,
-    kind: z.enum(GUIDE_ITEM_KINDS).optional(),
+  name: catalogNameSchema,
+  kind: z.enum(GUIDE_ITEM_KINDS).optional(),
 });
 
 export const catalogUpdateSchema = z.object({
-    id: catalogId,
-    version: z.number().int().nonnegative(),
-    name: catalogNameSchema,
+  id: catalogId,
+  version: z.number().int().nonnegative(),
+  name: catalogNameSchema,
 });
 
 export const catalogTransitionSchema = z.object({
-    id: catalogId,
-    version: z.number().int().nonnegative(),
+  id: catalogId,
+  version: z.number().int().nonnegative(),
 });
 
 export const catalogMoveSchema = catalogTransitionSchema.extend({
-    position: z.number().int().nonnegative(),
+  position: z.number().int().nonnegative(),
 });
