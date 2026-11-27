@@ -5,8 +5,8 @@ import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
 import {RefreshCw} from "lucide-react";
 import type {SyncPreviewQuery, SyncRunFieldsFragment} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,8 +17,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@bloomper/fgv-web-ui/ui/table";
 import {startSyncAction, syncFinishedAction, syncRunAction} from "@/app/(app)/revivals/[id]/closing/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {formatInstant} from "@/utils/format";

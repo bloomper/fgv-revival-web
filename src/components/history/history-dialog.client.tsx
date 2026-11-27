@@ -3,9 +3,9 @@
 import {useEffect, useState} from "react";
 import {useTranslations} from "next-intl";
 import {History, Pencil, PlusCircle, Trash2} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
-import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog";
-import {Skeleton} from "@/components/ui/skeleton";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Skeleton} from "@bloomper/fgv-web-ui/ui/skeleton";
 import {getRevisionsAction, type Revision} from "@/app/(app)/history/actions.server";
 import type {AuditedType} from "@/gql/graphql";
 import {historyFieldLabel, historyValue} from "@/components/history/history";

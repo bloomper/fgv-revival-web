@@ -12,7 +12,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
 import {removeMemberAction} from "@/app/(app)/revivals/[id]/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {track} from "@/utils/umami";

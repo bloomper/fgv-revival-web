@@ -4,9 +4,9 @@ import {useMemo, useState} from "react";
 import Link from "next/link";
 import {useTranslations} from "next-intl";
 import {Plus, X} from "lucide-react";
-import {Button, buttonVariants} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {DataEmpty} from "@/components/data-empty";
+import {Button, buttonVariants} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {DataFilter} from "@/components/data-filter";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
 import {type AudienceValue, MailingStatusBadge, useAudienceText} from "@/components/mailing/mailing-labels";
@@ -60,7 +60,7 @@ export function MailingTable({revivalId, mailings, canDraft}: {
                                                   title={t("Mailings.subject")}/>,
             cell: ({row}) => (
                 <Link href={`/revivals/${revivalId}/mailings/${row.original.id}`}
-                      className="font-medium whitespace-normal hover:text-primary">
+                      className="font-medium whitespace-normal hover:text-link">
                     {row.original.subject}
                 </Link>
             ),

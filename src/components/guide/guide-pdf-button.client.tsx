@@ -2,8 +2,8 @@
 
 import {useTranslations} from "next-intl";
 import {Download} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
 import {track} from "@/utils/umami";
 
 /**

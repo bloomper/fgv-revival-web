@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {useTranslations} from "next-intl";
 import {CalendarCheck, CalendarDays, ClipboardCheck, Drama, Star} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import {CancelledBadge, PremiereDistanceLabel} from "@/components/event/event-labels";
 import {formatEventDates, type TimelineItem, type TimelineMonth} from "@/components/event/timeline";
 import {formatDate} from "@/utils/format";
@@ -39,7 +39,7 @@ function What({item, revivalId}: { item: TimelineItem; revivalId: string }) {
                     {item.event.location && <span className="text-muted-foreground">{item.event.location}</span>}
                     {item.event.checklist && (
                         <Link href={`/revivals/${revivalId}/checklists/${item.event.checklist.id}`}
-                              className="inline-flex items-center gap-1 text-muted-foreground tabular-nums hover:text-primary"
+                              className="inline-flex items-center gap-1 text-muted-foreground tabular-nums hover:text-link"
                               aria-label={t("checklistLink", {
                                   open: item.event.checklist.openCount,
                                   total: item.event.checklist.totalCount

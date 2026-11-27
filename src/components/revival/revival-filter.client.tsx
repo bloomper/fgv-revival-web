@@ -4,8 +4,8 @@ import {useMemo, useState} from "react";
 import {useTranslations} from "next-intl";
 import {X} from "lucide-react";
 import type {RevivalStatus, RevivalSummaryFragment} from "@/gql/graphql";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
 import {DataFilter} from "@/components/data-filter";
 
 export const REVIVAL_STATUSES: RevivalStatus[] = ["PROPOSED", "APPROVED", "REJECTED", "ORGANISING", "OPEN", "CLOSING", "SETTLING", "ARCHIVED"];

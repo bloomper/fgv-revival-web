@@ -2,7 +2,7 @@
 
 import {useTransition} from "react";
 import {useTranslations} from "next-intl";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {PlainText} from "@/components/plain-text";
 import {signUpForShiftAction, withdrawFromShiftAction} from "@/app/(app)/revivals/[id]/me/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";

@@ -10,6 +10,7 @@ import {getRevivalTimeline} from "@/lib/spex-calendar/spex-calendar.server";
 import {isSuperAdmin} from "@/utils/auth";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * All revivals: super admins create revivals here and open one to manage it; observers see the same list read-only.
@@ -38,18 +39,15 @@ export default async function ManageRevivalsPage({searchParams}: {
         }
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-2xl font-bold tracking-tight">{t("Admin.title")}</h1>
-                    {!superAdmin && <p className="text-sm text-muted-foreground">{t("Admin.readOnly")}</p>}
-                </div>
+            <Page>
+                <PageHeader title={t("Admin.title")} description={!superAdmin && t("Admin.readOnly")}/>
                 <nav aria-label={t("RevivalTimeline.views")} className="flex w-fit gap-1 rounded-lg bg-muted p-1">
                     <ViewLink href="/revivals/manage" active={!timeline} icon={List}>{t("Event.list")}</ViewLink>
                     <ViewLink href="/revivals/manage?view=timeline" active={timeline}
                               icon={GanttChart}>{t("RevivalTimeline.title")}</ViewLink>
                 </nav>
                 {content}
-            </div>
+            </Page>
         );
     });
 }

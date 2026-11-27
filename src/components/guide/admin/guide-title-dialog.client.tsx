@@ -4,11 +4,11 @@ import {type ReactElement, type ReactNode, useState, useTransition} from "react"
 import {useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
+import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@bloomper/fgv-web-ui/ui/sheet";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
 import type {ActionResult} from "@/lib/graphql.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {guideTitleSchema, type GuideTitleValues} from "@/lib/guide/schema";

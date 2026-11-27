@@ -3,7 +3,7 @@
 import {useState} from "react";
 import {useTranslations} from "next-intl";
 import {Gavel} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {LogEntryDialog} from "@/components/decision-log/log-entry-dialog.client";
 import type {OwnerMember} from "@/components/owner/owner-field.client";
 

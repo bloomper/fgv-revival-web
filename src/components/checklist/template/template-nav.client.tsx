@@ -7,18 +7,19 @@ import {useParams, useRouter, useSearchParams} from "next/navigation";
 import {useLocale, useTranslations} from "next-intl";
 import {Plus} from "lucide-react";
 import type {ChecklistTemplatesQuery} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
+import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle} from "@bloomper/fgv-web-ui/ui/sheet";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
 import {pickText} from "@/components/guide/localized";
 import {ShowRetiredSwitch} from "@/components/show-retired-switch.client";
 import {createTemplateAction} from "@/app/(app)/admin/checklist-templates/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {MAX_TEMPLATE_NAME} from "@/lib/checklist/schema";
 import {cn} from "@/utils/utils";
+import {PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 type Template = ChecklistTemplatesQuery["checklistTemplates"][number];
 type Chapter = { key: string; title: { sv: string; en?: string | null } };
@@ -42,9 +43,8 @@ export function TemplatePageHeader() {
     const retired = useSearchParams().get("retired") === "1";
 
     return (
-        <div className={cn("flex flex-wrap items-center justify-between gap-2", current && "hidden lg:flex")}>
-            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-            <ShowRetiredSwitch shown={retired} label={t("showRetired")}/>
+        <div className={cn(current && "hidden lg:block")}>
+            <PageHeader title={t("title")} actions={<ShowRetiredSwitch shown={retired} label={t("showRetired")}/>}/>
         </div>
     );
 }
@@ -116,7 +116,7 @@ export function TemplateNav({templates: all, chapters}: { templates: Template[];
                                             })}>
                                         {title}
                                         <span
-                                            className="ml-auto inline-flex shrink-0 items-center gap-1 text-xs text-primary">
+                                            className="ml-auto inline-flex shrink-0 items-center gap-1 text-xs text-link">
                                             <Plus className="size-3"/>{t("ChecklistTemplate.createChapter")}
                                         </span>
                                     </button>

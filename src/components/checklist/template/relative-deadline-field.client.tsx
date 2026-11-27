@@ -3,8 +3,8 @@
 import {useId} from "react";
 import {useFormatter, useTranslations} from "next-intl";
 import type {RelativeDeadlineKind, Weekday} from "@/gql/graphql";
-import {Input} from "@/components/ui/input";
-import {NativeSelect} from "@/components/ui/native-select";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {formatDate} from "@/utils/format";
 import {
     AMOUNT_LIMIT,

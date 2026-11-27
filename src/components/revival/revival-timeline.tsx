@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {useTranslations} from "next-intl";
 import {Drama, PartyPopper, TriangleAlert} from "lucide-react";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
-import {Badge} from "@/components/ui/badge";
+import {Alert, AlertDescription, AlertTitle} from "@bloomper/fgv-web-ui/ui/alert";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import type {Clash, CrossTimelineMonth} from "@/components/revival/timeline-clashes";
 import {formatDate} from "@/utils/format";
 import {cn} from "@/utils/utils";

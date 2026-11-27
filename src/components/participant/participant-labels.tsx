@@ -1,7 +1,7 @@
 import type {ComponentProps} from "react";
 import {useTranslations} from "next-intl";
-import {Badge} from "@/components/ui/badge";
-import {NativeSelect} from "@/components/ui/native-select";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import type {InvitationState, ParticipantKind, ParticipantResponse} from "@/gql/graphql";
 
 export type PositionValue = { id: string; name: string; category?: string | null; hasRole: boolean };

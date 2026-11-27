@@ -1,6 +1,6 @@
 import {useTranslations} from "next-intl";
 import type {RevivalStatus} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 
 const VARIANTS: Record<RevivalStatus, "default" | "secondary" | "outline" | "destructive"> = {
     PROPOSED: "outline",

@@ -3,11 +3,11 @@
 import {useId, useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {Archive, ArchiveRestore, ExternalLink, Pencil, Plus, X} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Input} from "@/components/ui/input";
-import {NativeSelect} from "@/components/ui/native-select";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {PlainText} from "@/components/plain-text";
 import {pickText} from "@/components/guide/localized";
 import {libraryAnchor, type LibraryEntryRow} from "@/components/library/library";
@@ -110,7 +110,7 @@ export function LibraryList({entries, canEdit}: { entries: LibraryEntryRow[]; ca
                                                 </dl>
                                                 {entry.url && (
                                                     <a href={entry.url} target="_blank" rel="noopener noreferrer"
-                                                       className="inline-flex items-center gap-1 font-medium text-primary hover:text-primary/80">
+                                                       className="inline-flex items-center gap-1 font-medium text-link hover:text-link/80">
                                                         {t("Library.open", {name})}<ExternalLink className="size-3" aria-hidden/>
                                                     </a>
                                                 )}

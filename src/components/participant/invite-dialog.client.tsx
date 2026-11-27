@@ -2,7 +2,7 @@
 
 import {useId, useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -10,10 +10,10 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {NativeSelect} from "@/components/ui/native-select";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {type InviteOutcome, inviteParticipantsAction} from "@/app/(app)/revivals/[id]/participants/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import type {ParticipantFieldsFragment} from "@/gql/graphql";

@@ -2,8 +2,8 @@
 
 import {type ReactNode, useId} from "react";
 import {TriangleAlert} from "lucide-react";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
-import {Checkbox} from "@/components/ui/checkbox";
+import {Alert, AlertDescription, AlertTitle} from "@bloomper/fgv-web-ui/ui/alert";
+import {Checkbox} from "@bloomper/fgv-web-ui/ui/checkbox";
 
 /**
  * A warning that something will be deleted, which the user must tick to go on.

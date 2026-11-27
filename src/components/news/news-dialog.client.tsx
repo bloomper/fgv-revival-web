@@ -4,7 +4,7 @@ import {useId, useTransition} from "react";
 import {useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -12,10 +12,10 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Textarea} from "@/components/ui/textarea";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {Textarea} from "@bloomper/fgv-web-ui/ui/textarea";
 import {DateInput} from "@/components/date-input.client";
 import type {NewsItem} from "@/components/news/news";
 import {createNewsAction, updateNewsAction} from "@/app/(app)/admin/news/actions.server";

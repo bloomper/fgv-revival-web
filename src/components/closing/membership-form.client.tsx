@@ -2,10 +2,10 @@
 
 import {useId, useState, useTransition} from "react";
 import {useTranslations} from "next-intl";
-import {Button} from "@/components/ui/button";
-import {Checkbox} from "@/components/ui/checkbox";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Checkbox} from "@bloomper/fgv-web-ui/ui/checkbox";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
 import {setMembershipAction} from "@/app/(app)/revivals/[id]/closing/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {membershipYearSchema} from "@/lib/closing/schema";

@@ -1,10 +1,11 @@
-import {Skeleton} from "@/components/ui/skeleton";
+import {Skeleton} from "@bloomper/fgv-web-ui/ui/skeleton";
+import {Page} from "@bloomper/fgv-web-ui/shell/page-header";
 
 export default function Loading() {
     return (
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+        <Page>
             <Skeleton className="h-8 w-64"/>
             <Skeleton className="h-64"/>
-        </div>
+        </Page>
     );
 }

@@ -2,8 +2,8 @@
 
 import {useLocale, useTranslations} from "next-intl";
 import {Plus} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {Card, CardAction, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Card, CardAction, CardDescription, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
 import type {LocalizedTextValue} from "@/components/guide/localized";
 import {pickText} from "@/components/guide/localized";
 import {AmountText} from "@/components/budget/budget-labels";

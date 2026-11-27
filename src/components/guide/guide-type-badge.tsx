@@ -1,6 +1,6 @@
 import {useLocale} from "next-intl";
 import type {GuideItemKind} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import {catalogName, type GuideItemTypeValue} from "@/components/catalog/catalog";
 
 const VARIANTS: Record<GuideItemKind, "default" | "secondary" | "outline"> = {

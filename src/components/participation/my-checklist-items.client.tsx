@@ -2,8 +2,8 @@
 
 import {useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
-import {Checkbox} from "@/components/ui/checkbox";
-import {Badge} from "@/components/ui/badge";
+import {Checkbox} from "@bloomper/fgv-web-ui/ui/checkbox";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import {PlainText} from "@/components/plain-text";
 import {pickText} from "@/components/guide/localized";
 import {setAssignedItemDoneAction} from "@/app/(app)/revivals/[id]/me/actions.server";

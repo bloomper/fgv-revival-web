@@ -4,8 +4,8 @@ import {useState} from "react";
 import {useTranslations} from "next-intl";
 import {Check, Copy} from "lucide-react";
 import {toast} from "sonner";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {formatAmount, formatInstant} from "@/utils/format";
 
 export type SwishValue = { number: string; amount: string; message: string; qrAvailable: boolean };

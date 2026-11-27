@@ -2,8 +2,8 @@
 
 import {useId, useOptimistic, useTransition} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import {Label} from "@/components/ui/label";
-import {Switch} from "@/components/ui/switch";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {Switch} from "@bloomper/fgv-web-ui/ui/switch";
 
 /**
  * A switch kept in the URL as {@code ?<param>=1}, so the server fetches what it shows, as "show cancelled" is for

@@ -1,6 +1,6 @@
 import {useTranslations} from "next-intl";
 import type {LogEntryStatus} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 
 const VARIANTS: Record<LogEntryStatus, "default" | "secondary" | "outline" | "ghost"> = {
     OPEN: "secondary",

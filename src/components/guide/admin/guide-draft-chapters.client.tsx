@@ -5,8 +5,8 @@ import Link from "next/link";
 import {useLocale, useTranslations} from "next-intl";
 import {ArrowDown, ArrowUp, ChevronRight, PencilLine, Plus, Trash2} from "lucide-react";
 import type {GuideChapterRemovalImpactQuery, GuideVersionFieldsFragment} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,9 +17,9 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
 import {
     chapterRemovalImpactAction,
     createChapterAction,

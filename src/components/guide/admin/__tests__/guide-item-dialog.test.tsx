@@ -1,7 +1,7 @@
 import {describe, expect, it, vi} from "vitest";
 import {cleanup, fireEvent, render, screen, waitFor} from "@testing-library/react";
 import {GuideItemDialog} from "@/components/guide/admin/guide-item-dialog.client";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {CatalogProvider} from "@/components/catalog/catalog-provider.client";
 import {ITEM_TYPES} from "@/components/catalog/__tests__/fixtures";
 

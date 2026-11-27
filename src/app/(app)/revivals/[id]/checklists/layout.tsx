@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Suspense} from "react";
 import {notFound} from "next/navigation";
-import {Skeleton} from "@/components/ui/skeleton";
+import {Skeleton} from "@bloomper/fgv-web-ui/ui/skeleton";
 import {ChecklistNav} from "@/components/checklist/checklist-nav.client";
 import type {EventTemplate} from "@/components/checklist/event-checklist-dialog.client";
 import {ReadOnlyNotice} from "@/components/revival/read-only-notice";

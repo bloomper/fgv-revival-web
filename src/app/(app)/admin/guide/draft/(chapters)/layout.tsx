@@ -8,6 +8,7 @@ import {GuideChapterNav} from "@/components/guide/guide-chapter-nav.client";
 import {loadGuideDraft} from "@/app/(app)/admin/guide/draft/load.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The draft's chapters, with the chapter list that stays while moving between them. Super admins only.
@@ -22,9 +23,9 @@ export default async function GuideDraftChaptersLayout({children}: { children: R
         }
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+            <Page>
                 <Link href="/admin/guide/draft"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-link">
                     <ArrowLeft className="size-4"/>
                     {t("admin.draft")}
                 </Link>
@@ -32,7 +33,7 @@ export default async function GuideDraftChaptersLayout({children}: { children: R
                     <GuideChapterNav chapters={navChapters(draft.draft)} basePath="/admin/guide/draft"/>
                     <div className="min-w-0 flex-1 space-y-8">{children}</div>
                 </div>
-            </div>
+            </Page>
         );
     });
 }

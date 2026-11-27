@@ -4,7 +4,7 @@ import {useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {ArrowRightLeft} from "lucide-react";
 import type {GuideChangesQuery, RevivalGuideVersionChangeImpactQuery} from "@/gql/graphql";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -13,9 +13,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger
-} from "@/components/ui/dialog";
-import {Label} from "@/components/ui/label";
-import {NativeSelect} from "@/components/ui/native-select";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {
     changeGuideVersionAction,
     guideChangesAction,

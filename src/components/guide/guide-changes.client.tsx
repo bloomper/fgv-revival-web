@@ -2,7 +2,7 @@
 
 import {useLocale, useTranslations} from "next-intl";
 import type {GuideChangesQuery} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import {GuideMarkdown} from "@/components/guide/guide-markdown";
 import {GuideTypeBadge} from "@/components/guide/guide-type-badge";
 import {pickText} from "@/components/guide/localized";

@@ -3,6 +3,7 @@ import {ApplicationSettingsForm} from "@/components/settings/application-setting
 import {getApplicationSettings} from "@/lib/settings/settings.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The application settings, for super admins: the terms every participant accepts and the fee new revivals start with.
@@ -13,11 +14,10 @@ export default async function ApplicationSettingsPage() {
         const settings = await getApplicationSettings();
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-                <p className="max-w-prose text-sm text-muted-foreground">{t("intro")}</p>
+            <Page variant="content">
+                <PageHeader title={t("title")} description={t("intro")}/>
                 {settings && <ApplicationSettingsForm settings={settings}/>}
-            </div>
+            </Page>
         );
     });
 }

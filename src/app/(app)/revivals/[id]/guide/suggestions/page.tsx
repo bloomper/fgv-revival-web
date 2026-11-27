@@ -2,7 +2,7 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
 import {ArrowLeft, MessageSquarePlus} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {CatalogProvider} from "@/components/catalog/catalog-provider.client";
 import {SuggestionDialog} from "@/components/guide/suggestion/suggestion-dialog.client";
 import {SuggestionList} from "@/components/guide/suggestion/suggestion-list.client";
@@ -39,7 +39,7 @@ export default async function RevivalGuideSuggestionsPage({params}: { params: Pr
         return (
             <div className="flex flex-1 flex-col gap-4">
                 <Link href={`/revivals/${id}/guide`}
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-link">
                     <ArrowLeft className="size-4"/>
                     {t("backToGuide")}
                 </Link>

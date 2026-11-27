@@ -3,8 +3,8 @@
 import {Fragment, useState} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {ChevronDown, ChevronRight} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow} from "@bloomper/fgv-web-ui/ui/table";
 import {catalogName} from "@/components/catalog/catalog";
 import {AmountText, type BudgetCategoryValue, KindBadge} from "@/components/budget/budget-labels";
 import {fromOre, subtractAmounts, toOre} from "@/lib/budget/amount";

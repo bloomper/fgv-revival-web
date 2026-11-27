@@ -6,14 +6,14 @@ import {useTranslations} from "next-intl";
 import {useForm, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Plus, UserPlus} from "lucide-react";
-import {Alert, AlertDescription} from "@/components/ui/alert";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {NativeSelect} from "@/components/ui/native-select";
-import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "@/components/ui/sheet";
-import {Spinner} from "@/components/ui/spinner";
+import {Alert, AlertDescription} from "@bloomper/fgv-web-ui/ui/alert";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
+import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "@bloomper/fgv-web-ui/ui/sheet";
+import {Spinner} from "@bloomper/fgv-web-ui/ui/spinner";
 import {PositionSelect, type PositionValue} from "@/components/participant/participant-labels";
 import {
     addPendingParticipantAction,

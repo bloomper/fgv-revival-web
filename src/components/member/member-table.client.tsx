@@ -5,13 +5,13 @@ import {useMemo, useState, useTransition} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {Check, MoreHorizontal, Pencil, Plus, Trash2, X} from "lucide-react";
 import type {RevivalRole} from "@/gql/graphql";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {Checkbox} from "@/components/ui/checkbox";
-import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
-import {Input} from "@/components/ui/input";
-import {DataEmpty} from "@/components/data-empty";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Checkbox} from "@bloomper/fgv-web-ui/ui/checkbox";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@bloomper/fgv-web-ui/ui/sheet";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {DataFilter} from "@/components/data-filter";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
 import {catalogChoices, catalogName} from "@/components/catalog/catalog";
@@ -119,7 +119,7 @@ function AddMemberButton({revivalId, role}: { revivalId: string; role: Assignabl
                                     aria-label={t("Members.addedSoFar", {count: added.length})}>
                                     {added.map((name, index) => (
                                         <li key={index} className="flex items-center gap-2"><Check
-                                            className="size-4 text-primary"/>{name}</li>
+                                            className="size-4 text-link"/>{name}</li>
                                     ))}
                                 </ul>
                             </div>

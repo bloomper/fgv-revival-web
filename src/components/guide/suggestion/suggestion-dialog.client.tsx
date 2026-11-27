@@ -4,7 +4,7 @@ import {type ReactElement, type ReactNode, useState, useTransition} from "react"
 import {useLocale, useTranslations} from "next-intl";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {ScrollArea} from "@/components/ui/scroll-area";
+import {ScrollArea} from "@bloomper/fgv-web-ui/ui/scroll-area";
 import {
     Sheet,
     SheetContent,
@@ -13,11 +13,11 @@ import {
     SheetHeader,
     SheetTitle,
     SheetTrigger
-} from "@/components/ui/sheet";
-import {Button} from "@/components/ui/button";
-import {Label} from "@/components/ui/label";
-import {Textarea} from "@/components/ui/textarea";
-import {NativeSelect} from "@/components/ui/native-select";
+} from "@bloomper/fgv-web-ui/ui/sheet";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {Textarea} from "@bloomper/fgv-web-ui/ui/textarea";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 import {suggestAction} from "@/app/(app)/revivals/[id]/guide/actions.server";
 import {catalogChoices, defaultItemType, type GuideItemTypeValue} from "@/components/catalog/catalog";
 import {CatalogOptions, useGuideItemTypes} from "@/components/catalog/catalog-provider.client";

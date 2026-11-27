@@ -1,5 +1,5 @@
 import {useTranslations} from "next-intl";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 
 /**
  * A deadline that has passed while the row or item is unfinished.

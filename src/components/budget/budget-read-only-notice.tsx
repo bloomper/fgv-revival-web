@@ -3,7 +3,7 @@ import {Eye} from "lucide-react";
 import type {RevivalStatus} from "@/gql/graphql";
 import type {Role} from "@/types/auth";
 import {isObserver, isSuperAdmin} from "@/utils/auth";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
+import {Alert, AlertDescription, AlertTitle} from "@bloomper/fgv-web-ui/ui/alert";
 
 /**
  * Says why the budget is read-only: only the directeur and steering group members with the finance area change it.

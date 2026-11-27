@@ -4,6 +4,7 @@ import {GuideItemTypeEditor} from "@/components/catalog/guide-item-type-editor.c
 import {getGuideItemTypes} from "@/lib/catalog/catalog.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The types a guide item can have, for super admins. Each type has one of the fixed kinds, which decides what its
@@ -19,14 +20,11 @@ export default async function GuideItemTypesPage({searchParams}: {
         const types = await getGuideItemTypes(retired);
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h1 className="text-2xl font-bold tracking-tight">{t("GuideItemTypeAdmin.title")}</h1>
-                    <ShowRetiredSwitch shown={retired} label={t("Catalog.showRetired")}/>
-                </div>
+            <Page variant="content">
+                <PageHeader title={t("GuideItemTypeAdmin.title")} actions={<ShowRetiredSwitch shown={retired} label={t("Catalog.showRetired")}/>}/>
                 <p className="max-w-prose text-sm text-muted-foreground">{t("GuideItemTypeAdmin.description")}</p>
                 <GuideItemTypeEditor entries={types}/>
-            </div>
+            </Page>
         );
     });
 }

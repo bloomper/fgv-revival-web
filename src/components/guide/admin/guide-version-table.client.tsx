@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
 import {BookOpen, MoreHorizontal, Trash2} from "lucide-react";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
-import {DataEmpty} from "@/components/data-empty";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {PlainText} from "@/components/plain-text";
 import {
     AlertDialog,
@@ -18,8 +18,8 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {Button} from "@/components/ui/button";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -27,8 +27,8 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
 import {deleteGuideVersionAction} from "@/app/(app)/admin/guide/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {formatInstant} from "@/utils/format";

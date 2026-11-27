@@ -9,6 +9,7 @@ import {getGuideDraft, getGuideSuggestions} from "@/lib/guide/guide.server";
 import {SUGGESTION_STATUSES} from "@/lib/guide/schema";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * Suggestions for super admins to accept into the draft or reject.
@@ -27,18 +28,18 @@ export default async function AdminGuideSuggestionsPage({searchParams}: {
             .map(item => [item.key, {type: item.type, text: item.text}]));
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+            <Page>
                 <Link href="/admin/guide"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-link">
                     <ArrowLeft className="size-4"/>
                     {t("back")}
                 </Link>
-                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+                <PageHeader title={t("title")}/>
                 <nav aria-label={t("filter")} className="flex flex-wrap gap-3 text-sm">
                     {SUGGESTION_STATUSES.map(candidate => (
                         <Link key={candidate} href={`/admin/guide/suggestions?status=${candidate}`}
                               aria-current={candidate === filter ? "page" : undefined}
-                              className={candidate === filter ? "font-semibold" : "hover:text-primary"}>
+                              className={candidate === filter ? "font-semibold" : "hover:text-link"}>
                             {t(`status.${candidate}`)}
                         </Link>
                     ))}
@@ -46,7 +47,7 @@ export default async function AdminGuideSuggestionsPage({searchParams}: {
                 <CatalogProvider itemTypes={itemTypes}>
                     <AdminSuggestionList suggestions={suggestions} draftItems={draftItems}/>
                 </CatalogProvider>
-            </div>
+            </Page>
         );
     });
 }

@@ -4,7 +4,7 @@ import * as React from "react";
 import {useId, useState, useTransition} from "react";
 import {useTranslations} from "next-intl";
 import type {ChecklistItemFieldsFragment} from "@/gql/graphql";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -12,9 +12,9 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {Label} from "@/components/ui/label";
-import {Textarea} from "@/components/ui/textarea";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
+import {Textarea} from "@bloomper/fgv-web-ui/ui/textarea";
 import {setChecklistItemStateAction} from "@/app/(app)/revivals/[id]/checklists/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {MAX_REASON} from "@/lib/checklist/schema";

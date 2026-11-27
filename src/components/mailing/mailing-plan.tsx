@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {useLocale, useTranslations} from "next-intl";
 import {Plus} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
-import {buttonVariants} from "@/components/ui/button";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {buttonVariants} from "@bloomper/fgv-web-ui/ui/button";
 import {pickText} from "@/components/guide/localized";
 import {AudienceText, MailingStatusBadge} from "@/components/mailing/mailing-labels";
 import type {MailingAudienceKind, MailingStatus} from "@/gql/graphql";
@@ -66,7 +66,7 @@ export function MailingPlan({revivalId, entries, canDraft}: {
                         <div className="flex shrink-0 items-center gap-2">
                             {entry.mailing && (
                                 <Link href={`/revivals/${revivalId}/mailings/${entry.mailing.id}`}
-                                      className="flex items-center gap-2 text-sm hover:text-primary"
+                                      className="flex items-center gap-2 text-sm hover:text-link"
                                       aria-label={t("openMailing", {subject: entry.mailing.subject})}>
                                     <MailingStatusBadge status={entry.mailing.status}/>
                                     {sent && entry.mailing.sentAt && <span

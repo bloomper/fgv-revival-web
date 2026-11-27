@@ -4,17 +4,17 @@ import * as React from "react";
 import {useMemo, useState, useTransition} from "react";
 import {useTranslations} from "next-intl";
 import {MoreHorizontal, Pencil, Plus, RotateCcw, Trash2, X} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import {Input} from "@/components/ui/input";
-import {DataEmpty} from "@/components/data-empty";
+} from "@bloomper/fgv-web-ui/ui/dropdown-menu";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {DataEmpty} from "@bloomper/fgv-web-ui/shell/data-empty";
 import {DataFilter} from "@/components/data-filter";
 import {DataTable, type DataTableColumnDef, SortableHeader} from "@/components/data-table.client";
 import {PlainText} from "@/components/plain-text";

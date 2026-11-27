@@ -5,6 +5,7 @@ import {GraphQLRequestError} from "@/lib/graphql.server";
 import {getGuideChanges} from "@/lib/guide/guide.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * What changed between two versions, {@code ?from=&to=}.
@@ -32,12 +33,10 @@ export default async function GuideChangesPage({searchParams}: {
         }
 
         return (
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-                <h1 className="text-2xl font-bold tracking-tight">
-                    {t("title", {from: changes.from.label ?? "", to: changes.to.label ?? t("draft")})}
-                </h1>
+            <Page>
+                <PageHeader title={t("title", {from: changes.from.label ?? "", to: changes.to.label ?? t("draft")})}/>
                 <GuideChanges changes={changes}/>
-            </div>
+            </Page>
         );
     });
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {getLocale, getTranslations} from "next-intl/server";
 import {ArrowLeft} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import {pickText} from "@/components/guide/localized";
 import {CatalogProvider} from "@/components/catalog/catalog-provider.client";
 import {TemplateEditor} from "@/components/checklist/template/template-editor.client";
@@ -62,7 +62,7 @@ export default async function ChecklistTemplatePage({params, searchParams}: {
                     <div className="space-y-1">
                         {superAdmin && (
                             <Link href={`/admin/checklist-templates${retired ? "?retired=1" : ""}`}
-                                  className="inline-flex items-center gap-1 text-sm text-muted-foreground lg:hidden hover:text-primary">
+                                  className="inline-flex items-center gap-1 text-sm text-muted-foreground lg:hidden hover:text-link">
                                 <ArrowLeft className="size-4"/>
                                 {t("ChecklistTemplate.title")}
                             </Link>

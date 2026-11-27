@@ -12,8 +12,8 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {Button} from "@/components/ui/button";
+} from "@bloomper/fgv-web-ui/ui/alert-dialog";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {AudiencePreview, useAudiencePreview} from "@/components/mailing/mailing-editor.client";
 import {
     cancelMailingAction,

@@ -5,7 +5,7 @@ import {useState} from "react";
 import {useLocale, useTranslations} from "next-intl";
 import {Plus} from "lucide-react";
 import type {ChecklistItemFieldsFragment} from "@/gql/graphql";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import type {OwnerMember} from "@/components/owner/owner-field.client";
 import {ChecklistItemDialog} from "@/components/checklist/checklist-item-dialog.client";
 import {ChecklistItemRow} from "@/components/checklist/checklist-item-row.client";

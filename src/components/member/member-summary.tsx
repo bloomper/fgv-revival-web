@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {useLocale, useTranslations} from "next-intl";
 import {ChevronRight} from "lucide-react";
-import {buttonVariants} from "@/components/ui/button";
-import {Card, CardAction, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {buttonVariants} from "@bloomper/fgv-web-ui/ui/button";
+import {Card, CardAction, CardContent, CardHeader, CardTitle} from "@bloomper/fgv-web-ui/ui/card";
 import {catalogName} from "@/components/catalog/catalog";
 import {type Member, memberName} from "@/components/member/member";
 

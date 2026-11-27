@@ -1,5 +1,5 @@
 import {useTranslations} from "next-intl";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 
 export type OwnerValue = {
     person?: { id: string; displayName?: string | null; active: boolean } | null;

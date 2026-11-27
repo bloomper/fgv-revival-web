@@ -1,6 +1,6 @@
 import type {ComponentProps} from "react";
 import {useTranslations} from "next-intl";
-import {Badge} from "@/components/ui/badge";
+import {Badge} from "@bloomper/fgv-web-ui/ui/badge";
 import type {MailingAudienceKind, MailingRecipientStatus, MailingStatus} from "@/gql/graphql";
 
 export type AudienceValue = {

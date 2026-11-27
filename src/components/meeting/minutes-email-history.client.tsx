@@ -4,7 +4,7 @@ import * as React from "react";
 import {useTransition} from "react";
 import {useTranslations} from "next-intl";
 import {toast} from "sonner";
-import {Button} from "@/components/ui/button";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {retryMinutesAction} from "@/app/(app)/revivals/[id]/meetings/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {formatInstant} from "@/utils/format";

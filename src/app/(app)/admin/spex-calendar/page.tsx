@@ -3,6 +3,7 @@ import {SpexCalendarEditor} from "@/components/spex-calendar/spex-calendar-edito
 import {getSpexCalendarDates} from "@/lib/spex-calendar/spex-calendar.server";
 import {Policies} from "@/utils/policy.server";
 import {withPolicyPage} from "@/utils/route.server";
+import {Page, PageHeader} from "@bloomper/fgv-web-ui/shell/page-header";
 
 /**
  * The current Chalmersspex's show dates, for super admins, so the timeline of all revivals flags revivals playing the
@@ -14,11 +15,10 @@ export default async function SpexCalendarPage() {
         const dates = await getSpexCalendarDates();
 
         return (
-            <div className="flex flex-1 flex-col gap-6 p-4 md:p-8">
-                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-                <p className="max-w-prose text-sm text-muted-foreground">{t("description")}</p>
+            <Page variant="content">
+                <PageHeader title={t("title")} description={t("description")}/>
                 <SpexCalendarEditor dates={dates}/>
-            </div>
+            </Page>
         );
     });
 }

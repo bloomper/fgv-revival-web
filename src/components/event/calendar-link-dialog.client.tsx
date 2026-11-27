@@ -5,8 +5,8 @@ import {useId, useState, useTransition} from "react";
 import {useTranslations} from "next-intl";
 import {CalendarSync, Copy} from "lucide-react";
 import {toast} from "sonner";
-import {Alert, AlertDescription} from "@/components/ui/alert";
-import {Button} from "@/components/ui/button";
+import {Alert, AlertDescription} from "@bloomper/fgv-web-ui/ui/alert";
+import {Button} from "@bloomper/fgv-web-ui/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -14,9 +14,9 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+} from "@bloomper/fgv-web-ui/ui/dialog";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {Label} from "@bloomper/fgv-web-ui/ui/label";
 import {createCalendarFeedAction, revokeCalendarFeedAction} from "@/app/(app)/revivals/[id]/events/actions.server";
 import {useActionFeedback} from "@/hooks/use-action-feedback";
 import {formatInstant} from "@/utils/format";

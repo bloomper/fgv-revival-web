@@ -3,8 +3,8 @@
 import * as React from "react";
 import {useId, useState} from "react";
 import {useTranslations} from "next-intl";
-import {Input} from "@/components/ui/input";
-import {NativeSelect} from "@/components/ui/native-select";
+import {Input} from "@bloomper/fgv-web-ui/ui/input";
+import {NativeSelect} from "@bloomper/fgv-web-ui/ui/native-select";
 
 export type OwnerMember = { id: string; displayName?: string | null };
 export type OwnerFieldValue = { personId?: string | null; name?: string | null } | null;
