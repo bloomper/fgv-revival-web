@@ -45,7 +45,8 @@ test.describe("Closing: the directeur records the surplus, marks memberships, sy
         await expect(sync).toContainText("Nyuppsättningen finns inte i Spexregistret än och skapas först.");
         await expect(anna).toContainText("Befattning: Ensemble");
         await expect(anna).toContainText("Roll: Ali Baba");
-        await expect(anna).toContainText("Medlemskap: 2028");
+        await expect(anna).not.toContainText("Medlemskap:");
+        await expect(sync.getByTestId("sync-payment")).toContainText("En betalningsbegäran för 2028 läggs i Medlemskap för 1 medlemskap.");
         await expect(sync.getByRole("row").filter({hasText: "Bertil Bengtsson"})).toContainText("Befattning: Orkester");
         await expect(sync).toContainText("1 deltagare synkas inte");
         await expect(sync.getByRole("listitem").filter({hasText: "Disa Deltagare"})).toBeVisible();
@@ -68,6 +69,15 @@ test.describe("Closing: the directeur records the surplus, marks memberships, sy
         await page.getByRole("alertdialog", {name: "Synka till Spexregistret?"}).getByRole("button", {name: "Återuppta"}).click();
         await expect(run).toContainText("Klar", {timeout: 20_000});
         await expect(sync).toContainText("Allt finns redan i Spexregistret.");
+        await expect(sync.getByTestId("sync-payment")).toContainText("Betalningsbegäran för medlemskapen 2028 är gjord i Medlemskap.");
+
+        // Medlemskap's request tells what to pay, to whom, and with what message
+        const payment = page.getByRole("region", {name: "Medlemsbetalning"});
+
+        await expect(payment).toContainText("200 kr");
+        await expect(payment).toContainText("123-4567");
+        await expect(payment).toContainText("FGV28AB3K4");
+        await expect(payment).toContainText("Väntar på betalning");
         await expect(sync.getByRole("button", {name: "Starta synkning"})).toBeDisabled();
 
         // Anonymizing asks for the title

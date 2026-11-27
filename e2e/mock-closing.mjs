@@ -5,7 +5,8 @@
 import {createHash} from "node:crypto";
 import {ALI_BABA_2028} from "./mock-ids.mjs";
 
-const OPERATIONS = ["PARTICIPATION", "TASK", "ACTOR", "MEMBERSHIP"];
+const OPERATIONS = ["PARTICIPATION", "TASK", "ACTOR"];
+const FEE = 200;
 const MONTHS_BEFORE_ANONYMIZING = 36;
 
 export function createClosingState() {
@@ -13,6 +14,8 @@ export function createClosingState() {
         nextRunId: 1,
         runs: [],
         membershipYear: {},
+        // Revivals whose payment request for the memberships has been made in Medlemskap
+        payments: new Set(),
         spexregisterRevivals: new Set(),
         existing: new Set(),
         failOnce: []
@@ -52,7 +55,6 @@ export function closingResolvers(ctx) {
     /** Each participant's operations in order, with whether Spexregister already has it. */
     function operationsOf(revival, participant) {
         const found = position(participant.positionId);
-        const year = store().membershipYear[revival.id] ?? null;
         const operations = [{operation: "PARTICIPATION", detail: null}];
 
         if (found) {
@@ -60,9 +62,6 @@ export function closingResolvers(ctx) {
             if (found.hasRole && participant.roleName) {
                 operations.push({operation: "ACTOR", detail: participant.roleName});
             }
-        }
-        if (participant.membershipPaid && year) {
-            operations.push({operation: "MEMBERSHIP", detail: String(year)});
         }
         return operations.map(operation => ({
             __typename: "SyncOperationPreview", ...operation,
@@ -78,15 +77,21 @@ export function closingResolvers(ctx) {
         const synced = yes.filter(participant => participant.spexareId);
         const entries = synced.map(participant => ({participant, operations: operationsOf(revival, participant)}));
         const exists = store().spexregisterRevivals.has(revival.id);
+        const year = store().membershipYear[revival.id] ?? null;
+        const payers = synced.filter(participant => participant.membershipPaid);
+        const payment = year && payers.length > 0
+            ? {__typename: "SyncPaymentPreview", year, participants: payers.length, exists: store().payments.has(revival.id)} : null;
         const planned = [
             ...(exists ? [] : ["REVIVAL"]),
             ...entries.flatMap(entry => entry.operations.filter(operation => !operation.exists).map(operation => `${entry.participant.id}:${operation.operation}:${operation.detail ?? ""}`)),
+            ...(payment && !payment.exists ? [`PAYMENT:${year}:${payers.length}`] : []),
         ];
 
         return {
             exists,
             entries,
             excluded: yes.filter(participant => !participant.spexareId),
+            payment,
             planned,
             hash: createHash("sha256").update(JSON.stringify(planned)).digest("hex"),
         };
@@ -122,6 +127,9 @@ export function closingResolvers(ctx) {
             if (failing >= 0) {
                 store().failOnce.splice(failing, 1);
                 Object.assign(step, {status: "FAILED", reason: "REFUSED"});
+            } else if (step.operation === "PAYMENT") {
+                store().payments.add(run.revivalId);
+                step.status = "DONE";
             } else if (step.operation === "REVIVAL") {
                 store().spexregisterRevivals.add(run.revivalId);
                 step.status = "DONE";
@@ -168,6 +176,12 @@ export function closingResolvers(ctx) {
             } : null,
             membershipYear: store().membershipYear[revival.id] ?? null,
             membershipsPaid: yesParticipants(revival).filter(participant => participant.membershipPaid).length,
+            membershipPayment: store().payments.has(revival.id) ? {
+                __typename: "MembershipPayment", reference: "FGV28AB3K4", status: "OPEN", paid: 0,
+                amount: FEE * yesParticipants(revival).filter(participant => participant.membershipPaid && participant.spexareId).length,
+                included: yesParticipants(revival).filter(participant => participant.membershipPaid && participant.spexareId).length,
+                swishNumber: "1234567890", bankgiro: "123-4567", bankAccount: null, payeeName: "FGV",
+            } : null,
             suggestions: ctx.state().guide.suggestions.filter(suggestion => suggestion.revivalId === revival.id).length,
             lastSync: run && toRun(run),
             anonymizedAt: revival.anonymizedAt ?? null,
@@ -222,7 +236,7 @@ export function closingResolvers(ctx) {
                 if (!canReadPreview(persona, revival)) {
                     throw forbidden();
                 }
-                const {exists, entries, excluded, hash} = preview(revival);
+                const {exists, entries, excluded, payment, hash} = preview(revival);
                 const run = lastRun(revival);
 
                 return {
@@ -235,6 +249,7 @@ export function closingResolvers(ctx) {
                         })),
                         excluded: excluded.map(participants.ref),
                         membershipYear: store().membershipYear[revival.id] ?? null,
+                        payment,
                         lastRun: run && toRun(run),
                     },
                 };
@@ -264,7 +279,7 @@ export function closingResolvers(ctx) {
                 if (lastRun(revival)?.status === "RUNNING") {
                     throw new GraphQLError("CONFLICT", "En synkning pågår redan.");
                 }
-                const {exists, entries, hash} = preview(revival);
+                const {exists, entries, payment, hash} = preview(revival);
 
                 if (hash !== previewHash) {
                     throw new GraphQLError("CONFLICT", "Förhandsvisningen har ändrats. Ladda om och försök igen.");
@@ -278,6 +293,7 @@ export function closingResolvers(ctx) {
                             operation: operation.operation,
                             status: "PENDING"
                         }))),
+                    ...(payment && !payment.exists ? [{participant: null, operation: "PAYMENT", status: "PENDING"}] : []),
                 ];
                 const run = {
                     id: `run-${store().nextRunId++}`,

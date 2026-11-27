@@ -30,9 +30,10 @@ type Preview = NonNullable<SyncPreviewQuery["syncPreview"]>;
 export const SYNC_POLL_MS = 2000;
 
 /** What starting the sync would write: the planned operations, plus creating the revival when Spexregister lacks it. */
-export function plannedOperations(preview: Pick<Preview, "participants" | "spexregisterRevivalExists">): number {
+export function plannedOperations(preview: Pick<Preview, "participants" | "spexregisterRevivalExists" | "payment">): number {
     return preview.participants.reduce((sum, entry) => sum + entry.operations.filter(operation => !operation.exists).length, 0)
-        + (preview.spexregisterRevivalExists ? 0 : 1);
+        + (preview.spexregisterRevivalExists ? 0 : 1)
+        + (preview.payment && !preview.payment.exists ? 1 : 0);
 }
 
 const RUN_VARIANTS = {RUNNING: "secondary", DONE: "default", FAILED: "destructive"} as const;
@@ -136,6 +137,13 @@ export function SyncPanel({revivalId, preview, canSync}: { revivalId: string; pr
     return (
         <div className="space-y-4">
             {!preview.spexregisterRevivalExists && <p className="text-sm">{t("revivalMissing")}</p>}
+            {preview.payment && (
+                <p className="text-sm" data-testid="sync-payment">
+                    {preview.payment.exists
+                        ? t("paymentRequested", {year: preview.payment.year})
+                        : t("paymentPlanned", {year: preview.payment.year, count: preview.payment.participants})}
+                </p>
+            )}
             {preview.participants.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t("noParticipants")}</p>
             ) : (

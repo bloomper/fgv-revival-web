@@ -72,6 +72,7 @@
     "showMenu": "Visa menyn"
   },
   "AppSwitcher": {
+    "membership": "Medlemskap",
     "heading": "Byt applikation",
     "spexregister": "Spexregister",
     "revival": "Nyuppsättning",
@@ -2007,7 +2008,7 @@
     "membershipCount": "{count} av {total} markerade",
     "sync": {
       "title": "Synkning till Spexregistret",
-      "description": "För in deltagandet i Spexregistret: nyuppsättningen, varje deltagares aktivitet, befattning, roll och medlemskap.",
+      "description": "För in deltagandet i Spexregistret: nyuppsättningen och varje deltagares aktivitet, befattning och roll. Medlemskapen som nyuppsättningen betalar begärs som en betalningsbegäran i Medlemskap.",
       "unavailable": "Spexregistret går inte att nå just nu, så det går inte att se vad som skulle föras in. Försök igen om en stund.",
       "notYet": "Synkningen görs när nyuppsättningen avslutas.",
       "revivalMissing": "Nyuppsättningen finns inte i Spexregistret än och skapas först.",
@@ -2019,7 +2020,7 @@
         "PARTICIPATION": "Deltagande",
         "TASK": "Befattning",
         "ACTOR": "Roll",
-        "MEMBERSHIP": "Medlemskap"
+        "PAYMENT": "Medlemsbetalning"
       },
       "exists": "finns redan",
       "excluded": "{count, plural, one {# deltagare synkas inte} other {# deltagare synkas inte}}",
@@ -2046,7 +2047,9 @@
         "SPEXIPEDIA_UNAVAILABLE": "Spexipedia svarade inte",
         "REFUSED": "Spexregistret vägrade",
         "NOT_FOUND": "finns inte i Spexregistret"
-      }
+      },
+      "paymentPlanned": "{count, plural, one {En betalningsbegäran för {year} läggs i Medlemskap för # medlemskap.} other {En betalningsbegäran för {year} läggs i Medlemskap för # medlemskap.}}",
+      "paymentRequested": "Betalningsbegäran för medlemskapen {year} är gjord i Medlemskap."
     },
     "anonymize": {
       "title": "Anonymisering",
@@ -2080,6 +2083,23 @@
       "type": "Skriv ”{title}” för att bekräfta",
       "anonymized": "Nyuppsättningen anonymiserades",
       "syncIncomplete": "Synkningen till Spexregistret är inte klar. Efter anonymiseringen går den inte att göra."
+    },
+    "payment": {
+      "title": "Medlemsbetalning",
+      "intro": "{count, plural, one {Nyuppsättningen betalar FGV-avgiften för # deltagare.} other {Nyuppsättningen betalar FGV-avgiften för # deltagare.}}",
+      "amount": "Att betala",
+      "bankgiro": "Bankgiro",
+      "bankAccount": "Konto",
+      "reference": "Meddelande / referens",
+      "status": "Status",
+      "paid": "{amount} kr betalt",
+      "statuses": {
+        "OPEN": "Väntar på betalning",
+        "REPORTED": "Rapporterad som betald",
+        "MATCHED": "Betald",
+        "CANCELLED": "Avbruten"
+      },
+      "how": "Betala beloppet med referensen som meddelande. Kassören matchar betalningen i Medlemskap, och medlemskapen räknas därefter."
     }
   },
   "History": {
